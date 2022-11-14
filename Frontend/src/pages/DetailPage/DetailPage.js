@@ -4,8 +4,8 @@ import {
     Box,
 } from '@mui/material'
 
-import ShopDetailView from './ShopDetailView';
-import DetailPageBG from './DetailPageBG';
+import ShopDetailView from './components/ShopDetailView';
+import DetailPageBG from './components/DetailPageBG';
 
 import "../../css/DetailPage/DetailPage.css"
 
