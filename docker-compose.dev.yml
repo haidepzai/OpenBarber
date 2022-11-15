@@ -1,0 +1,37 @@
+# This file initiates a development environment consisting of 2 containers:
+# - postgreSQL database
+# - pgAdmin
+#
+# CMD: docker compose -f docker-compose.dev.yml up -d
+
+version: '3.7'
+
+services:
+
+  database:
+    image: postgres:alpine
+    container_name: openbarber-pgdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: openbarber
+    volumes:
+      - pgdb-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pg@admin.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  pgdb-data:
+  pgadmin-data:
