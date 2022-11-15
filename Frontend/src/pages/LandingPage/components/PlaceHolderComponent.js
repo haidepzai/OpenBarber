@@ -1,16 +1,13 @@
-import React from 'react'
+import React from 'react';
 
-import {
-  Box,
-} from '@mui/material'
-
+import { Box } from '@mui/material';
 
 const PlaceHolderComponent = ({ img }) => {
   return (
     <div>
-        <p>Example Component</p>
+      <p>Example Component</p>
     </div>
-  )
-}
+  );
+};
 
-export default PlaceHolderComponent
+export default PlaceHolderComponent;
