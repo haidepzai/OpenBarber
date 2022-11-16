@@ -12,3 +12,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQL81Dialect
+
+#  hateoas:
+#    use-hal-as-default-json-media-type: false
