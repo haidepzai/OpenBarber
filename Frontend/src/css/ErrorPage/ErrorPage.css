@@ -2,3 +2,11 @@
     text-align: center;
     justify-content: center;
 }
+
+div#root {
+    height: 100%;
+    background-color: #EBE8E6;
+    padding-left: 8%;
+    padding-right: 8%;
+    padding-top: 2%;
+}
