@@ -1,9 +1,11 @@
 package com.hdmstuttgart.mi.backend.model;
 
+import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+@Data
 @Entity
 public class Enterprise {
     @Id
@@ -11,20 +13,4 @@ public class Enterprise {
     private long id;
 
     private String name;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
