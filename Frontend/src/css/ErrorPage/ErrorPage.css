@@ -3,8 +3,9 @@
     justify-content: center;
 }
 
-div#root {
-    height: 100%;
+#error-container {
+    /*height: 100%;*/
+    height: 100vh;
     background-color: #EBE8E6;
     padding-left: 8%;
     padding-right: 8%;
