@@ -118,7 +118,7 @@ function Search(props) {
                         </Button>
 
                         {openTimePicker && (
-                            <Box sx={{ position: "absolute", top: "49px", left: 0, boxShadow: "-3px 3px 8px 2px rgba(0,0,0,0.4)", zIndex: "1", borderRadius: "4px" }}>
+                            <Box sx={{ position: "absolute", top: "49px", left: 0, boxShadow: "-3px 3px 8px 2px rgba(0,0,0,0.4)", zIndex: "3", borderRadius: "4px", "& .MuiDialogActions-root": { backgroundColor: "white.main" } }}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <StaticTimePicker
                                         displayStaticWrapperAs="mobile"

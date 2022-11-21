@@ -34,6 +34,7 @@ function MySwiper(props) {
             }}
             modules={[Pagination]}
             className="mySwiper"
+            style={{ zIndex: "0" }}
         >
             {criteria.map(({ name, src}) => (
                 <SwiperSlide style={{}}>
