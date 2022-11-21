@@ -58,6 +58,8 @@ function Search(props) {
         }
     }, [openAutocomplete]);
 
+    useEffect(() => console.log(dateValue), [dateValue])
+
     return (
         <>
             <Box sx={{ background: "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(93,71,58,1) 0%, rgba(160,142,131,1) 100%)" }}>
@@ -110,7 +112,6 @@ function Search(props) {
                             }}
                             startIcon={<AccessTimeIcon />}
                             endIcon={<ExpandMoreIcon />}
-                            /*sx={{ p: "15.75px 15px" }}*/
                             size="large"
                             sx={{ p: "10.875px 22px" }}
                         >
@@ -125,9 +126,7 @@ function Search(props) {
                                         value={dateValue}
                                         onChange={(newValue) => {
                                             setDateValue(newValue);
-                                            /*setOpenTimePicker(false)*/
                                         }}
-                                        /*closeOnSelect*/
                                         onAccept={() => setOpenTimePicker(false)}
                                         renderInput={(params) => <TextField {...params} />}
                                         sx={{ borderRadius: "4px" }}

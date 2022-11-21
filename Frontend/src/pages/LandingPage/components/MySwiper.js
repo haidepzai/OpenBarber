@@ -19,11 +19,11 @@ function MySwiper(props) {
 
     const criteria = [
         {name: "Best Ratings", src: ratingsImage},
-        {name: "Most Ratings", src: mostImage},
         {name:"Cheapest Prices", src: priceImage},
         {name: "Near you", src: locationImage},
-        {name: "Our personal tips", src: tipsImage},
-        {name: "With Beard Trimming", src: beardImage}]
+        {name: "With Beard Trimming", src: beardImage},
+        {name: "Most Ratings", src: mostImage},
+        {name: "Our personal tips", src: tipsImage}]
 
     return (
         <Swiper
@@ -34,21 +34,19 @@ function MySwiper(props) {
             }}
             modules={[Pagination]}
             className="mySwiper"
-            style={{ zIndex: "0" }}
+            style={{ zIndex: "0", paddingBottom: "30px" }}
         >
             {criteria.map(({ name, src}) => (
-                <SwiperSlide style={{}}>
+                <SwiperSlide>
                     <Box sx={{
                         padding: "0",
                         margin: "15px",
+                        position: "relative",
                         height: "400px",
                         width: "400px",
-                        background: `url(${src})`,
-                        backgroundSize: "cover",
-                        backdropFilter: "blur(5px)",
-                        position: "relative",
                         borderRadius: "10px",
-                        boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px"}}>
+                        boxShadow: "rgba(0, 0, 0, 0.6) 0px 2px 8px"}}>
+                        <img src={src} style={{ objectFit: "cover", filter: "brightness(0.7) contrast(1.2)", borderRadius: "10px"}} />
                         <Typography variant="h3" sx={{ textAlign: "center", position: "absolute", top: "50%",left: "50%", transform: "translate(-50%, -50%)", margin: "0", color: "white.main" }}>
                             {name}
                         </Typography>
