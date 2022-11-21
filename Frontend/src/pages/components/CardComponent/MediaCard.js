@@ -5,27 +5,45 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { Box, Rating } from '@mui/material';
 
-export default function MediaCard() {
+export default function MediaCard({image, title, rating, description}) {
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 250, borderRadius: 3 }}>
       <CardMedia
         component="img"
         height="140"
-        image="https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611"
+        image={image}
         alt="Barber"
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          Lizard
+          {title}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica
+
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Rating readOnly precision={0.5} value={rating} sx={{ color: 'primary.main' }} size="small" />
+          <Typography variant="span" style={{ fontWeight: 600 }} color="grey.400">
+            5 Reviews
+          </Typography>
+        </Box>
+
+        <Typography
+          sx={{
+            display: '-webkit-box',
+            overflow: 'hidden',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 2,
+          }} 
+          mt={2} 
+          variant="body2" 
+          color="text.secondary">
+           {description}
         </Typography>
       </CardContent>
+
       <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
+        <Button variant="contained" color="primary">Book Now</Button>
       </CardActions>
     </Card>
   );
