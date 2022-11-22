@@ -1,8 +1,31 @@
 import { Grid } from '@mui/material';
-import { Box } from '@mui/system';
 import React from 'react';
 import MediaCard from '../components/CardComponent/MediaCard';
-import PlaceHolderComponent from './components/PlaceHolderComponent';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Search from "./components/Search";
+import {Box, Typography} from "@mui/material";
+import MySwiper from "./components/MySwiper";
+import Header from "../../pages/components/Header"
+
+const theme = createTheme({
+  palette: {
+    type: 'light',
+    /* colors from https://m2.material.io/inline-tools/color/ */
+    primary: {
+      main: '#6D5344',
+      contrastText: '#fff'
+    },
+    secondary: {
+      main: '#445e6d',
+    },
+    analogous: {
+      main: '#6d4449'
+    },
+    white: {
+      main: '#fff'
+    }
+  }
+})
 
 const LandingPage = () => {
 
@@ -33,22 +56,29 @@ const LandingPage = () => {
 
 
   return (
-    <div>
-    <p>Landing Page Placeholder</p>
-    <PlaceHolderComponent />
-
-    <Grid sx={{ flexGrow: 1 }} container>
-      <Grid container justifyContent="center" spacing={5} >
-        {barberShops.map(shop => (
-          <Grid item >
-            <MediaCard key={shop.name} title={shop.name} image={shop.image} rating={shop.rating} description={shop.description} />
+    <ThemeProvider theme={theme}>
+      <Header />
+      <Search />
+      <Box sx={{ maxWidth: "1500px", margin: "0 auto", padding: "0px 50px" }}>
+        <Typography variant="h5" sx={{ paddingBottom: "10px", borderBottom: "1px solid rgba(0,0, 0, 0.3)", m: "20px 0" }}>
+          Which barbers would you like to see?
+        </Typography>
+        <MySwiper />
+        <Typography variant="h5" sx={{ paddingBottom: "10px", borderBottom: "1px solid rgba(0,0, 0, 0.3)", m: "20px 0" }}>
+          Top Barbers near your location
+        </Typography>
+        <Grid sx={{ flexGrow: 1 }} container>
+          <Grid container justifyContent="center" spacing={5} >
+            {barberShops.map(shop => (
+              <Grid item >
+                <MediaCard key={shop.name} title={shop.name} image={shop.image} rating={shop.rating} description={shop.description} />
+              </Grid>
+            )
+            )}
           </Grid>
-        )
-        )}
-      </Grid>
-    </Grid>
-    
-  </div>
+        </Grid>
+      </Box>
+    </ThemeProvider>
   );
 };
 
