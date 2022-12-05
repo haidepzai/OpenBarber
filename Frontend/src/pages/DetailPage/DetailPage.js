@@ -6,6 +6,7 @@ import ShopDetailView from './components/ShopDetailView';
 import DetailPageBG from './components/DetailPageBG';
 
 import '../../css/DetailPage/DetailPage.css';
+import Header from '../components/Header';
 
 const BARBER_SHOP = {
   name: 'Barber Shop',
@@ -66,10 +67,14 @@ const BARBER_SHOP = {
 
 const DetailPage = () => {
   return (
-    <Box className="detailPage" sx={{ position: 'relative' }}>
-      <DetailPageBG img={BARBER_SHOP.gallery[0]} />
-      <ShopDetailView shop={BARBER_SHOP} />
-    </Box>
+    <>
+      <Header />
+
+      <Box className="detailPage" sx={{ position: 'relative' }}>
+        <DetailPageBG img={BARBER_SHOP.gallery[0]} />
+        <ShopDetailView shop={BARBER_SHOP} />
+      </Box>
+    </>
   );
 };
 
