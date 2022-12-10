@@ -1,0 +1,8 @@
+- Sachen fett markieren
+- schwarzer Hintergrund bei Folien ?
+- gutes Layout
+• History of UIs and their pros and cons 
+• Development of 2D UI layout systems (horizontal and vertical boxes, anchor systems, CSS layout models, layout constraint solvers, …) 
+- aus 
+- allg. untersch. UI pro Browser?
+- jeweiligen Technologiestand genau beschreiben/kennen

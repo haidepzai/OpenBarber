@@ -1,0 +1,75 @@
+import React from 'react';
+import {Stack, Link, Typography, ThemeProvider, Button, IconButton} from "@mui/material";
+import image from './assets/logo_openbarber.svg'
+import {createTheme} from "@mui/material/styles";
+import InstagramIcon from '@mui/icons-material/Instagram';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+
+const footerTheme = createTheme({
+    palette: {
+        white: {
+            main: '#fff'
+        }
+    },
+    components: {
+        MuiLink: {
+            defaultProps: {
+                color: '#FFF'
+            }
+        },
+        MuiIconButton: {
+            defaultProps: {
+                size: "large",
+                color: "white"
+            }
+        },
+        MuiSvgIcon: {
+            defaultProps: {
+                fontSize: "inherit"
+            }
+        }
+    }
+})
+
+function Footer(props) {
+    return (
+        <ThemeProvider theme={footerTheme}>
+        <Stack direction="row" justifyContent="space-between" sx={{ backgroundColor: "#6D5344", p: "36px 48px" }}>
+            <Stack direction="column" gap={2}>
+                <img src={image} alt="Openbarber-Logo" width={"30px"} style={{ filter: "brightness(0) invert(1)" }}/>
+                <Stack direction="row" gap={3}>
+                    <Link href="#" underline="hover">Impressum</Link>
+                    <Link href="#" underline="hover">Datenschutz</Link>
+                    <Link href="#" underline="hover">Nutzungsbedingungen</Link>
+                    <Link href="#" underline="hover">Kontakt</Link>
+                    <Link href="#" underline="hover">FAQs</Link>
+                </Stack>
+                <Typography variant="p" sx={{ color: "#BCA7AF" }}>
+                    Copyright © 2022 OpenBarber, Nobelstraße 10, 70569 Stuttgart, Alle Rechte vorbehalten.
+                </Typography>
+            </Stack>
+            <Stack direction="column" gap={3}>
+                <Button variant="contained" color="white" sx={{ color: "#6D5344" }}>Für Unternehmen</Button>
+                <Stack direction="row" gap={1}>
+                    <IconButton aria-label="delete" size="large">
+                        <InstagramIcon fontSize="inherit"/>
+                    </IconButton>
+                    <IconButton aria-label="delete">
+                        <TwitterIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete">
+                        <FacebookIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete">
+                        <LinkedInIcon />
+                    </IconButton>
+                </Stack>
+            </Stack>
+        </Stack>
+        </ThemeProvider>
+    );
+}
+
+export default Footer;
