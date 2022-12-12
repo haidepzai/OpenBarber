@@ -18,7 +18,6 @@ import citiesFile from "../assets/german_cities.txt"
 function Search(props) {
 
     const [dateValue, setDateValue] = useState(dayjs());
-    /* send me location brather */
     const [location, setLocation] = useState('');
 
     const [openDatePicker, setOpenDatePicker] = useState(false);
@@ -84,7 +83,7 @@ function Search(props) {
                         </Button>
 
                         {openDatePicker && (
-                            <Box sx={{ position: "absolute", top: "49px", left: 0, boxShadow: "-3px 3px 8px 2px rgba(0,0,0,0.4)", zIndex: "1" }}>
+                            <Box sx={{ position: "absolute", top: "49px", left: 0, boxShadow: "-3px 3px 8px 2px rgba(0,0,0,0.4)", zIndex: "2" }}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <StaticDatePicker
                                         displayStaticWrapperAs="desktop"
