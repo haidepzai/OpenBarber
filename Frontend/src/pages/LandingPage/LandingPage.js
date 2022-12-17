@@ -60,7 +60,7 @@ const LandingPage = () => {
     <>
     <ThemeProvider theme={theme}>
       <Search />
-      <Box sx={{ maxWidth: "1500px", margin: "0 auto", zIndex: "-100" }}>
+      <Box sx={{ maxWidth: "1500px", margin: "0 auto" }}>
         <Typography variant="h5" sx={{ paddingBottom: "10px", borderBottom: "1px solid rgba(0,0, 0, 0.3)", mt: "20px" }}>
           Which barbers would you like to see?
         </Typography>
