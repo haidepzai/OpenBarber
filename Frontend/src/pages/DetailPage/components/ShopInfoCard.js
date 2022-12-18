@@ -8,6 +8,7 @@ import {
     Tab,
     Typography,
 } from '@mui/material'
+import ReservationDialog from "../../components/Reservation/ReservationDialog";
 
 const TabPanel = ({ children, value, index, ...props }) => (value === index ? (<Box {...props}>{children}</Box>) : null);
 
@@ -15,8 +16,10 @@ const TabPanel = ({ children, value, index, ...props }) => (value === index ? (<
 const ShopInfoCard = ({ shop, mobile }) => {
 
     const [tab, setTab] = useState(0);
+    const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
   return (
+    <>
     <Box sx={{
         display: "grid", gridTemplateRows: "1fr 1fr",
         gridTemplateColumns: (mobile ? "1fr" : "1fr 1fr"),
@@ -61,7 +64,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
               <Typography variant="h7" mb={1} sx={{ fontWeight: 600, color: "grey.1000" }}>ABOUT</Typography>
               <Typography variant="body1">{shop.description}</Typography>
             </Box>
-            <Button variant="contained" color="primary">Book Now</Button>
+            <Button variant="contained" color="primary" onClick={() => setOpenReservationDialog(true)}>Book Now</Button>
           </TabPanel>
 
           <TabPanel value={tab} index={1} sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 1 }}>
@@ -90,6 +93,11 @@ const ShopInfoCard = ({ shop, mobile }) => {
         <Box sx={{ backgroundColor: "grey.400", borderRadius: 2, padding: 2, boxShadow: 2, minHeight: "300px" }}>Gallery</Box>
 
       </Box>
+
+
+      <ReservationDialog open={openReservationDialog} handleClose={() => setOpenReservationDialog(false)}/>
+
+    </>
   )
 }
 
