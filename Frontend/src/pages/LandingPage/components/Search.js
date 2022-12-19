@@ -18,7 +18,7 @@ import citiesFile from "../assets/german_cities.txt"
 function Search(props) {
 
     const [dateValue, setDateValue] = useState(dayjs());
-    /* send me location brather */
+    /* send me location */
     const [location, setLocation] = useState('');
 
     const [openDatePicker, setOpenDatePicker] = useState(false);
