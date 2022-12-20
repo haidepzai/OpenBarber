@@ -6,6 +6,7 @@ import Search from "./components/Search";
 import {Box, Typography} from "@mui/material";
 import MySwiper from "./components/MySwiper";
 import Header from "../../pages/components/Header"
+import LoginModal from '../components/LoginModal/LoginModal';
 
 const theme = createTheme({
   palette: {
@@ -78,6 +79,7 @@ const LandingPage = () => {
           </Grid>
         </Grid>
       </Box>
+      <LoginModal />
     </ThemeProvider>
   );
 };
