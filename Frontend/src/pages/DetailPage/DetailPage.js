@@ -68,8 +68,6 @@ const BARBER_SHOP = {
 const DetailPage = () => {
   return (
     <>
-      <Header />
-
       <Box className="detailPage" sx={{ position: 'relative' }}>
         <DetailPageBG img={BARBER_SHOP.gallery[0]} />
         <ShopDetailView shop={BARBER_SHOP} />
