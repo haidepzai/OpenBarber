@@ -2,9 +2,9 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import MediaCard from '../components/CardComponent/MediaCard';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Search from './components/Search';
 import { Box, Typography } from '@mui/material';
 import MySwiper from './components/MySwiper';
-import { Search } from '@mui/icons-material';
 
 const theme = createTheme({
   palette: {
@@ -25,6 +25,7 @@ const theme = createTheme({
     },
   },
 });
+
 const LandingPage = () => {
   const barberShops = [
     {
@@ -69,12 +70,12 @@ const LandingPage = () => {
             <Grid container justifyContent="center" spacing={5}>
               {barberShops.map((shop) => (
                 <Grid item>
-                  <MediaCard
-                    key={shop.name}
-                    title={shop.name}
-                    image={shop.image}
-                    rating={shop.rating}
-                    description={shop.description}
+                  <MediaCard 
+                    key={shop.name} 
+                    title={shop.name} 
+                    image={shop.image} 
+                    rating={shop.rating} 
+                    description={shop.description} 
                     link={`shops/${shop.id}`}
                   />
                 </Grid>
