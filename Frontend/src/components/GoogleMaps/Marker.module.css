@@ -1,0 +1,15 @@
+.marker {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 10px;
+    top: 10px;
+    border: 5px solid #f44336;
+    border-radius: 20px;
+    background-color: white;
+    text-align: center;
+    color: #3f51b5;
+    font-size: 16;
+    font-weight: bold;
+    padding: 4;
+}
