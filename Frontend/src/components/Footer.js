@@ -1,6 +1,6 @@
 import React from 'react';
 import {Stack, Link, Typography, ThemeProvider, Button, IconButton} from "@mui/material";
-import image from './assets/logo_openbarber.svg'
+import image from '../assets/logo_openbarber.svg'
 import {createTheme} from "@mui/material/styles";
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';

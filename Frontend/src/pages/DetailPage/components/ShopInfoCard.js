@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { Box, Button, Rating, Tabs, Tab, Typography } from '@mui/material';
-import MapContainer from '../../components/GoogleMaps';
+import MapContainer from '../../../components/GoogleMaps';
 
 const TabPanel = ({ children, value, index, ...props }) => (value === index ? <Box {...props}>{children}</Box> : null);
 
