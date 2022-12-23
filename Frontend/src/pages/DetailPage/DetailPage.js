@@ -6,7 +6,6 @@ import ShopDetailView from './components/ShopDetailView';
 import DetailPageBG from './components/DetailPageBG';
 
 import '../../css/DetailPage/DetailPage.css';
-import Header from '../components/Header';
 
 const BARBER_SHOP = {
   name: 'Barber Shop',

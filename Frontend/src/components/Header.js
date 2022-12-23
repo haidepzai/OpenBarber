@@ -1,9 +1,8 @@
 import React from 'react';
-import '../../css/components/Header.css';
-import image from './assets/logo_openbarber.svg';
+import '../css/components/Header.css';
+import image from '../assets/logo_openbarber.svg';
 import { Stack, Button, Divider, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import { blueGrey } from '@mui/material/colors';
 
 const Header = () => {
   return (

@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import React from 'react';
-import MediaCard from '../components/CardComponent/MediaCard';
+import MediaCard from '../../components/CardComponent/MediaCard';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Search from './components/Search';
 import { Box, Typography } from '@mui/material';
