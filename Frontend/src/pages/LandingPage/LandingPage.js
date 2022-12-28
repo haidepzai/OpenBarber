@@ -70,12 +70,12 @@ const LandingPage = () => {
             <Grid container justifyContent="center" spacing={5}>
               {barberShops.map((shop) => (
                 <Grid item>
-                  <MediaCard 
-                    key={shop.name} 
-                    title={shop.name} 
-                    image={shop.image} 
-                    rating={shop.rating} 
-                    description={shop.description} 
+                  <MediaCard
+                    key={shop.name}
+                    title={shop.name}
+                    image={shop.image}
+                    rating={shop.rating}
+                    description={shop.description}
                     link={`shops/${shop.id}`}
                   />
                 </Grid>

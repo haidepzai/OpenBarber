@@ -6,7 +6,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Box, CardActionArea, Rating } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MediaCard({ image, title, rating, description, link }) {
   return (

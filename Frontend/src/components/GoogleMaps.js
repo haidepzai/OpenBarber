@@ -1,27 +1,25 @@
-import React from 'react';
-import GoogleMapReact from 'google-map-react';
+import { useJsApiLoader, GoogleMap, Marker } from '@react-google-maps/api';
+import React, { Fragment } from 'react';
 
-const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
+const GoogleMaps = ({ lat = 48.783333, lng = 9.183333, height = '100%', width = '100%' }) => {
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API,
+  });
 
-const MapContainer = ({lat = 48.783333, lng = 9.183333, height = "100%", width = "100%"}) => {
-  const defaultProps = {
-    center: {
-      lat: lat,
-      lng: lng,
-    },
-    zoom: 11,
+  const center = {
+    lat: lat, //TODO: Real Location for barbers
+    lng: lng,
   };
 
   return (
-    <div style={{ height: height, width: width }}>
-      <GoogleMapReact 
-        bootstrapURLKeys={{ key: GOOGLE_API_KEY }} 
-        defaultCenter={defaultProps.center}
-        defaultZoom={defaultProps.zoom}>
-        {/* Your map components go here */}
-      </GoogleMapReact>
-    </div>
+    <Fragment>
+      {isLoaded && (
+        <GoogleMap center={center} zoom={15} mapContainerStyle={{ width: height, height: width }}>
+          <Marker position={center} />
+        </GoogleMap>
+      )}
+    </Fragment>
   );
 };
 
-export default MapContainer;
+export default GoogleMaps;
