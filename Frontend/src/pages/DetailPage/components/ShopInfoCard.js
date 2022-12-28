@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { Box, Button, Rating, Tabs, Tab, Typography } from '@mui/material';
-import MapContainer from '../../../components/GoogleMaps';
+import GoogleMaps from '../../../components/GoogleMaps';
 
 const TabPanel = ({ children, value, index, ...props }) => (value === index ? <Box {...props}>{children}</Box> : null);
 
@@ -93,7 +93,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
       </Box>
 
       <Box sx={{ backgroundColor: 'grey.400', borderRadius: 2, padding: 0, boxShadow: 2, minHeight: '300px' }}>
-        <MapContainer />
+        <GoogleMaps />
       </Box>
       <Box sx={{ backgroundColor: 'grey.400', borderRadius: 2, padding: 2, boxShadow: 2, minHeight: '300px' }}>Gallery</Box>
     </Box>
