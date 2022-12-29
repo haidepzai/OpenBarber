@@ -6,8 +6,12 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Box, Rating } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export default function MediaCard({image, title, rating, description}) {
+
+  const navigate = useNavigate();
+
   return (
     <Card sx={{ maxWidth: 250, borderRadius: 3 }}>
       <CardMedia
@@ -17,11 +21,12 @@ export default function MediaCard({image, title, rating, description}) {
         alt="Barber"
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography gutterBottom variant="h5" component="div" onClick={() => navigate("/shops")} sx={{ "&:hover": { cursor: "pointer"} }}>
           {title}
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Rating readOnly precision={0.5} value={rating} sx={{ color: 'primary.main' }} size="small" />
           <Typography variant="span" style={{ fontWeight: 600 }} color="grey.400">
             5 Reviews

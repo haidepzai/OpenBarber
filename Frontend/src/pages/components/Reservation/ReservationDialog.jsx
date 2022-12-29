@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -27,33 +27,13 @@ import dayjs from "dayjs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
+import ServicePage from "./ServicePage";
 
 
 
 const steps = ['Dienstleistung', 'Termin', 'Buchung'];
 
-const dienstleistungen = {
-    damen: [
-        {name: "Waschen, Schneiden, Föhnen", preis: "30,00"},
-        {name: "Waschen, Föhnen", preis: "10,00"},
-        {name: "Waschen, Glätten", preis: "20,00"},
-        {name: "Haare färben", preis: "45,00"},
-        {name: "Strähnen", preis: "50,00"},
-        {name: "Kosmetik - Augenbrauen zupfen", preis: "10,00"},
-        {name: "Kosmetik - Wimpern", preis: "10,00"},
-    ],
-    herren: [
-        {name: "Waschen, Schneiden und Styling", preis: "35,00"},
-        {name: "Maschinen-Haarschnitt", preis: "17,50"},
-        {name: "Färben, Schneiden und Styling", preis: "65,00"},
-        {name: "Bartschnitt", preis: "10,00"},
-        {name: "Bartschnitt und Pflege", preis: "25,00"},
-        {name: "Kosmetik - Augenbrauen zupfen", preis: "10,00"},
-    ],
-    kinder: [
-        {name: "Kinder-Haarschnitt", preis: "12,00"}
-    ]
-}
+
 
 const stylists = [
 /*
@@ -66,9 +46,39 @@ const stylists = [
 ]
 
 function ReservationDialog({ open, handleClose }) {
-    const [activeStep, setActiveStep] = React.useState(0);
-    const [pickedCut, setPickedCut] = useState(false);
-    const [pickedStylist, setPickedStylist] = React.useState('');
+    const [activeStep, setActiveStep] = useState(0);
+    /*{ [k: number]: boolean; }*/
+    const [completed, setCompleted] = useState({
+        4: false,
+        5: true
+    });
+
+    const [pickedServices, setPickedServices] = useState([]);
+
+    const pickService = (newService) => {
+        setPickedServices([
+            ...pickedServices,
+            newService
+        ])
+        if (!completed[activeStep]) {
+            setCompleted({
+                ...completed,
+                [activeStep]: true
+            })
+        }
+    }
+    const removeService = (oldService) => {
+        const newServices = pickedServices.filter((service) => service !== oldService);
+        setPickedServices(newServices)
+        if (newServices.length === 0 && completed[activeStep] === true) {
+            setCompleted({
+                ...completed,
+                [activeStep]: false
+            })
+        }
+    }
+
+    const [pickedStylist, setPickedStylist] = useState('');
     const [expanded, setExpanded] = useState(false);
     const [dateValue, setDateValue] = useState(dayjs());
 
@@ -85,6 +95,12 @@ function ReservationDialog({ open, handleClose }) {
         }
     }
 
+    const handleStep = (step) => {
+        setActiveStep(step)
+    }
+
+    useEffect(() => console.log(completed), [completed])
+
     return (
         <Dialog
             fullWidth={true}
@@ -93,65 +109,21 @@ function ReservationDialog({ open, handleClose }) {
             onClose={handleClose}>
             <Box sx={{ height: "80vh", position: "relative", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <Box sx={{ position: "sticky", top: "0", left: "0", padding: "20px 15px", borderBottom: "1px solid rgba(0, 0, 0, 0.3)", boxShadow: "0 3px 10px rgba(0, 0, 0, 0.3)", zIndex: "1" }}>
-                    <Stepper activeStep={activeStep}>
+                    <Stepper nonLinear activeStep={activeStep}>
                         {steps.map((label, index) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
+                            <Step key={label} completed={completed[index]}>
+                                <StepButton color="inherit" onClick={() => handleStep(index)}>
+                                    {label}
+                                </StepButton>
                             </Step>
                         ))}
                     </Stepper>
                 </Box>
+
                 {activeStep === 0 &&
-                    <Box sx={{padding: "20px", overflow: "auto"}}>
-                        <Typography variant="h6" sx={{marginBottom: "20px"}}>
-                            Friseur XY Stuttgart
-                        </Typography>
-                        <Typography variant="overline" display="block" gutterBottom>
-                            Dienstleistung auswählen
-                        </Typography>
-                        {Object.keys(dienstleistungen).map((gender, i) => (
-                            <Accordion sx={{marginBottom: "20px"}}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon/>}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                >
-                                    <Typography sx={{textTransform: 'capitalize'}}>{gender}</Typography>
-                                </AccordionSummary>
-                                {dienstleistungen[gender].map((dl) => (
-                                    <Box sx={{
-                                        borderTop: "0.5px solid rgb(236,236,236)",
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        padding: "16px"
-                                    }}>
-                                        <Box>
-                                            <Typography variant="overline" sx={{
-                                                textTransform: 'uppercase',
-                                                lineHeight: "unset",
-                                                color: "#666"
-                                            }}>{gender}</Typography>
-                                            <Typography>{dl.name}</Typography>
-                                        </Box>
-                                        <Box sx={{display: "flex", alignItems: "center", gap: "15px"}}>
-                                            <Typography sx={{lineHeight: "unset"}}>{dl.preis}    &#8364;</Typography>
-                                            {(dl.name === "Waschen, Schneiden, Föhnen")
-                                                ?
-                                                <Button sx={{width: "105px", fontSize: "12px"}}
-                                                        variant={pickedCut ? "contained" : "outlined"}
-                                                        onClick={() => setPickedCut(!pickedCut)}>{pickedCut ? "Ausgewählt" : "Auswählen"}</Button>
-                                                :
-                                                <Button sx={{width: "105px", fontSize: "12px"}}
-                                                        variant="outlined">Auswählen</Button>
-                                            }
-                                        </Box>
-                                    </Box>
-                                ))}
-                            </Accordion>
-                        ))}
-                    </Box>
+                    <ServicePage pickedServices={pickedServices} onPick={pickService} removePick={removeService} />
                 }
+
                 {activeStep === 1 &&
                     <Box sx={{padding: "20px", overflowY: "auto" }}>
                         <Typography variant="h6" sx={{marginBottom: "20px"}}>
@@ -166,8 +138,9 @@ function ReservationDialog({ open, handleClose }) {
                                 justifyContent: "space-between",
                                 alignItems: "center",
                                 gap: "20px",
-                                padding: "5.5px 15px"
-                            }}>
+                                padding: "5.5px 15px",
+                                "&:hover": { cursor: "pointer" }
+                            }} onClick={() => setExpanded(!expanded)}>
                                 <Stack direction="row" alignItems="center" gap="15px">
                                     <AccountCircleIcon sx={{ height: "60px", width: "60px" }} />
                                     <Box>
@@ -180,11 +153,11 @@ function ReservationDialog({ open, handleClose }) {
                                     </Box>
                                 </Stack>
                                 {expanded ?
-                                    <IconButton aria-label="delete" onClick={() => setExpanded(false)}>
+                                    <IconButton aria-label="delete">
                                         <ExpandLessIcon/>
                                     </IconButton>
                                     :
-                                    <IconButton aria-label="delete" onClick={() => setExpanded(true)}>
+                                    <IconButton aria-label="delete">
                                         <ExpandMoreIcon/>
                                     </IconButton>
                                 }
@@ -236,6 +209,7 @@ function ReservationDialog({ open, handleClose }) {
 
                     </Box>
                 }
+
                 {activeStep === 2 &&
                     <Box sx={{padding: "20px", overflow: "auto"}}>
                         <Typography variant="h6" sx={{marginBottom: "20px"}}>
@@ -306,8 +280,9 @@ function ReservationDialog({ open, handleClose }) {
                         </FormControl>
                     </Box>
                 }
+
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px", borderTop: "1px solid rgba(0, 0, 0, 0.3)", boxShadow: "0 -3px 10px rgba(0, 0, 0, 0.3)", zIndex: "1" }}>
-                    <Button variant="outlined" onClick={handleClose}>Schließen</Button>
+                    <Button variant="outlined" onClick={handleClose}>Close</Button>
                     <Button variant="outlined" onClick={handleNext}>
                         {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                     </Button>
