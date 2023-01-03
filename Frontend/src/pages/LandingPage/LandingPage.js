@@ -55,10 +55,11 @@ const LandingPage = () => {
 
   ]
 
+  const [loginVisible, setLoginVisible] = React.useState(false);
 
   return (
     <ThemeProvider theme={theme}>
-      <Header />
+      <Header onLogin={() => setLoginVisible(true)} />
       <Search />
       <Box sx={{ maxWidth: "1500px", margin: "0 auto", padding: "0px 50px" }}>
         <Typography variant="h5" sx={{ paddingBottom: "10px", borderBottom: "1px solid rgba(0,0, 0, 0.3)", m: "20px 0" }}>
@@ -79,7 +80,7 @@ const LandingPage = () => {
           </Grid>
         </Grid>
       </Box>
-      <LoginModal />
+      {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} />}
     </ThemeProvider>
   );
 };

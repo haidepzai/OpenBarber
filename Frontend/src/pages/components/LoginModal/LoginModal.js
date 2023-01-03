@@ -15,7 +15,7 @@ import OpenBarberLogo from '../assets/logo_openbarber.svg';
 
 const LoginModal = ({ onClose }) => {
 
-    
+
 
     useEffect(() => {
         const cb = e => {
@@ -24,7 +24,7 @@ const LoginModal = ({ onClose }) => {
             }
         }
         document.addEventListener('keydown', cb);
-        return () => document.removeEventListener('keypress', cb);
+        return () => document.removeEventListener('keydown', cb);
     }, [onClose]);
 
   return (
