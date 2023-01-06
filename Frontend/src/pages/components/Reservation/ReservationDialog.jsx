@@ -33,10 +33,9 @@ import DatePage from "./DatePage";
 import OverviewPage from "./OverviewPage";
 import SuccessScreen from "./SuccessScreen";
 
-
+/* TODO: Geldsumme, Schließen X bei Sucess Screen, Duration zu Service hinzufügen */
 
 const steps = ['Dienstleistung', 'Termin', 'Buchung'];
-
 
 function ReservationDialog({ open, handleClose }) {
     const [activeStep, setActiveStep] = useState(0);
