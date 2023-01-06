@@ -1,33 +1,27 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, Button, Stack, Typography} from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const mockServices = {
-    damen: [
-        {name: "Waschen, Schneiden, Föhnen", preis: "30,00"},
-        {name: "Waschen, Föhnen", preis: "10,00"},
-        {name: "Waschen, Glätten", preis: "20,00"},
-        {name: "Haare färben", preis: "45,00"},
-        {name: "Strähnen", preis: "50,00"},
-        {name: "Kosmetik - Augenbrauen zupfen", preis: "10,00"},
-        {name: "Kosmetik - Wimpern", preis: "10,00"},
-    ],
-    herren: [
-        {name: "Waschen, Schneiden und Styling", preis: "35,00"},
-        {name: "Maschinen-Haarschnitt", preis: "17,50"},
-        {name: "Färben, Schneiden und Styling", preis: "65,00"},
-        {name: "Bartschnitt", preis: "10,00"},
-        {name: "Bartschnitt und Pflege", preis: "25,00"},
-        {name: "Kosmetik - Augenbrauen zupfen", preis: "10,00"},
-    ],
-    kinder: [
-        {name: "Kinder-Haarschnitt", preis: "12,00"}
-    ]
-}
+const mockServices = [
+    {gender: "woman", name: "Waschen, Schneiden, Föhnen", duration: "60", preis: "30,00"},
+    {gender: "woman", name: "Waschen, Föhnen", duration: "60", preis: "10,00"},
+    {gender: "woman", name: "Waschen, Glätten", preis: "20,00"},
+    {gender: "woman", name: "Haare färben", preis: "45,00"},
+    {gender: "woman", name: "Strähnen", preis: "50,00"},
+    {gender: "woman", name: "Kosmetik - Augenbrauen zupfen", preis: "10,00"},
+    {gender: "woman", name: "Kosmetik - Wimpern", preis: "10,00"},
+    {gender: "man", name: "Waschen, Schneiden und Styling", preis: "35,00"},
+    {gender: "man", name: "Maschinen-Haarschnitt", preis: "17,50"},
+    {gender: "man", name: "Färben, Schneiden und Styling", preis: "65,00"},
+    {gender: "man", name: "Bartschnitt", preis: "10,00"},
+    {gender: "man", name: "Bartschnitt und Pflege", preis: "25,00"},
+    {gender: "man", name: "Kosmetik - Augenbrauen zupfen", preis: "10,00"},
+    {gender: "kids", name: "Kinder-Haarschnitt", preis: "12,00"}
+]
 
-const ServicePage = ({ pickedServices, onPick, removePick }) => {
+const ServicePage = ({ pickedServices, pickService, removeService }) => {
 
     return (
         <Box sx={{padding: "20px", overflow: "auto"}}>
@@ -35,9 +29,9 @@ const ServicePage = ({ pickedServices, onPick, removePick }) => {
                 Friseur XY Stuttgart
             </Typography>
             <Typography variant="overline" display="block" gutterBottom>
-                Dienstleistung auswählen
+                Choose your services
             </Typography>
-            {Object.keys(mockServices).map((gender, i) => (
+            {[...new Set(mockServices.map(obj => obj.gender))].map((gender) => (
                 <Accordion sx={{marginBottom: "20px"}}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon/>}
@@ -46,7 +40,7 @@ const ServicePage = ({ pickedServices, onPick, removePick }) => {
                     >
                         <Typography sx={{textTransform: 'capitalize'}}>{gender}</Typography>
                     </AccordionSummary>
-                    {mockServices[gender].map((dl) => (
+                    {mockServices.filter((service) => service.gender === gender).map((service) => (
                         <Stack
                             direction="row"
                             justifyContent="space-between"
@@ -61,23 +55,24 @@ const ServicePage = ({ pickedServices, onPick, removePick }) => {
                                     textTransform: 'uppercase',
                                     lineHeight: "unset",
                                     color: "#666"
-                                }}>{gender}</Typography>
-                                <Typography>{dl.name}</Typography>
+                                }}>{service.gender}</Typography>
+                                <Typography>{service.name}</Typography>
                             </Box>
                             <Stack direction="row" alignItems="center" gap="15px">
-                                <Typography sx={{lineHeight: "unset"}}>{dl.preis}    &#8364;</Typography>
-                                {
-                                    /*(dl.name === "Waschen, Schneiden, Föhnen")*/
-                                    (pickedServices.some((pickedService) => pickedService === dl))
+                                <Typography sx={{lineHeight: "unset"}}>{service.preis}    &#8364;</Typography>
+                                {(pickedServices.some((pickedService) => pickedService === service))
                                     ?
-                                    <Button sx={{width: "105px", fontSize: "12px"}}
+                                    <Button type="button"
+                                            sx={{width: "105px", fontSize: "12px"}}
                                             variant="contained"
-                                            onClick={() => removePick(dl)}>Ausgewählt</Button>
+                                            onClick={() => removeService(service)}
+                                    >Selected</Button>
                                     :
-                                    <Button sx={{width: "105px", fontSize: "12px"}}
+                                    <Button type="button"
+                                            sx={{width: "105px", fontSize: "12px"}}
                                             variant="outlined"
-                                            onClick={() => onPick(dl)}
-                                    >Auswählen</Button>
+                                            onClick={() => pickService(service)}
+                                    >Select</Button>
                                 }
                             </Stack>
                         </Stack>

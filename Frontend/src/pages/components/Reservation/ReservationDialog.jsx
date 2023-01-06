@@ -28,78 +28,143 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import ServicePage from "./ServicePage";
+import Stylist from "./Stylist";
+import DatePage from "./DatePage";
+import OverviewPage from "./OverviewPage";
+import SuccessScreen from "./SuccessScreen";
 
 
 
 const steps = ['Dienstleistung', 'Termin', 'Buchung'];
 
 
-
-const stylists = [
-/*
-    {name: "Beliebig", titel: "", image: "https://www.seekpng.com/png/detail/41-410093_circled-user-icon-user-profile-icon-png.png"},
-*/
-    {name: "Alexandra", titel: "Junior Stylistin", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg"},
-    {name: "Peter", titel: "Senior Stylist", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVWjI1XVRB5hg9hZ24rMkPtmLCb9jU_NoBQ&usqp=CAU"},
-    {name: "Alexandra", titel: "Junior Stylistin", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg"},
-    {name: "Peter", titel: "Senior Stylist", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVWjI1XVRB5hg9hZ24rMkPtmLCb9jU_NoBQ&usqp=CAU"},
-]
-
 function ReservationDialog({ open, handleClose }) {
     const [activeStep, setActiveStep] = useState(0);
-    /*{ [k: number]: boolean; }*/
-    const [completed, setCompleted] = useState({
-        4: false,
-        5: true
+
+    const [data, setData] = useState({
+        services: [],
+        stylist: {name: "Beliebig"},
+        date: "",
+        personalData: {
+            formOfAddress: "None",
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: "",
+        },
+        note: ""
+    })
+    /* Choose a service! Pick a date! Check your information! */
+    const [error, setError] = useState({
+        0: "",
+        1: "",
+        2: ""
     });
 
-    const [pickedServices, setPickedServices] = useState([]);
-
-    const pickService = (newService) => {
-        setPickedServices([
-            ...pickedServices,
-            newService
-        ])
-        if (!completed[activeStep]) {
-            setCompleted({
-                ...completed,
-                [activeStep]: true
-            })
+    const validate = (step) => {
+        switch(step) {
+            case 0:
+                return data.services.length > 0
+            case 1:
+                return !!data.date
+            case 2:
+                return !Object.values(data.personalData).map(Boolean).includes(false)
+            default:
+                console.log("rip")
         }
     }
-    const removeService = (oldService) => {
-        const newServices = pickedServices.filter((service) => service !== oldService);
-        setPickedServices(newServices)
-        if (newServices.length === 0 && completed[activeStep] === true) {
-            setCompleted({
-                ...completed,
-                [activeStep]: false
-            })
-        }
-    }
-
-    const [pickedStylist, setPickedStylist] = useState('');
-    const [expanded, setExpanded] = useState(false);
-    const [dateValue, setDateValue] = useState(dayjs());
-
-
-    const handleChange = (event) => {
-        setPickedStylist(event.target.value);
-    };
 
     const handleNext = () => {
-        if (activeStep === steps.length - 1) {
-            handleClose();
+        if (activeStep === 0 && !validate(0)) {
+            setError({
+                ...error,
+                0: "Choose a service!"
+            })
+        } else if (activeStep === 1 && !validate(1)) {
+            setError({
+                ...error,
+                1: "Pick a date!"
+            })
+        } else if (activeStep === 2 && !validate(2)) {
+            setError({
+                ...error,
+                2: "Check your information!"
+            })
         } else {
-            setActiveStep((prevActiveStep) => prevActiveStep + 1);
+            if (activeStep === 2) {
+                handleSubmit();
+            } else {
+                setActiveStep((prevActiveStep) => prevActiveStep + 1);
+            }
         }
+    }
+
+    const [showSuccessScreen,setShowSuccessScreen] = useState(false);
+
+    const handleSubmit = () => {
+        setShowSuccessScreen(true);
+        console.log("Successfully booked your appointment!", data)
     }
 
     const handleStep = (step) => {
         setActiveStep(step)
     }
 
-    useEffect(() => console.log(completed), [completed])
+    const pickService = (newService) => {
+        setData({
+            ...data,
+            services: [
+                ...data.services,
+                newService
+            ]
+        })
+        if (error[0]) {
+            setError({
+                ...error,
+                0: ""
+            })
+        }
+    }
+    const removeService = (oldService) => {
+        const updatedServices = data.services.filter((service) => service !== oldService);
+        setData({
+            ...data,
+            services: [
+                ...updatedServices
+            ]
+        })
+    }
+
+    const pickStylist = (stylist) => {
+        setData({
+            ...data,
+            stylist: stylist
+        })
+    }
+
+    const pickDate = (date) => {
+        setData({
+            ...data,
+            date: date
+        })
+        if (error[1]) {
+            setError({
+                ...error,
+                1: ""
+            })
+        }
+    }
+
+    const prevNotDone = (index) => {
+        if (index === 1) {
+            return !validate(0)
+        } else if (index === 2) {
+            return !validate(0) || !validate(1)
+        } else {
+            return false
+        }
+    }
+
 
     return (
         <Dialog
@@ -107,187 +172,49 @@ function ReservationDialog({ open, handleClose }) {
             maxWidth={"sm"}
             open={open}
             onClose={handleClose}>
-            <Box sx={{ height: "80vh", position: "relative", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                <Box sx={{ position: "sticky", top: "0", left: "0", padding: "20px 15px", borderBottom: "1px solid rgba(0, 0, 0, 0.3)", boxShadow: "0 3px 10px rgba(0, 0, 0, 0.3)", zIndex: "1" }}>
-                    <Stepper nonLinear activeStep={activeStep}>
-                        {steps.map((label, index) => (
-                            <Step key={label} completed={completed[index]}>
-                                <StepButton color="inherit" onClick={() => handleStep(index)}>
-                                    {label}
-                                </StepButton>
-                            </Step>
-                        ))}
-                    </Stepper>
-                </Box>
+                {showSuccessScreen
+                    ?
+                    <SuccessScreen data={data} />
+                    :
+                    <Box sx={{ height: "80vh", position: "relative", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
 
-                {activeStep === 0 &&
-                    <ServicePage pickedServices={pickedServices} onPick={pickService} removePick={removeService} />
-                }
-
-                {activeStep === 1 &&
-                    <Box sx={{padding: "20px", overflowY: "auto" }}>
-                        <Typography variant="h6" sx={{marginBottom: "20px"}}>
-                            Stylisten & Wunschtermin auswählen
-                        </Typography>
-                        <Typography variant="overline" display="block" gutterBottom>
-                            Stylist auswählen
-                        </Typography>
-                        <Accordion sx={{marginBottom: "20px"}} expanded={expanded}>
-                            <Box sx={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                gap: "20px",
-                                padding: "5.5px 15px",
-                                "&:hover": { cursor: "pointer" }
-                            }} onClick={() => setExpanded(!expanded)}>
-                                <Stack direction="row" alignItems="center" gap="15px">
-                                    <AccountCircleIcon sx={{ height: "60px", width: "60px" }} />
-                                    <Box>
-                                        <Typography sx={{ lineHeight: "unset" }}>Beliebig</Typography>
-                                        <Typography variant="overline" sx={{
-                                            textTransform: 'uppercase',
-                                            lineHeight: "unset",
-                                            color: "#666"
-                                        }}></Typography>
-                                    </Box>
-                                </Stack>
-                                {expanded ?
-                                    <IconButton aria-label="delete">
-                                        <ExpandLessIcon/>
-                                    </IconButton>
-                                    :
-                                    <IconButton aria-label="delete">
-                                        <ExpandMoreIcon/>
-                                    </IconButton>
-                                }
-                            </Box>
-                            {stylists.map((stylist) => (
-                                <Box sx={{
-                                    borderTop: "0.5px solid rgb(236,236,236)",
-                                    display: "flex",
-                                    justifyContent: "flex-start",
-                                    alignItems: "center",
-                                    padding: "10px 20px",
-                                    gap: "20px",
-                                    cursor: "pointer",
-                                }}
-                                onClick={() => setExpanded(false)}>
-                                    <Avatar
-                                        alt={stylist.name}
-                                        src={stylist.image}
-                                        sx={{ width: 50, height: 50 }}
-                                    />
-                                    <Box>
-                                        <Typography sx={{ lineHeight: "unset" }}>{stylist.name}</Typography>
-                                        <Typography variant="overline" sx={{
-                                            textTransform: 'uppercase',
-                                            lineHeight: "unset",
-                                            color: "#666"
-                                        }}>{stylist.titel}</Typography>
-                                    </Box>
-                                </Box>
-                            ))}
-                        </Accordion>
-                        <Typography variant="overline" display="block" gutterBottom>
-                            Termin auswählen
-                        </Typography>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <StaticDatePicker
-                                displayStaticWrapperAs="desktop"
-                                openTo="day"
-                                value={dateValue}
-                                onChange={(newValue) => {
-                                    setDateValue(newValue);
-                                }}
-                                renderInput={(params) => <TextField {...params}/>}
-                            />
-                        </LocalizationProvider>
-                        <Box sx={{ width: "100%", border: "1px solid rgb(236,236,236)", padding: "10px 20px", boxSizing: "border-box" }}>
-                            <Typography sx={{ fontSize: "14px"}}>Termine für Do, 29. Dez. 2022</Typography>
+                        <Box sx={{ padding: "20px 15px", borderBottom: "1px solid rgba(0, 0, 0, 0.3)", boxShadow: "0 3px 10px rgba(0, 0, 0, 0.3)", zIndex: "1", backgroundColor: "white" }}>
+                            <Stepper nonLinear activeStep={activeStep}>
+                                {steps.map((label, index) => (
+                                    <Step key={label} completed={validate(index)}>
+                                        <StepButton type="button" onClick={() => handleStep(index)} sx={{ '& .MuiSvgIcon-root': { color: prevNotDone(index) ? "rgba(0, 0, 0, 0.1)" : "default" }}} disabled={prevNotDone(index)}>
+                                            {label}
+                                        </StepButton>
+                                    </Step>
+                                ))}
+                            </Stepper>
                         </Box>
 
-                    </Box>
-                }
+                        {activeStep === 0 &&
+                            <ServicePage pickedServices={data.services} pickService={pickService} removeService={removeService} />
+                        }
 
-                {activeStep === 2 &&
-                    <Box sx={{padding: "20px", overflow: "auto"}}>
-                        <Typography variant="h6" sx={{marginBottom: "20px"}}>
-                            Ihre Kontaktdaten und Termin-Erinnerung
-                        </Typography>
-                        <Typography variant="overline" display="block" gutterBottom>
-                            Terminübersicht
-                        </Typography>
-                        <Box sx={{ borderRadius: "8px", border: "1px solid rgb(236,236,236)", marginBottom: "20px" }}>
-                            <Stack direction="row" alignItems="center" spacing={2} sx={{ borderTop: "1px solid rgb(236,236,236)", padding: "16px" }}>
-                                <CalendarMonthIcon fontSize="large" />
-                                <Typography sx={{ lineHeight: "unset" }}>Donnerstag, 29.12.2022 um 10:45 Uhr</Typography>
-                            </Stack>
-                            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2} sx={{ borderTop: "1px solid rgb(236,236,236)", padding: "16px" }}>
-                                <Stack direction="row" alignItems="center" spacing={2}>
-                                    <ContentCutIcon fontSize="large" />
-                                    <Typography sx={{ lineHeight: "unset" }}>Waschen, Schneiden, Föhnen</Typography>
-                                </Stack>
-                                <Typography sx={{lineHeight: "unset"}}>30,00 &#8364;</Typography>
-                            </Stack>
-                            <Stack direction="row" alignItems="center" spacing={2} sx={{ borderTop: "1px solid rgb(236,236,236)", padding: "11px 16px" }}>
-                                <Avatar
-                                    alt="Alexandra"
-                                    src={stylists[0].image}
-                                    sx={{ width: 35, height: 35 }}
-                                />
-                                <Box>
-                                    <Typography sx={{ lineHeight: "unset" }}>{stylists[0].name}</Typography>
-                                    <Typography variant="overline" sx={{
-                                        textTransform: 'uppercase',
-                                        lineHeight: "unset",
-                                        color: "#666"
-                                    }}>{stylists[0].titel}</Typography>
-                                </Box>
-                            </Stack>
-                            <Stack direction="row" alignItems="center" spacing={2} sx={{ borderTop: "1px solid rgb(236,236,236)", padding: "16px"  }}>
-                                <HourglassBottomIcon fontSize="large" />
-                                <Typography sx={{ lineHeight: "unset" }}>Dauer: 1 Stunde (endet um 11:45 Uhr)</Typography>
-                            </Stack>
+                        {activeStep === 1 &&
+                            <DatePage pickedStylist={data.stylist} pickStylist={pickStylist} pickedDate={data.date} pickDate={pickDate}  />
+                        }
+
+                        {activeStep === 2 &&
+                            <OverviewPage data={data} setData={setData} handleStep={handleStep} showErrors={!!error[2]} noneEmpty={validate(2)} error={error} setError={setError}/>
+                        }
+
+                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px", borderTop: "1px solid rgba(0, 0, 0, 0.3)", boxShadow: "0 -3px 10px rgba(0, 0, 0, 0.3)", zIndex: "1" }}>
+                            <Button variant="outlined" type="button" onClick={handleClose}>Close</Button>
+                            {error[activeStep] &&
+                                <Typography variant="body1" sx={{backgroundColor: "rgba(255,0,0,.9)", borderRadius: "40px", fontSize: "14px", color: "white", padding: "5px 20px" }}>
+                                    {error[activeStep]}
+                                </Typography>
+                            }
+                            <Button variant="outlined" type="button" onClick={handleNext}>
+                                {activeStep === 2 ? "Book Now" : "Next"}
+                            </Button>
                         </Box>
-                        <Typography variant="overline" display="block" gutterBottom>
-                            Ihre Anmerkungen
-                        </Typography>
-                        <TextField
-                            id="outlined-multiline-static"
-                            multiline
-                            fullWidth
-                            rows={3}
-                            defaultValue=""
-                            sx={{ marginBottom: "20px" }}
-                        />
-                        <Typography variant="overline" display="block" gutterBottom>
-                            Kontaktdaten
-                        </Typography>
-                        <Typography variant="overline" display="block" gutterBottom>
-                            Bezahlungsmethode
-                        </Typography>
-                        <FormControl>
-                            <RadioGroup
-                                aria-labelledby="demo-radio-buttons-group-label"
-                                defaultValue="female"
-                                name="radio-buttons-group"
-                            >
-                                <FormControlLabel value="female" control={<Radio />} label="Vor Ort" />
-                                <FormControlLabel value="male" control={<Radio />} label="Paypal" />
-                                <FormControlLabel value="other" control={<Radio />} label="Überweisung" />
-                            </RadioGroup>
-                        </FormControl>
                     </Box>
                 }
-
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px", borderTop: "1px solid rgba(0, 0, 0, 0.3)", boxShadow: "0 -3px 10px rgba(0, 0, 0, 0.3)", zIndex: "1" }}>
-                    <Button variant="outlined" onClick={handleClose}>Close</Button>
-                    <Button variant="outlined" onClick={handleNext}>
-                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                    </Button>
-                </Box>
-            </Box>
         </Dialog>
     );
 }
