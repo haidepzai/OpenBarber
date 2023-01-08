@@ -32,7 +32,7 @@ const ServicePage = ({ pickedServices, pickService, removeService, name }) => {
                 Choose your services
             </Typography>
             {[...new Set(mockServices.map(obj => obj.gender))].map((gender) => (
-                <Accordion sx={{marginBottom: "20px"}}>
+                <Accordion sx={{marginBottom: "20px"}} key={gender}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon/>}
                         aria-controls="panel1a-content"
@@ -42,6 +42,7 @@ const ServicePage = ({ pickedServices, pickService, removeService, name }) => {
                     </AccordionSummary>
                     {mockServices.filter((service) => service.gender === gender).map((service) => (
                         <Stack
+                            key={service.name}
                             direction="row"
                             justifyContent="space-between"
                             alignItems="center"

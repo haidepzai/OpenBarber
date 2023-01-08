@@ -53,7 +53,7 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate }) => {
                     </Box>
                 </Box>
                 {mockStylists.filter((stylist) => stylist.name !== pickedStylist.name).map((stylist) => (
-                    <Stylist stylist={stylist} onClick={() => handlePick(stylist)} />
+                    <Stylist key={stylist.name} stylist={stylist} onClick={() => handlePick(stylist)} />
                 ))}
             </Accordion>
             <Typography variant="overline" display="block" gutterBottom>

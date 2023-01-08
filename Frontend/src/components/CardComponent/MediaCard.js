@@ -7,9 +7,16 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Box, CardActionArea, Rating } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import ReservationDialog from "../Reservation/ReservationDialog";
+import {useState} from "react";
 
-export default function MediaCard({ image, title, rating, description, link }) {
-  return (
+export default function MediaCard({ image, title, rating, description, link, shop }) {
+
+    const [openReservationDialog, setOpenReservationDialog] = useState(false);
+
+
+    return (
+    <>
     <Card sx={{ maxWidth: 250, borderRadius: 3 }}>
       <CardActionArea component={RouterLink} to={link}>
         <CardMedia component="img" height="140" image={image} alt="Barber" />
@@ -41,11 +48,16 @@ export default function MediaCard({ image, title, rating, description, link }) {
         </CardContent>
 
         <CardActions>
-          <Button variant="contained" color="primary">
+            {/*onClick={() => setOpenReservationDialog(true)}*/}>
+          <Button variant="contained" color="primary" >
             Book Now
           </Button>
         </CardActions>
       </CardActionArea>
     </Card>
+
+    <ReservationDialog open={openReservationDialog} handleClose={() => setOpenReservationDialog(false)} shop={shop}/>
+
+    </>
   );
 }
