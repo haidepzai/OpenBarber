@@ -9,8 +9,7 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {StaticDatePicker} from "@mui/x-date-pickers/StaticDatePicker";
 import TextField from "@mui/material/TextField";
 import {useState} from "react";
-import dayjs, { Dayjs } from "dayjs";
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
 
 
 const mockStylists = [

@@ -5,39 +5,15 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepButton from '@mui/material/StepButton';
 import {Box, Button, IconButton, Stack, Typography} from "@mui/material";
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Avatar from '@mui/material/Avatar';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ContentCutIcon from '@mui/icons-material/ContentCut';
-import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
-import TextField from '@mui/material/TextField';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
-import dayjs from "dayjs";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import ServicePage from "./ServicePage";
-import Stylist from "./Stylist";
 import DatePage from "./DatePage";
 import OverviewPage from "./OverviewPage";
 import SuccessScreen from "./SuccessScreen";
 
-/* TODO: Geldsumme, Schließen X bei Sucess Screen, Duration zu Service hinzufügen */
-
 const steps = ['Dienstleistung', 'Termin', 'Buchung'];
 
-function ReservationDialog({ open, handleClose }) {
+function ReservationDialog({ open, handleClose, shop }) {
+
     const [activeStep, setActiveStep] = useState(0);
 
     const [data, setData] = useState({
@@ -53,6 +29,7 @@ function ReservationDialog({ open, handleClose }) {
         },
         note: ""
     })
+
     /* Choose a service! Pick a date! Check your information! */
     const [error, setError] = useState({
         0: "",
@@ -173,7 +150,7 @@ function ReservationDialog({ open, handleClose }) {
             onClose={handleClose}>
                 {showSuccessScreen
                     ?
-                    <SuccessScreen data={data} />
+                    <SuccessScreen data={data} onClose={handleClose} />
                     :
                     <Box sx={{ height: "80vh", position: "relative", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
 
@@ -190,7 +167,7 @@ function ReservationDialog({ open, handleClose }) {
                         </Box>
 
                         {activeStep === 0 &&
-                            <ServicePage pickedServices={data.services} pickService={pickService} removeService={removeService} />
+                            <ServicePage pickedServices={data.services} pickService={pickService} removeService={removeService} name={shop.name} />
                         }
 
                         {activeStep === 1 &&
@@ -212,6 +189,7 @@ function ReservationDialog({ open, handleClose }) {
                                 {activeStep === 2 ? "Book Now" : "Next"}
                             </Button>
                         </Box>
+
                     </Box>
                 }
         </Dialog>

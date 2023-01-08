@@ -94,8 +94,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
 
       </Box>
 
-
-      <ReservationDialog open={openReservationDialog} handleClose={() => setOpenReservationDialog(false)}/>
+      <ReservationDialog open={openReservationDialog} handleClose={() => setOpenReservationDialog(false)} shop={shop}/>
 
     </>
   )

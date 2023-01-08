@@ -7,12 +7,15 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Box, Rating } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import ReservationDialog from "../Reservation/ReservationDialog";
+import {useState} from "react";
 
-export default function MediaCard({image, title, rating, description}) {
+export default function MediaCard({image, title, rating, description, shop}) {
 
   const navigate = useNavigate();
+  const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
-  return (
+    return (
     <Card sx={{ maxWidth: 250, borderRadius: 3 }}>
       <CardMedia
         component="img"
@@ -48,8 +51,11 @@ export default function MediaCard({image, title, rating, description}) {
       </CardContent>
 
       <CardActions>
-        <Button variant="contained" color="primary">Book Now</Button>
+        <Button variant="contained" color="primary" onClick={() => setOpenReservationDialog(true)}>Book Now</Button>
       </CardActions>
+
+      <ReservationDialog open={openReservationDialog} handleClose={() => setOpenReservationDialog(false)} shop={shop} />
+
     </Card>
   );
 }

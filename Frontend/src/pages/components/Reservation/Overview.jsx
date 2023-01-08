@@ -12,6 +12,10 @@ const Overview = ({ booked, data, handleStep }) => {
         return data.services.map((service) => parseInt(service.duration)).reduce((prev, next) => prev + next);
     }
 
+    const totalPrice = () => {
+        return data.services.map((service) => parseInt(service.price)).reduce((prev, next) => prev + next);
+    }
+
     return (
         <Box sx={{ borderRadius: "8px", border: "1px solid rgb(236,236,236)", marginBottom: "20px" }}>
             <Stack direction="row" alignItems="center" spacing={3} sx={{ borderTop: "1px solid rgb(236,236,236)", padding: " 16px 24px" }}>
@@ -24,9 +28,12 @@ const Overview = ({ booked, data, handleStep }) => {
                     {data.services.map((service, index) => (
                         <Stack direction="row" justifyContent="space-between" sx={{ width: "100%"}}>
                             <Typography sx={{ lineHeight: "unset", textTransform: "capitalize", fontSize: data.services.length > 1 ? "14px" : "16px" }}>{(index !== 0 ? " + " : "") + service.gender + " > " + service.name}</Typography>
-                            <Typography sx={{lineHeight: "unset", fontSize: data.services.length > 1 ? "14px" : "16px" }}>{service.preis} &#8364;</Typography>
+                            <Typography sx={{lineHeight: "unset", fontSize: data.services.length > 1 ? "14px" : "16px" }}>{service.price} &#8364;</Typography>
                         </Stack>
                     ))}
+                    {(data.services.length >= 2) &&
+                        <Typography sx={{lineHeight: "unset", fontSize: data.services.length > 1 ? "14px" : "16px", alignSelf: "end", borderTop: "1px solid black", padding: "5px 5px 0 5px" }}>{totalPrice()} &#8364;</Typography>
+                    }
                 </Stack>
                 {!booked &&
                     <IconButton sx={{ alignSelf: "center" }}>

@@ -1,21 +1,13 @@
-import Avatar from '@mui/material/Avatar';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ContentCutIcon from '@mui/icons-material/ContentCut';
-import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import TextField from '@mui/material/TextField';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
-import React, {useEffect, useState} from 'react';
-import {Box, IconButton, Stack, Typography} from "@mui/material";
+import React from 'react';
+import {Box, Stack, Typography} from "@mui/material";
 import FormControl from '@mui/material/FormControl';
-import {ArrowForward, ArrowForwardIos} from "@mui/icons-material";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import dayjs from "dayjs";
 import Overview from "./Overview";
 require('dayjs/locale/de')
 

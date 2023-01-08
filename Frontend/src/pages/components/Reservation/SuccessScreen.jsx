@@ -1,11 +1,15 @@
 import React from 'react';
-import {Box, Divider, Stack, Typography} from "@mui/material";
+import {Box, Divider, IconButton, Stack, Typography} from "@mui/material";
 import Overview from "./Overview";
 import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
-const SuccessScreen = ({ data }) => {
+const SuccessScreen = ({ data, onClose }) => {
     return (
-        <Box sx={{ padding: "30px 40px 10px 40px" }}>
+        <Box sx={{ padding: "30px 40px 10px 40px", position: "relative" }}>
+            <IconButton sx={{ position: "absolute", right: "10px", top: "10px" }} onClick={onClose}>
+                <CloseIcon sx={{ fontSize: "30px" }}/>
+            </IconButton>
             <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
                 <CheckIcon color="success" sx={{ fontSize: 40 }} />
                 <Typography variant="h6" sx={{marginBottom: "20px"}}>
