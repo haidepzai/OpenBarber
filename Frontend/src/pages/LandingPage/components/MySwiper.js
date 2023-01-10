@@ -37,7 +37,7 @@ function MySwiper(props) {
       style={{ zIndex: '0', paddingBottom: '30px' }}
     >
       {criteria.map(({ name, src }) => (
-        <SwiperSlide>
+        <SwiperSlide key={name}>
           <Box
             sx={{
               padding: '0',
@@ -49,7 +49,7 @@ function MySwiper(props) {
               boxShadow: 'rgba(0, 0, 0, 0.6) 0px 2px 8px',
             }}
           >
-            <img src={src} style={{ objectFit: 'cover', filter: 'brightness(0.7) contrast(1.2)', borderRadius: '10px' }} />
+            <img src={src} style={{ objectFit: 'cover', filter: 'brightness(0.7) contrast(1.2)', borderRadius: '10px' }} alt="category"/>
             <Typography
               variant="h3"
               sx={{

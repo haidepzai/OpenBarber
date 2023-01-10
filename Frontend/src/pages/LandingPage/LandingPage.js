@@ -37,6 +37,8 @@ const LandingPage = () => {
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
+      reviews: 8,
+      location: "Stuttgart"
     },
     {
       id: 2,
@@ -45,6 +47,8 @@ const LandingPage = () => {
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
+      reviews: 17,
+      location: "Düsseldorf"
     },
     {
       id: 3,
@@ -53,6 +57,8 @@ const LandingPage = () => {
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
+      reviews: 12,
+      location: "Berlin"
     },
   ];
 
@@ -70,8 +76,15 @@ const LandingPage = () => {
         <Grid sx={{ flexGrow: 1 }} container>
           <Grid container justifyContent="center" spacing={5}>
             {barberShops.map((shop) => (
-              <Grid item>
-                <MediaCard key={shop.name} title={shop.name} image={shop.image} rating={shop.rating} description={shop.description} />
+              <Grid item key={shop.name}>
+                <MediaCard 
+                  key={shop.name} 
+                  title={shop.name} 
+                  image={shop.image} 
+                  rating={shop.rating} 
+                  description={shop.description} 
+                  reviews={shop.reviews}
+                />
               </Grid>
             ))}
           </Grid>
