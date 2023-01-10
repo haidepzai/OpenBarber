@@ -1,10 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-
 import { Box, Typography, Stack, TextField, Button, Checkbox } from '@mui/material';
-
 import { ArrowBackRounded } from '@mui/icons-material';
-
 import OpenBarberLogo from '../../assets/logo_openbarber.svg';
 
 const LoginModal = ({ onClose }) => {
