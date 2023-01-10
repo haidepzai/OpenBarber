@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Typography, Box, Stack, Button, CircularProgress, Input } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
+import { Typography, Box, Stack, Button } from '@mui/material';
+import dayjs from 'dayjs';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -10,12 +10,7 @@ import { useEffect } from 'react';
 import EventIcon from '@mui/icons-material/Event';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import PlaceIcon from '@mui/icons-material/Place';
-import InputAdornment from '@mui/material/InputAdornment';
-import Autocomplete from '@mui/material/Autocomplete';
-import citiesFile from '../assets/german_cities.txt';
 import { usePlacesWidget } from 'react-google-autocomplete';
-import { setDate } from 'date-fns';
 import { getGeocoordinates } from '../context/GoogleMapsActions';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
