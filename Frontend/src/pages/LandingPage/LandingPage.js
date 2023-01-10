@@ -84,6 +84,7 @@ const LandingPage = () => {
                   rating={shop.rating} 
                   description={shop.description} 
                   reviews={shop.reviews}
+                  link={"/shops/123"}
                 />
               </Grid>
             ))}
