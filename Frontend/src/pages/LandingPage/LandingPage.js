@@ -5,8 +5,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Search from "./components/Search";
 import {Box, Typography} from "@mui/material";
 import MySwiper from "./components/MySwiper";
-import Header from "../../pages/components/Header"
-import LoginModal from '../components/LoginModal/LoginModal';
+import Header from "../../components/Header";
+import LoginModal from '../../components/LoginModal/LoginModal';
 
 const theme = createTheme({
   palette: {
@@ -57,11 +57,10 @@ const LandingPage = () => {
 
   ]
 
-  const [loginVisible, setLoginVisible] = React.useState(false);
+  
 
   return (
-    <ThemeProvider theme={theme}>
-      <Header onLogin={() => setLoginVisible(true)} />
+    <ThemeProvider theme={theme}>      
       <Search />
       <Box sx={{ maxWidth: "1500px", margin: "0 auto", padding: "0px 50px" }}>
         <Typography variant="h5" sx={{ paddingBottom: "10px", borderBottom: "1px solid rgba(0,0, 0, 0.3)", m: "20px 0" }}>
@@ -82,7 +81,7 @@ const LandingPage = () => {
           </Grid>
         </Grid>
       </Box>
-      {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} />}
+      
     </ThemeProvider>
   );
 };
