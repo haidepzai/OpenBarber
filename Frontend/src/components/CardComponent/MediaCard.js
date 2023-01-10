@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { Box, CardActionArea, Rating } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
-export default function MediaCard({ image, title, rating, description, link }) {
+export default function MediaCard({ image, title, rating, description, link, reviews }) {
   return (
     <Card sx={{ maxWidth: 250, borderRadius: 3 }}>
       <CardActionArea component={RouterLink} to={link}>
@@ -21,7 +21,7 @@ export default function MediaCard({ image, title, rating, description, link }) {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Rating readOnly precision={0.5} value={rating} sx={{ color: 'primary.main' }} size="small" />
             <Typography variant="span" style={{ fontWeight: 600 }} color="grey.400">
-              5 Reviews
+              {reviews} Reviews
             </Typography>
           </Box>
 
