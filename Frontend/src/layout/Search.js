@@ -16,7 +16,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import citiesFile from '../assets/german_cities.txt';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { setDate } from 'date-fns';
-import { getGeocoordinates } from '../../../context/GoogleMapsActions';
+import { getGeocoordinates } from '../context/GoogleMapsActions';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
