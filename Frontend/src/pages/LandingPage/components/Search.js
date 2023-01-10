@@ -16,6 +16,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import citiesFile from '../assets/german_cities.txt';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { setDate } from 'date-fns';
+import { getGeocoordinates } from '../../../context/GoogleMapsActions';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
@@ -35,6 +36,15 @@ function Search(props) {
   });
 
   useEffect(() => console.log(dateValue), [dateValue]);
+
+  const handleSubmit = async (event) => {
+    console.log(location.formatted_address);
+    const response = await getGeocoordinates(location.formatted_address);
+    const lat = response.results[0].geometry.location.lat;
+    const lng = response.results[0].geometry.location.lng;
+    console.log("Lat: " + lat);
+    console.log("Lng: " + lng);
+  }
 
   return (
     <>
@@ -143,7 +153,13 @@ function Search(props) {
             }}
           />
 
-          <Button color="secondary" variant="contained" size="large" sx={{ p: '10.875px 50px', borderRadius: '100px', ml: '16px' }}>
+          <Button 
+            color="secondary" 
+            variant="contained" 
+            size="large" 
+            sx={{ p: '10.875px 50px', borderRadius: '100px', ml: '16px' }}
+            onClick={handleSubmit}
+          >
             Let's go!
           </Button>
         </Stack>
