@@ -3,16 +3,16 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
-import '../../../css/components/Swiper.css';
+import '../css/components/Swiper.css';
 // import required modules
 import { Pagination } from 'swiper';
 
-import beardImage from '../assets/beard.jpg';
-import ratingsImage from '../assets/rating.jpg';
-import mostImage from '../assets/most.jpg';
-import priceImage from '../assets/price.jpg';
-import locationImage from '../assets/location.jpg';
-import tipsImage from '../assets/tips.jpg';
+import beardImage from '../pages/LandingPage/assets/beard.jpg';
+import ratingsImage from '../pages/LandingPage/assets/rating.jpg';
+import mostImage from '../pages/LandingPage/assets/most.jpg';
+import priceImage from '../pages/LandingPage/assets/price.jpg';
+import locationImage from '../pages/LandingPage/assets/location.jpg';
+import tipsImage from '../pages/LandingPage/assets/tips.jpg';
 import { Typography, Box } from '@mui/material';
 
 function MySwiper(props) {
