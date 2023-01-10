@@ -66,10 +66,12 @@ const BARBER_SHOP = {
 
 const DetailPage = () => {
   return (
-    <Box className="detailPage" sx={{ position: 'relative' }}>
-      <DetailPageBG img={BARBER_SHOP.gallery[0]} />
-      <ShopDetailView shop={BARBER_SHOP} />
-    </Box>
+    <>
+      <Box className="detailPage" sx={{ position: 'relative' }}>
+        <DetailPageBG img={BARBER_SHOP.gallery[0]} />
+        <ShopDetailView shop={BARBER_SHOP} />
+      </Box>
+    </>
   );
 };
 
