@@ -1,15 +1,18 @@
 import { useJsApiLoader, GoogleMap, Marker } from '@react-google-maps/api';
-import React, { Fragment } from 'react';
+import React, { Fragment, useMemo } from 'react';
 
 const GoogleMaps = ({ lat = 48.783333, lng = 9.183333, height = '100%', width = '100%' }) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API,
   });
 
-  const center = {
-    lat: lat, //TODO: Real Location for barbers
-    lng: lng,
-  };
+  const center = useMemo(
+    () => ({
+      lat: lat,
+      lng: lng,
+    }),
+    []
+  );
 
   return (
     <Fragment>

@@ -2,9 +2,10 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import MediaCard from '../../components/CardComponent/MediaCard';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Search from './components/Search';
+import Search from '../../layout/Search';
 import { Box, Typography } from '@mui/material';
-import MySwiper from './components/MySwiper';
+import MySwiper from '../../layout/MySwiper';
+
 
 const theme = createTheme({
   palette: {
@@ -27,7 +28,6 @@ const theme = createTheme({
 });
 
 const LandingPage = () => {
-
   const barberShops = [
     {
       id: 1,
@@ -36,6 +36,8 @@ const LandingPage = () => {
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
+      reviews: 8,
+      location: "Stuttgart"
     },
     {
       id: 2,
@@ -44,13 +46,18 @@ const LandingPage = () => {
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
+      reviews: 17,
+      location: "Düsseldorf"
     },
     {
+      id: 3,
       name: 'Barber Shop 3',
       rating: 5,
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
+      reviews: 12,
+      location: "Berlin"
     },
   ];
 
@@ -76,6 +83,7 @@ const LandingPage = () => {
                     image={shop.image}
                     rating={shop.rating}
                     description={shop.description}
+                    reviews={shop.reviews}
                     shop={shop}
                     link={`shops/${shop.id}`}
                   />
