@@ -43,17 +43,29 @@ function MySwiper(props) {
                 {criteria.map(({ name, src}) => (
                     <SwiperSlide>
                         <Box sx={{
-                            padding: "0",
-                            position: "relative",
-                            height: "300px",
-                            width: "300px",
-                            borderRadius: "10px",
-                            boxShadow: "rgba(0, 0, 0, 0.6) 0px 2px 8px",
-                            transition: "0.15s ease-in-out",
-                            "&:hover": {filter: "brightness(0.75)", cursor: "pointer"}}}
-                            >
-                            <img src={src} style={{ objectFit: "cover", filter: "brightness(0.7) contrast(1.2)", borderRadius: "10px"}} />
-                            <Typography variant="h4" sx={{ textAlign: "center", position: "absolute", top: "50%",left: "50%", transform: "translate(-50%, -50%)", margin: "0", color: "white.main" }}>
+                                padding: "0",
+                                position: "relative",
+                                height: "300px",
+                                width: "300px",
+                                borderRadius: "10px",
+                                boxShadow: "rgba(0, 0, 0, 0.6) 0px 2px 8px",
+                                transition: "0.15s ease-in-out",
+                                "& img": {
+                                    objectFit: "cover", filter: "brightness(0.75) contrast(1.2)", borderRadius: "10px", transition: "0.15s ease-in-out",
+                                },
+                                "&:hover": {
+                                    cursor: "pointer",
+                                    "& img": {
+                                        filter: "brightness(0.55) contrast(1.2)",
+                                    },
+                                    "& h4": {
+                                        textShadow: "3px 3px 0px #6D5344"
+                                    }
+                                },
+                            }}
+                        >
+                            <img src={src} />
+                            <Typography variant="h4" sx={{ textAlign: "center", position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", margin: "0", color: "white.main", transition: "0.15s ease-in-out"}}>
                                 {name}
                             </Typography>
                         </Box>
