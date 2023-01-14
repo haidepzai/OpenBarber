@@ -4,7 +4,7 @@ import image from '../assets/logo_openbarber.svg';
 import { Stack, Button, Divider, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 
-const Header = () => {
+const Header = ({ onLogin }) => {
   return (
     <>
       <Grid container columns={16} sx={{ borderBottom: 1, borderColor: 'grey.300', paddingLeft: '10%', paddingRight: '10%' }}>
@@ -26,7 +26,7 @@ const Header = () => {
             <Button variant="contained" color="primary">
               Sign Up
             </Button>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={onLogin}>
               Login
             </Button>
           </Stack>

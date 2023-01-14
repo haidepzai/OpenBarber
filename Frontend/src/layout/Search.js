@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Typography, Box, Stack, Button, CircularProgress, Input } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
+import { Typography, Box, Stack, Button } from '@mui/material';
+import dayjs from 'dayjs';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -10,19 +10,14 @@ import { useEffect } from 'react';
 import EventIcon from '@mui/icons-material/Event';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import PlaceIcon from '@mui/icons-material/Place';
-import InputAdornment from '@mui/material/InputAdornment';
-import Autocomplete from '@mui/material/Autocomplete';
-import citiesFile from '../assets/german_cities.txt';
 import { usePlacesWidget } from 'react-google-autocomplete';
-import { setDate } from 'date-fns';
+import { getGeocoordinates } from '../context/GoogleMapsActions';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
-function Search(props) {
-
-    const [dateValue, setDateValue] = useState(dayjs());
-    const [location, setLocation] = useState('');
+function Search() {
+  const [dateValue, setDateValue] = useState(dayjs());
+  const [location, setLocation] = useState('');
 
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [openTimePicker, setOpenTimePicker] = useState(false);
@@ -35,6 +30,15 @@ function Search(props) {
   });
 
   useEffect(() => console.log(dateValue), [dateValue]);
+
+  const handleSubmit = async (event) => {
+    console.log(location.formatted_address);
+    const response = await getGeocoordinates(location.formatted_address);
+    const lat = response.results[0].geometry.location.lat;
+    const lng = response.results[0].geometry.location.lng;
+    console.log("Lat: " + lat);
+    console.log("Lng: " + lng);
+  }
 
   return (
     <>
@@ -60,7 +64,7 @@ function Search(props) {
             </Button>
 
             {openDatePicker && (
-              <Box sx={{ position: 'absolute', top: '49px', left: 0, boxShadow: '-3px 3px 8px 2px rgba(0,0,0,0.4)', zIndex: '1' }}>
+              <Box sx={{ position: 'absolute', top: '49px', left: 0, boxShadow: '-3px 3px 8px 2px rgba(0,0,0,0.4)', zIndex: '3' }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <StaticDatePicker
                     displayStaticWrapperAs="desktop"
@@ -143,7 +147,13 @@ function Search(props) {
             }}
           />
 
-          <Button color="secondary" variant="contained" size="large" sx={{ p: '10.875px 50px', borderRadius: '100px', ml: '16px' }}>
+          <Button
+            color="secondary"
+            variant="contained"
+            size="large"
+            sx={{ p: '10.875px 50px', borderRadius: '100px', ml: '16px' }}
+            onClick={handleSubmit}
+          >
             Let's go!
           </Button>
         </Stack>
