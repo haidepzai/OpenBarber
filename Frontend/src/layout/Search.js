@@ -15,7 +15,7 @@ import { getGeocoordinates } from '../context/GoogleMapsActions';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
-function Search(props) {
+function Search() {
   const [dateValue, setDateValue] = useState(dayjs());
   const [location, setLocation] = useState('');
 
@@ -64,7 +64,7 @@ function Search(props) {
             </Button>
 
             {openDatePicker && (
-              <Box sx={{ position: 'absolute', top: '49px', left: 0, boxShadow: '-3px 3px 8px 2px rgba(0,0,0,0.4)', zIndex: '1' }}>
+              <Box sx={{ position: 'absolute', top: '49px', left: 0, boxShadow: '-3px 3px 8px 2px rgba(0,0,0,0.4)', zIndex: '3' }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <StaticDatePicker
                     displayStaticWrapperAs="desktop"
