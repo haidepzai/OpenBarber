@@ -5,8 +5,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Search from '../../layout/Search';
 import { Box, Typography } from '@mui/material';
 import MySwiper from '../../layout/MySwiper';
-import Header from '../../components/Header';
-import LoginModal from '../../components/LoginModal/LoginModal';
+
 
 const theme = createTheme({
   palette: {
