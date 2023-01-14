@@ -17,7 +17,6 @@ const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
 function Search(props) {
   const [dateValue, setDateValue] = useState(dayjs());
-  /* send me location brather */
   const [location, setLocation] = useState('');
 
   const [openDatePicker, setOpenDatePicker] = useState(false);
