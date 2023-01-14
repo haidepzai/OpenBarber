@@ -6,7 +6,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "../css/components/Swiper.css";
 // import required modules
-import swiper, {Navigation, Pagination} from "swiper";
+import {Navigation, Pagination} from "swiper";
 
 import beardImage from "../assets/beard.jpg"
 import ratingsImage from "../assets/rating.jpg"
