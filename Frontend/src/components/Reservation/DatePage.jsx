@@ -13,10 +13,10 @@ import {useState} from "react";
 
 
 const mockStylists = [
-    {name: "Beliebig"},
-    {name: "Alexandra", titel: "Junior Stylistin", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg"},
+    {name: "Any"},
+    {name: "Alexandra", titel: "Junior Stylist", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg"},
     {name: "Peter", titel: "Junior Stylist", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVWjI1XVRB5hg9hZ24rMkPtmLCb9jU_NoBQ&usqp=CAU"},
-    {name: "Laura", titel: "Senior Stylistin", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg"},
+    {name: "Laura", titel: "Senior Stylist", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg"},
     {name: "Paul", titel: "Senior Stylist", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVWjI1XVRB5hg9hZ24rMkPtmLCb9jU_NoBQ&usqp=CAU"},
 ]
 
@@ -32,7 +32,7 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate }) => {
     return (
         <Box sx={{padding: "20px", overflowY: "auto" }}>
             <Typography variant="h6" sx={{marginBottom: "20px"}}>
-                Stylisten & Wunschtermin auswählen
+                Choose your Stylist & Appointment
             </Typography>
             <Typography variant="overline" display="block" gutterBottom>
                 Choose your Stylist
@@ -72,7 +72,7 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate }) => {
             </LocalizationProvider>
             {pickedDate &&
                 <Box sx={{ width: "100%", border: "1px solid rgb(236,236,236)", padding: "10px 20px", boxSizing: "border-box" }}>
-                    <Typography sx={{ fontSize: "14px"}}>Termine für {pickedDate.format("DD/MM/YYYY")}</Typography>
+                    <Typography sx={{ fontSize: "14px"}}>Appointments for {pickedDate.format("DD/MM/YYYY")}</Typography>
                 </Box>
             }
         </Box>

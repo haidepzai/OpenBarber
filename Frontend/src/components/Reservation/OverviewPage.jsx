@@ -34,17 +34,17 @@ const OverviewPage = ({ data, setData, handleStep, showErrors, noneEmpty, error,
         <Box sx={{padding: "20px", overflow: "auto"}}>
 
             <Typography variant="h6" sx={{marginBottom: "20px"}}>
-                Ihre Kontaktdaten und Termin-Erinnerung
+                Your Contact Details And Reminder
             </Typography>
 
             <Typography variant="overline" display="block" gutterBottom>
-                Terminübersicht
+                Appointment Overview
             </Typography>
 
             <Overview booked={false} data={data} handleStep={handleStep} />
 
             <Typography variant="overline" display="block" gutterBottom>
-                Ihre Anmerkungen
+                Your comments
             </Typography>
             <TextField
                 id="outlined-multiline-static"
@@ -54,7 +54,7 @@ const OverviewPage = ({ data, setData, handleStep, showErrors, noneEmpty, error,
                 defaultValue=""
             />
             <Typography variant="overline" display="block" gutterBottom sx={{ margin: "20px 0 15px 0" }}>
-                Kontaktdaten
+                Contact Details
             </Typography>
             <Stack direction="column">
                 <FormControl sx={{ width: "259.5px", paddingBottom: "25px" }}>
@@ -115,7 +115,7 @@ const OverviewPage = ({ data, setData, handleStep, showErrors, noneEmpty, error,
             </Stack>
 
             <Typography variant="overline" display="block" gutterBottom sx={{ marginTop: "20px" }}>
-                Bezahlungsmethode
+                Payment Method
             </Typography>
             <FormControl>
                 <RadioGroup
@@ -123,9 +123,9 @@ const OverviewPage = ({ data, setData, handleStep, showErrors, noneEmpty, error,
                     defaultValue="female"
                     name="radio-buttons-group"
                 >
-                    <FormControlLabel value="female" control={<Radio />} label="Vor Ort" />
+                    <FormControlLabel value="female" control={<Radio />} label="On Site (Cash or Card)" />
                     <FormControlLabel value="male" control={<Radio />} label="Paypal" />
-                    <FormControlLabel value="other" control={<Radio />} label="Überweisung" />
+                    <FormControlLabel value="other" control={<Radio />} label="Bank Transfer" />
                 </RadioGroup>
             </FormControl>
         </Box>
