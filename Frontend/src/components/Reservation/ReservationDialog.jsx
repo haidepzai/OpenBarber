@@ -10,7 +10,7 @@ import DatePage from "./DatePage";
 import OverviewPage from "./OverviewPage";
 import SuccessScreen from "./SuccessScreen";
 
-const steps = ['Dienstleistung', 'Termin', 'Buchung'];
+const steps = ['Services', 'Date', 'Booking'];
 
 function ReservationDialog({ open, handleClose, shop }) {
 
@@ -18,7 +18,7 @@ function ReservationDialog({ open, handleClose, shop }) {
 
     const [data, setData] = useState({
         services: [],
-        stylist: {name: "Beliebig"},
+        stylist: {name: "Any"},
         date: "",
         personalData: {
             formOfAddress: "None",
@@ -181,11 +181,11 @@ function ReservationDialog({ open, handleClose, shop }) {
                         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px", borderTop: "1px solid rgba(0, 0, 0, 0.3)", boxShadow: "0 -3px 10px rgba(0, 0, 0, 0.3)", zIndex: "1" }}>
                             <Button variant="outlined" type="button" onClick={handleClose}>Close</Button>
                             {error[activeStep] &&
-                                <Typography variant="body1" sx={{backgroundColor: "rgba(255,0,0,.9)", borderRadius: "40px", fontSize: "14px", color: "white", padding: "5px 20px" }}>
+                                <Typography variant="body1" sx={{backgroundColor: "error.dark", borderRadius: "40px", fontSize: "14px", color: "white.main" ,padding: "5px 20px" }}>
                                     {error[activeStep]}
                                 </Typography>
                             }
-                            <Button variant="outlined" type="button" onClick={handleNext}>
+                            <Button variant={error[activeStep] ? "outlined" : "contained"} type="button" onClick={handleNext}>
                                 {activeStep === 2 ? "Book Now" : "Next"}
                             </Button>
                         </Box>

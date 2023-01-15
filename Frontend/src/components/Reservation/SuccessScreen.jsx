@@ -6,24 +6,30 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const SuccessScreen = ({ data, onClose }) => {
     return (
-        <Box sx={{ padding: "30px 40px 10px 40px", position: "relative" }}>
-            <IconButton sx={{ position: "absolute", right: "10px", top: "10px" }} onClick={onClose}>
+        <Box sx={{ padding: "40px 40px 20px 40px", position: "relative" }}>
+            <IconButton sx={{ position: "absolute", right: "5px", top: "5px" }} onClick={onClose}>
                 <CloseIcon sx={{ fontSize: "30px" }}/>
             </IconButton>
             <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
-                <CheckIcon color="success" sx={{ fontSize: 40 }} />
+                <CheckIcon sx={{ fontSize: 40, color: (theme) => theme.palette.success.light }} />
                 <Typography variant="h6" sx={{marginBottom: "20px"}}>
                     Your booking was successfull!
                 </Typography>
-                <CheckIcon color="success" sx={{ fontSize: 40 }} />
+                <CheckIcon sx={{ fontSize: 40, color: (theme) => theme.palette.success.light }} />
             </Stack>
             <Divider sx={{margin: "20px 0 10px 0"}}/>
+            <Typography variant="overline" display="block">
+                Name
+            </Typography>
             <Typography variant="body1">
-                Your Name: <b>{data.personalData.firstName + " " + data.personalData.lastName}</b>
+                {data.personalData.firstName + " " + data.personalData.lastName}
             </Typography>
             <Divider sx={{margin: "10px 0"}}/>
+            <Typography variant="overline" display="block">
+                E-Mail
+            </Typography>
             <Typography variant="body1">
-                Confirmation E-Mail will be sent to: <b>{data.personalData.email}</b>
+                {data.personalData.email}
             </Typography>
             <Divider sx={{margin: "10px 0"}}/>
             <Typography variant="overline" display="block" gutterBottom>
