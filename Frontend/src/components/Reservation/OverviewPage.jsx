@@ -123,9 +123,9 @@ const OverviewPage = ({ data, setData, handleStep, showErrors, noneEmpty, error,
                     defaultValue="female"
                     name="radio-buttons-group"
                 >
-                    <FormControlLabel value="female" control={<Radio />} label="On Site (Cash or Card)" />
-                    <FormControlLabel value="male" control={<Radio />} label="Paypal" />
-                    <FormControlLabel value="other" control={<Radio />} label="Bank Transfer" />
+                    <FormControlLabel value="On Site (Cash or Card)" control={<Radio />} label="On Site (Cash or Card)" />
+                    <FormControlLabel value="Paypal" control={<Radio />} label="Paypal" />
+                    <FormControlLabel value="Bank Transfer" control={<Radio />} label="Bank Transfer" />
                 </RadioGroup>
             </FormControl>
         </Box>

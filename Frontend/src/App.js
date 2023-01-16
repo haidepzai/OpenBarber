@@ -9,6 +9,7 @@ import { useState } from 'react';
 import LoginModal from './components/LoginModal/LoginModal';
 import { ThemeProvider } from '@mui/material/styles';
 import {basicTheme} from "./themes/basicTheme";
+import FilterPage from "./pages/FilterPage/FilterPage";
 
 function App() {
   const [loginVisible, setLoginVisible] = useState(false);
@@ -21,6 +22,7 @@ function App() {
           <Route path="*" element={<ErrorPage />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="shops/*" element={<DetailPage />} />
+          <Route path="filter" element={<FilterPage />}/>
         </Routes>
       </BrowserRouter>
       <Footer />
