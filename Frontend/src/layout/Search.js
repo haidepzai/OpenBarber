@@ -132,6 +132,7 @@ function Search() {
 
           <TextField
             label="Location"
+            onChange={(e) => setLocation(e.target.value)}
             variant="filled"
             size="small"
             inputRef={materialRef}
