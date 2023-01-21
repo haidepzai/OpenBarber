@@ -11,7 +11,7 @@ import EventIcon from '@mui/icons-material/Event';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { usePlacesWidget } from 'react-google-autocomplete';
-import { getGeocoordinates } from '../context/GoogleMapsActions';
+import { getCurrentLocation, getGeocoordinates } from '../context/GoogleMapsActions';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
@@ -32,12 +32,16 @@ function Search() {
   useEffect(() => console.log(dateValue), [dateValue]);
 
   const handleSubmit = async (event) => {
-    console.log(location.formatted_address);
-    const response = await getGeocoordinates(location.formatted_address);
-    const lat = response.results[0].geometry.location.lat;
-    const lng = response.results[0].geometry.location.lng;
-    console.log("Lat: " + lat);
-    console.log("Lng: " + lng);
+    if(location !== "") {
+      console.log(location.formatted_address);
+      const response = await getGeocoordinates(location.formatted_address);
+      const lat = response.results[0].geometry.location.lat;
+      const lng = response.results[0].geometry.location.lng;
+      console.log("Lat: " + lat);
+      console.log("Lng: " + lng);
+    } else {
+      getCurrentLocation();
+    }
   }
 
   return (

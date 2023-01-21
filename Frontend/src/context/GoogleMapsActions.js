@@ -15,3 +15,20 @@ export const getGeocoordinates = async (place) => {
         console.log(e);
     }    
 }
+
+export const getCurrentLocation = () => {
+    if (navigator.permissions && navigator.permissions.query) {
+       navigator.permissions.query({ name: 'geolocation' }).then((status) => {
+          if (status.state === 'granted' || status.state === 'prompt') {
+             navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+   
+                console.log("lat: " + lat, " lng: " + lng);
+             });
+          }
+       });
+    } else {
+       console.log(undefined)
+    }
+ }
