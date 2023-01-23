@@ -4,7 +4,7 @@ import shops from '../../mocks/shops';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 
