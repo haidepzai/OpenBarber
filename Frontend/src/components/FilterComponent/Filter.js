@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Checkbox, Divider, FormGroup, Slider, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Checkbox, Divider, FormGroup, Slider, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
@@ -12,7 +12,7 @@ import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import { useLocation } from 'react-router-dom';
 
 const Filter = ({ filter, setFilter }) => {
-  const {state} = useLocation();
+  const { state } = useLocation();
 
   const updateFilter = (topic, property) => {
     setFilter({
@@ -50,8 +50,10 @@ const Filter = ({ filter, setFilter }) => {
   }, [filter]);
 
   useEffect(() => {
-    const { location } = state;
-    console.log(location);
+    if (state !== null) {
+      const { location } = state;
+      console.log(location);
+    }
   }, []);
 
   return (

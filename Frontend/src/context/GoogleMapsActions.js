@@ -25,6 +25,7 @@ export const getCurrentLocation = () => {
           const lng = position.coords.longitude;
 
           console.log('lat: ' + lat, ' lng: ' + lng);
+          return position;
         });
       }
     });
