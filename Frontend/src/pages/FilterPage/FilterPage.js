@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import Search from '../../layout/Search';
 import { Box, Divider, Stack } from '@mui/material';
 import barberShops from '../../mocks/shops';
-import FilterResults from '../../components/FilterResults';
-import Filter from '../../components/Filter';
+import FilterResults from '../../components/FilterComponent/FilterResults';
+import Filter from '../../components/FilterComponent/Filter';
 
 const FilterPage = ({}) => {
   const [filter, setFilter] = useState({
