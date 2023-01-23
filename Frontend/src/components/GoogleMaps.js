@@ -6,10 +6,13 @@ const GoogleMaps = ({ lat = 48.783333, lng = 9.183333, height = '100%', width = 
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API,
   });
 
-  const center = useMemo(() => ({
-    lat: lat, 
-    lng: lng,
-  }), []);
+  const center = useMemo(
+    () => ({
+      lat: lat,
+      lng: lng,
+    }),
+    []
+  );
 
   return (
     <Fragment>
