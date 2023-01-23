@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Divider, Rating, Stack, Typography } from '@mui/material';
-import shops from '../mocks/shops';
+import shops from '../../mocks/shops';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
