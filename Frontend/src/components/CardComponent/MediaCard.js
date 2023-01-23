@@ -49,7 +49,7 @@ export default function MediaCard({ image, title, rating, description, link, rev
         </CardContent>
 
         <CardActions>
-            {/*onClick={() => setOpenReservationDialog(true)}*/}>
+            {/*onClick={() => setOpenReservationDialog(true)}*/}
           <Button variant="contained" color="primary" >
             Book Now
           </Button>
