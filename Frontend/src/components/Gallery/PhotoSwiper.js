@@ -9,7 +9,7 @@ import 'swiper/css/lazy';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
-import '../../css/components/Swiper.css';
+import '../../css/components/SwiperPhoto.css';
 
 // import required modules
 import { Lazy, Pagination, Navigation } from 'swiper';
@@ -24,6 +24,7 @@ const PhotoSwiper = ({ images, onClose }) => {
         width: '100%',
         height: '100%',
       }}
+      className="swiper-photo"
     >
       <Swiper
         style={{
@@ -38,7 +39,7 @@ const PhotoSwiper = ({ images, onClose }) => {
         modules={[Lazy, Pagination, Navigation]}
         className="mySwiper"
       >
-        <IconButton onClick={onClose} sx={{ position: 'absolute', top: '25px', right: '25px', zIndex: '1', color: 'white' }}>
+        <IconButton onClick={onClose} sx={{ position: 'absolute', top: '25px', right: '25px', zIndex: '1', color: 'white.main' }}>
           <CloseIcon sx={{ fontSize: '40px' }} />
         </IconButton>
         {images.map((image) => (
