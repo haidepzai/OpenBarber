@@ -64,7 +64,7 @@ function MySwiper(props) {
                             },
                         }}
                         >
-                            <img src={currElement.src} alt="category"/>
+                            <img src={currElement.src} alt="category" />
                             <Typography variant="h4" sx={{ textAlign: "center", position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", margin: "0", color: "white.main", transition: "0.15s ease-in-out" }}>
                                 {currElement.name}
                             </Typography>

@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
-import { Typography, Box, Stack, Button } from '@mui/material';
+import { Box, Stack, Button } from '@mui/material';
 import dayjs from 'dayjs';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import { StaticTimePicker } from '@mui/x-date-pickers/StaticTimePicker';
-import { useEffect } from 'react';
 import EventIcon from '@mui/icons-material/Event';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { getCurrentLocation, getGeocoordinates } from '../context/GoogleMapsActions';
+import { useNavigate } from 'react-router-dom';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
-function Search({ }) {
+function Search() {
+  const navigate = useNavigate();
+
   const [dateValue, setDateValue] = useState(dayjs());
   const [location, setLocation] = useState('');
 
@@ -31,13 +33,19 @@ function Search({ }) {
 
   const handleSubmit = async (event) => {
     if (location !== "") {
+      const loc = location.formatted_address;
       console.log(location.formatted_address);
       const response = await getGeocoordinates(location.formatted_address);
       const lat = response.results[0].geometry.location.lat;
       const lng = response.results[0].geometry.location.lng;
       console.log("Lat: " + lat);
       console.log("Lng: " + lng);
+      navigate({
+        pathname: '/filter',
+        search: `?location=${loc}`,
+      });
     } else {
+      navigate("/filter",  { state: { location: location } });
       getCurrentLocation();
     }
   }
