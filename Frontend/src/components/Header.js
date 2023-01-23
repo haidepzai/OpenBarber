@@ -23,10 +23,10 @@ const Header = ({ onLogin }) => {
         </Grid>
         <Grid xs={8}>
           <Stack direction="row" justifyContent="flex-end" alignItems="flex-start" spacing={1} m mt="18px" mr="15px">
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="secondary">
               Sign Up
             </Button>
-            <Button variant="contained" color="primary" onClick={onLogin}>
+            <Button variant="contained" color="secondary" onClick={onLogin}>
               Login
             </Button>
           </Stack>
