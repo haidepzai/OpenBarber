@@ -32,23 +32,23 @@ function Search() {
   });
 
   const handleSubmit = async (event) => {
-    if (location !== "") {
+    if (location !== '') {
       const loc = location.formatted_address;
       console.log(location.formatted_address);
       const response = await getGeocoordinates(location.formatted_address);
       const lat = response.results[0].geometry.location.lat;
       const lng = response.results[0].geometry.location.lng;
-      console.log("Lat: " + lat);
-      console.log("Lng: " + lng);
+      console.log('Lat: ' + lat);
+      console.log('Lng: ' + lng);
       navigate({
         pathname: '/filter',
         search: `?location=${loc}`,
       });
     } else {
-      navigate("/filter",  { state: { location: location } });
+      navigate('/filter', { state: { location: location } });
       getCurrentLocation();
     }
-  }
+  };
 
   return (
     <Stack direction="row" justifyContent="center" alignItems="center" gap={2} /*sx={{ p: '50px 0px' }}*/>
