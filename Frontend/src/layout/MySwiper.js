@@ -15,8 +15,11 @@ import priceImage from '../assets/price.jpg';
 import locationImage from '../assets/location.jpg';
 import tipsImage from '../assets/tips.jpg';
 import { Typography, Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function MySwiper(props) {
+  const navigate = useNavigate();
+
   const criteria = [
     { id: 1, name: 'Best Ratings', src: ratingsImage },
     { id: 2, name: 'Cheapest Prices', src: priceImage },
@@ -25,6 +28,10 @@ function MySwiper(props) {
     { id: 5, name: 'Most Ratings', src: mostImage },
     { id: 6, name: 'Our personal tips', src: tipsImage },
   ];
+
+  const handleClick = () => {
+    navigate('/filter', { state: { location: "Test" } });
+  }
 
   return (
     <div style={{ position: 'relative' }}>
@@ -39,7 +46,7 @@ function MySwiper(props) {
         className="mySwiper"
       >
         {criteria.map((currElement, index) => (
-          <SwiperSlide key={index}>
+          <SwiperSlide key={index} onClick={handleClick}>
             <Box
               sx={{
                 padding: '0',
