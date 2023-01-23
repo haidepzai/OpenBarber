@@ -1,37 +1,11 @@
 import React from 'react';
 import { Stack, Link, Typography, ThemeProvider, Button, IconButton } from '@mui/material';
 import image from '../assets/logo_openbarber.svg';
-import { createTheme } from '@mui/material/styles';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-
-const footerTheme = createTheme({
-  palette: {
-    white: {
-      main: '#fff',
-    },
-  },
-  components: {
-    MuiLink: {
-      defaultProps: {
-        color: '#FFF',
-      },
-    },
-    MuiIconButton: {
-      defaultProps: {
-        size: 'large',
-        color: 'white',
-      },
-    },
-    MuiSvgIcon: {
-      defaultProps: {
-        fontSize: 'inherit',
-      },
-    },
-  },
-});
+import {footerTheme} from "../themes/footerTheme";
 
 function Footer(props) {
   return (
@@ -70,7 +44,7 @@ function Footer(props) {
             Für Unternehmen
           </Button>
           <Stack direction="row" gap={1}>
-            <IconButton aria-label="delete" size="large">
+            <IconButton aria-label="delete" color="lol">
               <InstagramIcon fontSize="inherit" />
             </IconButton>
             <IconButton aria-label="delete">

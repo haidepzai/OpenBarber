@@ -5,12 +5,13 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Search from '../../layout/Search';
 import { Box, Typography } from '@mui/material';
 import MySwiper from '../../layout/MySwiper';
+import barberShops from "../../mocks/shops";
 
 
-const theme = createTheme({
+/*const theme = createTheme({
   palette: {
     type: 'light',
-    /* colors from https://m2.material.io/inline-tools/color/ */
+    /!* colors from https://m2.material.io/inline-tools/color/ *!/
     primary: {
       main: '#6D5344',
       contrastText: '#fff',
@@ -25,45 +26,18 @@ const theme = createTheme({
       main: '#fff',
     },
   },
-});
+});*/
 
 const LandingPage = () => {
-  const barberShops = [
-    {
-      id: 1,
-      name: 'Barber Shop',
-      rating: 4,
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
-      reviews: 8,
-      location: "Stuttgart"
-    },
-    {
-      id: 2,
-      name: 'Barber Shop 2',
-      rating: 4.5,
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
-      reviews: 17,
-      location: "Düsseldorf"
-    },
-    {
-      id: 3,
-      name: 'Barber Shop 3',
-      rating: 5,
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
-      reviews: 12,
-      location: "Berlin"
-    },
-  ];
 
   return (
-    <ThemeProvider theme={theme}>
-      <Search />
+    <>
+      <Box sx={{ background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(93,71,58,1) 0%, rgba(160,142,131,1) 100%)', p: "50px 0" }}>
+        <Typography variant="h2" sx={{ textAlign: 'center', color: 'primary.contrastText', pb: '50px', fontWeight: '400' }}>
+          Get your desired haircut now!
+        </Typography>
+        <Search />
+      </Box>
       <Box sx={{ maxWidth: '1500px', margin: '0 auto', padding: '0px 50px' }}>
         <Typography variant="h5" sx={{ paddingBottom: '10px', borderBottom: '1px solid rgba(0,0, 0, 0.3)', m: '20px 0' }}>
           Which barbers would you like to see?
@@ -75,22 +49,24 @@ const LandingPage = () => {
         <Grid sx={{ flexGrow: 1 }} container>
           <Grid container justifyContent="center" spacing={5}>
             {barberShops.map((shop) => (
-              <Grid item key={shop.name}>
-                <MediaCard 
-                  key={shop.name} 
-                  title={shop.name} 
-                  image={shop.image} 
-                  rating={shop.rating} 
-                  description={shop.description} 
+              <Grid item>
+                <MediaCard
+                  key={shop.name}
+                  title={shop.name}
+                  image={shop.image}
+                  rating={shop.rating}
+                  description={shop.description}
                   reviews={shop.reviews}
-                  link={"/shops/123"}
+                  shop={shop}
+                  link={`shops/${shop.id}`}
                 />
               </Grid>
             ))}
           </Grid>
         </Grid>
       </Box>
-    </ThemeProvider>
+
+    </>
   );
 };
 
