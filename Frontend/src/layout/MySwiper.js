@@ -34,7 +34,7 @@ function MySwiper(props) {
   }
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative' }} className="swiper-landing-page ">
       <Swiper
         slidesPerView={5}
         spaceBetween={20}
@@ -43,7 +43,6 @@ function MySwiper(props) {
         }}
         navigation={true}
         modules={[Pagination, Navigation]}
-        className="mySwiper"
       >
         {criteria.map((currElement, index) => (
           <SwiperSlide key={index} onClick={handleClick}>
