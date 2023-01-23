@@ -5,8 +5,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Search from '../../layout/Search';
 import { Box, Typography } from '@mui/material';
 import MySwiper from '../../layout/MySwiper';
-import barberShops from "../../mocks/shops";
-
+import barberShops from '../../mocks/shops';
 
 /*const theme = createTheme({
   palette: {
@@ -29,10 +28,9 @@ import barberShops from "../../mocks/shops";
 });*/
 
 const LandingPage = () => {
-
   return (
     <>
-      <Box sx={{ background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(93,71,58,1) 0%, rgba(160,142,131,1) 100%)', p: "50px 0" }}>
+      <Box sx={{ background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(93,71,58,1) 0%, rgba(160,142,131,1) 100%)', p: '50px 0' }}>
         <Typography variant="h2" sx={{ textAlign: 'center', color: 'primary.contrastText', pb: '50px', fontWeight: '400' }}>
           Get your desired haircut now!
         </Typography>
@@ -65,7 +63,6 @@ const LandingPage = () => {
           </Grid>
         </Grid>
       </Box>
-
     </>
   );
 };
