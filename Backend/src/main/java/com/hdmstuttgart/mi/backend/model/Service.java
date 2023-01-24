@@ -1,11 +1,13 @@
 package com.hdmstuttgart.mi.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 
 @Data
@@ -29,4 +31,8 @@ public class Service {
     private int durationInMin;
 
     private ServiceTargetAudience targetAudience;
+
+    @JsonIgnore
+    @ManyToOne
+    private Enterprise enterprise;
 }

@@ -10,17 +10,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import org.slf4j.Logger;
 
-@RestController
-@EnableAutoConfiguration
-@EnableJpaAuditing
+//@RestController
+//@EnableAutoConfiguration
+//@EnableJpaAuditing
+@SpringBootApplication
 public class BackendApplication {
 
     private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);
-
-    @RequestMapping("/")
-    public String hello() {
-        return "Hello World";
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);

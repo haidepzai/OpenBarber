@@ -5,8 +5,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.net.URL;
 import java.sql.Blob;
@@ -25,10 +23,11 @@ public class Enterprise {
     private String name;
 
     @NotBlank(message = "Address is mandatory")
-    private String address; // How to implement with Google maps and should the coords request take place in front- or backend?
+    private String address;
     private long addressLongitude;
     private long addressAltitude;
 
+    @Column(nullable = false, unique = true)
     @Email
     private String eMail;
 
@@ -38,9 +37,8 @@ public class Enterprise {
     @OneToMany
     private List<Employee> employees;
 
-    @Min(0)
-    @Max(5)
-    private double rating; // Actually get all ratings from services and divide by services.size
+    @Lob
+    private Blob logo;
 
     @Lob
     private List<Blob> pictures;
@@ -48,4 +46,20 @@ public class Enterprise {
     private URL website;
 
     private String phoneNumber;
+
+    private boolean apporoved;
+
+    private double getRating() {
+        double rating = 0;
+        int count = 0;
+        for(Employee employee : employees) {
+            for(Appointment appointment : employee.getAppointments()) {
+                if(appointment.getRating() != 0) {
+                    rating += appointment.getRating();
+                    count++;
+                }
+            }
+        }
+        return count == 0 ? 0 : rating / count;
+    }
 }

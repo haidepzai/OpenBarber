@@ -1,14 +1,13 @@
 package com.hdmstuttgart.mi.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Blob;
+import java.util.List;
 
 @Data
 @Entity
@@ -24,4 +23,11 @@ public class Employee {
 
     @Lob
     private Blob picture;
+
+    @OneToMany
+    private List<Appointment> appointments;
+
+    @JsonIgnore
+    @ManyToOne
+    private Enterprise enterprise;
 }

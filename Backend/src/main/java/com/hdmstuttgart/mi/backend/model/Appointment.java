@@ -2,15 +2,14 @@ package com.hdmstuttgart.mi.backend.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
 @Data
+@Entity
 @NoArgsConstructor
 public class Appointment {
 
@@ -18,23 +17,41 @@ public class Appointment {
     @GeneratedValue
     private long id;
 
-    @NotBlank(message = "Start time is mandatory")
-    private LocalDateTime startTime;
+    @ManyToOne
+    private Enterprise enterprise;
 
-    @NotBlank(message = "End time is mandatory")
-    private LocalDateTime endTime;
-
-    @OneToOne
-    @NotBlank(message = "Employee is mandatory")
-    private Employee employee;
-
-    @OneToMany
-    @NotBlank(message = "Service(s) is mandatory")
+    @ManyToMany
     private List<Service> services;
 
-    @Min(1)
-    @Max(5)
+    @ManyToOne
+    private Employee employee;
+
+    @NotBlank(message = "Customer name is mandatory")
+    private String customerName;
+
+    @NotBlank(message = "Customer phone number is mandatory")
+    private String customerPhoneNumber;
+
+    @NotBlank(message = "Customer email is mandatory")
+    @Email
+    private String customerEmail;
+
+    @NotBlank(message = "Appointment date-time is mandatory")
+    private LocalDateTime appointmentDateTime;
+
+    private boolean confirmed;
+
+    @Min(value = 1, message = "Rating must be between 1 and 5")
+    @Max(value = 5, message = "Rating must be between 1 and 5")
     private int rating;
 
+    @Size(max = 500, message = "Rating Text should not exceed 500 characters")
     private String ratingText;
+
+    public int getTotalDuration(){
+        int totalDuration = 0;
+        for(Service service : services)
+            totalDuration += service.getDurationInMin();
+        return totalDuration;
+    }
 }
