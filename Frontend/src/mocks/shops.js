@@ -7,7 +7,11 @@ const barberShops = [
     image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
     rating: 4,
     reviews: 8,
-    location: 'Stuttgart',
+    geometry: {
+      location: 'Stuttgart',
+      lat: 48.783333,
+      lng: 9.183333
+    },
     priceCategory: 2,
     services: [
       { gender: 'woman', name: 'Waschen, Schneiden, Föhnen', duration: '60', price: '30,00' },
@@ -61,7 +65,11 @@ const barberShops = [
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
     image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
     reviews: 17,
-    location: 'Düsseldorf',
+    geometry: {
+      location: 'Düsseldorf',
+      lat: 51.233334,
+      lng: 6.783333
+    },
     priceCategory: 1,
     services: [],
     employees: [],
@@ -77,7 +85,11 @@ const barberShops = [
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
     image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
     reviews: 12,
-    location: 'Berlin',
+    geometry: {
+      location: 'Berlin, Germany',
+      lat: 52.520008,
+      lng: 13.404954
+    },
     priceCategory: 3,
     services: [],
     employees: [],
@@ -93,7 +105,11 @@ const barberShops = [
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
     image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
     reviews: 10,
-    location: 'Berlin',
+    geometry: {
+      location: 'Berlin, Germany',
+      lat: 52.520008,
+      lng: 13.404954
+    },
     priceCategory: 3,
     services: [],
     employees: [],
@@ -109,7 +125,11 @@ const barberShops = [
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
     image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
     reviews: 20,
-    location: 'Berlin',
+    geometry: {
+      location: 'Berlin, Germany',
+      lat: 52.520008,
+      lng: 13.404954
+    },
     priceCategory: 3,
     services: [],
     employees: [],
