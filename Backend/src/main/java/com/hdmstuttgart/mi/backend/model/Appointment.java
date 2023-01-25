@@ -1,5 +1,6 @@
 package com.hdmstuttgart.mi.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -16,14 +17,6 @@ public class Appointment {
     @GeneratedValue
     private long id;
 
-    @ManyToOne
-    private Enterprise enterprise;
-
-    @ManyToMany
-    private List<Service> services;
-
-    @ManyToOne
-    private Employee employee;
 
     @NotBlank(message = "Customer name is mandatory")
     private String customerName;
@@ -35,22 +28,34 @@ public class Appointment {
     @Email
     private String customerEmail;
 
-    @NotBlank(message = "Appointment date-time is mandatory")
+    @NotNull(message = "Appointment date-time is mandatory")
     private LocalDateTime appointmentDateTime;
 
     private boolean confirmed;
 
-    @Min(value = 1, message = "Rating must be between 1 and 5")
+/*    @Min(value = 1, message = "Rating must be between 1 and 5")
     @Max(value = 5, message = "Rating must be between 1 and 5")
     private int rating;
 
     @Size(max = 500, message = "Rating Text should not exceed 500 characters")
-    private String ratingText;
+    private String ratingText;*/
 
-    public int getTotalDuration(){
+    @ManyToMany
+    private List<Service> services;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "enterprise_id")
+    private Enterprise enterprise;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+/*    public int getTotalDuration(){
         int totalDuration = 0;
         for(Service service : services)
             totalDuration += service.getDurationInMin();
         return totalDuration;
-    }
+    }*/
 }

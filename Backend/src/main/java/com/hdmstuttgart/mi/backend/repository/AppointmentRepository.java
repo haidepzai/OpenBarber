@@ -7,4 +7,6 @@ import java.util.List;
 public interface AppointmentRepository extends CrudRepository<Appointment, Long> {
     @Override
     List<Appointment> findAll();
+
+    List<Appointment> findAllByEnterpriseId(Long enterpriseId);
 }

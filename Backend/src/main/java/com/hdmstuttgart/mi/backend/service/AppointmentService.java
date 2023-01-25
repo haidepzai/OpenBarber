@@ -44,31 +44,46 @@ public class AppointmentService {
         return appointmentRepository.save(appointment);
     }
 
-    public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
+    public List<Appointment> getAllAppointments(Long enterpriseId) {
+        if (!enterpriseRepository.existsById(enterpriseId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
+        }
+
+        List<Appointment> appointments = appointmentRepository.findAllByEnterpriseId(enterpriseId);
+        if (appointments.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No appointments found for enterprise with id = " + enterpriseId);
+        }
+        return appointments;
     }
 
     public Appointment getAppointmentById(long id) {
-        return appointmentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Appointment not found"));
+        return appointmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Appointment not found with id = " + id));
     }
 
     public Appointment updateAppointment(long id, Appointment newAppointment) {
-        Appointment currentAppointment = getAppointmentById(id);
-        // update the fields in the currentAppointment object
-        currentAppointment.setEnterprise(newAppointment.getEnterprise());
-        currentAppointment.setEmployee(newAppointment.getEmployee());
-        currentAppointment.setServices(newAppointment.getServices());
-        currentAppointment.setCustomerName(newAppointment.getCustomerName());
-        currentAppointment.setCustomerPhoneNumber(newAppointment.getCustomerPhoneNumber());
-        currentAppointment.setCustomerEmail(newAppointment.getCustomerEmail());
-        currentAppointment.setAppointmentDateTime(newAppointment.getAppointmentDateTime());
-        currentAppointment.setConfirmed(newAppointment.isConfirmed());
-        currentAppointment.setRating(newAppointment.getRating());
-        currentAppointment.setRatingText(newAppointment.getRatingText());
-        return appointmentRepository.save(currentAppointment);
+        return appointmentRepository.findById(id)
+                .map(appointment -> {
+//                    appointment.setEnterprise(newAppointment.getEnterprise());
+//                    appointment.setEmployee(newAppointment.getEmployee());
+//                    appointment.setServices(newAppointment.getServices());
+                    appointment.setCustomerName(newAppointment.getCustomerName());
+                    appointment.setCustomerPhoneNumber(newAppointment.getCustomerPhoneNumber());
+                    appointment.setCustomerEmail(newAppointment.getCustomerEmail());
+                    appointment.setAppointmentDateTime(newAppointment.getAppointmentDateTime());
+                    appointment.setConfirmed(newAppointment.isConfirmed());
+//                    Appointment.setRating(newAppointment.getRating());
+//                    Appointment.setRatingText(newAppointment.getRatingText());
+
+                    return appointmentRepository.save(appointment);
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment not found with id = " + id));
     }
 
     public void deleteAppointment(long id) {
+        if (!appointmentRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment not found with id = " + id);
+        }
         appointmentRepository.deleteById(id);
     }
 }
