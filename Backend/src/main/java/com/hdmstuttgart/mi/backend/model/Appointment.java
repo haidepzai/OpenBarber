@@ -2,7 +2,6 @@ package com.hdmstuttgart.mi.backend.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;

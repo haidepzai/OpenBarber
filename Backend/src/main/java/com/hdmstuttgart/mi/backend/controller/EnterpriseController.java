@@ -2,8 +2,9 @@ package com.hdmstuttgart.mi.backend.controller;
 
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.service.EnterpriseService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -17,27 +18,32 @@ public class EnterpriseController {
     }
 
     @PostMapping
-    public Enterprise createEnterprise(@RequestBody Enterprise enterprise) {
-        return enterpriseService.createEnterprise(enterprise);
+    public ResponseEntity<Enterprise> createEnterprise(@RequestBody Enterprise enterprise) {
+        Enterprise createdEnterprise = enterpriseService.createEnterprise(enterprise);
+        return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<Enterprise> getAllEnterprises() {
-        return enterpriseService.getAllEnterprises();
+    public ResponseEntity<List<Enterprise>> getAllEnterprises() {
+        List<Enterprise> enterprises = enterpriseService.getAllEnterprises();
+        return new ResponseEntity<>(enterprises, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Enterprise getEnterpriseById(@PathVariable long id) {
-        return enterpriseService.getEnterpriseById(id);
+    public ResponseEntity<Enterprise> getEnterpriseById(@PathVariable long id) {
+        Enterprise enterprise =enterpriseService.getEnterpriseById(id);
+        return new ResponseEntity<>(enterprise, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public Enterprise updateEnterprise(@PathVariable long id, @RequestBody Enterprise newEnterprise) {
-        return enterpriseService.updateEnterprise(id, newEnterprise);
+    public ResponseEntity<Enterprise> updateEnterprise(@PathVariable long id, @RequestBody Enterprise newEnterprise) {
+        Enterprise updatedEnterprise = enterpriseService.updateEnterprise(id, newEnterprise);
+        return new ResponseEntity<>(updatedEnterprise, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteEnterprise(@PathVariable long id) {
+    public ResponseEntity<String>  deleteEnterprise(@PathVariable long id) {
         enterpriseService.deleteEnterprise(id);
+        return new ResponseEntity<>("Enterprise deleted with id = " + id, HttpStatus.NO_CONTENT);
     }
 }

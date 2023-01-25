@@ -10,10 +10,7 @@ import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
-
 import java.util.List;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service

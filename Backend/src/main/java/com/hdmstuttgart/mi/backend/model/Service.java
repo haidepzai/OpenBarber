@@ -3,12 +3,9 @@ package com.hdmstuttgart.mi.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -19,7 +16,7 @@ public class Service {
     @GeneratedValue
     private long id;
 
-    @NotBlank(message = "Price is mandatory")
+    @NotNull(message = "Price is mandatory")
     private double price;
 
     @NotBlank(message = "Title is mandatory")
@@ -27,12 +24,13 @@ public class Service {
 
     private String description;
 
-    @NotBlank(message = "Duration is mandatory")
+    @NotNull(message = "Duration is mandatory")
     private int durationInMin;
 
     private ServiceTargetAudience targetAudience;
 
-    @JsonIgnore
     @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "enterprise_id")
     private Enterprise enterprise;
 }

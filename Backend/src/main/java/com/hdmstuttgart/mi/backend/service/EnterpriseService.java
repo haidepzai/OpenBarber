@@ -5,7 +5,6 @@ import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 
 @Service
@@ -22,12 +21,16 @@ public class EnterpriseService {
     }
 
     public List<Enterprise> getAllEnterprises() {
-        return enterpriseRepository.findAll();
+        List<Enterprise> enterprises = enterpriseRepository.findAll();
+        if (enterprises.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No enterprises found");
+        }
+        return enterprises;
     }
 
     public Enterprise getEnterpriseById(long id) {
         return enterpriseRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
     }
 
     public Enterprise updateEnterprise(long id, Enterprise newEnterprise) {
@@ -38,23 +41,20 @@ public class EnterpriseService {
                     enterprise.setAddressLongitude(newEnterprise.getAddressLongitude());
                     enterprise.setAddressAltitude(newEnterprise.getAddressAltitude());
                     enterprise.setEMail(newEnterprise.getEMail());
-                    enterprise.setServices(newEnterprise.getServices());
-                    enterprise.setEmployees(newEnterprise.getEmployees());
                     enterprise.setLogo(newEnterprise.getLogo());
                     enterprise.setPictures(newEnterprise.getPictures());
                     enterprise.setWebsite(newEnterprise.getWebsite());
                     enterprise.setPhoneNumber(newEnterprise.getPhoneNumber());
-                    enterprise.setApporoved(newEnterprise.isApporoved());
+                    enterprise.setApproved(newEnterprise.isApproved());
                     return enterpriseRepository.save(enterprise);
                 })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
     }
 
-    public boolean deleteEnterprise(long id) {
-        boolean wasDeleted = enterpriseRepository.existsById(id);
-        if (wasDeleted) {
-            enterpriseRepository.deleteById(id);
+    public void deleteEnterprise(long id) {
+        if (!enterpriseRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id);
         }
-        return wasDeleted;
+        enterpriseRepository.deleteById(id);
     }
 }

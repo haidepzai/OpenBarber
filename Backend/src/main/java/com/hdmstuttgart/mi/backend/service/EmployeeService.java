@@ -7,7 +7,6 @@ import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 
 @Service
@@ -27,13 +26,22 @@ public class EmployeeService {
         employee.setEnterprise(enterprise);
         return employeeRepository.save(employee);
     }
+
     public List<Employee> getAllEmployees(Long enterpriseId) {
-        return employeeRepository.findAllByEnterpriseId(enterpriseId);
+        if (!enterpriseRepository.existsById(enterpriseId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
+        }
+
+        List<Employee> employees = employeeRepository.findAllByEnterpriseId(enterpriseId);
+        if (employees.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No employees found for enterprise with id = " + enterpriseId);
+        }
+        return employees;
     }
 
     public Employee getEmployeeById(long id) {
         return employeeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id = " + id));
     }
 
     public Employee updateEmployee(long id, Employee newEmployee) {
@@ -41,17 +49,16 @@ public class EmployeeService {
                 .map(employee -> {
                     employee.setName(newEmployee.getName());
                     employee.setPicture(newEmployee.getPicture());
-                    employee.setAppointments(newEmployee.getAppointments());
+
                     return employeeRepository.save(employee);
                 })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id = " + id));
     }
 
-    public boolean deleteEmployee(long id) {
-        boolean wasDeleted = employeeRepository.existsById(id);
-        if (wasDeleted) {
-            employeeRepository.deleteById(id);
+    public void deleteEmployee(long id) {
+        if (!employeeRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id = " + id);
         }
-        return wasDeleted;
+        employeeRepository.deleteById(id);
     }
 }

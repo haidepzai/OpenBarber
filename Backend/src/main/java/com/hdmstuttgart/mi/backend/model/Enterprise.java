@@ -2,7 +2,6 @@ package com.hdmstuttgart.mi.backend.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -27,15 +26,10 @@ public class Enterprise {
     private long addressLongitude;
     private long addressAltitude;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Email is mandatory")
+    @Column(/*nullable = false, */unique = true)
     @Email
     private String eMail;
-
-    @OneToMany
-    private List<Service> services;
-
-    @OneToMany
-    private List<Employee> employees;
 
     @Lob
     private Blob logo;
@@ -47,9 +41,16 @@ public class Enterprise {
 
     private String phoneNumber;
 
-    private boolean apporoved;
+    private boolean approved;
 
-    private double getRating() {
+
+/*    @OneToMany
+    private List<Service> services;*/
+
+/*    @OneToMany
+    private List<Employee> employees;*/
+
+/*    private double getRating() {
         double rating = 0;
         int count = 0;
         for(Employee employee : employees) {
@@ -61,5 +62,9 @@ public class Enterprise {
             }
         }
         return count == 0 ? 0 : rating / count;
-    }
+    }*/
+
+/*    public void addEmployee(Employee employee){
+        this.employees.add(employee);
+    }*/
 }

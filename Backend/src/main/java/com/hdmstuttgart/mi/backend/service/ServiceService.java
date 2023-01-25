@@ -6,7 +6,6 @@ import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 
 @org.springframework.stereotype.Service
@@ -28,7 +27,15 @@ public class ServiceService {
     }
 
     public List<Service> getAllServices(Long enterpriseId) {
-        return serviceRepository.findAllByEnterpriseId(enterpriseId);
+        if (!enterpriseRepository.existsById(enterpriseId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
+        }
+
+        List<Service> services = serviceRepository.findAllByEnterpriseId(enterpriseId);
+        if (services.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No services found for enterprise with id = " + enterpriseId);
+        }
+        return services;
     }
 
     public Service getServiceById(long id) {
@@ -37,34 +44,23 @@ public class ServiceService {
     }
 
     public Service updateService(long id, Service newService) {
-        Service service = serviceRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found with id = " + id));
+        return serviceRepository.findById(id)
+                .map(service -> {
+//                    service.setPrice(newService.getPrice());
+                    service.setTitle(newService.getTitle());
+                    service.setDescription(newService.getDescription());
+                    service.setDurationInMin(newService.getDurationInMin());
+                    service.setTargetAudience(newService.getTargetAudience());
 
-        if (newService.getPrice() > 0) {
-            service.setPrice(newService.getPrice());
-        }
-        if (newService.getTitle() != null && !newService.getTitle().isBlank()) {
-            service.setTitle(newService.getTitle());
-        }
-        if (newService.getDescription() != null) {
-            service.setDescription(newService.getDescription());
-        }
-        if (newService.getDurationInMin() > 0) {
-            service.setDurationInMin(newService.getDurationInMin());
-        }
-        if (newService.getTargetAudience() != null) {
-            service.setTargetAudience(newService.getTargetAudience());
-        }
-        return serviceRepository.save(service);
+                    return serviceRepository.save(service);
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found with id = " + id));
     }
 
-    public boolean deleteService(long id) {
-        boolean wasDeleted = serviceRepository.existsById(id);
-        if (wasDeleted) {
-            serviceRepository.deleteById(id);
-        } else {
+    public void deleteService(long id) {
+        if (!serviceRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found with id = " + id);
         }
-        return wasDeleted;
+        serviceRepository.deleteById(id);
     }
 }
