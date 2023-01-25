@@ -5,10 +5,11 @@ import com.hdmstuttgart.mi.backend.service.ServiceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/enterprises/{enterpriseId}/services")
+@RequestMapping("/api/services")
 public class ServiceController {
 
     private final ServiceService serviceService;
@@ -18,14 +19,14 @@ public class ServiceController {
     }
 
     @PostMapping
-    public ResponseEntity<Service> createService(@RequestBody Service service, @PathVariable Long enterpriseId) {
+    public ResponseEntity<Service> createService(@Valid @RequestBody Service service, @RequestParam Long enterpriseId) {
         Service createdService = serviceService.createService(service, enterpriseId);
         return new ResponseEntity<>(createdService, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Service>> getAllServices(@PathVariable Long enterpriseId) {
-        List<Service> services = serviceService.getAllServices(enterpriseId);
+    public ResponseEntity<List<Service>> getServicesByEnterpriseId(@RequestParam Long enterpriseId) {
+        List<Service> services = serviceService.getServicesByEnterpriseId(enterpriseId);
         return new ResponseEntity<>(services, HttpStatus.OK);
     }
 
@@ -36,7 +37,7 @@ public class ServiceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Service> updateService(@PathVariable long id, @RequestBody Service newService) {
+    public ResponseEntity<Service> updateService(@PathVariable long id, @Valid @RequestBody Service newService) {
         Service updatedService = serviceService.updateService(id, newService);
         return new ResponseEntity<>(updatedService, HttpStatus.OK);
     }

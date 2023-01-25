@@ -27,7 +27,7 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
-    public List<Employee> getAllEmployees(Long enterpriseId) {
+    public List<Employee> getEmployeesByEnterpriseId(Long enterpriseId) {
         if (!enterpriseRepository.existsById(enterpriseId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
         }

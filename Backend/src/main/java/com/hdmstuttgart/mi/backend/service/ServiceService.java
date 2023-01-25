@@ -26,7 +26,7 @@ public class ServiceService {
         return serviceRepository.save(service);
     }
 
-    public List<Service> getAllServices(Long enterpriseId) {
+    public List<Service> getServicesByEnterpriseId(Long enterpriseId) {
         if (!enterpriseRepository.existsById(enterpriseId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
         }

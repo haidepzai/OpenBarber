@@ -28,12 +28,12 @@ public class AppointmentService {
         this.serviceRepository = serviceRepository;
     }
 
-    public Appointment createAppointment(Appointment appointment, long enterpriseId, long employeeId, List<Long> servicesId) {
+    public Appointment createAppointment(Appointment appointment, long enterpriseId, long employeeId, List<Long> serviceIds) {
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found enterprise with id = " + enterpriseId));
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found employee with id = " + employeeId));
-        List<Service> services = servicesId.stream()
+        List<Service> services = serviceIds.stream()
                 .map(id -> serviceRepository.findById(id)
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found service with id = " + id)))
                 .collect(Collectors.toList());
@@ -44,7 +44,7 @@ public class AppointmentService {
         return appointmentRepository.save(appointment);
     }
 
-    public List<Appointment> getAllAppointments(Long enterpriseId) {
+    public List<Appointment> getAppointmentsByEnterpriseId(Long enterpriseId) {
         if (!enterpriseRepository.existsById(enterpriseId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
         }

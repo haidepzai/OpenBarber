@@ -5,10 +5,11 @@ import com.hdmstuttgart.mi.backend.service.AppointmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/enterprises/{enterpriseId}/appointments")
+@RequestMapping("/api/appointments")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
@@ -18,14 +19,14 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public ResponseEntity<Appointment> createAppointment(@RequestBody Appointment appointment, @PathVariable long enterpriseId, @RequestParam long employeeId, @RequestParam List<Long> serviceIds) {
+    public ResponseEntity<Appointment> createAppointment(@Valid @RequestBody Appointment appointment, @RequestParam long enterpriseId, @RequestParam long employeeId, @RequestParam List<Long> serviceIds) {
         Appointment createdAppointment = appointmentService.createAppointment(appointment, enterpriseId, employeeId, serviceIds);
         return new ResponseEntity<>(createdAppointment, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Appointment>> getAllAppointments(@PathVariable Long enterpriseId) {
-        List<Appointment> appointments = appointmentService.getAllAppointments(enterpriseId);
+    public ResponseEntity<List<Appointment>> getAppointmentsByEnterpriseId(@RequestParam Long enterpriseId) {
+        List<Appointment> appointments = appointmentService.getAppointmentsByEnterpriseId(enterpriseId);
         return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
@@ -36,7 +37,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Appointment> updateAppointment(@PathVariable long id, @RequestBody Appointment newAppointment) {
+    public ResponseEntity<Appointment> updateAppointment(@PathVariable long id, @Valid @RequestBody Appointment newAppointment) {
         Appointment updatedAppointment = appointmentService.updateAppointment(id, newAppointment);
         return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
     }

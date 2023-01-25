@@ -5,10 +5,11 @@ import com.hdmstuttgart.mi.backend.service.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/enterprises/{enterpriseId}/employees")
+@RequestMapping("/api/employees")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -18,14 +19,14 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee, @PathVariable Long enterpriseId) {
+    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee, @RequestParam Long enterpriseId) {
         Employee createdEmployee = employeeService.createEmployee(employee, enterpriseId);
         return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAllEmployees(@PathVariable Long enterpriseId) {
-        List<Employee> employees = employeeService.getAllEmployees(enterpriseId);
+    public ResponseEntity<List<Employee>> getEmployeesByEnterpriseId(@RequestParam Long enterpriseId) {
+        List<Employee> employees = employeeService.getEmployeesByEnterpriseId(enterpriseId);
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
@@ -36,7 +37,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable long id, @RequestBody Employee newEmployee) {
+    public ResponseEntity<Employee> updateEmployee(@PathVariable long id, @Valid @RequestBody Employee newEmployee) {
         Employee updatedEmployee = employeeService.updateEmployee(id, newEmployee);
         return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
     }
