@@ -47,9 +47,8 @@ const LandingPage = () => {
         <Grid sx={{ flexGrow: 1 }} container>
           <Grid container justifyContent="center" spacing={5}>
             {barberShops.map((shop) => (
-              <Grid item>
-                <MediaCard
-                  key={shop.name}
+              <Grid item key={shop.name}>
+                <MediaCard                  
                   title={shop.name}
                   image={shop.image}
                   rating={shop.rating}

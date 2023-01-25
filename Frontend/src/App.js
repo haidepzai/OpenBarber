@@ -10,22 +10,24 @@ import LoginModal from './components/LoginModal/LoginModal';
 import { ThemeProvider } from '@mui/material/styles';
 import { basicTheme } from './themes/basicTheme';
 import FilterPage from './pages/FilterPage/FilterPage';
+import Datenschutz from './pages/Datenschutz';
 
 function App() {
   const [loginVisible, setLoginVisible] = useState(false);
 
   return (
     <ThemeProvider theme={basicTheme}>
-      <Header onLogin={() => setLoginVisible(true)} />
       <BrowserRouter>
+        <Header onLogin={() => setLoginVisible(true)} />
         <Routes>
           <Route path="*" element={<ErrorPage />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="shops/*" element={<DetailPage />} />
           <Route path="filter" element={<FilterPage />} />
+          <Route path="privacy-policy" element={<Datenschutz />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
-      <Footer />
       {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} />}
     </ThemeProvider>
   );
