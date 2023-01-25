@@ -10,15 +10,16 @@ import LoginModal from './components/LoginModal/LoginModal';
 import { ThemeProvider } from '@mui/material/styles';
 import { basicTheme } from './themes/basicTheme';
 import FilterPage from './pages/FilterPage/FilterPage';
-import Datenschutz from './pages/Datenschutz';
+import SignupModal from './components/SignupModal/SignupModal';
 
 function App() {
   const [loginVisible, setLoginVisible] = useState(false);
+  const [signupVisible, setSignupVisible] = useState(false);
 
   return (
-    <ThemeProvider theme={basicTheme}>
+    <ThemeProvider theme={basicTheme}>      
       <BrowserRouter>
-        <Header onLogin={() => setLoginVisible(true)} />
+        <Header onLogin={() => setLoginVisible(true)} onSignup={() => setSignupVisible(true)} />
         <Routes>
           <Route path="*" element={<ErrorPage />} />
           <Route path="/" element={<LandingPage />} />
@@ -29,6 +30,7 @@ function App() {
         <Footer />
       </BrowserRouter>
       {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} />}
+      {signupVisible && <SignupModal onClose={() => setSignupVisible(false)} />}
     </ThemeProvider>
   );
 }
