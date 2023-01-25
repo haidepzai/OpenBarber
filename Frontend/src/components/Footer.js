@@ -1,11 +1,13 @@
 import React from 'react';
-import { Stack, Link, Typography, ThemeProvider, Button, IconButton } from '@mui/material';
+import { Stack, Typography, ThemeProvider, Button, IconButton } from '@mui/material';
 import image from '../assets/logo_openbarber.svg';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { footerTheme } from '../themes/footerTheme';
+import { Link } from "react-router-dom";
+import '../css/Footer.css';
 
 function Footer(props) {
   return (
@@ -19,19 +21,19 @@ function Footer(props) {
             </Typography>
           </Stack>
           <Stack direction="row" gap={3}>
-            <Link href="#" underline="hover">
+            <Link to="#" className="link">
               Impressum
             </Link>
-            <Link href="#" underline="hover">
+            <Link to="/privacy-policy" className="link">
               Datenschutz
             </Link>
-            <Link href="#" underline="hover">
+            <Link to="#" className="link">
               Nutzungsbedingungen
             </Link>
-            <Link href="#" underline="hover">
+            <Link to="#" className="link">
               Kontakt
             </Link>
-            <Link href="#" underline="hover">
+            <Link to="#" className="link">
               FAQs
             </Link>
           </Stack>
