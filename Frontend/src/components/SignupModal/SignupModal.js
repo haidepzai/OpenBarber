@@ -8,15 +8,13 @@ import EnterpriseCreateStep from './components/EnterpriseCreateStep';
 import AwaitingApprovalStep from './components/AwaitingApprovalStep';
 import EmailVerificationStep from './components/EmailVerificationStep';
 
-const steps = ["Sign up", "Verify your E-Mail", "Sign up your enterprise", "Wait for Approval"]
+const steps = ['Sign up', 'Verify your E-Mail', 'Sign up your enterprise', 'Wait for Approval'];
 
 const SignupModal = ({ onClose }) => {
   const portalElement = document.getElementById('overlays');
 
   const [activeStep, setActiveStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState(
-    Array(4).fill(false)
-  );
+  const [completedSteps, setCompletedSteps] = useState(Array(4).fill(false));
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -44,14 +42,17 @@ const SignupModal = ({ onClose }) => {
   }, [onClose]);
 
   return (
-    <SignupContext.Provider value={{
-      activeStep,
-      setActiveStep,
-      completedSteps,
-      setCompletedSteps,
-      close: onClose,
-      data, setData
-    }}>
+    <SignupContext.Provider
+      value={{
+        activeStep,
+        setActiveStep,
+        completedSteps,
+        setCompletedSteps,
+        close: onClose,
+        data,
+        setData,
+      }}
+    >
       {ReactDOM.createPortal(
         <Box
           sx={{
@@ -84,11 +85,7 @@ const SignupModal = ({ onClose }) => {
             <Stepper nonLinear activeStep={activeStep}>
               {steps.map((label, index) => (
                 <Step key={label} completed={completedSteps[index]}>
-                  <StepButton
-                    type="button"
-                    onClick={() => setActiveStep(index)}
-                    disabled={completedSteps.slice(0, index).some(e=>!e)}
-                  >
+                  <StepButton type="button" onClick={() => setActiveStep(index)} disabled={completedSteps.slice(0, index).some((e) => !e)}>
                     {label}
                   </StepButton>
                 </Step>
@@ -97,8 +94,8 @@ const SignupModal = ({ onClose }) => {
             <Stack flexGrow="1">
               {activeStep === 0 && <SignUpStep />}
               {activeStep === 1 && <EmailVerificationStep />}
-              {activeStep === 2 && <EnterpriseCreateStep /> }
-              {activeStep === 3 && <AwaitingApprovalStep /> }
+              {activeStep === 2 && <EnterpriseCreateStep />}
+              {activeStep === 3 && <AwaitingApprovalStep />}
             </Stack>
           </Box>
         </Box>,

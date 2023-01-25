@@ -12,7 +12,7 @@ import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import { useLocation } from 'react-router-dom';
 
 const Filter = ({ filter, setFilter }) => {
-  const {state} = useLocation();
+  const { state } = useLocation();
 
   const updateFilter = (topic, property) => {
     setFilter({

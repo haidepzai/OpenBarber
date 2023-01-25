@@ -5,9 +5,8 @@ import { CheckCircleRounded } from '@mui/icons-material';
 import { SignupContext } from '../Signup.context';
 
 const AwaitingApprovalStep = () => {
-
   const { close, setActiveStep, completedSteps, verificationCode } = useContext(SignupContext);
-  console.log(completedSteps)
+  console.log(completedSteps);
 
   return (
     <>
@@ -19,7 +18,7 @@ const AwaitingApprovalStep = () => {
           Please wait while we verify your account.
         </Typography>
       </Stack>
-      
+
       <Stack direction="row" justifyContent="space-between" marginTop="auto" width="100%" gap={2}>
         <Button variant="outlined" onClick={close} tabIndex={-1}>
           Cancel

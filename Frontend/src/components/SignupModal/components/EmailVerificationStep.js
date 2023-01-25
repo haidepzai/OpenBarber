@@ -16,7 +16,7 @@ const EmailVerificationStep = () => {
 
   function onSubmit(e) {
     e.preventDefault();
-    console.log("verificationCode", verificationCode);
+    console.log('verificationCode', verificationCode);
     if (!verificationCode) {
       setError(true);
     }
@@ -29,17 +29,15 @@ const EmailVerificationStep = () => {
   }
 
   return (
-    <Stack
-      component="form"
-      height="100%"
-      justifyContent="center" alignItems="center"
-      gap={4} pt={16}
-      onSubmit={onSubmit}
-    >
-      <Typography variant="h4" fontWeight="bold">Verify your email</Typography>
+    <Stack component="form" height="100%" justifyContent="center" alignItems="center" gap={4} pt={16} onSubmit={onSubmit}>
+      <Typography variant="h4" fontWeight="bold">
+        Verify your email
+      </Typography>
       <Typography variant="body1" color="textSecondary">
         We sent a verification code to:&nbsp;
-        <Box component="span" fontWeight="bold">{email}</Box>
+        <Box component="span" fontWeight="bold">
+          {email}
+        </Box>
       </Typography>
 
       <TextField
@@ -52,14 +50,13 @@ const EmailVerificationStep = () => {
         onInput={(e) => {
           setData((d) => ({ ...d, verificationCode: e.target.value }));
         }}
-        onBlur={e => {
+        onBlur={(e) => {
           if (!verificationCode) {
             e.target.setCustomValidity('Please enter a verification code');
           } else {
             e.target.setCustomValidity('');
           }
-        }
-        }
+        }}
       />
 
       <Stack direction="row" justifyContent="space-between" marginTop="auto" width="100%" gap={2}>
