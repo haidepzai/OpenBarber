@@ -2,20 +2,16 @@ import { Stack, Typography, Button, Box, TextField } from '@mui/material';
 import React, { useContext } from 'react';
 import { SignupContext } from '../Signup.context';
 
-const PropInput = ({ label, vr, onBlur, error, name, ...props }) => {
+const PropInput = (props) => {
   const { data, setData } = useContext(SignupContext);
 
   return (
     <TextField
       required
-      label={label}
+      {...props.input}
       variant="outlined"
-      value={data[vr]}
-      onChange={(e) => setData((d) => ({ ...d, [vr]: e.target.value }))}
-      onBlur={onBlur}
-      error={error}
-      name={name}
-      {...props}
+      value={data[props.input.vr]}
+      onChange={(e) => setData((d) => ({ ...d, [props.input.vr]: e.target.value }))}
     />
   );
 };
@@ -71,18 +67,67 @@ const EnterpriseCreateStep = () => {
       <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 3fr 2fr', gap: 8 }}>
         <Stack gap={4}>
           <Typography variant="h6">Enterprise Information</Typography>
-          <PropInput label="Enterprise Name" vr="enterpriseName" onBlur={onBlur} error={errors.enterpriseName} name={'enterpriseName'} />
+          <PropInput input={{
+            label: "Enterprise Name",
+            vr: "enterpriseName",
+            onBlur: onBlur,
+            error: errors.enterpriseName,
+            name: 'enterpriseName'
+          }}
+          />
         </Stack>
 
         <Stack gap={4}>
           <Typography variant="h6">Setup your first Shop</Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr 1fr', gap: 2 }}>
-            <PropInput label="First Shop Name" vr="firstShopName" onBlur={onBlur} error={errors.shopName} name={'shopName'} />
-            <PropInput label="Shop Email" vr="shopEmail" onBlur={onBlur} error={errors.email} name={'email'} />
-            <PropInput label="Shop Phone" vr="shopPhone" onBlur={onBlur} error={errors.phone} name={'phone'} />
-            <PropInput label="Shop Header Url" vr="shopHeaderUrl" onBlur={onBlur} error={errors.headerUrl} name={'headerUrl'} />
-            <PropInput label="Shop Description" vr="shopDescription" onBlur={onBlur} error={errors.desc} name={'desc'} />
-            <PropInput label="Shop Website" vr="shopWebsite" onBlur={onBlur} error={errors.website} name={'website'} />
+            <PropInput input={{
+              label: "First Shop Name",
+              vr: "firstShopName",
+              onBlur: onBlur,
+              error: errors.shopName,
+              name: 'shopName'
+            }}
+            />
+            <PropInput input={{
+              label: "Shop Email",
+              vr: "shopEmail",
+              onBlur: onBlur,
+              error: errors.email,
+              name: 'email'
+            }}
+            />
+            <PropInput input={{
+              label: "Shop Phone",
+              vr: "shopPhone",
+              onBlur: onBlur,
+              error: errors.phone,
+              name: 'phone'
+            }}
+            />
+            <PropInput input={{
+              label: "Shop Header Url",
+              vr: "shopHeaderUrl",
+              onBlur: onBlur,
+              error: errors.headerUrl,
+              name: 'headerUrl'
+            }}
+            />
+            <PropInput input={{
+              label: "Shop Description",
+              vr: "shopDescription",
+              onBlur: onBlur,
+              error: errors.desc,
+              name: 'desc'
+            }}
+            />
+            <PropInput input={{
+              label: "Shop Website",
+              vr: "shopWebsite",
+              onBlur: onBlur,
+              error: errors.website,
+              name: 'website'
+            }}
+            />
           </Box>
         </Stack>
 
