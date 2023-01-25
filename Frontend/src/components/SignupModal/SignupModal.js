@@ -71,6 +71,7 @@ const SignupModal = ({ onClose }) => {
             sx={{
               width: 'min(2000px, 90%)',
               height: 'min(1000px, 90%)',
+              maxHeight: 'min(1000px, 90%)',
               backgroundColor: 'background.default',
               borderRadius: 5,
               boxShadow: 10,

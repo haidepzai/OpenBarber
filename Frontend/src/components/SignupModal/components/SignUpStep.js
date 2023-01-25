@@ -105,8 +105,8 @@ const SignUpStep = () => {
         />
       </Stack>
       <Stack direction="row" justifyContent="space-between" marginTop="auto">
-        <Button variant='outlined' onClick={close}>Cancel</Button>
-        <Button type="submit" disabled={!(email && password && confirmPassword)} variant='outlined'>Continue</Button>
+        <Button variant='outlined' onClick={close} tabIndex={-1}>Cancel</Button>
+        <Button type="submit" disabled={!(email && password && confirmPassword)} variant='contained'>Continue</Button>
       </Stack>
     </Stack>
   );
