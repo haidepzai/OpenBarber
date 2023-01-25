@@ -45,7 +45,7 @@ function Search() {
         search: `?location=${loc}`,
       });
     } else {
-      navigate('/filter', { state: { location: "Test" } });
+      navigate('/filter', { state: { location: 'Test' } });
       getCurrentLocation();
     }
   };

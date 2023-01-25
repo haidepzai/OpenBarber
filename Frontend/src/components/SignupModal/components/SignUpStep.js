@@ -4,11 +4,9 @@ import { Stack, TextField, Typography, Button } from '@mui/material';
 import { SignupContext } from '../Signup.context';
 
 const emailRegex =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const SignUpStep = () => {
-
   const {
     close,
     setActiveStep,
@@ -36,6 +34,8 @@ const SignUpStep = () => {
       case 'confirmPassword':
         setPasswordsMatch(validConfirmPassword());
         break;
+      default:
+        break;
     }
   }
   function onSubmit(e) {
@@ -44,7 +44,7 @@ const SignUpStep = () => {
     onBlur('password');
     onBlur('confirmPassword');
     if (validEmail() && validPassword() && validConfirmPassword()) {
-      console.log("Successful sign up!");
+      console.log('Successful sign up!');
       setCompletedSteps((v) => {
         const res = [...v];
         res[0] = true;
@@ -54,17 +54,17 @@ const SignUpStep = () => {
     }
   }
 
-  const update = type => {
-    return e => {
-      setData(d => ({ ...d, [type]: e.target.value }));
-      setCompletedSteps(v => {
+  const update = (type) => {
+    return (e) => {
+      setData((d) => ({ ...d, [type]: e.target.value }));
+      setCompletedSteps((v) => {
         const res = [...v];
         res[0] = false;
         res[1] = false;
         return res;
       });
-    }
-  }
+    };
+  };
 
   return (
     <Stack component="form" onSubmit={onSubmit} height="100%">
@@ -82,6 +82,7 @@ const SignUpStep = () => {
           error={!emailIsValid}
           helperText={!emailIsValid && 'Please enter a correct email'}
           onChange={update('email')}
+          onBlur={() => onBlur('email')}
         />
         <TextField
           label="Password"
@@ -105,8 +106,12 @@ const SignUpStep = () => {
         />
       </Stack>
       <Stack direction="row" justifyContent="space-between" marginTop="auto">
-        <Button variant='outlined' onClick={close} tabIndex={-1}>Cancel</Button>
-        <Button type="submit" disabled={!(email && password && confirmPassword)} variant='contained'>Continue</Button>
+        <Button variant="outlined" onClick={close} tabIndex={-1}>
+          Cancel
+        </Button>
+        <Button type="submit" disabled={!(email && password && confirmPassword)} variant="contained">
+          Continue
+        </Button>
       </Stack>
     </Stack>
   );

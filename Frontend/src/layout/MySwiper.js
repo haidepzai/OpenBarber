@@ -30,8 +30,8 @@ function MySwiper(props) {
   ];
 
   const handleClick = () => {
-    navigate('/filter', { state: { location: "Test" } });
-  }
+    navigate('/filter', { state: { location: 'Test' } });
+  };
 
   return (
     <div style={{ position: 'relative' }}>
