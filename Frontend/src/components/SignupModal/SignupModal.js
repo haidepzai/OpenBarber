@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import { Box, Stepper, Step, StepButton } from '@mui/material';
+import { Box, Stepper, Step, StepButton, Stack, Typography, Button } from '@mui/material';
 import SignUpStep from './components/SignUpStep';
 import { SignupContext } from './Signup.context';
 import EnterpriseCreateStep from './components/EnterpriseCreateStep';
+import AwaitingApprovalStep from './components/AwaitingApprovalStep';
+import EmailVerificationStep from './components/EmailVerificationStep';
 
 const steps = ["Sign up", "Verify your E-Mail", "Sign up your enterprise", "Wait for Approval"]
 
@@ -12,11 +14,23 @@ const SignupModal = ({ onClose }) => {
   const portalElement = document.getElementById('overlays');
 
   const [activeStep, setActiveStep] = useState(0);
-  const [finished, setFinished] = useState({
-    0: false,
-    1: false,
-    2: false,
-    3: false,
+  const [completedSteps, setCompletedSteps] = useState(
+    Array(4).fill(false)
+  );
+  const [data, setData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    verificationCode: '',
+
+    enterpriseName: '',
+    firstShopName: '',
+    shopPhone: '',
+    shopDescription: '',
+    shopEmail: '',
+    shopHeaderUrl: '',
+    shopWebsite: '',
+    shopServices: [],
   });
 
   useEffect(() => {
@@ -33,8 +47,10 @@ const SignupModal = ({ onClose }) => {
     <SignupContext.Provider value={{
       activeStep,
       setActiveStep,
-      finished,
-      setFinished,
+      completedSteps,
+      setCompletedSteps,
+      close: onClose,
+      data, setData
     }}>
       {ReactDOM.createPortal(
         <Box
@@ -53,8 +69,8 @@ const SignupModal = ({ onClose }) => {
         >
           <Box
             sx={{
-              width: 'min(1600px, 90%)',
-              height: 'min(800px, 90%)',
+              width: 'min(2000px, 90%)',
+              height: 'min(1000px, 90%)',
               backgroundColor: 'background.default',
               borderRadius: 5,
               boxShadow: 10,
@@ -66,27 +82,23 @@ const SignupModal = ({ onClose }) => {
           >
             <Stepper nonLinear activeStep={activeStep}>
               {steps.map((label, index) => (
-                <Step key={label} completed={false}>
+                <Step key={label} completed={completedSteps[index]}>
                   <StepButton
                     type="button"
-                    onClick={() => {}}
-                    disabled={false}
+                    onClick={() => setActiveStep(index)}
+                    disabled={completedSteps.slice(0, index).some(e=>!e)}
                   >
                     {label}
                   </StepButton>
                 </Step>
               ))}
             </Stepper>
-            <Box>
+            <Stack flexGrow="1">
               {activeStep === 0 && <SignUpStep />}
-              {activeStep === 1 && (
-                <Box>Email Verification</Box>
-              )}
+              {activeStep === 1 && <EmailVerificationStep />}
               {activeStep === 2 && <EnterpriseCreateStep /> }
-              {activeStep === 3 && (
-                <Box>Wait for Approval</Box>
-              )}
-            </Box>
+              {activeStep === 3 && <AwaitingApprovalStep /> }
+            </Stack>
           </Box>
         </Box>,
         portalElement
