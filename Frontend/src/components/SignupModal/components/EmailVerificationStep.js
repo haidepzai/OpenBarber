@@ -7,6 +7,7 @@ const EmailVerificationStep = () => {
     data: { email, verificationCode },
     setData,
     completedSteps,
+    setCompletedSteps,
     setActiveStep,
     close,
   } = useContext(SignupContext);
@@ -20,6 +21,11 @@ const EmailVerificationStep = () => {
       setError(true);
     }
     setActiveStep(2);
+    setCompletedSteps((cs) => {
+      const res = [...cs];
+      res[1] = true;
+      return res;
+    });
   }
 
   return (
@@ -57,14 +63,14 @@ const EmailVerificationStep = () => {
       />
 
       <Stack direction="row" justifyContent="space-between" marginTop="auto" width="100%" gap={2}>
-        <Button variant="outlined" onClick={close}>
+        <Button variant="outlined" onClick={close} tabIndex={-1}>
           Cancel
         </Button>
         <Button variant="outlined" onClick={() => setActiveStep(0)}>
           Back
         </Button>
         <Box flexGrow={1} />
-        <Button type="submit" disabled={!verificationCode || completedSteps.slice(0, 1).some((e) => !e)} variant="outlined">
+        <Button type="submit" disabled={!verificationCode || completedSteps.slice(0, 1).some((e) => !e)} variant="contained">
           Continue
         </Button>
       </Stack>
