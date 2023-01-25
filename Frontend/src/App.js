@@ -11,6 +11,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { basicTheme } from './themes/basicTheme';
 import FilterPage from './pages/FilterPage/FilterPage';
 import SignupModal from './components/SignupModal/SignupModal';
+import Datenschutz from './pages/Datenschutz';
 
 function App() {
   const [loginVisible, setLoginVisible] = useState(false);
