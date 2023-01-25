@@ -45,6 +45,7 @@ const PhotoSwiper = ({ images, onClose }) => {
         {images.map((image) => (
           <SwiperSlide key={image.name}>
             <img
+              alt="uploaded review"
               data-src={image.src}
               style={{ objectFit: 'cover', filter: 'brightness(0.7) contrast(1.2)', borderRadius: '10px' }}
               className="gallery-img swiper-lazy"

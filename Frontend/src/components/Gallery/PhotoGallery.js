@@ -26,7 +26,7 @@ const shopImages = [
   { name: 'Our personal tips', src: tipsImage },
 ];
 
-const PhotoGallery = ({}) => {
+const PhotoGallery = () => {
   const [openPhotoswiper, setOpenPhotoswiper] = useState(false);
 
   return (
@@ -35,8 +35,8 @@ const PhotoGallery = ({}) => {
         {shopImages.length} Photos
       </Typography>
       <ImageList sx={{ width: '100%', height: '344px', borderRadius: '5px', boxShadow: 4 }} cols={4} rowHeight={170} variant="quilted">
-        {shopImages.map((image) => (
-          <ImageListItem key={image.name} onClick={() => setOpenPhotoswiper(true)} sx={{ '&:hover': { cursor: 'pointer' } }}>
+        {shopImages.map((image, index) => (
+          <ImageListItem key={index} onClick={() => setOpenPhotoswiper(true)} sx={{ '&:hover': { cursor: 'pointer' } }}>
             <img
               src={`${image.src}?w=164&h=164&fit=crop&auto=format`}
               srcSet={`${image.src}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}

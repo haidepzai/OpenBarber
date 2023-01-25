@@ -1,10 +1,10 @@
 const barberShops = [
   {
     id: 1,
-    name: 'Barber Shop',
+    name: 'Serkan Barber Shop',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
+    image: 'https://ericbarbier.de/wp-content/uploads/2021/09/Eric-Barbier-Friseur-Ausbildung-01.jpg',
     rating: 4,
     reviews: 8,
     geometry: {
@@ -59,7 +59,7 @@ const barberShops = [
   },
   {
     id: 2,
-    name: 'Barber Shop 2',
+    name: 'Friseur Müller',
     rating: 4.5,
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
@@ -79,11 +79,11 @@ const barberShops = [
   },
   {
     id: 3,
-    name: 'Barber Shop 3',
+    name: 'Hairstyle 71',
     rating: 5,
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
+    image: 'https://www.kopflausratgeber.de/fileadmin/_processed_/8/9/csm_2021_1_blog_teaser_Mit_Kopflaeusen_zum_Friseur_LICENER_767x512_0406d0757d.jpg',
     reviews: 12,
     geometry: {
       location: 'Berlin, Germany',
@@ -99,11 +99,11 @@ const barberShops = [
   },
   {
     id: 4,
-    name: 'Barber Shop 4',
+    name: 'Crazy Hair',
     rating: 3,
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
+    image: 'https://www.blog.tillhub.de/hubfs/friseur-tipps-guter-service-1.jpg',
     reviews: 10,
     geometry: {
       location: 'Berlin, Germany',
@@ -119,11 +119,11 @@ const barberShops = [
   },
   {
     id: 5,
-    name: 'Barber Shop 5',
+    name: 'Salon Schmidt',
     rating: 4.5,
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    image: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
+    image: 'https://bbs-springe.de/wp-content/uploads/2013/08/ausbildungsberuf-friseur.jpg',
     reviews: 20,
     geometry: {
       location: 'Berlin, Germany',

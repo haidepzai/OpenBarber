@@ -13,6 +13,12 @@ import { useState } from 'react';
 export default function MediaCard({ image, title, rating, description, link, reviews, shop }) {
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
+  const handleClick = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setOpenReservationDialog(true);
+  }
+
   return (
     <>
       <Card sx={{ maxWidth: 250, borderRadius: 3 }}>
@@ -47,7 +53,7 @@ export default function MediaCard({ image, title, rating, description, link, rev
 
           <CardActions>
             {/*onClick={() => setOpenReservationDialog(true)}*/}
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={(e) => handleClick(e)}>
               Book Now
             </Button>
           </CardActions>
