@@ -1,6 +1,7 @@
 package com.hdmstuttgart.mi.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hdmstuttgart.mi.backend.model.enums.ServiceTargetAudience;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -14,7 +15,7 @@ public class Service {
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     @NotNull(message = "Price is mandatory")
     private double price;

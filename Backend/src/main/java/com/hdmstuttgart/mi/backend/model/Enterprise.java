@@ -16,7 +16,7 @@ public class Enterprise {
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     @NotBlank(message = "Name is mandatory")
     private String name;

@@ -15,7 +15,7 @@ public class Appointment {
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
 
     @NotBlank(message = "Customer name is mandatory")
