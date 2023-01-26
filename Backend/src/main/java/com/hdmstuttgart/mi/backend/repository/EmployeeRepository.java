@@ -1,10 +1,13 @@
 package com.hdmstuttgart.mi.backend.repository;
 
 import com.hdmstuttgart.mi.backend.model.Employee;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-public interface EmployeeRepository extends CrudRepository<Employee, Long> {
+@Repository
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Override
     List<Employee> findAll();
 

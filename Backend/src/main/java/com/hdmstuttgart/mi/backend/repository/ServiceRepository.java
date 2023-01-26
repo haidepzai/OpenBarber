@@ -1,10 +1,13 @@
 package com.hdmstuttgart.mi.backend.repository;
 
 import com.hdmstuttgart.mi.backend.model.Service;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-public interface ServiceRepository extends CrudRepository<Service, Long> {
+@Repository
+public interface ServiceRepository extends JpaRepository<Service, Long> {
     @Override
     List<Service> findAll();
 

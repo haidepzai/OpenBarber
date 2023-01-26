@@ -1,10 +1,13 @@
 package com.hdmstuttgart.mi.backend.repository;
 
 import com.hdmstuttgart.mi.backend.model.Appointment;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-public interface AppointmentRepository extends CrudRepository<Appointment, Long> {
+@Repository
+public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     @Override
     List<Appointment> findAll();
 
