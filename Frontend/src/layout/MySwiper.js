@@ -50,14 +50,14 @@ function MySwiper(props) {
               sx={{
                 padding: '0',
                 position: 'relative',
-                height: '300px',
+                height: '200px',
                 width: '300px',
                 borderRadius: '10px',
                 boxShadow: 'rgba(0, 0, 0, 0.6) 0px 2px 8px',
                 transition: '0.15s ease-in-out',
                 '& img': {
                   objectFit: 'cover',
-                  filter: 'brightness(0.75) contrast(1.2)',
+                  filter: 'brightness(0.55) contrast(1.2)',
                   borderRadius: '10px',
                   transition: '0.15s ease-in-out',
                 },
@@ -74,7 +74,7 @@ function MySwiper(props) {
             >
               <img src={currElement.src} alt="category" />
               <Typography
-                variant="h4"
+                variant="h6"
                 sx={{
                   textAlign: 'center',
                   position: 'absolute',
@@ -83,7 +83,7 @@ function MySwiper(props) {
                   transform: 'translate(-50%, -50%)',
                   margin: '0',
                   color: 'white.main',
-                  transition: '0.15s ease-in-out',
+                  transition: '0.15s ease-in-out'
                 }}
               >
                 {currElement.name}
