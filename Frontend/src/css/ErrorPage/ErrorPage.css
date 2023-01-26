@@ -2,3 +2,13 @@
     text-align: center;
     justify-content: center;
 }
+
+/*div#root*/
+#error-container {
+    /*height: 100%;*/
+    height: 100vh;
+    background-color: #EBE8E6;
+    padding-left: 8%;
+    padding-right: 8%;
+    padding-top: 2%;
+}
