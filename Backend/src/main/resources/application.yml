@@ -1,3 +1,14 @@
+.env:
+  prefix: ""
+
+mailCredentials:
+  username: ${MAIL_USERNAME}
+  password: ${MAIL_PASSWORD}
+
+mjmlSecrets:
+  appId: ${MJML_APP_ID}
+  appKey: ${MJML_APP_KEY}
+
 spring:
 
   datasource:
@@ -12,6 +23,19 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  mail:
+    host: smtp.office365.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 #  hateoas:
 #    use-hal-as-default-json-media-type: false
