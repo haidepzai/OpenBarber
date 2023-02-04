@@ -14,7 +14,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/openbarber
     username: postgres
-    password: password
+    password: postgres
 
   jpa:
     show-sql: true  # Log each SQL query
