@@ -1,10 +1,17 @@
 package com.hdmstuttgart.mi.backend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
 import com.hdmstuttgart.mi.backend.service.EnterpriseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 @RestController
@@ -18,9 +25,16 @@ public class EnterpriseController {
     }
 
     @PostMapping
-    public ResponseEntity<Enterprise> createEnterprise(@RequestBody Enterprise enterprise) {
-        Enterprise createdEnterprise = enterpriseService.createEnterprise(enterprise);
-        return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
+    public ResponseEntity<Enterprise> createEnterprise(@RequestParam("json") String json,
+                                                       @RequestParam("file") MultipartFile file) {
+        try {
+            EnterpriseRequest enterprise = new ObjectMapper().readValue(json, EnterpriseRequest.class);
+            Enterprise createdEnterprise = enterpriseService.createEnterprise(enterprise, file);
+            return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
+        } catch(JsonProcessingException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+        }
+
     }
 
     @GetMapping

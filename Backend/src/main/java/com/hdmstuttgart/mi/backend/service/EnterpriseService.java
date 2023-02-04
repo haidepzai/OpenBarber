@@ -1,10 +1,14 @@
 package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -16,8 +20,19 @@ public class EnterpriseService {
         this.enterpriseRepository = enterpriseRepository;
     }
 
-    public Enterprise createEnterprise(Enterprise enterprise) {
-        return enterpriseRepository.save(enterprise);
+    public Enterprise createEnterprise(EnterpriseRequest request, MultipartFile file){
+        try {
+            var enterprise = Enterprise.builder()
+                    .name(request.getName())
+                    .eMail(request.getEMail())
+                    .address(request.getAddress())
+                    .file(file.getBytes())
+                    .build();
+            return enterpriseRepository.save(enterprise);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+        }
+
     }
 
     public List<Enterprise> getAllEnterprises() {

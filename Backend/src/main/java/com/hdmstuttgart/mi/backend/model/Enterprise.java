@@ -1,5 +1,7 @@
 package com.hdmstuttgart.mi.backend.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -10,8 +12,10 @@ import java.sql.Blob;
 import java.util.List;
 
 @Data
-@Entity
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Enterprise {
 
     @Id
@@ -30,6 +34,9 @@ public class Enterprise {
     @Column(/*nullable = false, */unique = true)
     @Email
     private String eMail;
+
+    @Lob
+    private byte[] file;
 
     @Lob
     private Blob logo;
