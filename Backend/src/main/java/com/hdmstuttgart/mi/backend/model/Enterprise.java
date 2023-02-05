@@ -1,15 +1,20 @@
 package com.hdmstuttgart.mi.backend.model;
 
+import com.hdmstuttgart.mi.backend.model.enums.Drink;
+import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.net.URL;
 import java.sql.Blob;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -35,20 +40,51 @@ public class Enterprise {
     @Email
     private String eMail;
 
-    @Lob
-    private byte[] file;
-
-    @Lob
-    private Blob logo;
-
-    @Lob
-    private List<Blob> pictures;
+    private String phoneNumber;
 
     private URL website;
 
-    private String phoneNumber;
+    private String hours;
+
+    // Das später aus Reviews berechnen
+    private double rating;
+
+    // Hier später eigener Datentyp
+    private long reviews;
+
+    private boolean recommended;
 
     private boolean approved;
+
+    /*@Min(value = 1, message = "Price Category must be greater than or equal to 1")
+    @Max(value = 3, message = "Price Category must be smaller than or equal to 3")*/
+    private int priceCategory;
+
+/*    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private Set<PaymentMethod> paymentMethods;
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private Set<Drink> drinks;*/
+
+    @Lob
+    private byte[] logo;
+
+    @Lob
+    private List<byte[]> pictures;
+
+
+/*    @Lob
+    private byte[] file;
+    @Lob
+    private Blob logo;
+    @Lob
+    private List<Blob> pictures;*/
+
+
+
+
 
 
 /*    @OneToMany
