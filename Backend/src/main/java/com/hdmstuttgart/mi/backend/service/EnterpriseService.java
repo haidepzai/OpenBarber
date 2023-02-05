@@ -20,7 +20,7 @@ public class EnterpriseService {
         this.enterpriseRepository = enterpriseRepository;
     }
 
-    public Enterprise createEnterprise(EnterpriseRequest request, MultipartFile file){
+    /*public Enterprise createEnterprise(EnterpriseRequest request, MultipartFile file){
         try {
             var enterprise = Enterprise.builder()
                     .name(request.getName())
@@ -32,7 +32,20 @@ public class EnterpriseService {
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
+    }*/
 
+    public Enterprise createEnterprise(EnterpriseRequest request) {
+        try {
+            var enterprise = Enterprise.builder()
+                .name(request.getName())
+                .eMail(request.getEMail())
+                .address(request.getAddress())
+                .file(request.getFile().getBytes())
+                .build();
+            return enterpriseRepository.save(enterprise);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 
     public List<Enterprise> getAllEnterprises() {
