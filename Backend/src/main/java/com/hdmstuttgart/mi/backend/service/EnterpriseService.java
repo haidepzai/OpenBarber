@@ -40,7 +40,7 @@ public class EnterpriseService {
                 .name(request.getName())
                 .eMail(request.getEMail())
                 .address(request.getAddress())
-                .file(request.getFile().getBytes())
+                .logo(request.getLogo().getBytes())
                 .build();
             return enterpriseRepository.save(enterprise);
         } catch (IOException e) {
