@@ -1,11 +1,13 @@
 import { Grid } from '@mui/material';
-import React from 'react';
+import React, {useEffect} from 'react';
 import MediaCard from '../../components/CardComponent/MediaCard';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Search from '../../layout/Search';
 import { Box, Typography } from '@mui/material';
 import MySwiper from '../../layout/MySwiper';
 import barberShops from '../../mocks/shops';
+import apiCall from "../../api/axiosConfig";
+import axios from "axios";
 
 /*const theme = createTheme({
   palette: {
@@ -28,6 +30,33 @@ import barberShops from '../../mocks/shops';
 });*/
 
 const LandingPage = () => {
+
+  useEffect(() => {
+    /*async function getShops() {
+      const response = await apiCall.get('/enterprises');
+      const barberShops = response.data;
+      console.log(barberShops);
+    }
+    getShops();*/
+
+    /*axios.get('http://localhost:8080/api/enterprises').then((response) => {
+      console.log(response);
+    })*/
+
+    async function getShops() {
+      const response = await axios.get('http://localhost:8080/api/enterprises');
+      console.log(response.data);
+    }
+    getShops();
+    async function getShops2() {
+      const response = await apiCall.get('/enterprises');
+      const barberShops = response.data;
+      console.log(barberShops);
+    }
+    getShops2();
+  }, [])
+
+
   return (
     <>
       <Box sx={{ background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(93,71,58,1) 0%, rgba(160,142,131,1) 100%)', p: '50px 0' }}>
