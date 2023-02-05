@@ -18,6 +18,6 @@ public class EnterpriseRequest {
     private String name;
     private String address;
     private String eMail;
-
+    private MultipartFile file;
     /*private MultipartFile file;*/
 }

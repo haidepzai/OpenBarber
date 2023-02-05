@@ -24,17 +24,11 @@ public class EnterpriseController {
         this.enterpriseService = enterpriseService;
     }
 
+    /* @ModelAttribute: arguments fields == request parameters */
     @PostMapping
-    public ResponseEntity<Enterprise> createEnterprise(@RequestParam("json") String json,
-                                                       @RequestParam("file") MultipartFile file) {
-        try {
-            EnterpriseRequest enterprise = new ObjectMapper().readValue(json, EnterpriseRequest.class);
-            Enterprise createdEnterprise = enterpriseService.createEnterprise(enterprise, file);
-            return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
-        } catch(JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
-        }
-
+    public ResponseEntity<Enterprise> createEnterprise(@ModelAttribute EnterpriseRequest enterpriseRequest) {
+        Enterprise createdEnterprise = enterpriseService.createEnterprise(enterpriseRequest);
+        return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
     }
 
     @GetMapping
