@@ -1,19 +1,29 @@
 package com.hdmstuttgart.mi.backend.service;
 
+import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
+import com.hdmstuttgart.mi.backend.model.enums.Drink;
+import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.List;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 @Service
 public class EnterpriseService {
 
+    private static final Logger log = LoggerFactory.getLogger(EnterpriseService.class);
     private final EnterpriseRepository enterpriseRepository;
 
     public EnterpriseService(EnterpriseRepository enterpriseRepository) {
@@ -35,12 +45,51 @@ public class EnterpriseService {
     }*/
 
     public Enterprise createEnterprise(EnterpriseRequest request) {
+        byte[] logo = null;
+        List<byte[]> pictures = new ArrayList<>();
+        Set<PaymentMethod> paymentMethods = null;
+        Set<Drink> drinks = null;
         try {
+            if (request.getLogo() != null) {
+                logo = request.getLogo().getBytes();
+            }
+            if (request.getPictures() != null) {
+                for (MultipartFile pictureData : request.getPictures()) {
+                    pictures.add(pictureData.getBytes());
+                }
+            }
+            if (request.getDrinks() != null) {
+                drinks = new HashSet<Drink>(
+                        request.getDrinks()
+                                .stream()
+                                .map(Drink::valueOf)
+                                .collect(Collectors.toList())
+                );
+            }
+            if (request.getPaymentMethods() != null) {
+                paymentMethods = new HashSet<PaymentMethod>(
+                        request.getPaymentMethods()
+                                .stream()
+                                .map(PaymentMethod::valueOf)
+                                .collect(Collectors.toList())
+                );
+            }
             var enterprise = Enterprise.builder()
                 .name(request.getName())
                 .eMail(request.getEMail())
                 .address(request.getAddress())
-                .logo(request.getLogo().getBytes())
+                .logo(logo)
+                .pictures(pictures)
+                .phoneNumber(request.getPhoneNumber())
+                .hours(request.getHours())
+                .website(request.getWebsite())
+                .rating(request.getRating())
+                .reviews(request.getReviews())
+                .recommended(request.isRecommended())
+                .approved(request.isApproved())
+                .priceCategory(request.getPriceCategory())
+                .paymentMethods(paymentMethods)
+                .drinks(drinks)
                 .build();
             return enterpriseRepository.save(enterprise);
         } catch (IOException e) {
