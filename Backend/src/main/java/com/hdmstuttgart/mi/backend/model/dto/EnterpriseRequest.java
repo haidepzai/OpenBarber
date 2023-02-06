@@ -1,5 +1,6 @@
 package com.hdmstuttgart.mi.backend.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import lombok.Data;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.net.URL;
 import java.sql.Blob;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,20 +21,21 @@ import java.util.Set;
 public class EnterpriseRequest {
     private String name;
     private String address;
-    /*private long addressLongitude;
-    private long addressAltitude;*/
+    private long addressLongitude;
+    private long addressAltitude;
     private String eMail;
     private MultipartFile logo;
-    /*private List<MultipartFile> pictures;*/
-
-    /*private String phoneNumber;
-    private URL website;
+    private List<MultipartFile> pictures;
+    private String phoneNumber;
     private String hours;
+    private URL website;
     private double rating;
     private long reviews;
     private boolean recommended;
     private boolean approved;
-    private int priceCategory;*/
+    private int priceCategory;
+    private List<String> paymentMethods;
+    private List<String> drinks;
 
     /*private Set<PaymentMethod> paymentMethods;
     private Set<Drink> drinks;*/
