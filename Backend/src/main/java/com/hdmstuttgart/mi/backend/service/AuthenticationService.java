@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class AuthenticationService {
                 .lastname(request.getLastname())
                 .username(request.getUsername())
                 .email(request.getEmail())
+                .confirmationCode(request.getConfirmationCode())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(UserRole.USER)
                 .build();
@@ -38,8 +40,8 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
 
         try {
-            emailSenderService.sendVerificationEmail(user.getEmail(), user.getUsername());
-        } catch (MessagingException e) {
+            emailSenderService.sendEmailWithTemplate(user.getEmail(), user.getUsername(), "verification");
+        } catch (MessagingException | IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
 
