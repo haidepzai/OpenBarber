@@ -50,7 +50,7 @@
             Find your verification code down here!
           </mj-text>
           <mj-text color="#637381" font-size="16px">
-            Dear Son Hai Vu,
+            blank_fullName,
           </mj-text>
           <mj-text color="#637381" font-size="16px">
             thank you for signing up at OpenBarber! You just need to go through a short verification process in order to activate your business account.
@@ -59,7 +59,7 @@
             Just login at our website and copy pasta the following code:
           </mj-text>
           <mj-text color="#212b35" font-weight="bold" font-size="18px">
-            69420
+            blank_verificationCode
           </mj-text>
 
                     <mj-button background-color="#3CBAAD" align="center" color="#ffffff" font-size="17px" font-weight="bold" href="https://google.com" width="300px">
