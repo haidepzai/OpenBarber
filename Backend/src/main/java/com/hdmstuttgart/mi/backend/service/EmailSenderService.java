@@ -75,6 +75,7 @@ public class EmailSenderService {
         helper.setText(plainHTML, true);
         helper.setTo(email);
 
+        //template specific email subjects
         if(templateName.equals("verification")) {
             helper.setSubject("OpenBarber - Hi " + username + ", your verification code is here!");
         } else {
