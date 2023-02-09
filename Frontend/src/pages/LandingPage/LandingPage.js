@@ -44,16 +44,21 @@ const LandingPage = () => {
     })*/
 
     async function getShops() {
-      const response = await axios.get('http://localhost:8080/api/enterprises');
-      console.log(response.data);
+      /*const response = await axios.get('http://localhost:8080/api/enterprises');
+      console.log(response.data);*/
+      const response = await fetch("http://localhost:8080/api/enterprises", {
+        method: 'GET',
+      });
+      console.log(response.json());
+
     }
     getShops();
-    async function getShops2() {
+    /*async function getShops2() {
       const response = await apiCall.get('/enterprises');
       const barberShops = response.data;
       console.log(barberShops);
     }
-    getShops2();
+    getShops2();*/
   }, [])
 
 
