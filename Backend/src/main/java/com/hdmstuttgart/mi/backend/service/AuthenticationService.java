@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class AuthenticationService {
                 .lastname(request.getLastname())
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .confirmationCode(request.getConfirmationCode())
+                .confirmationCode(UUID.randomUUID().toString().substring(0,6).toUpperCase())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(UserRole.USER)
                 .build();
