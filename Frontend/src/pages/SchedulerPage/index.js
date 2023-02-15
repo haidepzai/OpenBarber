@@ -65,22 +65,23 @@ const StyledToolbarFlexibleSpace = styled(Toolbar.FlexibleSpace)(() => ({
 
 const EmployeeSelect = ({ value, setValue, options}) => {
     return (
-        <Box sx={{ minWidth: 200, marginRight: "30px" }}>
-            <FormControl fullWidth size="small">
+        /*<Box sx={{ minWidth: 200, marginRight: "30px" }}>*/
+            <FormControl sx={{ minWidth: 200, marginRight: "30px" }} size="small">
                 <InputLabel id="demo-simple-select-label">Hairdresser</InputLabel>
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     value={value}
-                    label="Age"
+                    label="Hairdresser"
                     onChange={(event) => setValue(event.target.value)}
                 >
+                    <MenuItem value={""}><em>None</em></MenuItem>
                     {options.map((option) => (
-                        <MenuItem value={option.id}>{option.text}</MenuItem>
+                        <MenuItem key={option.id} value={option.id}>{option.text}</MenuItem>
                     ))}
                 </Select>
             </FormControl>
-        </Box>
+        /*</Box>*/
     )
 }
 
@@ -175,6 +176,29 @@ const appointmentComponent = ({ children, style, ...restProps }) => (
     </Appointments.Appointment>
 );
 
+const appointmentContentComponent = ({ data, ...restProps }) => {
+    const options = { hour: 'numeric', minute: 'numeric' };
+    const difference = Math.floor((new Date(data.endDate) - new Date(data.startDate)) / (1000 * 60));
+    return (
+        <Appointments.AppointmentContent
+            {...restProps}
+            data={data}
+        >
+            {/*{ difference }*/}
+            <div style={{ overflow: "hidden" }}>
+                <div style={{ fontWeight: "bold" }}>{data.title}</div>
+                { difference > 30 &&
+                    <>
+                        <div>{new Date(data.startDate).toLocaleTimeString("en-US", options) + " - "}</div>
+                        <div>{new Date(data.endDate).toLocaleTimeString("en-US", options)}</div>
+                    </>
+                }
+                <div>{data.customer.name}</div>
+            </div>
+        </Appointments.AppointmentContent>
+    )
+}
+
 const draftAppointmentComponent = ({ children, style, ...restProps }) => (
     <DragDropProvider.DraftAppointment
         {...restProps}
@@ -194,14 +218,18 @@ const allowDrag = ({ id }) => !dragDisabledIds.has(id);
 
 const SchedulerPage =  () => {
 
+    /* ID MUSS unique sein sonst fkt. Filter nicht richtig */
     const [appointmentData, setAppointmentData] = useState([
-        { id: 0, startDate: '2023-02-09T09:45', endDate: '2023-02-09T11:00', hairdresser: 1, service: 1, customer: 1 },
-        { id: 1, startDate: '2023-02-09T12:00', endDate: '2023-02-09T13:30', hairdresser: 2, service: 2, customer: 2 },
-        { id: 0, startDate: '2023-02-09T09:45', endDate: '2023-02-09T11:00', hairdresser: 2, service: 1, customer: 1 },
-        { id: 1, startDate: '2023-02-09T12:00', endDate: '2023-02-09T13:30', hairdresser: 1, service: 2, customer: 2 },
-        { id: 0, startDate: '2023-02-10T14:00', endDate: '2023-02-10T15:00', hairdresser: 1, service: 3, customer: 3 },
-        { id: 1, startDate: '2023-02-10T12:30', endDate: '2023-02-10T13:30', hairdresser: 2, service: 4, customer: 4 },
+        { id: 0, startDate: '2023-02-09T09:45', endDate: '2023-02-09T11:00', hairdresser: 1, service: 1, customer: { id: 1, name: 'Alexander Hahn' }, title: 'Waschen, Schneiden, Föhnen', customerResource: 1 },
+        { id: 1, startDate: '2023-02-09T12:00', endDate: '2023-02-09T13:30', hairdresser: 2, service: 2, customer: { id: 2, name: 'Max Mustermann' }, title: 'Trockenhaarschnitt', customerResource: 2 },
+        { id: 2, startDate: '2023-02-09T09:45', endDate: '2023-02-09T11:00', hairdresser: 2, service: 1, customer: { id: 3, name: 'Cristiano Ronaldo' }, title: 'Waschen, Schneiden, Föhnen', customerResource: 3 },
+        { id: 3, startDate: '2023-02-09T12:00', endDate: '2023-02-09T13:30', hairdresser: 1, service: 2, customer: { id: 4, name: 'Kylian Mbappe' }, title: 'Trockenhaarschnitt', customerResource: 4 },
+        { id: 4, startDate: '2023-02-10T14:00', endDate: '2023-02-10T15:00', hairdresser: 1, service: 3, customer: { id: 5, name: 'LeBron James' }, title: 'Haare färben', customerResource: 5 },
+        { id: 5, startDate: '2023-02-10T12:30', endDate: '2023-02-10T13:30', hairdresser: 2, service: 4, customer: { id: 6, name: 'Luka Doncic' }, title: "Strähnen", customerResource: 6 },
+        { id: 6, startDate: '2023-02-10T09:00', endDate: '2023-02-10T09:30', hairdresser: 2, service: 4, customer: { id: 6, name: 'Luka Doncic' }, title: "Strähnen", customerResource: 6 },
+
     ]);
+
     const [mainResourceName, setMainResourceName] = useState('hairdresser')
     const [resources, setResources] = useState([
         {
@@ -235,6 +263,18 @@ const SchedulerPage =  () => {
                 { id: 3, text: 'Cristiano Ronaldo' },
                 { id: 4, text: 'Kylian Mbappe' },
                 { id: 5, text: 'LeBron James' },
+                { id: 6, name: 'Luka Doncic' }
+            ],
+        },
+        {
+            fieldName: 'customerResource',
+            title: 'Customer',
+            instances: [
+                { id: 1, text: 'Alexander Hahn' },
+                { id: 2, text: 'Max Mustermann' },
+                { id: 3, text: 'Cristiano Ronaldo' },
+                { id: 4, text: 'Kylian Mbappe' },
+                { id: 5, text: 'LeBron James' },
             ],
         }
     ])
@@ -244,7 +284,8 @@ const SchedulerPage =  () => {
 
     const filterAppointments = (appointments) => {
         if (employeeFilter) {
-            return appointments.filter((appointment) => appointment.hairdresser === employeeFilter)
+            const filteredAppointments = appointments.filter((appointment) => appointment.hairdresser === employeeFilter)
+            return filteredAppointments
         } else {
             return appointments
         }
@@ -272,13 +313,6 @@ const SchedulerPage =  () => {
             return data;
         })
     }
-
-    useEffect(() => {
-        console.log(appointmentData)
-    }, [])
-    useEffect(() => {
-        console.log(employeeFilter)
-    }, [employeeFilter])
 
     return (
         <>
@@ -328,7 +362,7 @@ const SchedulerPage =  () => {
                             <Toolbar.FlexibleSpace>
                                 <EmployeeSelect
                                     value={employeeFilter}
-                                    setValue={setEmployeeFilter}
+                                    handleChange={setEmployeeFilter}
                                     options={resources[0].instances}
                                 />
                             </Toolbar.FlexibleSpace>
@@ -340,6 +374,7 @@ const SchedulerPage =  () => {
                     <TodayButton />
                     <Appointments
                         /*appointmentComponent={appointmentComponent}*/
+                        appointmentContentComponent={appointmentContentComponent}
                     />
                     <AppointmentTooltip
                         showOpenButton
