@@ -1,0 +1,12 @@
+
+- Customer Resource Weg
+- Daten verschicken
+	- POST Form entsprechend erweitern
+	- PUT Reducen (Resources weg)
+
+- enterprise-form erstellen 
+
+- MediaCard-padding
+
+- Filter funktionalität 
++ weiterleitung
