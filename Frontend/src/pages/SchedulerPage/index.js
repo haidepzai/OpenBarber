@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
-import {ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
+import {ViewState, EditingState, IntegratedEditing, GroupingState, IntegratedGrouping } from '@devexpress/dx-react-scheduler';
 import {
     Scheduler,
     WeekView,
@@ -16,7 +16,8 @@ import {
     AppointmentForm,
     ConfirmationDialog,
     DragDropProvider,
-    Resources
+    Resources,
+    GroupingPanel
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { styled, alpha } from '@mui/material/styles';
 import {useEffect, useState} from "react";
@@ -24,26 +25,52 @@ import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import ContentCutIcon from "@mui/icons-material/ContentCut";
 
-/*const currentDate = '2018-11-01';*/
-/*const currentDate = new Date();*/
-
-/* TODO: Customize the Appointment Form - Mitarbeiter ändern (zur Demo) https://devexpress.github.io/devextreme-reactive/react/scheduler/docs/guides/editing/#customize-the-appointment-form
+/*
 *  Doppelklick auf Zelle --> Add
-* */
+*/
 
-const schedulerData = [
-    { startDate: '2023-02-09T09:45', endDate: '2023-02-09T11:00', title: 'Meeting' },
-    { startDate: '2023-02-09T12:00', endDate: '2023-02-09T13:30', title: 'Go to a gym' },
+const grouping = [
+    { resourceName: 'hairdresserResource' },
+]
+
+const resources = [
     {
-        title: 'Website Re-Design Plan',
-        startDate: new Date(2023,2, 10, 9, 35),
-        endDate: new Date(2023, 2, 10, 11, 30),
-        id: 0,
-        location: 'Room 1',
+        fieldName: 'hairdresserResource',
+        title: 'Hairdresser',
+        instances: [
+            { id: 1, text: 'Alexandra' },
+            { id: 2, text: 'Peter' },
+        ],
     },
-];
+    {
+        fieldName: 'serviceResource',
+        title: 'Service',
+        allowMultiple: true,
+        instances: [
+            { id: 1, text: 'Waschen, Schneiden, Föhnen' },
+            { id: 2, text: 'Trockenhaarschnitt' },
+            { id: 3, text: 'Haare färben' },
+            { id: 4, text: 'Strähnen' },
+            { id: 5, text: 'Kosmetik - Wimpern' },
+        ],
+    },
+    {
+        fieldName: 'customerResource',
+        title: 'Customer',
+        instances: [
+            { id: 1, text: 'Alexander Hahn' },
+            { id: 2, text: 'Max Mustermann' },
+            { id: 3, text: 'Cristiano Ronaldo' },
+            { id: 4, text: 'Kylian Mbappe' },
+            { id: 5, text: 'LeBron James' },
+            { id: 6, name: 'Luka Doncic' }
+        ],
+    }
+]
 
 const PREFIX = 'Demo';
 
@@ -184,7 +211,6 @@ const appointmentContentComponent = ({ data, ...restProps }) => {
             {...restProps}
             data={data}
         >
-            {/*{ difference }*/}
             <div style={{ overflow: "hidden" }}>
                 <div style={{ fontWeight: "bold" }}>{data.title}</div>
                 { difference > 30 &&
@@ -198,6 +224,36 @@ const appointmentContentComponent = ({ data, ...restProps }) => {
         </Appointments.AppointmentContent>
     )
 }
+
+const displayData = (appointmentResources) => (appointmentResources.map((r) => {
+    if (r.fieldName !== "serviceResource") {
+        return {...r, text: `${r.title}: ${r.text}`}
+    } else {
+        return r;
+    }
+}))
+
+const appointmentTooltipContentComponent = (({ children, appointmentData, appointmentResources, ...restProps }) => {
+    return (
+        <AppointmentTooltip.Content {...restProps} appointmentResources={displayData(appointmentResources)} appointmentData={appointmentData}>
+            {/*{ appointmentData.services && appointmentData.services.length >= 2 &&
+                <Grid container alignItems="center" sx={{ margin: "5px 0" }}>
+                    <Grid item xs={2} sx={{ textAlign: "center" }}>
+                        <ContentCutIcon fontSize="small" />
+                    </Grid>
+                    <Grid item xs={10}>
+                        { appointmentData.services.map((service) => (
+                            <>
+                                <span>{service.title}</span>
+                                <br />
+                            </>
+                        ))}
+                    </Grid>
+                </Grid>
+            }*/}
+        </AppointmentTooltip.Content>
+    )
+});
 
 const draftAppointmentComponent = ({ children, style, ...restProps }) => (
     <DragDropProvider.DraftAppointment
@@ -220,71 +276,21 @@ const SchedulerPage =  () => {
 
     /* ID MUSS unique sein sonst fkt. Filter nicht richtig */
     const [appointmentData, setAppointmentData] = useState([
-        { id: 0, startDate: '2023-02-09T09:45', endDate: '2023-02-09T11:00', hairdresser: 1, service: 1, customer: { id: 1, name: 'Alexander Hahn' }, title: 'Waschen, Schneiden, Föhnen', customerResource: 1 },
-        { id: 1, startDate: '2023-02-09T12:00', endDate: '2023-02-09T13:30', hairdresser: 2, service: 2, customer: { id: 2, name: 'Max Mustermann' }, title: 'Trockenhaarschnitt', customerResource: 2 },
-        { id: 2, startDate: '2023-02-09T09:45', endDate: '2023-02-09T11:00', hairdresser: 2, service: 1, customer: { id: 3, name: 'Cristiano Ronaldo' }, title: 'Waschen, Schneiden, Föhnen', customerResource: 3 },
-        { id: 3, startDate: '2023-02-09T12:00', endDate: '2023-02-09T13:30', hairdresser: 1, service: 2, customer: { id: 4, name: 'Kylian Mbappe' }, title: 'Trockenhaarschnitt', customerResource: 4 },
-        { id: 4, startDate: '2023-02-10T14:00', endDate: '2023-02-10T15:00', hairdresser: 1, service: 3, customer: { id: 5, name: 'LeBron James' }, title: 'Haare färben', customerResource: 5 },
-        { id: 5, startDate: '2023-02-10T12:30', endDate: '2023-02-10T13:30', hairdresser: 2, service: 4, customer: { id: 6, name: 'Luka Doncic' }, title: "Strähnen", customerResource: 6 },
-        { id: 6, startDate: '2023-02-10T09:00', endDate: '2023-02-10T09:30', hairdresser: 2, service: 4, customer: { id: 6, name: 'Luka Doncic' }, title: "Strähnen", customerResource: 6 },
-
+        { id: 0, startDate: '2023-02-09T09:45', endDate: '2023-02-09T11:00', services: [{ id: 1, title: 'Waschen, Schneiden, Föhnen' }, { id: 2, title: 'Haare färben' }], customer: { id: 1, name: 'Alexander Hahn' }, title: 'Waschen, Schneiden, Föhnen', hairdresserResource: 1, serviceResource: [1], customerResource: 1, },
+        { id: 1, startDate: '2023-02-09T12:00', endDate: '2023-02-09T13:30', hairdresserResource: 2, serviceResource: [1, 2], customer: { id: 2, name: 'Max Mustermann' }, title: 'Trockenhaarschnitt', customerResource: 2 },
+        { id: 2, startDate: '2023-02-09T09:45', endDate: '2023-02-09T11:00', hairdresserResource: 2, serviceResource: [1, 2, 3], customer: { id: 3, name: 'Cristiano Ronaldo' }, title: 'Waschen, Schneiden, Föhnen', customerResource: 3 },
+        { id: 3, startDate: '2023-02-09T12:00', endDate: '2023-02-09T13:30', hairdresserResource: 1, serviceResource: [2], customer: { id: 4, name: 'Kylian Mbappe' }, title: 'Trockenhaarschnitt', customerResource: 4 },
+        { id: 4, startDate: '2023-02-10T14:00', endDate: '2023-02-10T15:00', hairdresserResource: 1, serviceResource: [3], customer: { id: 5, name: 'LeBron James' }, title: 'Haare färben', customerResource: 5 },
+        { id: 5, startDate: '2023-02-10T12:30', endDate: '2023-02-10T13:30', hairdresserResource: 2, serviceResource: [4], customer: { id: 6, name: 'Luka Doncic' }, title: "Strähnen", customerResource: 6 },
+        { id: 6, startDate: '2023-02-10T09:00', endDate: '2023-02-10T09:30', hairdresserResource: 2, serviceResource: [4], customer: { id: 6, name: 'Luka Doncic' }, title: "Strähnen", customerResource: 6 },
     ]);
-
-    const [mainResourceName, setMainResourceName] = useState('hairdresser')
-    const [resources, setResources] = useState([
-        {
-            fieldName: 'hairdresser',
-            title: 'Hairdresser',
-            instances: [
-                { id: 1, text: 'Alexandra' },
-                { id: 2, text: 'Peter' },
-                /*{ id: 3, text: 'Max' },
-                { id: 4, text: 'Selina' },
-                { id: 5, text: 'Alex' },*/
-            ],
-        },
-        {
-            fieldName: 'service',
-            title: 'Service',
-            instances: [
-                { id: 1, text: 'Waschen, Schneiden, Föhnen' },
-                { id: 2, text: 'Trockenhaarschnitt' },
-                { id: 3, text: 'Haare färben' },
-                { id: 4, text: 'Strähnen' },
-                { id: 5, text: 'Kosmetik - Wimpern' },
-            ],
-        },
-        {
-            fieldName: 'customer',
-            title: 'Customer',
-            instances: [
-                { id: 1, text: 'Alexander Hahn' },
-                { id: 2, text: 'Max Mustermann' },
-                { id: 3, text: 'Cristiano Ronaldo' },
-                { id: 4, text: 'Kylian Mbappe' },
-                { id: 5, text: 'LeBron James' },
-                { id: 6, name: 'Luka Doncic' }
-            ],
-        },
-        {
-            fieldName: 'customerResource',
-            title: 'Customer',
-            instances: [
-                { id: 1, text: 'Alexander Hahn' },
-                { id: 2, text: 'Max Mustermann' },
-                { id: 3, text: 'Cristiano Ronaldo' },
-                { id: 4, text: 'Kylian Mbappe' },
-                { id: 5, text: 'LeBron James' },
-            ],
-        }
-    ])
     const [currentDate, setCurrentDate] = useState(new Date())
     const [currentViewName, setCurrentViewName] = useState('Week');
     const [employeeFilter, setEmployeeFilter] = useState("");
 
     const filterAppointments = (appointments) => {
         if (employeeFilter) {
-            const filteredAppointments = appointments.filter((appointment) => appointment.hairdresser === employeeFilter)
+            const filteredAppointments = appointments.filter((appointment) => appointment.hairdresserResource === employeeFilter)
             return filteredAppointments
         } else {
             return appointments
@@ -335,10 +341,14 @@ const SchedulerPage =  () => {
                         defaultCurrentViewName={currentViewName}
                         onCurrentViewNameChange={(newViewName) => setCurrentViewName(newViewName)}
                     />
+
                     <EditingState
                         onCommitChanges={commitChanges}
                     />
-                    <IntegratedEditing />
+                    {/*<GroupingState
+                        grouping={grouping}
+                    />*/}
+
                     {/*day, week, month?*/}
                     <WeekView
                         // shop öffnungszeit
@@ -356,7 +366,7 @@ const SchedulerPage =  () => {
                         startDayHour={8}
                         endDayHour={20}
                     />
-                    <ConfirmationDialog />
+
                     <Toolbar
                         flexibleSpaceComponent={() => (
                             <Toolbar.FlexibleSpace>
@@ -376,23 +386,31 @@ const SchedulerPage =  () => {
                         /*appointmentComponent={appointmentComponent}*/
                         appointmentContentComponent={appointmentContentComponent}
                     />
+                    <Resources
+                        data={resources}
+                        mainResourceName='hairdresserResource'
+                    />
+
+                    {/*<IntegratedGrouping />*/}
+                    <IntegratedEditing />
+                    <ConfirmationDialog />
                     <AppointmentTooltip
                         showOpenButton
                         showCloseButton
                         showDeleteButton
+                        contentComponent={appointmentTooltipContentComponent}
                     />
                     <AppointmentForm
                         /*basicLayoutComponent={BasicLayout}*/
                     />
+
+                    {/*<GroupingPanel />*/}
                     <DragDropProvider
                         allowDrag={allowDrag}
                         /*draftAppointmentComponent={draftAppointmentComponent}*/
                         /*sourceAppointmentComponent*/
                     />
-                    <Resources
-                        data={resources}
-                        mainResourceName={mainResourceName}
-                    />
+
                 </Scheduler>
             </Paper>
         </>

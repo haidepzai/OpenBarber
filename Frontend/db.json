@@ -1,0 +1,243 @@
+{
+  "appointments": [
+    {
+      "id": 2,
+      "startDate": "2023-02-09T09:45",
+      "endDate": "2023-02-09T11:00",
+      "services": [
+        0,
+        3
+      ],
+      "customer": {
+        "id": 1,
+        "firstName": "Alexander"
+      },
+      "employee": 1
+    },
+    {
+      "id": 3,
+      "startDate": "2023-02-09T12:00",
+      "endDate": "2023-02-09T13:30",
+      "services": [
+        0,
+        3
+      ],
+      "customer": {
+        "id": 2,
+        "formOfAddress": "Mrs.",
+        "firstName": "Angela",
+        "lastName": "Merkel",
+        "email": "am@gmx.com",
+        "phoneNumber": "0157 54154566"
+      },
+      "employee": 2
+    },
+    {
+      "id": 4,
+      "startDate": "2023-02-09T09:45",
+      "endDate": "2023-02-09T11:00",
+      "services": [
+        3,
+        4,
+        5
+      ],
+      "customer": {
+        "id": 3,
+        "formOfAddress": "Mr.",
+        "firstName": "Cristiano",
+        "lastName": "Ronaldo",
+        "email": "cr7@gmx.com",
+        "phoneNumber": "0157 54154566"
+      },
+      "employee": 2
+    },
+    {
+      "id": 5,
+      "startDate": "2023-02-22T08:00:00.000Z",
+      "endDate": "2023-02-22T08:30:00.000Z",
+      "services": [
+        0,
+        4,
+        5
+      ],
+      "customer": {
+        "firstName": "Dominik",
+        "lastName": "Seitz",
+        "phoneNumber": "015750147297",
+        "email": "10:30 AM"
+      },
+      "employee": 2
+    },
+    {
+      "id": 6,
+      "startDate": "2023-02-22T08:30:00.000Z",
+      "endDate": "2023-02-22T09:00:00.000Z",
+      "services": [
+        4
+      ],
+      "customer": {
+        "firstName": "Lionel",
+        "lastName": "Messi",
+        "phoneNumber": "erfdvgb ",
+        "email": "rfedgzhfutgzihoujik"
+      },
+      "employee": 2,
+      "title": "Strähnenc"
+    },
+    {
+      "id": 8,
+      "title": "12345",
+      "startDate": "2023-02-22T13:00:00.000Z",
+      "endDate": "2023-02-22T16:00:00.000Z",
+      "employee": 2,
+      "services": [
+        3
+      ],
+      "customer": {
+        "firstName": "Max12",
+        "lastName": "Meier12",
+        "phoneNumber": "0157 653896112",
+        "email": "max.meier@web.de12"
+      }
+    },
+    {
+      "id": 9,
+      "startDate": "2023-02-20T11:30:00.000Z",
+      "endDate": "2023-02-20T12:00:00.000Z",
+      "employee": 1,
+      "services": [
+        2
+      ],
+      "customer": {
+        "firstName": "Dominik",
+        "lastName": "Seitz",
+        "phoneNumber": "015750147297",
+        "email": "ddcdcdc"
+      }
+    },
+    {
+      "id": 10,
+      "startDate": "2023-02-21T13:00:00.000Z",
+      "endDate": "2023-02-21T13:40:00.000Z",
+      "employee": 2,
+      "services": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "customer": {
+        "firstName": "Dominik",
+        "lastName": "Seitz",
+        "phoneNumber": "015750147297",
+        "email": "3rt4er5zeizzt423t4"
+      }
+    },
+    {
+      "id": 11,
+      "startDate": "2023-02-22T10:00:00.000Z",
+      "endDate": "2023-02-22T10:30:00.000Z",
+      "employee": 1,
+      "services": [
+        0
+      ],
+      "customer": {
+        "firstName": "Dominik",
+        "lastName": "Seitz",
+        "phoneNumber": "015750147297"
+      }
+    },
+    {
+      "id": 12,
+      "startDate": "2023-02-22T13:00:00.000Z",
+      "endDate": "2023-02-22T13:30:00.000Z",
+      "employee": 1,
+      "services": [
+        5
+      ],
+      "customer": {
+        "firstName": "ff"
+      }
+    },
+    {
+      "id": 13,
+      "title": "Haare färben",
+      "startDate": "2023-02-23T11:00:00.000Z",
+      "endDate": "2023-02-23T11:30:00.000Z",
+      "employee": 1,
+      "services": [
+        3
+      ],
+      "customer": {
+        "firstName": "AAAA"
+      }
+    },
+    {
+      "id": 14,
+      "title": "MY OWN TITLE",
+      "startDate": "2023-02-23T13:30:00.000Z",
+      "endDate": "2023-02-23T14:00:00.000Z",
+      "employee": 1,
+      "services": [
+        1
+      ],
+      "customer": {
+        "firstName": "ddddd"
+      }
+    }
+  ],
+  "services": [
+    {
+      "id": 0,
+      "targetAudience": "all",
+      "title": "Waschen, Schneiden, Föhnen",
+      "durationInMin": "60",
+      "price": "30,00"
+    },
+    {
+      "id": 1,
+      "targetAudience": "all",
+      "title": "Waschen, Föhnen",
+      "durationInMin": "60",
+      "price": "10,00"
+    },
+    {
+      "id": 2,
+      "targetAudience": "all",
+      "title": "Waschen, Glätten",
+      "durationInMin": "60",
+      "price": "20,00"
+    },
+    {
+      "id": 3,
+      "targetAudience": "all",
+      "title": "Haare färben",
+      "durationInMin": "60",
+      "price": "45,00"
+    },
+    {
+      "id": 4,
+      "targetAudience": "all",
+      "title": "Strähnen",
+      "durationInMin": "30",
+      "price": "50,00"
+    },
+    {
+      "id": 5,
+      "targetAudience": "all",
+      "title": "Trockenhaarschnitt",
+      "durationInMin": "30",
+      "price": "50,00"
+    }
+  ],
+  "employees": [
+    {
+      "id": 1,
+      "name": "Alexandra"
+    },
+    {
+      "id": 2,
+      "name": "Peter"
+    }
+  ]
+}
