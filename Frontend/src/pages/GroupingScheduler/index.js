@@ -256,7 +256,18 @@ const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
             {...restProps}
         >
             <AppointmentForm.Label text="Customer" type="titleLabel" sx={{ margin: "10px 0" }}/>
-            <Stack direction="row" spacing={3}>
+            {/*<AppointmentForm.Select
+                value={appointmentData.customer?.formOfAddress}
+                onValueChange={(nextValue) => onCustomFieldChange("formOfAddressName", nextValue)}
+                availableOptions={[
+                    { id: 0, text: "None" },
+                    { id: 1, text: "Mr." },
+                    { id: 2, text: "Mrs." }
+                ]}
+                type="outlinedSelect"
+                placeholder="Form Of Address"
+            />*/}
+            <Stack direction="row" spacing={3} sx={{ mt: "25px" }}>
                 <Stack direction="column" spacing={0.5}>
                     <AppointmentForm.TextEditor
                         value={appointmentData.customer?.firstName}
@@ -279,13 +290,13 @@ const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
                 value={appointmentData.customer?.phoneNumber}
                 onValueChange={(nextValue) => onCustomFieldChange("phoneNumber", nextValue)}
                 placeholder="Phone Number"
-                sx={{ "&.MuiFormControl-root": { marginTop: !(appointmentData.customer?.firstName) ? "5px" : "20px" }}}
+                sx={{ "&.MuiFormControl-root": { marginTop: !(appointmentData.customer?.firstName) ? "3px" : "25px" }}}
             />
             <AppointmentForm.TextEditor
                 value={appointmentData.customer?.email}
                 onValueChange={(nextValue) => onCustomFieldChange("email", nextValue)}
                 placeholder="E-Mail"
-                sx={{ "&.MuiFormControl-root": { marginTop: "20px" }}}
+                sx={{ "&.MuiFormControl-root": { marginTop: "25px" }}}
             />
         </AppointmentForm.BasicLayout>
     );
