@@ -1,6 +1,8 @@
 package com.hdmstuttgart.mi.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -11,8 +13,10 @@ import javax.validation.constraints.NotBlank;
 import java.sql.Blob;
 
 @Data
-@Entity
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Employee {
 
     @Id

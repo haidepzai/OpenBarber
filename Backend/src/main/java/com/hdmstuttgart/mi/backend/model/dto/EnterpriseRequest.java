@@ -1,6 +1,8 @@
 package com.hdmstuttgart.mi.backend.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.hdmstuttgart.mi.backend.model.Employee;
+import com.hdmstuttgart.mi.backend.model.Service;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import lombok.Data;
@@ -36,6 +38,8 @@ public class EnterpriseRequest {
     private int priceCategory;
     private List<String> paymentMethods;
     private List<String> drinks;
+    private List<ServiceRequest> services;
+    private List<EmployeeRequest> employees;
 
     /*private Set<PaymentMethod> paymentMethods;
     private Set<Drink> drinks;*/

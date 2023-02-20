@@ -3,8 +3,12 @@ package com.hdmstuttgart.mi.backend.service;
 import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
+import com.hdmstuttgart.mi.backend.model.dto.ServiceRequest;
+import com.hdmstuttgart.mi.backend.model.dto.EmployeeRequest;
+import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
+import com.hdmstuttgart.mi.backend.model.enums.ServiceTargetAudience;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +53,8 @@ public class EnterpriseService {
         List<byte[]> pictures = new ArrayList<>();
         Set<PaymentMethod> paymentMethods = null;
         Set<Drink> drinks = null;
+        List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
+        List<Employee> employees = new ArrayList<>();
         try {
             if (request.getLogo() != null) {
                 logo = request.getLogo().getBytes();
@@ -74,6 +80,26 @@ public class EnterpriseService {
                                 .collect(Collectors.toList())
                 );
             }
+            if (request.getServices() != null) {
+                for (ServiceRequest serviceRequest : request.getServices()) {
+                    var service = com.hdmstuttgart.mi.backend.model.Service.builder()
+                            .price(serviceRequest.getPrice())
+                            .title(serviceRequest.getTitle())
+                            .description(serviceRequest.getDescription())
+                            .durationInMin(serviceRequest.getDurationInMin())
+                            .targetAudience(ServiceTargetAudience.valueOf(serviceRequest.getTargetAudience()))
+                            .build();
+                    services.add(service);
+                }
+            }
+            if (request.getEmployees() != null) {
+                for (EmployeeRequest employeeRequest : request.getEmployees()) {
+                    var employee = Employee.builder()
+                            .name(employeeRequest.getName())
+                            .build();
+                    employees.add(employee);
+                }
+            }
             var enterprise = Enterprise.builder()
                 .name(request.getName())
                 .eMail(request.getEMail())
@@ -90,6 +116,8 @@ public class EnterpriseService {
                 .priceCategory(request.getPriceCategory())
                 .paymentMethods(paymentMethods)
                 .drinks(drinks)
+                .services(services)
+                .employees(employees)
                 .build();
             return enterpriseRepository.save(enterprise);
         } catch (IOException e) {

@@ -27,6 +27,7 @@ public class EnterpriseController {
     /* @ModelAttribute: arguments fields == request parameters */
     @PostMapping
     public ResponseEntity<Enterprise> createEnterprise(@ModelAttribute EnterpriseRequest enterpriseRequest) {
+
         Enterprise createdEnterprise = enterpriseService.createEnterprise(enterpriseRequest);
         return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
     }
