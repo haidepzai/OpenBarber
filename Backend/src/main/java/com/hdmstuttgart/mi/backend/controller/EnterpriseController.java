@@ -25,6 +25,7 @@ public class EnterpriseController {
     }
 
     /* @ModelAttribute: arguments fields == request parameters */
+
     @PostMapping
     public ResponseEntity<Enterprise> createEnterprise(@ModelAttribute EnterpriseRequest enterpriseRequest) {
 
@@ -32,6 +33,7 @@ public class EnterpriseController {
         return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
     public ResponseEntity<List<Enterprise>> getAllEnterprises() {
         List<Enterprise> enterprises = enterpriseService.getAllEnterprises();

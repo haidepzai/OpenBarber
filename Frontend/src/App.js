@@ -12,8 +12,8 @@ import { basicTheme } from './themes/basicTheme';
 import FilterPage from './pages/FilterPage/FilterPage';
 import SignupModal from './components/SignupModal/SignupModal';
 import Datenschutz from './pages/Datenschutz';
-import SchedulerPage from "./pages/SchedulerPage";
 import GroupingSchedulerPage from "./pages/GroupingScheduler";
+import EditEnterprisePage from "./pages/EditEnterprise";
 
 function App() {
   const [loginVisible, setLoginVisible] = useState(false);
@@ -29,8 +29,8 @@ function App() {
           <Route path="shops/*" element={<DetailPage />} />
           <Route path="filter" element={<FilterPage />} />
           <Route path="privacy-policy" element={<Datenschutz />} />
-          <Route path="scheduler" element={<SchedulerPage />} />
           <Route path="gs" element={<GroupingSchedulerPage />} />
+          <Route path="edit" element={<EditEnterprisePage />} />
         </Routes>
         <Footer />
       </BrowserRouter>

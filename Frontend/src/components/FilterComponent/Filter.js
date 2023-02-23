@@ -45,17 +45,6 @@ const Filter = ({ filter, setFilter }) => {
     });
   };
 
-  useEffect(() => {
-    console.log(filter);
-  }, [filter]);
-
-  useEffect(() => {
-    if (state !== null) {
-      const { location } = state;
-      console.log(location);
-    }
-  }, []);
-
   return (
     <Stack direction="column" alignItems="flex-start" justifyContent="flex-start" spacing={3} sx={{ flex: '1 1 0', padding: '20px 20px' }}>
       <FormControl component="fieldset" variant="standard">
