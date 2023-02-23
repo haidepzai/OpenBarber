@@ -66,8 +66,7 @@ const EditEnterprisePage = () => {
     const handleUserChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        console.log(name);
-        console.log(value)
+
         setUser({
             ...user,
             [name]: value
@@ -85,10 +84,6 @@ const EditEnterprisePage = () => {
         }
         loadData().then(() => setLoading(false));
     }, [])
-
-    useEffect(() => {
-        console.log(enterprise)
-    }, [enterprise])
 
     return (
         <>
