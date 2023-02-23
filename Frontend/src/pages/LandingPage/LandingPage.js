@@ -32,20 +32,9 @@ import axios from "axios";
 const LandingPage = () => {
 
   useEffect(() => {
-    /*async function getShops() {
-      const response = await apiCall.get('/enterprises');
-      const barberShops = response.data;
-      console.log(barberShops);
-    }
-    getShops();*/
-
-    /*axios.get('http://localhost:8080/api/enterprises').then((response) => {
-      console.log(response);
-    })*/
 
     async function getShops() {
-      /*const response = await axios.get('http://localhost:8080/api/enterprises');
-      console.log(response.data);*/
+
       const response = await fetch("http://localhost:8080/api/enterprises", {
         method: 'GET',
       });
@@ -53,12 +42,6 @@ const LandingPage = () => {
 
     }
     getShops();
-    /*async function getShops2() {
-      const response = await apiCall.get('/enterprises');
-      const barberShops = response.data;
-      console.log(barberShops);
-    }
-    getShops2();*/
   }, [])
 
 

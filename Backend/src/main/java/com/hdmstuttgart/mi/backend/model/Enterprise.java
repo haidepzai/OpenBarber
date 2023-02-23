@@ -45,6 +45,7 @@ public class Enterprise {
 
     private URL website;
 
+    // { open: "10:00", close: "08:00" }
     private String hours;
 
     // Das später aus Reviews berechnen

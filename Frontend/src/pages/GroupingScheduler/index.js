@@ -357,8 +357,6 @@ const GroupingSchedulerPage = () => {
             // added = { [key: string]: any }
             if (added) {
 
-                console.log(allServices.find((service) => service.id === added.services[0]).title)
-
                 delete added.allDay;
                 const newId = (prevState.length > 0) ? prevState[prevState.length - 1].id + 1 : 0;
                 const newAppointment = {
@@ -454,10 +452,6 @@ const GroupingSchedulerPage = () => {
         }
         loadData().then(() => setLoading(false))
     }, [])
-
-    useEffect(() => {
-        console.log(data)
-    }, [data])
 
     return (
         <>
