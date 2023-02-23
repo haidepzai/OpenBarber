@@ -11,62 +11,17 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import AddIcon from '@mui/icons-material/Add';
 import { Button } from '@mui/material';
 import DeleteEmployeesDialog from "./DeleteEmployeesDialog.js"
-import EditEmployeeDialog from "./EditEmployeeDialog.js"
 import CreateEmployeeDialog from "./CreateEmployeeDialog.js"
 import EditIcon from '@mui/icons-material/Edit';
-
-/*interface Data {
-    calories: number;
-    carbs: number;
-    fat: number;
-    name: string;
-    protein: number;
-}
-
-function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-): Data {
-    return {
-        name,
-        calories,
-        fat,
-        carbs,
-        protein,
-    };
-}
-
-const rows = [
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Donut', 452, 25.0, 51, 4.9),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-    createData('Honeycomb', 408, 3.2, 87, 6.5),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Jelly Bean', 375, 0.0, 94, 0.0),
-    createData('KitKat', 518, 26.0, 65, 7.0),
-    createData('Lollipop', 392, 0.2, 98, 0.0),
-    createData('Marshmallow', 318, 0, 81, 2.0),
-    createData('Nougat', 360, 19.0, 9, 37.0),
-    createData('Oreo', 437, 18.0, 63, 4.0),
-];*/
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -128,24 +83,6 @@ const headCells: readonly HeadCell[] = [
         disablePadding: false,
         label: 'Picture',
     },
-/*    {
-        id: 'durationInMin',
-        numeric: true,
-        disablePadding: false,
-        label: 'Duration (min)',
-    },
-    {
-        id: 'price',
-        numeric: true,
-        disablePadding: false,
-        label: 'Price (eur)',
-    },*/
-    /*    {
-            id: 'protein',
-            numeric: true,
-            disablePadding: false,
-            label: 'Protein (g)',
-        },*/
 ];
 
 interface EnhancedTableProps {
@@ -301,7 +238,6 @@ export default function EmployeeTable(props: EmployeeTableProps) {
 
     const [openCreateDialog, setOpenCreateDialog] = useState(false);
 
-
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
         property: keyof Employee,
@@ -354,8 +290,6 @@ export default function EmployeeTable(props: EmployeeTableProps) {
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employees.length) : 0;
-
-    // AAA
 
     const deleteEmployees = () => {
         const newEmployees = employees.filter((employee) => !selected.includes(employee.name));
@@ -425,8 +359,6 @@ export default function EmployeeTable(props: EmployeeTableProps) {
                                     return (
                                         <TableRow
                                             hover
-                                            // @ts-ignore
-                                            /*onClick={(event) => handleClick(event, service.title)}*/
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
@@ -501,6 +433,7 @@ export default function EmployeeTable(props: EmployeeTableProps) {
                 updateEmployee={undefined}
             />
 
+            {/* EDIT */}
             { editedEmployee &&
                 <CreateEmployeeDialog
                     open={openEditDialog}
@@ -512,7 +445,6 @@ export default function EmployeeTable(props: EmployeeTableProps) {
                     updateEmployee={updateEmployee}
                 />
             }
-
 
         </>
     );

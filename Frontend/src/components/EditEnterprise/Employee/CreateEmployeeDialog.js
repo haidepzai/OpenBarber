@@ -2,12 +2,9 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import MenuItem from "@mui/material/MenuItem";
-import {InputAdornment, Stack, TextField} from "@mui/material";
+import {Stack, TextField} from "@mui/material";
 import React, {useEffect, useState} from 'react';
-import EuroIcon from '@mui/icons-material/Euro';
 
 const initialState = {
     name: ""
