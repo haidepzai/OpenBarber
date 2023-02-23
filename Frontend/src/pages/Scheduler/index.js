@@ -314,7 +314,7 @@ const dragDisabledIds = new Set([1])
 
 const allowDrag = ({ id }) => !dragDisabledIds.has(id);
 
-const GroupingSchedulerPage = () => {
+const SchedulerPage = () => {
 
     const [loading, setLoading] = useState(true);
 
@@ -588,4 +588,4 @@ const GroupingSchedulerPage = () => {
 *
 * */
 
-export default GroupingSchedulerPage;
+export default SchedulerPage;
