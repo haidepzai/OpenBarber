@@ -22,6 +22,7 @@ import { Button } from '@mui/material';
 import DeleteEmployeesDialog from "./DeleteEmployeesDialog.js"
 import CreateEmployeeDialog from "./CreateEmployeeDialog.js"
 import EditIcon from '@mui/icons-material/Edit';
+import Avatar from '@mui/material/Avatar';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -318,7 +319,7 @@ export default function EmployeeTable(props: EmployeeTableProps) {
     const getUniqueEmployees = (editingMode: boolean) => {
         let relevantEmployees = employees;
         if (editingMode) {
-            relevantEmployees = relevantEmployees.filter((employee) => employee.id !== editedEmployee.id)
+            relevantEmployees = relevantEmployees.filter((employee) => employee.name !== editedEmployee.name)
         }
         //  + employee.picture
         return relevantEmployees.map((employee) => `${employee.name}`)
@@ -393,7 +394,18 @@ export default function EmployeeTable(props: EmployeeTableProps) {
                                             >
                                                 {employee.name}
                                             </TableCell>
-                                            <TableCell align="right">{employee.picture}</TableCell>
+                                            {/*<TableCell align="right">{employee.picture}</TableCell>*/}
+                                            <TableCell align="right">
+                                                { employee.picture &&
+                                                    <img
+                                                        src={URL.createObjectURL(employee.picture)}
+                                                        alt={employee.picture.name}
+                                                        height="60px"
+                                                        width="60px"
+                                                        style={{ objectFit: "cover", margin: "6px 12px 0 0", borderRadius: "100%" }}
+                                                    />
+                                                }
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -440,7 +452,7 @@ export default function EmployeeTable(props: EmployeeTableProps) {
                     setOpen={setOpenEditDialog}
                     editedEmployee={editedEmployee}
                     setEditedEmployee={setEditedEmployee}
-                    uniqueEmployees={getUniqueEmployees(false)}
+                    uniqueEmployees={getUniqueEmployees(true)}
                     addEmployee={undefined}
                     updateEmployee={updateEmployee}
                 />

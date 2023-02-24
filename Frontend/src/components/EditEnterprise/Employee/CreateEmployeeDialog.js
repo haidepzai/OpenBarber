@@ -3,8 +3,10 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import {Stack, TextField} from "@mui/material";
+import {Box, Stack, TextField, Typography} from "@mui/material";
 import React, {useEffect, useState} from 'react';
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const initialState = {
     name: ""
@@ -39,6 +41,20 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
         setEmployee({
             ...employee,
             [name]: value
+        });
+    }
+
+    const handlePictureUpload = (event) => {
+        setEmployee({
+            ...employee,
+            picture: event.target.files[0]
+        });
+    }
+
+    const handlePictureDelete = () => {
+        setEmployee({
+            ...employee,
+            picture: null
         });
     }
 
@@ -90,6 +106,25 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
                             helperText={initialClick && errors.name}
                             sx={{ mt: "20px" }}
                         />
+
+                        <Stack direction="column" spacing={4} alignItems="center">
+                            <Stack direction="row" justifyContent={employee.picture ? "space-between" : "center"} sx={{ width: "100%" }}>
+                                <Button variant="contained" component="label" endIcon={<PhotoCamera />}>
+                                    Upload Picture
+                                    <input type="file" hidden accept="image/png, image/jpeg" onChange={handlePictureUpload} />
+                                </Button>
+                                {employee.picture &&
+                                    <Button variant="outlined" endIcon={<DeleteOutlineIcon />} onClick={handlePictureDelete}>
+                                        Delete
+                                    </Button>
+                                }
+                            </Stack>
+                            {employee.picture &&
+                                <Box sx={{ mt: "24px" }}>
+                                    <img src={URL.createObjectURL(employee.picture)} width="100%" height="auto" style={{ maxHeight: "250px", objectFit: "cover" }} />
+                                </Box>
+                            }
+                        </Stack>
 
                     </Stack>
                 </DialogContent>
