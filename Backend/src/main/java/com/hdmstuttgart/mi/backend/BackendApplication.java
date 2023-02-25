@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.slf4j.Logger;
 
+
 //@RestController
 //@EnableAutoConfiguration
 //@EnableJpaAuditing
@@ -20,18 +21,9 @@ public class BackendApplication {
     private EmailSenderService emailSenderService;
 
 
-
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
+        System.out.println("tested");
     }
-
-/*
-    //Uncomment to send a mail after boot up - configure in service class
-    @EventListener(ApplicationReadyEvent.class)
-    public void sendMail() throws MessagingException {
-        emailSenderService.sendVerificationEmail();
-    }
-*/
-
 
 }
