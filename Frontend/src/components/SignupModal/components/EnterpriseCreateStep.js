@@ -4,7 +4,6 @@ import { SignupContext } from '../Signup.context';
 
 const PropInput = (props) => {
   const { data, setData } = useContext(SignupContext);
-
   return (
     <TextField
       required

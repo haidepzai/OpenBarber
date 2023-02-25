@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
+import java.io.IOException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +29,11 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
-//                .firstname(request.getFirstname())
-//                .lastname(request.getLastname())
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .username(request.getUsername())
                 .email(request.getEmail())
+                .confirmationCode(UUID.randomUUID().toString().substring(0,6).toUpperCase())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(UserRole.USER)
                 .build();
@@ -37,8 +41,8 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
 
         try {
-            emailSenderService.sendVerificationEmail(user.getEmail());
-        } catch (MessagingException e) {
+            emailSenderService.sendEmailWithTemplate(user.getEmail(), user.getUsername(), "verification");
+        } catch (MessagingException | IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
 
@@ -50,11 +54,11 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        request.getUsername(),
                         request.getPassword()
                 )
         );
-        var user = userRepository.findByEmail(request.getEmail())
+        var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
