@@ -158,7 +158,14 @@ const appointmentContentComponent = ({ data, ...restProps }) => {
             data={data}
         >
             <div style={{ overflow: "hidden" }}>
-                <div style={{ fontWeight: "bold" }}>{data.title}</div>
+                <div style={{ fontWeight: "500" }}>
+                    {data.customer.firstName &&
+                        <span>{data.customer.firstName}</span>
+                    }
+                    {data.customer.lastName &&
+                        <span> {data.customer.lastName}</span>
+                    }
+                </div>
                 { difference > 30 &&
                     <>
                         <div>{new Date(data.startDate).toLocaleTimeString("en-US", options) + " - "}</div>
@@ -166,12 +173,7 @@ const appointmentContentComponent = ({ data, ...restProps }) => {
                     </>
                 }
                 <div>
-                    {data.customer.firstName &&
-                        <span>{data.customer.firstName}</span>
-                    }
-                    {data.customer.lastName &&
-                        <span> {data.customer.lastName}</span>
-                    }
+                    {data.title}
                 </div>
             </div>
         </Appointments.AppointmentContent>
@@ -238,6 +240,10 @@ const draftAppointmentComponent = ({ children, style, ...restProps }) => (
 
 /* TODO: Abschicken blockieren wenn firstName leer ist ODER keine Services & kein Titel gesetzt ist, sonst Error */
 const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
+
+    useEffect(() => {
+        console.log(appointmentData)
+    }, [appointmentData])
 
     const onCustomFieldChange = (field, nextValue) => {
         onFieldChange({
