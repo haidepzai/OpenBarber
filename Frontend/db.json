@@ -1,0 +1,344 @@
+{
+  "appointments": [
+    {
+      "id": 3,
+      "startDate": "2023-02-09T12:00",
+      "endDate": "2023-02-09T13:30",
+      "services": [
+        0,
+        3
+      ],
+      "customer": {
+        "id": 2,
+        "formOfAddress": "Mrs.",
+        "firstName": "Angela",
+        "lastName": "Merkel",
+        "email": "am@gmx.com",
+        "phoneNumber": "0157 54154566"
+      },
+      "employee": 2
+    },
+    {
+      "id": 4,
+      "startDate": "2023-02-09T09:45",
+      "endDate": "2023-02-09T11:00",
+      "services": [
+        3,
+        4,
+        5
+      ],
+      "customer": {
+        "id": 3,
+        "formOfAddress": "Mr.",
+        "firstName": "Cristiano",
+        "lastName": "Ronaldo",
+        "email": "cr7@gmx.com",
+        "phoneNumber": "0157 54154566"
+      },
+      "employee": 2
+    },
+    {
+      "id": 5,
+      "startDate": "2023-02-22T08:00:00.000Z",
+      "endDate": "2023-02-22T08:30:00.000Z",
+      "services": [
+        0,
+        4,
+        5
+      ],
+      "customer": {
+        "firstName": "Dominik",
+        "lastName": "Seitz",
+        "phoneNumber": "015750147297",
+        "email": "10:30 AM"
+      },
+      "employee": 2
+    },
+    {
+      "id": 6,
+      "startDate": "2023-02-22T08:30:00.000Z",
+      "endDate": "2023-02-22T09:00:00.000Z",
+      "services": [
+        4
+      ],
+      "customer": {
+        "firstName": "Lionel",
+        "lastName": "Messi",
+        "phoneNumber": "erfdvgb ",
+        "email": "rfedgzhfutgzihoujik"
+      },
+      "employee": 2,
+      "title": "Strähnenc"
+    },
+    {
+      "id": 8,
+      "title": "12345",
+      "startDate": "2023-02-22T13:00:00.000Z",
+      "endDate": "2023-02-22T16:00:00.000Z",
+      "employee": 2,
+      "services": [
+        3
+      ],
+      "customer": {
+        "firstName": "Max12",
+        "lastName": "Meier12",
+        "phoneNumber": "0157 653896112",
+        "email": "max.meier@web.de12"
+      }
+    },
+    {
+      "id": 9,
+      "startDate": "2023-02-20T11:30:00.000Z",
+      "endDate": "2023-02-20T12:00:00.000Z",
+      "employee": 1,
+      "services": [
+        2
+      ],
+      "customer": {
+        "firstName": "Dominik",
+        "lastName": "Seitz",
+        "phoneNumber": "015750147297",
+        "email": "ddcdcdc"
+      }
+    },
+    {
+      "id": 10,
+      "startDate": "2023-02-21T13:00:00.000Z",
+      "endDate": "2023-02-21T13:40:00.000Z",
+      "employee": 2,
+      "services": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "customer": {
+        "firstName": "Dominik",
+        "lastName": "Seitz",
+        "phoneNumber": "015750147297",
+        "email": "3rt4er5zeizzt423t4"
+      }
+    },
+    {
+      "id": 11,
+      "startDate": "2023-02-23T09:15:00.000Z",
+      "endDate": "2023-02-23T09:45:00.000Z",
+      "employee": 1,
+      "services": [
+        0
+      ],
+      "customer": {
+        "firstName": "Dominik",
+        "lastName": "Seitz",
+        "phoneNumber": "015750147297"
+      }
+    },
+    {
+      "id": 12,
+      "startDate": "2023-02-22T13:00:00.000Z",
+      "endDate": "2023-02-22T13:30:00.000Z",
+      "employee": 1,
+      "services": [
+        5
+      ],
+      "customer": {
+        "firstName": "ff"
+      }
+    },
+    {
+      "id": 13,
+      "title": "Haare färben",
+      "startDate": "2023-02-25T10:30:00.000Z",
+      "endDate": "2023-02-25T13:00:00.000Z",
+      "employee": 1,
+      "services": [
+        3
+      ],
+      "customer": {
+        "firstName": "AAAA"
+      }
+    },
+    {
+      "id": 14,
+      "title": "MY OWN TITLE",
+      "startDate": "2023-02-23T13:30:00.000Z",
+      "endDate": "2023-02-23T14:00:00.000Z",
+      "employee": 1,
+      "services": [
+        1
+      ],
+      "customer": {
+        "firstName": "ddddd"
+      }
+    },
+    {
+      "id": 15,
+      "title": "AAAAAAAAA",
+      "startDate": "2023-02-22T08:30:00.000Z",
+      "endDate": "2023-02-22T09:30:00.000Z",
+      "employee": 1,
+      "services": [
+        1
+      ],
+      "customer": {
+        "formOfAddressName": 0,
+        "firstName": "Dominik",
+        "lastName": "Seitz",
+        "phoneNumber": "015750147297",
+        "email": "aaaaaaaa"
+      }
+    }
+  ],
+  "services": [
+    {
+      "id": 0,
+      "targetAudience": "all",
+      "title": "Waschen, Schneiden, Föhnen",
+      "durationInMin": "60",
+      "price": "30,00"
+    },
+    {
+      "id": 1,
+      "targetAudience": "all",
+      "title": "Waschen, Föhnen",
+      "durationInMin": "60",
+      "price": "10,00"
+    },
+    {
+      "id": 2,
+      "targetAudience": "all",
+      "title": "Waschen, Glätten",
+      "durationInMin": "60",
+      "price": "20,00"
+    },
+    {
+      "id": 3,
+      "targetAudience": "all",
+      "title": "Haare färben",
+      "durationInMin": "60",
+      "price": "45,00"
+    },
+    {
+      "id": 4,
+      "targetAudience": "all",
+      "title": "Strähnen",
+      "durationInMin": "30",
+      "price": "50,00"
+    },
+    {
+      "id": 5,
+      "targetAudience": "all",
+      "title": "Trockenhaarschnitt",
+      "durationInMin": "30",
+      "price": "50,00"
+    }
+  ],
+  "employees": [
+    {
+      "id": 1,
+      "name": "Alexandra"
+    },
+    {
+      "id": 2,
+      "name": "Peter"
+    }
+  ],
+  "enterprises": [
+    {
+      "id": 62,
+      "name": "my-companyAAAXXAA",
+      "address": "Stuttgart",
+      "addressLongitude": 0,
+      "addressAltitude": 0,
+      "phoneNumber": "12345",
+      "website": "http://www.example.com/docs/resource1.html",
+      "hours": {
+        "open": "11:00 AM",
+        "close": "08:00 PM"
+      },
+      "rating": 4.5,
+      "reviews": 10,
+      "recommended": true,
+      "approved": true,
+      "priceCategory": 2,
+      "paymentMethods": [
+        "PAYPAL"
+      ],
+      "drinks": [
+        "WATER",
+        "TEA"
+      ],
+      "logo": null,
+      "pictures": [],
+      "services": [
+        {
+          "id": 0,
+          "targetAudience": "MEN",
+          "title": "Waschen, Schneiden, Föhnen",
+          "durationInMin": 40,
+          "price": 30
+        },
+        {
+          "id": 1,
+          "targetAudience": "ALL",
+          "title": "Waschen, Föhnen",
+          "durationInMin": 45,
+          "price": 10
+        },
+        {
+          "id": 2,
+          "targetAudience": "ALL",
+          "title": "Waschen, Glätten2",
+          "durationInMin": 60,
+          "price": 20
+        },
+        {
+          "id": 3,
+          "targetAudience": "MEN",
+          "title": "Haare färben",
+          "durationInMin": 35,
+          "price": 45
+        },
+        {
+          "id": 4,
+          "targetAudience": "WOMEN",
+          "title": "Strähnen",
+          "durationInMin": 30,
+          "price": 50
+        },
+        {
+          "id": 5,
+          "targetAudience": "ALL",
+          "title": "Trockenhaarschnitt",
+          "durationInMin": 20,
+          "price": 50
+        },
+        {
+          "targetAudience": "WOMEN",
+          "title": "Trockenhaarschnitt",
+          "durationInMin": 0,
+          "price": 0
+        }
+      ],
+      "employees": [
+        {
+          "id": 63,
+          "name": "Peter3333"
+        },
+        {
+          "name": "Peter33334"
+        }
+      ],
+      "email": "my-company@gmx.de"
+    }
+  ],
+  "users": [
+    {
+      "id": 63,
+      "firstName": "Maximilian",
+      "lastName": "Mustermann",
+      "email": "max.mustermann@web.de",
+      "password": "secret123"
+    }
+  ]
+}

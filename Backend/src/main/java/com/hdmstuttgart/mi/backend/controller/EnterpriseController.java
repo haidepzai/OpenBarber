@@ -1,10 +1,17 @@
 package com.hdmstuttgart.mi.backend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
 import com.hdmstuttgart.mi.backend.service.EnterpriseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 @RestController
@@ -17,12 +24,16 @@ public class EnterpriseController {
         this.enterpriseService = enterpriseService;
     }
 
+    /* @ModelAttribute: arguments fields == request parameters */
+
     @PostMapping
-    public ResponseEntity<Enterprise> createEnterprise(@RequestBody Enterprise enterprise) {
-        Enterprise createdEnterprise = enterpriseService.createEnterprise(enterprise);
+    public ResponseEntity<Enterprise> createEnterprise(@ModelAttribute EnterpriseRequest enterpriseRequest) {
+
+        Enterprise createdEnterprise = enterpriseService.createEnterprise(enterpriseRequest);
         return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
     public ResponseEntity<List<Enterprise>> getAllEnterprises() {
         List<Enterprise> enterprises = enterpriseService.getAllEnterprises();
