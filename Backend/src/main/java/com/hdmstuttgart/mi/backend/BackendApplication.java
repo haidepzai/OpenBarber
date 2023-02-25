@@ -24,7 +24,7 @@ public class BackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
     }
-    
+
 /*
     //Uncomment to send a mail after boot up - configure in service class
     @EventListener(ApplicationReadyEvent.class)
