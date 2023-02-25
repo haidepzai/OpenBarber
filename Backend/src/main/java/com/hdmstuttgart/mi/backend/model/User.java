@@ -29,18 +29,13 @@ public class User implements UserDetails {
     @GeneratedValue
     private Long id;
 
-    @NotBlank
-    @Size(min = 3, max = 20)
+    @Email
     @Column(nullable = false, unique = true)
-    private String username;
+    private String email;
 
     @Size(min = 8)
     @Column(nullable = false)
     private String password;
-
-    @Email(message = "Email is mandatory")
-    @Column(nullable = false, unique = true)
-    private String email;
 
     private boolean confirmedEmail;
 
@@ -59,6 +54,11 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override

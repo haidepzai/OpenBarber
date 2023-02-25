@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Box, Typography, Stack, TextField, Button, Checkbox } from '@mui/material';
 import { ArrowBackRounded } from '@mui/icons-material';
 import OpenBarberLogo from '../../assets/logo_openbarber.svg';
+import axios from 'axios';
 
 const LoginModal = ({ onClose }) => {
   const [emailIsValid, setEmailIsValid] = useState(true);
@@ -56,7 +57,25 @@ const LoginModal = ({ onClose }) => {
       setPasswordIsValid(false);
     }
     if (formIsValid) {
-      console.log('Done');
+    
+      (async () => {
+
+        const authRequest = {
+          "email": email,
+          "password": password
+        };
+
+        const customConfig = {
+          headers: {
+          'Content-Type': 'application/json'
+          }
+        };
+
+        const response = await axios.post('http://localhost:8080/api/auth/authenticate', authRequest, customConfig);
+        console.log(response.data); //TODO save token
+      })();
+      
+        console.log('Done');
     }
   };
 

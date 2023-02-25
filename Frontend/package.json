@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@devexpress/dx-react-core": "^4.0.3",
+    "@devexpress/dx-react-scheduler": "^4.0.3",
+    "@devexpress/dx-react-scheduler-material-ui": "^4.0.3",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@fontsource/roboto": "^4.5.8",
@@ -18,6 +21,7 @@
     "bootstrap": "^3.4.1",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.6",
+    "deep-equal": "^2.2.0",
     "dotenv": "^16.0.3",
     "google-map-react": "^2.2.0",
     "react": "^18.2.0",
