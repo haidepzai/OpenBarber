@@ -2,7 +2,7 @@
 export const getGeocoordinates = async (place) => {
   try {
     const response = await fetch(`${process.env.REACT_APP_GOOGLE_GEOCODE}/json?address=${place}&key=${process.env.REACT_APP_GOOGLE_API}`);
-
+    console.log(`${process.env.REACT_APP_GOOGLE_GEOCODE}`);
     if (!response.ok) {
       throw new Error('Something went wrong');
     }
