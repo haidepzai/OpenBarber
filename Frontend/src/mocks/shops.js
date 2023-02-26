@@ -54,7 +54,7 @@ const barberShops = [
     ],
     paymentMethods: ['On Site (with Cash)', 'On Site (with Card)', 'Paypal', 'Bank Transfer'],
     drinks: ['Coffee', 'Tea', 'Water', 'Sofdrinks', 'Beer', 'Champagne', 'Sparkling Wine'],
-    recommended: true,
+    recommended: false,
     openingHours: ['', ''], //Öffnungszeit, Feierabend
   },
   {
@@ -95,7 +95,7 @@ const barberShops = [
     employees: [],
     paymentMethods: [],
     drinks: [],
-    recommended: true,
+    recommended: false,
   },
   {
     id: 4,
@@ -115,7 +115,7 @@ const barberShops = [
     employees: [],
     paymentMethods: [],
     drinks: [],
-    recommended: true,
+    recommended: false,
   },
   {
     id: 5,
