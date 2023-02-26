@@ -53,8 +53,7 @@ public class EmailSenderService {
     public void insertDataIntoTemplate(String templateName, String emailAddress) throws IOException {
         readMJMLTemplatesIntoMap();
         User user = userRepository.findByEmail(emailAddress).orElseThrow();
-        String preparedText = mjmlTemplateTexts.get(templateName).replace("blank_fullName", user.getFirstname() + " " + user.getLastname())
-                .replace("blank_verificationCode", user.getConfirmationCode());
+        String preparedText = mjmlTemplateTexts.get(templateName).replace("blank_verificationCode", user.getConfirmationCode());
         mjmlTemplateTexts.put(templateName, preparedText);
     }
 
@@ -77,9 +76,9 @@ public class EmailSenderService {
 
         //template specific email subjects
         if(templateName.equals("verification")) {
-            helper.setSubject("OpenBarber - Hi " + username + ", your verification code is here!");
+            helper.setSubject("OpenBarber - Your verification code is here!");
         } else {
-            helper.setSubject("OpenBarber - Hi " + username);
+            helper.setSubject("OpenBarber - Verification");
         }
         helper.setFrom("openbarber@outlook.de");
 
