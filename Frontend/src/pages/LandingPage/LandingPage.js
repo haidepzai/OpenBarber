@@ -31,18 +31,18 @@ import axios from "axios";
 
 const LandingPage = () => {
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    async function getShops() {
+  //   async function getShops() {
 
-      const response = await fetch("http://localhost:8080/api/enterprises", {
-        method: 'GET',
-      });
-      console.log(response.json());
+  //     const response = await fetch("http://localhost:8080/api/enterprises", {
+  //       method: 'GET',
+  //     });
+  //     console.log(response.json());
 
-    }
-    getShops();
-  }, [])
+  //   }
+  //   getShops();
+  // }, [])
 
 
   return (
