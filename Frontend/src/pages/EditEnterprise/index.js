@@ -153,7 +153,7 @@ const EditEnterprisePage = () => {
         } else {
             setEnterprise({
                 ...enterprise,
-                [name]: enterprise[name].filter((pm) => pm !== value)
+                [name]: enterprise[name].filter((el) => el !== value)
             })
         }
     }
@@ -334,13 +334,16 @@ const EditEnterprisePage = () => {
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <TimePicker
                                                 name="open"
-                                                value={dayjs(enterprise.hours.open, "hh-mm-A")}
+                                                label={!enterprise.hours.open && "Open"}
+                                                value={enterprise.hours.open}
                                                 onChange={(newValue) => {
+                                                    // date must always be the same in order to compare time(s) later (in filter)
+                                                    const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1)
                                                     setEnterprise({
                                                         ...enterprise,
                                                         hours: {
                                                             ...enterprise.hours,
-                                                            open: newValue
+                                                            open: changedValue.toISOString()
                                                         }
                                                     })
                                                 }}
@@ -353,13 +356,16 @@ const EditEnterprisePage = () => {
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <TimePicker
                                                 name="close"
-                                                value={dayjs(enterprise.hours.close, "hh-mm-A")}
+                                                label={!enterprise.hours.close && "Close"}
+                                                value={enterprise.hours.close}
                                                 onChange={(newValue) => {
+                                                    // date must always be the same in order to compare time(s) later (in filter)
+                                                    const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1)
                                                     setEnterprise({
                                                         ...enterprise,
                                                         hours: {
                                                             ...enterprise.hours,
-                                                            close: newValue
+                                                            close: changedValue.toISOString()
                                                         }
                                                     })
                                                 }}
@@ -478,7 +484,7 @@ const EditEnterprisePage = () => {
                                 </Stack>
                                 {enterprise.pictures && enterprise.pictures.length > 0 &&
                                     <Box sx={{ mt: "24px" }}>
-                                        <ImageList sx={{ width: '100%', height: '344px', borderRadius: '5px', boxShadow: 4 }} cols={4} rowHeight={170} variant="quilted">
+                                        <ImageList sx={{ width: '100%', height: '444px', borderRadius: '5px', boxShadow: 4 }} cols={4} rowHeight={220} variant="quilted">
                                             {enterprise.pictures.map((picture) => (
                                                 <ImageListItem key={picture.name}>
                                                     <img
@@ -488,8 +494,8 @@ const EditEnterprisePage = () => {
                                                         src={URL.createObjectURL(picture)}
                                                         alt={picture.name}
                                                         loading="lazy"
-                                                        width="164px"
-                                                        height="164px"
+                                                        /*width="164px"
+                                                        height="164px"*/
                                                         style={{ objectFit: "cover", objectPosition: "center", display: "block" }}
                                                     />
                                                     <ImageListItemBar
