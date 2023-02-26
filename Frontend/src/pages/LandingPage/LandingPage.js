@@ -46,11 +46,6 @@ const LandingPage = () => {
     setShops(shopsData);
   }
 
-  useEffect(() => {
-    loadData();
-    console.log(dateAndTime)
-  }, [])
-
   return (
     <>
       <Box sx={{ background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(93,71,58,1) 0%, rgba(160,142,131,1) 100%)', p: '50px 0' }}>

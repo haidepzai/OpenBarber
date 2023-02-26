@@ -39,7 +39,6 @@ function Search({ dateAndTime, setDateAndTime }) {
       const loc = location.formatted_address;
       console.log(location.formatted_address);
       const response = await getGeocoordinates(location.formatted_address);
-        console.log()
       const lat = response.results[0].geometry.location.lat;
       const lng = response.results[0].geometry.location.lng;
       console.log('Lat: ' + lat);
