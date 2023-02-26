@@ -23,9 +23,9 @@ const AwaitingApprovalStep = () => {
         <Button variant="outlined" onClick={close} tabIndex={-1}>
           Cancel
         </Button>
-        <Button variant="outlined" onClick={() => setActiveStep(2)}>
+        {/* <Button variant="outlined" onClick={() => setActiveStep(2)}>
           Back
-        </Button>
+        </Button> */}
         <Box flexGrow={1} />
         <Button onClick={close} variant="contained">
           Finish

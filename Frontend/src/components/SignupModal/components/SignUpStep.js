@@ -79,6 +79,7 @@ const SignUpStep = () => {
         const res = [...v];
         res[0] = false;
         res[1] = false;
+        res[2] = false;
         return res;
       });
     };

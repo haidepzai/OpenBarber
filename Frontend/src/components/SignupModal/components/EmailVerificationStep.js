@@ -20,10 +20,11 @@ const EmailVerificationStep = () => {
     if (!verificationCode) {
       setError(true);
     }
-    setActiveStep(2);
+    setActiveStep(3);
     setCompletedSteps((cs) => {
       const res = [...cs];
-      res[1] = true;
+      res[2] = true;
+      res[3] = true;
       return res;
     });
   }
@@ -63,11 +64,11 @@ const EmailVerificationStep = () => {
         <Button variant="outlined" onClick={close} tabIndex={-1}>
           Cancel
         </Button>
-        <Button variant="outlined" onClick={() => setActiveStep(0)}>
+        <Button variant="outlined" onClick={() => setActiveStep(1)}>
           Back
         </Button>
         <Box flexGrow={1} />
-        <Button type="submit" disabled={!verificationCode || completedSteps.slice(0, 1).some((e) => !e)} variant="contained">
+        <Button type="submit" disabled={!verificationCode || completedSteps.slice(0, 2).some((e) => !e)} variant="contained">
           Continue
         </Button>
       </Stack>

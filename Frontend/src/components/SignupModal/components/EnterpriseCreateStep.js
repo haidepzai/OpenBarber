@@ -38,11 +38,10 @@ const EnterpriseCreateStep = () => {
 
   function onSubmit(e) {
     e.preventDefault();
-    setActiveStep(3);
+    setActiveStep(2);
     setCompletedSteps((cs) => {
       const res = [...cs];
-      res[2] = true;
-      res[3] = true;
+      res[1] = true;
       return res;
     });
   }
@@ -214,7 +213,7 @@ const EnterpriseCreateStep = () => {
         <Button variant="outlined" onClick={close} tabIndex={-1}>
           Cancel
         </Button>
-        <Button variant="outlined" onClick={() => setActiveStep(1)}>
+        <Button variant="outlined" onClick={() => setActiveStep(0)}>
           Back
         </Button>
         <Box flexGrow={1} />
