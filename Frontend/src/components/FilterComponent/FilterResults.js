@@ -100,14 +100,6 @@ const FilterResults = ({ filter }) => {
     loadData();
   }, [])
 
-  useEffect(() => {
-    console.log(filter)
-  }, [filter])
-
-  useEffect(() => {
-    console.log(shops)
-  }, [shops])
-
   return (
     <Box sx={{ flex: '4 1 0' }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: '100%', m: '20px 0' }}>
