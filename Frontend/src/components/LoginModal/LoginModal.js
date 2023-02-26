@@ -4,12 +4,15 @@ import { Box, Typography, Stack, TextField, Button, Checkbox } from '@mui/materi
 import { ArrowBackRounded } from '@mui/icons-material';
 import OpenBarberLogo from '../../assets/logo_openbarber.svg';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const LoginModal = ({ onClose }) => {
+const LoginModal = ({ onClose, onSuccess }) => {
   const [emailIsValid, setEmailIsValid] = useState(true);
   const [passwordIsValid, setPasswordIsValid] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  
 
   const portalElement = document.getElementById('overlays');
 
@@ -70,9 +73,15 @@ const LoginModal = ({ onClose }) => {
           'Content-Type': 'application/json'
           }
         };
-
+        
         const response = await axios.post('http://localhost:8080/api/auth/authenticate', authRequest, customConfig);
-        console.log(response.data); //TODO save token
+        let resObj = response.data
+        localStorage.setItem("tokenJWT", JSON.stringify(resObj));
+        let storedObj = JSON.parse(localStorage.getItem("tokenJWT"))
+        console.log('Token from local storage:' + storedObj.token)
+        onSuccess()
+        onClose()
+        navigate('/')
       })();
       
         console.log('Done');
