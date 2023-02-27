@@ -29,6 +29,9 @@ public class Enterprise {
     @NotBlank(message = "Name is mandatory")
     private String name;
 
+    @NotBlank(message = "Owner is mandatory")
+    private String owner;
+
     @NotBlank(message = "Address is mandatory")
     private String address;
     private long addressLongitude;
@@ -44,7 +47,9 @@ public class Enterprise {
     private URL website;
 
     // { open: "10:00", close: "08:00" }
-    private String hours;
+    // private Hours hours;
+    private String openingTime;
+    private String closingTime;
 
     // Das später aus Reviews berechnen
     private double rating;
