@@ -14,6 +14,7 @@ const SignUpStep = () => {
     setCompletedSteps,
     data: { email, password, confirmPassword },
     setData,
+    onSuccess
   } = useContext(SignupContext);
 
   const [emailIsValid, setEmailIsValid] = useState(true);
@@ -58,17 +59,23 @@ const SignUpStep = () => {
           }
         };
 
-        const response = await axios.post('http://localhost:8080/api/auth/register', registerRequest, customConfig);
-        console.log(response.data); //TODO save token
-      })();
+        try {
+          const response = await axios.post('http://localhost:8080/api/auth/register', registerRequest, customConfig);
+          console.log("response", response)
+          localStorage.setItem("tokenJWT", JSON.stringify(response.data));
 
-      console.log('Successful sign up!');
-      setCompletedSteps((v) => {
-        const res = [...v];
-        res[0] = true;
-        return res;
-      });
-      setActiveStep(1);
+          console.log('Successful sign up!');
+          onSuccess();
+          setCompletedSteps((v) => {
+            const res = [...v];
+            res[0] = true;
+            return res;
+          });
+          setActiveStep(1);
+        } catch (error) {
+          console.log(error);
+        }
+      })();
     }
   }
 

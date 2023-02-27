@@ -2,6 +2,7 @@ import { Stack, Typography, Button, Box, TextField } from '@mui/material';
 import React, { useContext } from 'react';
 import { SignupContext } from '../Signup.context';
 import { usePlacesWidget } from 'react-google-autocomplete';
+import axios from 'axios';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
@@ -12,7 +13,6 @@ const PropInput = (props) => {
       required
       {...props.input}
       variant="outlined"
-      size='small'
       value={data[props.input.vr]}
       onChange={(e) => setData((d) => ({ ...d, [props.input.vr]: e.target.value }))}
     />
@@ -23,35 +23,72 @@ const EnterpriseCreateStep = () => {
   const { setActiveStep, completedSteps, setCompletedSteps, close, data, setData } = useContext(SignupContext);
 
   const [errors, setErrors] = React.useState({
-    detail: false,
-    category: false,
-    price: false,
-    shopName: false,
-    email: false,
-    phone: false,
-    headerUrl: false,
-    desc: false,
-    website: false,
     enterpriseName: false,
-    shopLocation: false,
+    enterpriseOwner: false,
+    enterpriseCity: false,
+    enterpriseStreet: false,
   });
-
-  const { ref: materialRef } = usePlacesWidget({
+  const { ref: acRef } = usePlacesWidget({
     apiKey: GOOGLE_API_KEY,
     onPlaceSelected: (place) => {
-      console.log("new place:",place);
-      setData((d) => ({ ...d, shopLocation: place }));
+      console.log("new street:",place);
+      setData((d) => ({ ...d, enterpriseStreet: place }));
     },
+    options: {
+      types: ['address'],
+    }
   });
 
   function onSubmit(e) {
     e.preventDefault();
-    setActiveStep(2);
-    setCompletedSteps((cs) => {
-      const res = [...cs];
-      res[1] = true;
-      return res;
-    });
+
+    // function toFormData(obj) {
+    //   const formData = new FormData();
+    //   for (const key in obj) {
+    //     if (obj[key] instanceof FileList || Array.isArray(obj[key])) {
+    //       for (let i = 0; i < obj[key].length; i++) {
+    //         formData.append(key, obj[key][i]);
+    //       }
+    //     } else {
+    //       formData.append(key, obj[key]);
+    //     }
+    //   }
+    //   return formData;
+    // }
+
+    (async () => {
+
+      const createEnterpriseReq = {
+        name: data.enterpriseName,
+        owner: data.enterpriseOwner,
+        address: data.enterpriseStreet.formatted_address,
+        addressLongitude: Number(data.enterpriseStreet.geometry.location.lng()),
+        addressAltitude: Number(data.enterpriseStreet.geometry.location.lat()),
+      };
+
+      // form data config
+      const customConfig = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+
+        }
+      };
+
+      try {
+        const res = await axios.post('http://localhost:8080/api/enterprises', createEnterpriseReq, customConfig);
+        console.log('response', res);
+
+        setActiveStep(2);
+        setCompletedSteps((cs) => {
+          const res = [...cs];
+          res[1] = true;
+          return res;
+        });
+
+      } catch (err) {
+        console.log(err);
+      }
+    })();
   }
 
   function onBlur(e) {
@@ -68,80 +105,42 @@ const EnterpriseCreateStep = () => {
       {/* <Typography variant="h4">Please enter some information about your enterprise.</Typography> */}
 
       <Box sx={{ display: 'flex', flexDirection:"column", gap: 4, maxWidth: "800px" }}>
-        <Stack gap={4}>
-          <Typography variant="h6">Enterprise Information</Typography>
-          <PropInput input={{
-            label: "Enterprise Name",
-            vr: "enterpriseName",
-            onBlur: onBlur,
-            error: errors.enterpriseName,
-            name: 'enterpriseName'
-          }}
-          />
-        </Stack>
 
         <Stack gap={4}>
-          <Typography variant="h6">Setup your first Shop</Typography>
+          <Typography variant="h6">Setup your Enterprise</Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr 1fr', gap: 2 }}>
+            
+            <PropInput input={{
+              label: "Enterprise Name",
+              vr: "enterpriseName",
+              onBlur: onBlur,
+              error: errors.enterpriseName,
+              name: 'enterpriseName'
+            }}
+            />
+
+            <PropInput input={{
+              label: "Enterprise Owner",
+              vr: "enterpriseOwner",
+              onBlur: onBlur,
+              error: errors.enterpriseOwner,
+              name: 'enterpriseOwner'
+            }}
+            />
+
             <TextField
               required
               variant="outlined"
-              size='small'
-              onChange={() => setData((d) => ({ ...d, shopLocation: null }))}
-              label="Location"
-              name="shopLocation"
-              error={errors.shopLocation}
+              onChange={() => setData((d) => ({ ...d, enterpriseStreet: null }))}
+              label="Address"
+              value={data.enterpriseStreet ? data.enterpriseStreet.formatted_address : undefined}
+              name="enterpriseStreet"
+              error={errors.enterpriseStreet}
               onBlur={onBlur}
-              inputRef={materialRef}
-            />
-            
-            <PropInput input={{
-              label: "First Shop Name",
-              vr: "firstShopName",
-              onBlur: onBlur,
-              error: errors.shopName,
-              name: 'shopName'
-            }}
-            />
-            <PropInput input={{
-              label: "Shop Email",
-              vr: "shopEmail",
-              onBlur: onBlur,
-              error: errors.email,
-              name: 'email'
-            }}
-            />
-            <PropInput input={{
-              label: "Shop Phone",
-              vr: "shopPhone",
-              onBlur: onBlur,
-              error: errors.phone,
-              name: 'phone'
-            }}
-            />
-            <PropInput input={{
-              label: "Shop Header Url",
-              vr: "shopHeaderUrl",
-              onBlur: onBlur,
-              error: errors.headerUrl,
-              name: 'headerUrl'
-            }}
-            />
-            <PropInput input={{
-              label: "Shop Description",
-              vr: "shopDescription",
-              onBlur: onBlur,
-              error: errors.desc,
-              name: 'desc'
-            }}
-            />
-            <PropInput input={{
-              label: "Shop Website",
-              vr: "shopWebsite",
-              onBlur: onBlur,
-              error: errors.website,
-              name: 'website'
-            }}
+              inputRef={acRef}
+              sx={{
+                gridColumn: "1/3"
+              }}
             />
           </Box>
         </Stack>
@@ -239,13 +238,8 @@ const EnterpriseCreateStep = () => {
           disabled={
             !(
               data.enterpriseName &&
-              data.firstShopName &&
-              data.shopEmail &&
-              data.shopPhone &&
-              data.shopHeaderUrl &&
-              data.shopDescription &&
-              data.shopWebsite &&
-              data.shopLocation
+              data.enterpriseOwner &&
+              data.enterpriseStreet
             )
           }
           variant="contained"

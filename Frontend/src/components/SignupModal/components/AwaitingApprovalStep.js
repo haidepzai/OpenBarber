@@ -6,7 +6,6 @@ import { SignupContext } from '../Signup.context';
 
 const AwaitingApprovalStep = () => {
   const { close, setActiveStep, completedSteps, verificationCode } = useContext(SignupContext);
-  console.log(completedSteps);
 
   return (
     <>
@@ -20,12 +19,6 @@ const AwaitingApprovalStep = () => {
       </Stack>
 
       <Stack direction="row" justifyContent="space-between" marginTop="auto" width="100%" gap={2}>
-        <Button variant="outlined" onClick={close} tabIndex={-1}>
-          Cancel
-        </Button>
-        {/* <Button variant="outlined" onClick={() => setActiveStep(2)}>
-          Back
-        </Button> */}
         <Box flexGrow={1} />
         <Button onClick={close} variant="contained">
           Finish
