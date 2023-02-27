@@ -49,7 +49,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Rating readOnly precision={0.5} value={rating()} sx={{ color: 'primary.main' }} size="small" />
               <Typography fontSize={14} variant="span" color="grey.600">
-                {shop.reviews.length} Reviews
+                {shop.reviews.length} Review(s)
               </Typography>
             </Box>
           </Box>
