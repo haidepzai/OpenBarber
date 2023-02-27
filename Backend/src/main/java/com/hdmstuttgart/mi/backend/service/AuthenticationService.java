@@ -4,6 +4,7 @@ import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.AuthenticationRequest;
 import com.hdmstuttgart.mi.backend.model.dto.AuthenticationResponse;
 import com.hdmstuttgart.mi.backend.model.dto.RegisterRequest;
+import com.hdmstuttgart.mi.backend.model.dto.VerificationRequest;
 import com.hdmstuttgart.mi.backend.model.enums.UserRole;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .confirmationCode(UUID.randomUUID().toString().substring(0,6).toUpperCase())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(UserRole.UNCONFIRMED)
+                .role(UserRole.UNVERIFIED)
                 .build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
@@ -57,11 +58,27 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+        String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    public void verify(VerificationRequest request, String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow();
+
+        if (user.getRole() != UserRole.UNVERIFIED) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "E-Mail already verified");
+        }
+        if (!request.getConfirmationCode().equals(user.getConfirmationCode())) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Wrong confirmation code");
+        }
+        user.setRole(UserRole.VERIFIED);
+        userRepository.save(user);
     }
 }
