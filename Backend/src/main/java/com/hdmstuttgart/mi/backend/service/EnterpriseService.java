@@ -2,6 +2,7 @@ package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
 import com.hdmstuttgart.mi.backend.model.dto.ServiceRequest;
 import com.hdmstuttgart.mi.backend.model.dto.EmployeeRequest;
@@ -10,6 +11,8 @@ import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import com.hdmstuttgart.mi.backend.model.enums.ServiceTargetAudience;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
+import com.hdmstuttgart.mi.backend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -25,14 +28,13 @@ import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class EnterpriseService {
 
     private static final Logger log = LoggerFactory.getLogger(EnterpriseService.class);
     private final EnterpriseRepository enterpriseRepository;
-
-    public EnterpriseService(EnterpriseRepository enterpriseRepository) {
-        this.enterpriseRepository = enterpriseRepository;
-    }
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
     /*public Enterprise createEnterprise(EnterpriseRequest request, MultipartFile file){
         try {
@@ -136,6 +138,15 @@ public class EnterpriseService {
     public Enterprise getEnterpriseById(long id) {
         return enterpriseRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
+    }
+
+    public Enterprise getEnterpriseByUser(String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow();
+
+        return user.getEnterprise();
     }
 
     public Enterprise updateEnterprise(long id, Enterprise newEnterprise) {
