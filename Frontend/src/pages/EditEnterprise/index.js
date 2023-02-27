@@ -53,6 +53,7 @@ const EditEnterprisePage = () => {
         const enterpriseResponse = await fetch(enterpriseUrl)
         const enterpriseData = await enterpriseResponse.json();
         setEnterprise(enterpriseData);
+        console.log()
     }
 
     const loadUser = async () => {
@@ -100,7 +101,7 @@ const EditEnterprisePage = () => {
         // TODO: send to backend + USER IMAGE UPLOAD...
 
         /*await fetch(enterpriseUrl, {
-            method: "PUT",
+            method: "PATCH",
             body: imageFormData
         })*/
 

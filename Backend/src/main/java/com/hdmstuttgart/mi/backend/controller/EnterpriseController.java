@@ -57,6 +57,12 @@ public class EnterpriseController {
         return new ResponseEntity<>(updatedEnterprise, HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Enterprise> patchEnterprise(@PathVariable long id, @RequestBody Enterprise newEnterprise) {
+        Enterprise updatedEnterprise = enterpriseService.patchEnterprise(id, newEnterprise);
+        return new ResponseEntity<>(updatedEnterprise, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String>  deleteEnterprise(@PathVariable long id) {
         enterpriseService.deleteEnterprise(id);
