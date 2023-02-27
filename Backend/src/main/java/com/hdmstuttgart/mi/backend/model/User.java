@@ -37,8 +37,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    private boolean confirmedEmail;
-
     private String confirmationCode;
 
     private String firstname;
@@ -47,6 +45,9 @@ public class User implements UserDetails {
 
     @CreationTimestamp
     private Date createdAt;
+
+    @OneToOne(cascade=CascadeType.ALL) /*(mappedBy = "enterprise")*/
+    private Enterprise enterprise;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
@@ -68,7 +69,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; //TODO confirmedEmail?
+        return true;
     }
 
     @Override
@@ -78,7 +79,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true; //TODO confirmedEmail?
+        return true;
     }
 }
 
