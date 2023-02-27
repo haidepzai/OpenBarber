@@ -24,7 +24,7 @@ const ShopDetailView = ({ shop }) => {
         Reviews
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {shop.reviews.map((review, i) => (
+        {shop.reviews && shop.reviews.length > 0 && shop.reviews.map((review, i) => (
           <ShopReview key={i} review={review} />
         ))}
       </Box>
