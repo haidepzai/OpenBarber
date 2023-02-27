@@ -73,7 +73,7 @@ function App() {
         </Routes>
         <Footer />
         {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} onSuccess={() => setIsLoggedIn(true)} />}
-        {signupVisible && <SignupModal onClose={() => setSignupVisible(false)} />}
+        {signupVisible && <SignupModal onClose={() => setSignupVisible(false)} onSuccess={() => setIsLoggedIn(true)} />}
       </BrowserRouter>
     </ThemeProvider>
   );
