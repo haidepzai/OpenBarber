@@ -73,7 +73,7 @@ public class Enterprise {
     @Enumerated(EnumType.STRING)
     private Set<Drink> drinks;
 
-    @Lob
+//    @Lob //TODO how?
     private byte[] logo;
 
     /*@Lob*/

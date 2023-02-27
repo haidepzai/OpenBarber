@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class AuthenticationResponse {
 
     private String token;
+    private boolean isVerified;
+    private boolean hasEnterprise;
 }
