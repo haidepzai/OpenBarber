@@ -28,7 +28,7 @@ const SignupModal = ({ onClose }) => {
     shopEmail: '',
     shopHeaderUrl: '',
     shopWebsite: '',
-    shopServices: [],
+    shopLocation: null
   });
 
   useEffect(() => {

@@ -1,6 +1,9 @@
 import { Stack, Typography, Button, Box, TextField } from '@mui/material';
 import React, { useContext } from 'react';
 import { SignupContext } from '../Signup.context';
+import { usePlacesWidget } from 'react-google-autocomplete';
+
+const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
 const PropInput = (props) => {
   const { data, setData } = useContext(SignupContext);
@@ -9,6 +12,7 @@ const PropInput = (props) => {
       required
       {...props.input}
       variant="outlined"
+      size='small'
       value={data[props.input.vr]}
       onChange={(e) => setData((d) => ({ ...d, [props.input.vr]: e.target.value }))}
     />
@@ -18,11 +22,6 @@ const PropInput = (props) => {
 const EnterpriseCreateStep = () => {
   const { setActiveStep, completedSteps, setCompletedSteps, close, data, setData } = useContext(SignupContext);
 
-  const [newService, setNewService] = React.useState({
-    detail: '',
-    category: '',
-    price: '',
-  });
   const [errors, setErrors] = React.useState({
     detail: false,
     category: false,
@@ -34,6 +33,15 @@ const EnterpriseCreateStep = () => {
     desc: false,
     website: false,
     enterpriseName: false,
+    shopLocation: false,
+  });
+
+  const { ref: materialRef } = usePlacesWidget({
+    apiKey: GOOGLE_API_KEY,
+    onPlaceSelected: (place) => {
+      console.log("new place:",place);
+      setData((d) => ({ ...d, shopLocation: place }));
+    },
   });
 
   function onSubmit(e) {
@@ -54,15 +62,12 @@ const EnterpriseCreateStep = () => {
       setErrors((err) => ({ ...err, [e.target.name]: false }));
     }
   }
-  function update(e) {
-    setNewService((ns) => ({ ...ns, [e.target.name]: e.target.value }));
-  }
 
   return (
-    <Stack component="form" height="100%" gap={2} pt={16} onSubmit={onSubmit}>
+    <Stack component="form" height="100%" gap={2} pt={8} onSubmit={onSubmit}>
       {/* <Typography variant="h4">Please enter some information about your enterprise.</Typography> */}
 
-      <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 3fr 2fr', gap: 8 }}>
+      <Box sx={{ display: 'flex', flexDirection:"column", gap: 4, maxWidth: "800px" }}>
         <Stack gap={4}>
           <Typography variant="h6">Enterprise Information</Typography>
           <PropInput input={{
@@ -78,6 +83,18 @@ const EnterpriseCreateStep = () => {
         <Stack gap={4}>
           <Typography variant="h6">Setup your first Shop</Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr 1fr', gap: 2 }}>
+            <TextField
+              required
+              variant="outlined"
+              size='small'
+              onChange={() => setData((d) => ({ ...d, shopLocation: null }))}
+              label="Location"
+              name="shopLocation"
+              error={errors.shopLocation}
+              onBlur={onBlur}
+              inputRef={materialRef}
+            />
+            
             <PropInput input={{
               label: "First Shop Name",
               vr: "firstShopName",
@@ -129,7 +146,7 @@ const EnterpriseCreateStep = () => {
           </Box>
         </Stack>
 
-        <Stack gap={4}>
+        {/* <Stack gap={4}>
           <Typography variant="h6">Add Services</Typography>
           <Stack gap={2} gridRow="2/4" gridColumn="3/4">
             <TextField
@@ -206,7 +223,7 @@ const EnterpriseCreateStep = () => {
               ))}
             </Stack>
           </Stack>
-        </Stack>
+        </Stack> */}
       </Box>
 
       <Stack direction="row" justifyContent="space-between" marginTop="auto" width="100%" gap={2}>
@@ -228,7 +245,7 @@ const EnterpriseCreateStep = () => {
               data.shopHeaderUrl &&
               data.shopDescription &&
               data.shopWebsite &&
-              data.shopServices.length > 0
+              data.shopLocation
             )
           }
           variant="contained"
