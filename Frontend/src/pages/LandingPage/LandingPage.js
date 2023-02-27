@@ -41,8 +41,9 @@ const LandingPage = () => {
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
   const loadData = async () => {
-    const shopsResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/enterprises`);
-    const shopsData = await shopsResponse.json();
+    const res = await axios.get("http://localhost:8080/api/enterprises");
+    console.log(res);
+    const shopsData = res.data;
     setShops(shopsData);
   }
 
