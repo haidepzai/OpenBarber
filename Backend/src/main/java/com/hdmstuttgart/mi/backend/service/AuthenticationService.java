@@ -63,7 +63,7 @@ public class AuthenticationService {
         String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .isVerified(user.getRole() != UserRole.UNVERIFIED)
+                .verified(user.getRole() != UserRole.UNVERIFIED)
                 .hasEnterprise(user.getEnterprise() != null)
                 .build();
     }

@@ -85,9 +85,9 @@ const EmailVerificationStep = () => {
         <Button variant="outlined" onClick={close} tabIndex={-1}>
           Cancel
         </Button>
-        <Button variant="outlined" onClick={() => setActiveStep(1)}>
+        {/* <Button variant="outlined" onClick={() => setActiveStep(1)}>
           Back
-        </Button>
+        </Button> */}
         <Box flexGrow={1} />
         <Button type="submit" disabled={!verificationCode || verificationCode.length != 6 || completedSteps.slice(0, 2).some((e) => !e)} variant="contained">
           Continue

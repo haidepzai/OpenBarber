@@ -10,11 +10,11 @@ import EmailVerificationStep from './components/EmailVerificationStep';
 
 const steps = ['Sign up', 'Sign up your enterprise', 'Verify your E-Mail', 'Wait for Approval'];
 
-const SignupModal = ({ onClose, onSuccess }) => {
+const SignupModal = ({ onClose, onSuccess, state }) => {
   const portalElement = document.getElementById('overlays');
 
-  const [activeStep, setActiveStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState(Array(4).fill(false));
+  const [activeStep, setActiveStep] = useState(state.activeStep || 0);
+  const [completedSteps, setCompletedSteps] = useState(state.completedSteps || Array(4).fill(false));
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -86,7 +86,7 @@ const SignupModal = ({ onClose, onSuccess }) => {
             <Stepper nonLinear activeStep={activeStep}>
               {steps.map((label, index) => (
                 <Step key={label} completed={completedSteps[index]}>
-                  <StepButton type="button" onClick={() => setActiveStep(index)} disabled={completedSteps[3] || completedSteps.slice(0, index).some((e) => !e)}>
+                  <StepButton type="button" onClick={() => setActiveStep(index)} disabled={true}>
                     {label}
                   </StepButton>
                 </Step>
