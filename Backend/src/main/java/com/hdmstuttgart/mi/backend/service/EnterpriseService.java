@@ -2,6 +2,7 @@ package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
 import com.hdmstuttgart.mi.backend.model.dto.ServiceRequest;
 import com.hdmstuttgart.mi.backend.model.dto.EmployeeRequest;
@@ -10,6 +11,8 @@ import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import com.hdmstuttgart.mi.backend.model.enums.ServiceTargetAudience;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
+import com.hdmstuttgart.mi.backend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -25,14 +28,13 @@ import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class EnterpriseService {
 
     private static final Logger log = LoggerFactory.getLogger(EnterpriseService.class);
     private final EnterpriseRepository enterpriseRepository;
-
-    public EnterpriseService(EnterpriseRepository enterpriseRepository) {
-        this.enterpriseRepository = enterpriseRepository;
-    }
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
     /*public Enterprise createEnterprise(EnterpriseRequest request, MultipartFile file){
         try {
@@ -94,8 +96,13 @@ public class EnterpriseService {
             }
             if (request.getEmployees() != null) {
                 for (EmployeeRequest employeeRequest : request.getEmployees()) {
+                    byte[] picture = null;
+                    if (employeeRequest.getPicture() != null) {
+                        picture = employeeRequest.getPicture().getBytes();
+                    }
                     var employee = Employee.builder()
                             .name(employeeRequest.getName())
+                            .picture(picture)
                             .build();
                     employees.add(employee);
                 }
@@ -110,7 +117,8 @@ public class EnterpriseService {
                 .logo(logo)
                 .pictures(pictures)
                 .phoneNumber(request.getPhoneNumber())
-                .hours(request.getHours())
+                .openingTime(request.getOpeningTime())
+                .closingTime(request.getClosingTime())
                 .website(request.getWebsite())
                 .rating(request.getRating())
                 .reviews(request.getReviews())
@@ -141,6 +149,15 @@ public class EnterpriseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
     }
 
+    public Enterprise getEnterpriseByUser(String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow();
+
+        return user.getEnterprise();
+    }
+
     public Enterprise updateEnterprise(long id, Enterprise newEnterprise) {
         return enterpriseRepository.findById(id)
                 .map(enterprise -> {
@@ -157,6 +174,10 @@ public class EnterpriseService {
                     return enterpriseRepository.save(enterprise);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
+    }
+
+    public Enterprise patchEnterprise(long id, Enterprise newEnterprise) {
+        return newEnterprise;
     }
 
     public void deleteEnterprise(long id) {

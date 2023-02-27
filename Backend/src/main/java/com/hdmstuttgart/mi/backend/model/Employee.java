@@ -27,7 +27,10 @@ public class Employee {
     private String name;
 
     @Lob
-    private Blob picture;
+    private byte[] picture;
+
+    /*@Lob
+    private Blob picture;*/
 
 /*    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "enterprise_id", nullable = false)
