@@ -31,7 +31,7 @@ const FilterResults = ({ filter }) => {
   const location = useLocation();
 
   const [shops, setShops] = useState([])
-  const [sortValue, setSortValue] = useState(location.state.sortValue || 'Suggested');
+  const [sortValue, setSortValue] = useState((location.state && location.state.sortValue) || 'Suggested');
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
   const handleChange = (event) => {
@@ -136,7 +136,7 @@ const FilterResults = ({ filter }) => {
                 <Typography variant="span" sx={{ fontWeight: 'bold' }}>
                   {ratingNames[rating(shop)]}
                 </Typography>
-                <Typography variant="span">({shop.reviews.length} Reviews)</Typography>
+                <Typography variant="span">({shop.reviews.length} Review(s))</Typography>
               </Stack>
               <Typography variant="body1" sx={{ fontSize: '18px', fontWeight: 'bold', letterSpacing: '3px' }}>
                 <Typography

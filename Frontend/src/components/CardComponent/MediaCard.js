@@ -37,7 +37,7 @@ export default function MediaCard({ /*image, title, rating, description, link, r
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Rating readOnly precision={0.5} value={rating()} sx={{ color: 'primary.main' }} size="small" />
               <Typography variant="span" style={{ fontWeight: 600 }} color="grey.400">
-                {shop.reviews.length} Reviews
+                {shop.reviews.length} Review(s)
               </Typography>
             </Box>
 
