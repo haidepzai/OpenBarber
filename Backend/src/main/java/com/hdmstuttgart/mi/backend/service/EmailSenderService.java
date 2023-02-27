@@ -57,7 +57,7 @@ public class EmailSenderService {
         mjmlTemplateTexts.put(templateName, preparedText);
     }
 
-    public void sendEmailWithTemplate(String email, String username, String templateName) throws MessagingException, IOException {
+    public void sendEmailWithTemplate(String email, String templateName) throws MessagingException, IOException {
 
         //MJML API setup
         this.mjmlClient = MJMLClient.newDefaultClient()
