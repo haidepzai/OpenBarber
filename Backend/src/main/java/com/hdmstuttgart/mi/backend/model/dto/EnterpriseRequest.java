@@ -11,8 +11,8 @@ public class EnterpriseRequest {
     private String name;
     private String owner;
     private String address;
-    private long addressLongitude;
-    private long addressAltitude;
+    private double addressLongitude;
+    private double addressAltitude;
     private String eMail;
     private MultipartFile logo;
     private List<MultipartFile> pictures;
