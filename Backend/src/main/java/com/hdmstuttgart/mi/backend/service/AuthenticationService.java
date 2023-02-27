@@ -40,11 +40,11 @@ public class AuthenticationService {
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
 
-        try {
-            emailSenderService.sendEmailWithTemplate(user.getEmail(), "verification");
-        } catch (MessagingException | IOException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
-        }
+//        try {
+//            emailSenderService.sendEmailWithTemplate(user.getEmail(), "verification");
+//        } catch (MessagingException | IOException e) {
+//            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+//        }
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)

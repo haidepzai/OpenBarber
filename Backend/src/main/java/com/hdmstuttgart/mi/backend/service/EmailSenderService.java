@@ -34,6 +34,9 @@ public class EmailSenderService {
     @Value("${mjmlSecrets.appId}")
     String appId;
 
+    @Value("${mailCredentials.username}")
+    String mailUsername;
+
     @Value("${mjmlSecrets.appKey}")
     String appKey;
 
@@ -81,7 +84,7 @@ public class EmailSenderService {
         } else {
             helper.setSubject("OpenBarber - Did you miss us?");
         }
-        helper.setFrom("openbarber2@outlook.com");
+        helper.setFrom(mailUsername);
 
         mailSender.send(mimeMessage);
         System.out.println("Mail sent successfully ... ");
