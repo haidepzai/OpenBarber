@@ -32,6 +32,7 @@ import {FormGroup, Stack, Typography} from "@mui/material";
 import CircleIcon from '@mui/icons-material/Circle';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
+import axios from "axios";
 
 /*
 *  Doppelklick auf Zelle --> Add
@@ -324,6 +325,8 @@ const SchedulerPage = () => {
 
     const [loading, setLoading] = useState(true);
 
+    const [enterprise, setEnterprise] = useState(null);
+
     const [allServices, setAllServices] = useState([])
     const [allEmployees, setAllEmployees] = useState([])
 
@@ -356,6 +359,7 @@ const SchedulerPage = () => {
     }
 
     const commitChanges = ({ added, changed, deleted }) => {
+        console.error("COMMIT CHANGES")
 
         setData((prevState) => {
 
@@ -366,27 +370,36 @@ const SchedulerPage = () => {
                 delete added.allDay;
                 const newId = (prevState.length > 0) ? prevState[prevState.length - 1].id + 1 : 0;
                 const newAppointment = {
-                    id: newId,
+                    // id: newId,
                     ...added,
                     title: added.title ? added.title : allServices.find((service) => service.id === added.services[0]).title,
                 }
+                console.log({ data, newAppointment });
                 data = [
                     ...data,
                     newAppointment
-                ]
-                fetch("http://localhost:3001/appointments", {
-                    method: "POST",
-                    body: JSON.stringify(newAppointment),
-                    headers: {
-                        "Content-type": "application/json"
-                    }
-                })
+                ];
+                console.log({ data, newAppointment });
+
+                (async () => {
+                
+                      // form data config
+                      const customConfig = {
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+                        }
+                      };
+
+                    const res = await axios.post("http://localhost:8080/api/appointments?enterpriseId=" + enterprise.id, newAppointment, customConfig);
+                    console.log(res)
+                })();
             }
             // changed = { [key: string]: any }
             // key = appointment ID
             if (changed) {
                 const changedId = Number(Object.keys(changed)[0]);
-                const changedUrl = `http://localhost:3001/appointments/${changedId}`
+                const changedUrl = `http://localhost:8080/api/appointments/${changedId}`
                 // falls User das "customer"-Objekt ändert
                 if (Object.keys(Object.values(changed)[0]).includes("customer")) {
                     // REPLACE
@@ -394,35 +407,30 @@ const SchedulerPage = () => {
                     data = data.map((appointment) => (
                         (appointment.id === changedId) ? newAppointment : appointment
                     ))
-                    fetch(changedUrl, {
-                        method: "PUT",
-                        body: JSON.stringify(newAppointment),
+                    axios.put(changedUrl, JSON.stringify(newAppointment), {
                         headers: {
                             "Content-type": "application/json"
                         }
-                    })
+                    }).catch((err) => console.log(err));
                 } else {
                     // UPDATE
                     const newProps = changed[changedId]
                     data = data.map((appointment) => (
                         (appointment.id === changedId) ? { ...appointment, ...newProps } : appointment
                     ))
-                    fetch(changedUrl, {
-                        method: "PATCH",
-                        body: JSON.stringify(newProps),
+                    axios.patch(changedUrl, JSON.stringify(newProps), {
                         headers: {
                             "Content-type": "application/json"
                         }
-                    })
+                    }).catch((err) => console.log(err));
                 }
             }
             // number | string
             // "!== undefined" da undefined ja auch 0 sein kann
             if (deleted !== undefined) {
                 data = data.filter((appointment) => appointment.id !== deleted);
-                fetch(`http://localhost:3001/appointments/${deleted}`, {
-                    method: "DELETE"
-                })
+                axios.delete(`http://localhost:8080/api/appointments/${deleted}`)
+                    .catch((err) => console.log(err));
             }
             return data
         })
@@ -430,17 +438,39 @@ const SchedulerPage = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            const appointmentResponse = await fetch(appointmentUrl);
-            const appointments = await appointmentResponse.json();
-            const serviceResponse = await fetch(serviceUrl)
-            const services = await serviceResponse.json();
-            const employeeResponse = await fetch(employeeUrl)
-            const employees = await employeeResponse.json();
 
-            setData(appointments.map((appointment) => ({
+            const basicConfig = { headers: { "Content-type": "application/json" } };
+            const tokenConfig = { headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+              }};
+            console.log(tokenConfig);
+
+            let res = await axios.get("http://localhost:8080/api/enterprises/user", tokenConfig);
+            let enterprise = res.data;
+            setEnterprise(enterprise);
+            
+
+            let appointments = [];
+            res = await axios.get("http://localhost:8080/api/appointments?enterpriseId=" + enterprise.id, tokenConfig);
+            if (res.status === 200) appointments = res.data;
+
+            let services = [];
+            res = await axios.get("http://localhost:8080/api/services?enterpriseId=" + enterprise.id, tokenConfig);
+            if (res.status === 200) services = res.data;
+
+            let employees = [];
+            res = await axios.get("http://localhost:8080/api/employees?enterpriseId=" + enterprise.id, tokenConfig);
+            if (res.status === 200) employees = res.data;
+
+            console.log({enterprise, appointments, services, employees});
+
+            const maped_appointments = appointments.map((appointment) => ({
                 ...appointment,
                 title: appointment.title ? appointment.title : services.find((service) => service.id === appointment.services[0]).title
-            })))
+            }));
+            console.log("mapped", maped_appointments);
+            setData(maped_appointments);
 
             setAllServices(services)
             setAllEmployees(employees)
