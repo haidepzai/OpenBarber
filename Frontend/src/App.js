@@ -18,6 +18,10 @@ import EditEnterprisePage from "./pages/EditEnterprise";
 function App() {
   const [loginVisible, setLoginVisible] = useState(false);
   const [signupVisible, setSignupVisible] = useState(false);
+  const [signupState, setSignupState] = useState({
+    completedSteps: [false, false, false, false],
+    currentStep: 0,
+  });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
@@ -72,8 +76,16 @@ function App() {
           <Route path="edit" element={<EditEnterprisePage />} />
         </Routes>
         <Footer />
-        {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} onSuccess={() => setIsLoggedIn(true)} />}
-        {signupVisible && <SignupModal onClose={() => setSignupVisible(false)} onSuccess={() => setIsLoggedIn(true)} />}
+        {loginVisible && <LoginModal
+          onClose={() => setLoginVisible(false)}
+          onSuccess={() => setIsLoggedIn(true)}
+          gotoSignup={(state) => {
+            setSignupState(state);
+            setLoginVisible(false);
+            setSignupVisible(true);
+          }}
+        />}
+        {signupVisible && <SignupModal state={signupState} onClose={() => setSignupVisible(false)} onSuccess={() => setIsLoggedIn(true)} />}
       </BrowserRouter>
     </ThemeProvider>
   );

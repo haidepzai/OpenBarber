@@ -229,9 +229,9 @@ const EnterpriseCreateStep = () => {
         <Button variant="outlined" onClick={close} tabIndex={-1}>
           Cancel
         </Button>
-        <Button variant="outlined" onClick={() => setActiveStep(0)}>
+        {/* <Button variant="outlined" onClick={() => setActiveStep(0)}>
           Back
-        </Button>
+        </Button> */}
         <Box flexGrow={1} />
         <Button
           type="submit"
