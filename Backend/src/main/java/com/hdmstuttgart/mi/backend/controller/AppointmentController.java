@@ -42,6 +42,12 @@ public class AppointmentController {
         return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Appointment> patchAppointment(@PathVariable long id, @RequestBody Appointment newAppointment) {
+        Appointment updatedAppointment = appointmentService.patchAppointment(id, newAppointment);
+        return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAppointment(@PathVariable long id) {
         appointmentService.deleteAppointment(id);
