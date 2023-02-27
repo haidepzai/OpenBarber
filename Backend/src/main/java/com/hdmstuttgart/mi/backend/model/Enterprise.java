@@ -12,8 +12,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.net.URL;
-import java.sql.Blob;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 

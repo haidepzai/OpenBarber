@@ -33,16 +33,21 @@ public class EnterpriseController {
         return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
     public ResponseEntity<List<Enterprise>> getAllEnterprises() {
         List<Enterprise> enterprises = enterpriseService.getAllEnterprises();
         return new ResponseEntity<>(enterprises, HttpStatus.OK);
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<Enterprise> getEnterpriseByUser( @RequestHeader("Authorization") String token) {
+        Enterprise enterprise = enterpriseService.getEnterpriseByUser(token);
+        return new ResponseEntity<>(enterprise, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Enterprise> getEnterpriseById(@PathVariable long id) {
-        Enterprise enterprise =enterpriseService.getEnterpriseById(id);
+        Enterprise enterprise = enterpriseService.getEnterpriseById(id);
         return new ResponseEntity<>(enterprise, HttpStatus.OK);
     }
 
