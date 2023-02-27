@@ -25,7 +25,7 @@ function ReservationDialog({ open, handleClose, shop }) {
             firstName: "",
             lastName: "",
             email: "",
-            phone: "",
+            phoneNumber: "",
         },
         note: ""
     })

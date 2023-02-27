@@ -11,14 +11,16 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { getCurrentLocation, getGeocoordinates } from '../context/GoogleMapsActions';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
-function Search() {
+function Search({ dateAndTime, setDateAndTime }) {
   const navigate = useNavigate();
+  const routerLocation = useLocation();
 
-  const [dateValue, setDateValue] = useState(dayjs());
+
+    /*const [dateValue, setDateValue] = useState(dayjs());*/
   const [location, setLocation] = useState('');
 
   const [openDatePicker, setOpenDatePicker] = useState(false);
@@ -32,6 +34,7 @@ function Search() {
   });
 
   const handleSubmit = async (event) => {
+      console.log(dateAndTime)
     if (location !== '') {
       const loc = location.formatted_address;
       console.log(location.formatted_address);
@@ -40,13 +43,17 @@ function Search() {
       const lng = response.results[0].geometry.location.lng;
       console.log('Lat: ' + lat);
       console.log('Lng: ' + lng);
-      navigate({
+
+      /*navigate({
         pathname: '/filter',
         search: `?location=${loc}`,
-      });
+      });*/
+
+      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString() } });
+
     } else {
-      navigate('/filter', { state: { location: 'Test' } });
-      getCurrentLocation();
+        navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString() } });
+        getCurrentLocation();
     }
   };
 
@@ -65,7 +72,7 @@ function Search() {
           size="large"
           sx={{ p: '10.875px 22px' }}
         >
-          {dateValue.format('DD/MM/YYYY')}
+          {dateAndTime.format('DD/MM/YYYY')}
         </Button>
 
         {openDatePicker && (
@@ -74,9 +81,9 @@ function Search() {
               <StaticDatePicker
                 displayStaticWrapperAs="desktop"
                 openTo="day"
-                value={dateValue}
+                value={dateAndTime}
                 onChange={(newValue) => {
-                  setDateValue(newValue);
+                  setDateAndTime(newValue);
                   setOpenDatePicker(false);
                 }}
                 onClick={() => setOpenDatePicker(false)}
@@ -100,7 +107,7 @@ function Search() {
           size="large"
           sx={{ p: '10.875px 22px' }}
         >
-          {dateValue.format('HH:mm A')}
+          {dateAndTime.format('HH:mm A')}
         </Button>
 
         {openTimePicker && (
@@ -118,9 +125,9 @@ function Search() {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <StaticTimePicker
                 displayStaticWrapperAs="mobile"
-                value={dateValue}
+                value={dateAndTime}
                 onChange={(newValue) => {
-                  setDateValue(newValue);
+                  setDateAndTime(newValue);
                 }}
                 onAccept={() => setOpenTimePicker(false)}
                 renderInput={(params) => <TextField {...params} />}

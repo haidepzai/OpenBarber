@@ -1,5 +1,15 @@
 import React, { useEffect } from 'react';
-import { Checkbox, Divider, FormGroup, Slider, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import {
+  Checkbox,
+  Divider,
+  FormGroup,
+  Slider,
+  Stack,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography
+} from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
@@ -10,11 +20,18 @@ import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import GroupsIcon from '@mui/icons-material/Groups';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import { useLocation } from 'react-router-dom';
+import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {TimePicker} from "@mui/x-date-pickers/TimePicker";
+import dayjs from "dayjs";
+
+const paymentMethodOptions = ["ON_SITE_CASH", "ON_SITE_CARD", "BANK_TRANSFER", "PAYPAL"]
+const drinkOptions = ["COFFEE", "TEA", "WATER", "SOFT_DRINKS", "BEER", "CHAMPAGNE", "SPARKLING_WINE"]
 
 const Filter = ({ filter, setFilter }) => {
   const { state } = useLocation();
 
-  const updateFilter = (topic, property) => {
+  /*const updateFilter = (topic, property) => {
     setFilter({
       ...filter,
       [topic]: {
@@ -22,42 +39,65 @@ const Filter = ({ filter, setFilter }) => {
         [property]: !filter[topic][property],
       },
     });
-  };
+  };*/
 
-  const updateGenders = (event, newGenders) => {
+  const updateTargetAudience = (event, newTA) => {
     setFilter({
       ...filter,
-      genders: newGenders,
+      targetAudience: newTA,
     });
   };
 
-  const updateStylistCount = (event, newValue) => {
+  const updateEmployeeCount = (event, newValue) => {
     setFilter({
       ...filter,
-      stylistCount: newValue,
+      employeeCount: newValue,
     });
   };
 
-  const updateOpeningHours = (event, newValue) => {
+  const updateOpeningHour = (newValue) => {
+    const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1)
     setFilter({
       ...filter,
-      openingHours: newValue,
+      hours: {
+        ...filter.hours,
+        open: changedValue.toISOString()
+      }
     });
   };
 
-  useEffect(() => {
-    console.log(filter);
-  }, [filter]);
+  const updateClosingHour = (newValue) => {
+    const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1)
+    setFilter({
+      ...filter,
+      hours: {
+        ...filter.hours,
+        close: changedValue.toISOString()
+      }
+    });
+  };
 
-  useEffect(() => {
-    if (state !== null) {
-      const { location } = state;
-      console.log(location);
+  const updateFilterArray = (event, value) => {
+    const name = event.target.name;
+    const checked = event.target.checked;
+    if (checked) {
+      setFilter({
+        ...filter,
+        [name]: [
+          ...filter[name],
+          value
+        ]
+      })
+    } else {
+      setFilter({
+        ...filter,
+        [name]: filter[name].filter((el) => el !== value)
+      })
     }
-  }, []);
+  }
 
   return (
-    <Stack direction="column" alignItems="flex-start" justifyContent="flex-start" spacing={3} sx={{ flex: '1 1 0', padding: '20px 20px' }}>
+    <Stack direction="column" alignItems="flex-start" justifyContent="flex-start" spacing={3} sx={{ flex: '1 1 0', padding: '20px 20px' }} divider={<Divider orientation="horizontal" flexItem />}>
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', mb: '15px' }}>
           <PointOfSaleIcon />
@@ -65,45 +105,41 @@ const Filter = ({ filter, setFilter }) => {
         </FormLabel>
         <ToggleButtonGroup
           value={filter.priceCategory}
-          onChange={(event, newGenders) => setFilter({ ...filter, priceCategory: newGenders })}
+          onChange={(event, newValue) => setFilter({ ...filter, priceCategory: newValue })}
           aria-label="price category"
         >
-          <ToggleButton value="1" aria-label="1" sx={{ width: '70px', fontSize: '18px' }}>
+          <ToggleButton value={1} aria-label="1" sx={{ width: '70px', fontSize: '18px' }}>
             &#8364;
           </ToggleButton>
-          <ToggleButton value="2" aria-label="2" sx={{ width: '70px', fontSize: '18px' }}>
+          <ToggleButton value={2} aria-label="2" sx={{ width: '70px', fontSize: '18px' }}>
             &#8364; &#8364;
           </ToggleButton>
-          <ToggleButton value="3" aria-label="3" sx={{ width: '70px', fontSize: '18px' }}>
+          <ToggleButton value={3} aria-label="3" sx={{ width: '70px', fontSize: '18px' }}>
             &#8364; &#8364; &#8364;
           </ToggleButton>
         </ToggleButtonGroup>
       </FormControl>
 
-      <Divider sx={{ width: '100%' }} />
-
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
           <Face2Icon />
-          Gender
+          Target Audience
         </FormLabel>
-        <ToggleButtonGroup value={filter.genders} onChange={updateGenders} aria-label="gender selection">
-          <ToggleButton value="man" aria-label="man">
-            Man
+        <ToggleButtonGroup value={filter.targetAudience} onChange={updateTargetAudience} aria-label="target audience selection">
+          <ToggleButton value="ALL" aria-label="other">
+            ALL
           </ToggleButton>
-          <ToggleButton value="woman" aria-label="woman">
-            Woman
+          <ToggleButton value="MEN" aria-label="men">
+            Men
           </ToggleButton>
-          <ToggleButton value="kids" aria-label="kids">
+          <ToggleButton value="WOMEN" aria-label="women">
+            Women
+          </ToggleButton>
+          <ToggleButton value="KIDS" aria-label="kids">
             kids
-          </ToggleButton>
-          <ToggleButton value="other" aria-label="other">
-            Other
           </ToggleButton>
         </ToggleButtonGroup>
       </FormControl>
-
-      <Divider sx={{ width: '100%' }} />
 
       <FormControl component="fieldset" variant="standard" fullWidth>
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
@@ -113,47 +149,60 @@ const Filter = ({ filter, setFilter }) => {
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={4} sx={{ p: '0 12px' }}>
           <Slider
             getAriaLabel={() => 'Number of Hairdressers'}
-            value={filter.stylistCount}
-            onChange={updateStylistCount}
+            value={filter.employeeCount}
+            onChange={updateEmployeeCount}
             step={1}
             min={0}
-            max={50}
+            max={20}
             valueLabelDisplay="auto"
-            getAriaValueText={() => filter.stylistCount}
+            getAriaValueText={() => filter.employeeCount}
             sx={{ width: '100%' }}
           />
-          <Typography variant="subtitle1" sx={{ whiteSpace: 'nowrap' }}>
-            {filter.stylistCount[0] + ' - ' + filter.stylistCount[1]}
+          <Typography variant="subtitle1" sx={{ whiteSpace: 'nowrap', minWidth: "50px" }}>
+            {(filter.employeeCount[0] === filter.employeeCount[1])
+                ? (filter.employeeCount[0] >= 20 ? "20+" : filter.employeeCount[0])
+                : (filter.employeeCount[0] + ' - ' + (filter.employeeCount[1] >= 20 ? "20+" : filter.employeeCount[1]))
+            }
           </Typography>
         </Stack>
       </FormControl>
-
-      <Divider sx={{ width: '100%' }} />
 
       <FormControl component="fieldset" variant="standard" fullWidth>
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
           <QueryBuilderIcon />
           Opening Hours
         </FormLabel>
-        <Stack direction="column" alignItems="center" spacing={2} sx={{ p: '0 12px' }}>
-          <Slider
-            getAriaLabel={() => 'Opening Hours'}
-            value={filter.openingHours}
-            onChange={updateOpeningHours}
-            step={1}
-            min={6}
-            max={12}
-            valueLabelDisplay="auto"
-            getAriaValueText={() => filter.openingHours}
-            sx={{ width: '100%' }}
-          />
-          <Typography variant="subtitle1" sx={{ whiteSpace: 'nowrap' }}>
-            {filter.openingHours[0] + ' AM - ' + filter.openingHours[1] + ' PM'}
-          </Typography>
+        <Stack direction="column" spacing={2}>
+          <Stack direction="row" sx={{ "& > p": { flex: "1" }}} gap={2}>
+            <Typography variant="body1">Opening Time</Typography>
+            <Typography variant="body1">Closing Time</Typography>
+          </Stack>
+          <Stack direction="row" sx={{ "& > *": { flex: "1" }}} gap={2}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <TimePicker
+                  name="open"
+                  label={!filter.hours.open && "Open"}
+                  value={filter.hours.open}
+                  onChange={updateOpeningHour}
+                  renderInput={(params) => <TextField {...params} InputLabelProps={{shrink: false}} />}
+              />
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <TimePicker
+                  name="close"
+                  label={!filter.hours.close && "Close"}
+                  value={filter.hours.close}
+                  onChange={updateClosingHour}
+                  renderInput={(params) => <TextField {...params} InputLabelProps={{shrink: false}} />}
+              />
+            </LocalizationProvider>
+          </Stack>
+          <Stack direction="row" sx={{ "& > p": { flex: "1" }}} gap={2}>
+            <Typography variant="body1">(Or Earlier)</Typography>
+            <Typography variant="body1">(Or Later)</Typography>
+          </Stack>
         </Stack>
       </FormControl>
-
-      <Divider sx={{ width: '100%' }} />
 
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black' }}>
@@ -161,18 +210,27 @@ const Filter = ({ filter, setFilter }) => {
           Payment Method
         </FormLabel>
         <FormGroup sx={{ padding: '6px 0 0 3px' }}>
-          {Object.keys(filter.paymentMethods).map((method) => (
-            <FormControlLabel
-              key={method}
-              control={<Checkbox checked={filter.paymentMethods[method]} onChange={() => updateFilter('paymentMethods', method)} name={method} />}
-              label={method.replace('onSiteCash', 'On Site (Cash)').replace('onSiteCard', 'On Site (Card)').replace('_', ' ')}
-              sx={{ '& .MuiTypography-root': { textTransform: 'capitalize' } }}
-            />
+          {paymentMethodOptions.map((method) => (
+              <FormControlLabel
+                  name="paymentMethods"
+                  key={method}
+                  control={
+                    <Checkbox
+                        checked={filter.paymentMethods.includes(method)}
+                        onChange={(event) => updateFilterArray(event, method)}
+                    />
+                  }
+                  label={method
+                      .replace('ON_SITE_CASH', 'On Site (Cash)')
+                      .replace('ON_SITE_CARD', 'On Site (Card)')
+                      .replace('BANK_TRANSFER', 'Bank Transfer')
+                      .replace('PAYPAL', 'Paypal')
+                  }
+                  sx={{ '& .MuiTypography-root': { textTransform: 'capitalize' } }}
+              />
           ))}
         </FormGroup>
       </FormControl>
-
-      <Divider sx={{ width: '100%' }} />
 
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black' }}>
@@ -180,13 +238,22 @@ const Filter = ({ filter, setFilter }) => {
           Drinks
         </FormLabel>
         <FormGroup sx={{ padding: '6px 0 0 3px' }}>
-          {Object.keys(filter.drinks).map((drink) => (
-            <FormControlLabel
-              key={drink}
-              control={<Checkbox checked={filter.drinks[drink]} onChange={() => updateFilter('drinks', drink)} name={drink} />}
-              label={drink.replace('_', ' ')}
-              sx={{ '& .MuiTypography-root': { textTransform: 'capitalize' } }}
-            />
+          {drinkOptions.map((drink) => (
+              <FormControlLabel
+                  name="drinks"
+                  key={drink}
+                  control={
+                    <Checkbox
+                        checked={filter.drinks.includes(drink)}
+                        onChange={(event) => updateFilterArray(event, drink)}
+                    />
+                  }
+                  label={drink
+                      .replace('_', ' ')
+                      .toLowerCase()
+                  }
+                  sx={{ '& .MuiTypography-root': { textTransform: 'capitalize' } }}
+              />
           ))}
         </FormGroup>
       </FormControl>

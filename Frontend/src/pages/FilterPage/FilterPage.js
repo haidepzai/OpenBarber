@@ -1,40 +1,43 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Search from '../../layout/Search';
 import { Box, Divider, Stack } from '@mui/material';
 import barberShops from '../../mocks/shops';
 import FilterResults from '../../components/FilterComponent/FilterResults';
 import Filter from '../../components/FilterComponent/Filter';
+import dayjs from "dayjs";
+import {useLocation} from "react-router-dom";
 
 const FilterPage = ({}) => {
+
+  const location = useLocation();
+
   const [filter, setFilter] = useState({
+    dateAndTime: location.state.dateAndTime ? dayjs(location.state.dateAndTime) : dayjs(),
     location: '',
-    priceCategory: [],
-    genders: [],
-    stylistCount: [0, 50],
-    openingHours: [0, 12],
-    paymentMethods: {
-      onSiteCash: false,
-      onSiteCard: false,
-      payPal: false,
-      bank_transfer: false,
+    priceCategory: location.state.priceCategory || [],
+    targetAudience: [],
+    employeeCount: [0, 20],
+    hours: {
+      open: null,
+      close: null
     },
-    drinks: {
-      coffee: false,
-      tea: false,
-      water: false,
-      soft_drinks: false,
-      beer: false,
-      champagne: false,
-      sparkling_wine: false,
-    },
+    paymentMethods: [],
+    drinks: [],
     recommended: true,
     region: [],
   });
 
+  const setDateAndTime = (newValue) => {
+    setFilter({
+      ...filter,
+      dateAndTime: newValue
+    })
+  }
+
   return (
     <>
       <Box sx={{ background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(93,71,58,1) 0%, rgba(160,142,131,1) 100%)', p: '20px 0' }}>
-        <Search />
+        <Search dateAndTime={filter.dateAndTime} setDateAndTime={setDateAndTime} />
       </Box>
       <Stack direction="row" spacing={4} sx={{ maxWidth: '1500px', margin: '0 auto', padding: '0px 50px' }}>
         <Filter filter={filter} setFilter={setFilter} />

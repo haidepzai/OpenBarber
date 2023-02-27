@@ -3,32 +3,57 @@ import '../css/components/Header.css';
 import image from '../assets/logo_openbarber.svg';
 import { Stack, Button, Divider, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
+import {useNavigate} from "react-router-dom";
 
-const Header = ({ onLogin, onSignup }) => {
-  return (
+const Header = ({ onLogin, onSignup, isLoggedIn, onLogout, deleteJWT }) => {
+
+    function handleLogout() {
+      onLogout()
+      deleteJWT()
+    }
+
+    const navigate = useNavigate();
+
+    return (
     <>
-      <Grid container columns={16} sx={{ borderBottom: 1, borderColor: 'grey.300', paddingLeft: '10%', paddingRight: '10%' }}>
-        <Grid xs={8}>
-          <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={1} m ml="15px">
+      <Grid container columns={12} alignItems="center" sx={{ borderBottom: 1, borderColor: 'grey.300', p: "5px 10%" }}>
+        <Grid xs={isLoggedIn ? 4 : 6}>
+          <Stack direction="row" alignItems="center" spacing={2}>
             <a href="/">
               <img src={image} width="50px" alt="logo"></img>
             </a>
             <a href="/">
-              <Typography mt="10px !important" variant="h5" fontFamily="Roboto" fontWeight="500">
+              <Typography variant="h5" fontFamily="Roboto" fontWeight="500">
                 OpenBarber
               </Typography>
             </a>
-            <Divider orientation="vertical" flexItem />
           </Stack>
         </Grid>
-        <Grid xs={8}>
-          <Stack direction="row" justifyContent="flex-end" alignItems="flex-start" spacing={1} m mt="18px" mr="15px">
-            <Button variant="contained" color="secondary" onClick={onSignup}>
+
+      {isLoggedIn &&
+          <Grid item xs={4}>
+              <Stack direction="row" alignItems="center" spacing={8}>
+                  <Button type="text" size="large" sx={{ "&:hover": { backgroundColor: "#fff" }}} onClick={() => navigate('/scheduler')}>
+                      Manage Appointments
+                  </Button>
+                  <Button type="text" size="large" sx={{ "&:hover": { backgroundColor: "#fff" }}} onClick={() => navigate('/edit')}>
+                      Edit Profile
+                  </Button>
+              </Stack>
+          </Grid>
+      }
+
+        <Grid xs={isLoggedIn ? 4 : 6}>
+          <Stack direction="row" justifyContent="flex-end" alignItems="flex-start" spacing={1}>
+            {!(isLoggedIn) && <Button variant="contained" color="secondary" onClick={onSignup}>
               Sign Up
-            </Button>
-            <Button variant="contained" color="secondary" onClick={onLogin}>
+            </Button>}
+            {!(isLoggedIn) && <Button variant="contained" color="secondary" onClick={onLogin}>
               Login
-            </Button>
+            </Button>}
+            {isLoggedIn && <Button variant="contained" color="secondary" onClick={handleLogout}>
+              Logout
+            </Button>}
           </Stack>
         </Grid>
       </Grid>
