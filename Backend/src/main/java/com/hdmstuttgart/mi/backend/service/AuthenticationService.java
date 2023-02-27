@@ -40,7 +40,7 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
 
         try {
-            emailSenderService.sendEmailWithTemplate(user.getEmail(), user.getUsername(), "verification");
+            emailSenderService.sendEmailWithTemplate(user.getEmail(), "verification");
         } catch (MessagingException | IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
