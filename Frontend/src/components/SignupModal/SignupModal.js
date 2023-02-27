@@ -8,9 +8,9 @@ import EnterpriseCreateStep from './components/EnterpriseCreateStep';
 import AwaitingApprovalStep from './components/AwaitingApprovalStep';
 import EmailVerificationStep from './components/EmailVerificationStep';
 
-const steps = ['Sign up', 'Verify your E-Mail', 'Sign up your enterprise', 'Wait for Approval'];
+const steps = ['Sign up', 'Sign up your enterprise', 'Verify your E-Mail', 'Wait for Approval'];
 
-const SignupModal = ({ onClose }) => {
+const SignupModal = ({ onClose, onSuccess }) => {
   const portalElement = document.getElementById('overlays');
 
   const [activeStep, setActiveStep] = useState(0);
@@ -22,19 +22,16 @@ const SignupModal = ({ onClose }) => {
     verificationCode: '',
 
     enterpriseName: '',
-    firstShopName: '',
-    shopPhone: '',
-    shopDescription: '',
-    shopEmail: '',
-    shopHeaderUrl: '',
-    shopWebsite: '',
-    shopServices: [],
+    enterpriseOwner: '',
+    enterpriseStreet: null,
   });
 
   useEffect(() => {
+    document.body.style.overflow = "hidden"
     const cb = (e) => {
       if (e.key === 'Escape') {
         onClose?.();
+        document.body.style.overflow = ""
       }
     };
     document.addEventListener('keydown', cb);
@@ -48,7 +45,11 @@ const SignupModal = ({ onClose }) => {
         setActiveStep,
         completedSteps,
         setCompletedSteps,
-        close: onClose,
+        close: () => {
+          onClose?.();
+          document.body.style.overflow = ""
+        },
+        onSuccess,
         data,
         setData,
       }}
@@ -85,7 +86,7 @@ const SignupModal = ({ onClose }) => {
             <Stepper nonLinear activeStep={activeStep}>
               {steps.map((label, index) => (
                 <Step key={label} completed={completedSteps[index]}>
-                  <StepButton type="button" onClick={() => setActiveStep(index)} disabled={completedSteps.slice(0, index).some((e) => !e)}>
+                  <StepButton type="button" onClick={() => setActiveStep(index)} disabled={completedSteps[3] || completedSteps.slice(0, index).some((e) => !e)}>
                     {label}
                   </StepButton>
                 </Step>
@@ -93,8 +94,8 @@ const SignupModal = ({ onClose }) => {
             </Stepper>
             <Stack flexGrow="1">
               {activeStep === 0 && <SignUpStep />}
-              {activeStep === 1 && <EmailVerificationStep />}
-              {activeStep === 2 && <EnterpriseCreateStep />}
+              {activeStep === 1 && <EnterpriseCreateStep />}
+              {activeStep === 2 && <EmailVerificationStep />}
               {activeStep === 3 && <AwaitingApprovalStep />}
             </Stack>
           </Box>

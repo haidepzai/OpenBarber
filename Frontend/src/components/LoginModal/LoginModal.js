@@ -144,6 +144,7 @@ const LoginModal = ({ onClose, onSuccess }) => {
                 <TextField
                   label="Password"
                   required
+                  type="password"
                   error={!passwordIsValid}
                   helperText={!passwordIsValid && 'Please enter a password'}
                   onChange={(e) => setPassword(e.target.value)}
