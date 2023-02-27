@@ -1,27 +1,15 @@
 package com.hdmstuttgart.mi.backend.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.hdmstuttgart.mi.backend.model.Employee;
-import com.hdmstuttgart.mi.backend.model.Service;
-import com.hdmstuttgart.mi.backend.model.enums.Drink;
-import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import java.net.URL;
-import java.sql.Blob;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 public class EnterpriseRequest {
     private String name;
+    private String owner;
     private String address;
     private long addressLongitude;
     private long addressAltitude;
@@ -29,7 +17,8 @@ public class EnterpriseRequest {
     private MultipartFile logo;
     private List<MultipartFile> pictures;
     private String phoneNumber;
-    private String hours;
+    private String openingTime;
+    private String closingTime;
     private URL website;
     private double rating;
     private long reviews;

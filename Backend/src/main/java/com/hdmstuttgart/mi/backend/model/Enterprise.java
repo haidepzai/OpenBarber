@@ -12,8 +12,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.net.URL;
-import java.sql.Blob;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +29,9 @@ public class Enterprise {
     @NotBlank(message = "Name is mandatory")
     private String name;
 
+    @NotBlank(message = "Owner is mandatory")
+    private String owner;
+
     @NotBlank(message = "Address is mandatory")
     private String address;
     private long addressLongitude;
@@ -46,7 +47,9 @@ public class Enterprise {
     private URL website;
 
     // { open: "10:00", close: "08:00" }
-    private String hours;
+    // private Hours hours;
+    private String openingTime;
+    private String closingTime;
 
     // Das später aus Reviews berechnen
     private double rating;
