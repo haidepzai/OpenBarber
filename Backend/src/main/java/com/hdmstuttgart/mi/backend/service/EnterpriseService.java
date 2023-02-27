@@ -94,20 +94,27 @@ public class EnterpriseService {
             }
             if (request.getEmployees() != null) {
                 for (EmployeeRequest employeeRequest : request.getEmployees()) {
+                    byte[] picture = null;
+                    if (employeeRequest.getPicture() != null) {
+                        picture = employeeRequest.getPicture().getBytes();
+                    }
                     var employee = Employee.builder()
                             .name(employeeRequest.getName())
+                            .picture(picture)
                             .build();
                     employees.add(employee);
                 }
             }
             var enterprise = Enterprise.builder()
                 .name(request.getName())
+                .owner(request.getOwner())
                 .eMail(request.getEMail())
                 .address(request.getAddress())
                 .logo(logo)
                 .pictures(pictures)
                 .phoneNumber(request.getPhoneNumber())
-                .hours(request.getHours())
+                .openingTime(request.getOpeningTime())
+                .closingTime(request.getClosingTime())
                 .website(request.getWebsite())
                 .rating(request.getRating())
                 .reviews(request.getReviews())
@@ -154,6 +161,10 @@ public class EnterpriseService {
                     return enterpriseRepository.save(enterprise);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
+    }
+
+    public Enterprise patchEnterprise(long id, Enterprise newEnterprise) {
+        return newEnterprise;
     }
 
     public void deleteEnterprise(long id) {
