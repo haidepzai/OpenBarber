@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -183,8 +184,30 @@ public class EnterpriseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
     }
 
-    public Enterprise patchEnterprise(long id, Enterprise newEnterprise) {
-        return newEnterprise;
+    public Enterprise patchEnterprise(Enterprise updatedEnterprise, String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow();
+
+        Enterprise existingEnterprise = user.getEnterprise();
+
+        Field[] fields = Enterprise.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            try {
+                field.setAccessible(true);
+                Object newValue = field.get(updatedEnterprise);
+                if (newValue != null) {
+                    field.set(existingEnterprise, newValue);
+                }
+            } catch (IllegalAccessException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to update field: " + field.getName());
+
+            }
+        }
+
+        return enterpriseRepository.save(existingEnterprise);
     }
 
     public void deleteEnterprise(long id) {
