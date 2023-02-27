@@ -58,9 +58,9 @@ const FilterResults = ({ filter }) => {
         ) &&
         // hours
         (
-            (!filter.hours.open || (dayjs(shop.hours.open).isBefore(filter.hours.open, 'minute') || dayjs(shop.hours.open).isSame(filter.hours.open, 'minute')))
+            (!filter.openingTime || (dayjs(shop.openingTime).isBefore(filter.openingTime, 'minute') || dayjs(shop.openingTime).isSame(filter.openingTime, 'minute')))
             &&
-            (!filter.hours.close || (dayjs(shop.hours.close).isAfter(filter.hours.close, 'minute') || dayjs(shop.hours.close).isSame(filter.hours.close, 'minute')))
+            (!filter.closingTime || (dayjs(shop.closingTime).isAfter(filter.closingTime, 'minute') || dayjs(shop.closingTime).isSame(filter.closingTime, 'minute')))
         ) &&
         // paymentMethods
         (filter.paymentMethods.length === 0 || filter.paymentMethods.every((pm) => shop.paymentMethods.includes(pm))) &&
@@ -82,9 +82,9 @@ const FilterResults = ({ filter }) => {
           return 1;
         }
       case 'Best Rating':
-        return shopB.rating - shopA.rating;
+        return rating(shopB) - rating(shopA);
       case 'Most Ratings':
-        return shopB.reviews - shopA.reviews;
+        return shopB.reviews.length - shopA.reviews.length;
       default:
         return 0;
     }
@@ -94,6 +94,12 @@ const FilterResults = ({ filter }) => {
     const shopsResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/enterprises`);
     const shopsData = await shopsResponse.json();
     setShops(shopsData);
+  }
+
+  const rating = (shop) => {
+    const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
+    const avg = (sum / shop.reviews.length) || 0;
+    return avg;
   }
 
   useEffect(() => {
@@ -126,11 +132,11 @@ const FilterResults = ({ filter }) => {
             <Stack direction="column" spacing={1} sx={{ pb: "10px" }}>
               <Typography variant="h6">{shop.name}</Typography>
               <Stack direction="row" spacing={1} alignItems="center">
-                <Rating readOnly precision={0.5} value={shop.rating} />
+                <Rating readOnly precision={0.5} value={rating(shop)} />
                 <Typography variant="span" sx={{ fontWeight: 'bold' }}>
-                  {ratingNames[shop.rating]}
+                  {ratingNames[rating(shop)]}
                 </Typography>
-                <Typography variant="span">({shop.reviews} Reviews)</Typography>
+                <Typography variant="span">({shop.reviews.length} Reviews)</Typography>
               </Stack>
               <Typography variant="body1" sx={{ fontSize: '18px', fontWeight: 'bold', letterSpacing: '3px' }}>
                 <Typography
@@ -152,7 +158,7 @@ const FilterResults = ({ filter }) => {
               </Stack>
               <Stack direction="row" alignItems="center" spacing={1}>
                 <QueryBuilderIcon sx={{ color: 'rgba(0, 0, 0, 0.7)' }} />
-                <Typography variant="body1">{dayjs(shop.hours.open).format('hh:mm A')} - {dayjs(shop.hours.close).format('hh:mm A')}</Typography>
+                <Typography variant="body1">{dayjs(shop.openingTime).format('hh:mm A')} - {dayjs(shop.closingTime).format('hh:mm A')}</Typography>
               </Stack>
               <Button
                   variant="contained"

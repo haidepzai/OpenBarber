@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 
-import { Box, Button, Rating, Tabs, Tab, Typography } from '@mui/material';
+import {Box, Button, Rating, Tabs, Tab, Typography, Grid, Stack} from '@mui/material';
 import GoogleMaps from '../../../components/GoogleMaps';
 import ReservationDialog from '../../../components/Reservation/ReservationDialog';
 import PhotoGallery from '../../../components/Gallery/PhotoGallery';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import dayjs from "dayjs";
 
 const TabPanel = ({ children, value, index, ...props }) => (value === index ? <Box {...props}>{children}</Box> : null);
 
 const ShopInfoCard = ({ shop, mobile }) => {
   const [tab, setTab] = useState(0);
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
+
+  const rating = () => {
+      const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
+      const avg = (sum / shop.reviews.length) || 0;
+      return avg;
+  }
 
   return (
     <>
@@ -39,7 +47,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
           <Box>
             <Typography variant="h4">{shop.name}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Rating readOnly precision={0.5} value={shop.rating} sx={{ color: 'primary.main' }} size="small" />
+              <Rating readOnly precision={0.5} value={rating()} sx={{ color: 'primary.main' }} size="small" />
               <Typography fontSize={14} variant="span" color="grey.600">
                 {shop.reviews.length} Reviews
               </Typography>
@@ -55,7 +63,13 @@ const ShopInfoCard = ({ shop, mobile }) => {
           </Box>
 
           <TabPanel value={tab} index={0} sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
-            <Typography variant="span">Open Hours: {shop.hours}</Typography>
+            <Stack direction="row" alignItems="center" spacing={1}>
+                <AccessTimeIcon />
+                <Typography variant="h6">Opening Hours:</Typography>
+                <Typography variant="h6" >{dayjs(shop.openingTime).format('hh:mm A')} - {dayjs(shop.closingTime).format('hh:mm A')}</Typography>
+            </Stack>
+
+
             <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h7" mb={1} sx={{ fontWeight: 600, color: 'grey.1000' }}>
                 ABOUT
@@ -68,7 +82,9 @@ const ShopInfoCard = ({ shop, mobile }) => {
           </TabPanel>
 
           <TabPanel value={tab} index={1} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
-            {shop.services.map((service, i) => (
+            {shop.services
+                .sort((a, b) => a.targetAudience.toLowerCase().localeCompare(b.targetAudience.toLowerCase()))
+                .map((service, i) => (
               <Box
                 key={i}
                 sx={{
@@ -81,18 +97,47 @@ const ShopInfoCard = ({ shop, mobile }) => {
                   py: 1,
                 }}
               >
-                <Typography variant="span" color="primary.main" sx={{ fontWeight: 600 }}>
+                <Typography variant="span" color="primary.main" sx={{ fontWeight: 600, minWidth: "30px" }}>
                   {service.price}&euro;
                 </Typography>
-                <Typography variant="span">{service.name}</Typography>
+                <Typography variant="span" sx={{ width: "30px" }}>{service.targetAudience}</Typography>
+                <Typography variant="span">-</Typography>
+                <Typography variant="span">{service.title}</Typography>
               </Box>
             ))}
           </TabPanel>
 
           <TabPanel value={tab} index={2} sx={{ display: 'grid', gap: 2 }}>
-            <Typography variant="span">{shop.address}</Typography>
-            <Typography variant="span">{shop.phone}</Typography>
-            <Typography variant="span">{shop.mail}</Typography>
+              <Grid container columns={4} spacing={2}>
+                  <Grid item xs={1}>
+                      <Typography variant="body1">Adresse:</Typography>
+                  </Grid>
+                  <Grid item xs={1}>
+                      <Typography variant="body1">{shop.address}</Typography>
+                  </Grid>
+                  <Grid item xs={2} />
+                  <Grid item xs={1}>
+                      <Typography variant="body1">Phone Number:</Typography>
+                  </Grid>
+                  <Grid item xs={1}>
+                      <Typography variant="body1">{shop.phoneNumber}</Typography>
+                  </Grid>
+                  <Grid item xs={2} />
+                  <Grid item xs={1}>
+                      <Typography variant="body1">E-Mail:</Typography>
+                  </Grid>
+                  <Grid item xs={1}>
+                      <Typography variant="body1">{shop.email}</Typography>
+                  </Grid>
+                  <Grid item xs={2} />
+                  <Grid item xs={1}>
+                      <Typography variant="body1">Webseite:</Typography>
+                  </Grid>
+                  <Grid item xs={1}>
+                      <Typography variant="body1">{shop.website}</Typography>
+                  </Grid>
+                  <Grid item xs={2} />
+              </Grid>
           </TabPanel>
         </Box>
 
@@ -100,7 +145,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
           <GoogleMaps />
         </Box>
 
-        <PhotoGallery />
+        <PhotoGallery pictures={shop.pictures} />
       </Box>
 
       <ReservationDialog open={openReservationDialog} handleClose={() => setOpenReservationDialog(false)} shop={shop} />
