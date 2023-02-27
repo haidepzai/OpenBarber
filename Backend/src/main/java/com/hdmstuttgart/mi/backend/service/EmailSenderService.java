@@ -34,6 +34,9 @@ public class EmailSenderService {
     @Value("${mjmlSecrets.appId}")
     String appId;
 
+    @Value("${mailCredentials.username}")
+    String mailUsername;
+
     @Value("${mjmlSecrets.appKey}")
     String appKey;
 
@@ -80,7 +83,7 @@ public class EmailSenderService {
         } else {
             helper.setSubject("OpenBarber - Verification");
         }
-        helper.setFrom("openbarber@outlook.de");
+        helper.setFrom(mailUsername);
 
         mailSender.send(mimeMessage);
         System.out.println("Mail sent successfully ... ");

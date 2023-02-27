@@ -102,7 +102,10 @@ public class EnterpriseService {
             }
             var enterprise = Enterprise.builder()
                 .name(request.getName())
+                .owner(request.getOwner())
                 .eMail(request.getEMail())
+                .addressAltitude(request.getAddressAltitude())
+                .addressLongitude(request.getAddressLongitude())
                 .address(request.getAddress())
                 .logo(logo)
                 .pictures(pictures)

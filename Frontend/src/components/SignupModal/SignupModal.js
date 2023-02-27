@@ -10,7 +10,7 @@ import EmailVerificationStep from './components/EmailVerificationStep';
 
 const steps = ['Sign up', 'Sign up your enterprise', 'Verify your E-Mail', 'Wait for Approval'];
 
-const SignupModal = ({ onClose }) => {
+const SignupModal = ({ onClose, onSuccess }) => {
   const portalElement = document.getElementById('overlays');
 
   const [activeStep, setActiveStep] = useState(0);
@@ -22,19 +22,16 @@ const SignupModal = ({ onClose }) => {
     verificationCode: '',
 
     enterpriseName: '',
-    firstShopName: '',
-    shopPhone: '',
-    shopDescription: '',
-    shopEmail: '',
-    shopHeaderUrl: '',
-    shopWebsite: '',
-    shopLocation: null
+    enterpriseOwner: '',
+    enterpriseStreet: null,
   });
 
   useEffect(() => {
+    document.body.style.overflow = "hidden"
     const cb = (e) => {
       if (e.key === 'Escape') {
         onClose?.();
+        document.body.style.overflow = ""
       }
     };
     document.addEventListener('keydown', cb);
@@ -48,7 +45,11 @@ const SignupModal = ({ onClose }) => {
         setActiveStep,
         completedSteps,
         setCompletedSteps,
-        close: onClose,
+        close: () => {
+          onClose?.();
+          document.body.style.overflow = ""
+        },
+        onSuccess,
         data,
         setData,
       }}
