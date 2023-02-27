@@ -70,7 +70,7 @@ const EnterpriseCreateStep = () => {
       const customConfig = {
         headers: {
           'Content-Type': 'multipart/form-data',
-
+          'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
         }
       };
 
