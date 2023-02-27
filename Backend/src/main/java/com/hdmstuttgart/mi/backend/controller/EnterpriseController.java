@@ -27,9 +27,8 @@ public class EnterpriseController {
     /* @ModelAttribute: arguments fields == request parameters */
 
     @PostMapping
-    public ResponseEntity<Enterprise> createEnterprise(@ModelAttribute EnterpriseRequest enterpriseRequest) {
-
-        Enterprise createdEnterprise = enterpriseService.createEnterprise(enterpriseRequest);
+    public ResponseEntity<Enterprise> createEnterprise(@ModelAttribute EnterpriseRequest enterpriseRequest, @RequestHeader("Authorization") String token) {
+        Enterprise createdEnterprise = enterpriseService.createEnterprise(enterpriseRequest, token);
         return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
     }
 
@@ -40,7 +39,7 @@ public class EnterpriseController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<Enterprise> getEnterpriseByUser( @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Enterprise> getEnterpriseByUser(@RequestHeader("Authorization") String token) {
         Enterprise enterprise = enterpriseService.getEnterpriseByUser(token);
         return new ResponseEntity<>(enterprise, HttpStatus.OK);
     }
@@ -64,7 +63,7 @@ public class EnterpriseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String>  deleteEnterprise(@PathVariable long id) {
+    public ResponseEntity<String> deleteEnterprise(@PathVariable long id) {
         enterpriseService.deleteEnterprise(id);
         return new ResponseEntity<>("Enterprise deleted with id = " + id, HttpStatus.NO_CONTENT);
     }
