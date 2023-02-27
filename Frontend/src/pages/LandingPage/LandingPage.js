@@ -47,6 +47,12 @@ const LandingPage = () => {
     setShops(shopsData);
   }
 
+  const rating = (shop) => {
+    const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
+    const avg = (sum / shop.reviews.length) || 0;
+    return avg;
+  }
+
   useEffect(() => {
     loadData();
   }, [])
@@ -81,7 +87,7 @@ const LandingPage = () => {
         </Stack>
         <Divider orientation="horizontal" sx={{ m: "12px 0", borderColor: "rgba(0, 0, 0, 0.24)" }} />
         <Stack direction="row" spacing={4} justifyContent="center" sx={{ pt: "20px" }}>
-          {shops.slice(0, 5).sort((a, b) => b.rating - a.rating).map((shop) => (
+          {shops.slice(0, 5).sort((a, b) => rating(b) - rating(a)).map((shop) => (
               <Box key={shop.id}>
                 <MediaCard
                     shop={shop}
