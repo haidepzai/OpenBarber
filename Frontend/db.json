@@ -187,6 +187,21 @@
         "phoneNumber": "015750147297",
         "email": "aaaaaaaa"
       }
+    },
+    {
+      "id": 16,
+      "title": "Waschen, Schneiden, Föhnen",
+      "startDate": "2023-03-01T09:40:00.000Z",
+      "endDate": "2023-03-01T08:30:00.000Z",
+      "employee": 1,
+      "services": [
+        0
+      ],
+      "customer": {
+        "firstName": "Dominik",
+        "lastName": "Seitz",
+        "phoneNumber": "015750147297"
+      }
     }
   ],
   "services": [
@@ -246,23 +261,24 @@
   "enterprises": [
     {
       "id": 62,
-      "name": "my-companyAAAXXAA",
+      "name": "my-company1",
       "address": "Stuttgart",
       "addressLongitude": 0,
       "addressAltitude": 0,
       "phoneNumber": "12345",
       "website": "http://www.example.com/docs/resource1.html",
       "hours": {
-        "open": "11:00 AM",
-        "close": "08:00 PM"
+        "open": "2023-01-01T08:00:00.594Z",
+        "close": "2023-01-01T18:00:00.972Z"
       },
+      "description": "description1",
       "rating": 4.5,
       "reviews": 10,
       "recommended": true,
       "approved": true,
-      "priceCategory": 2,
+      "priceCategory": 1,
       "paymentMethods": [
-        "PAYPAL"
+        "BANK_TRANSFER"
       ],
       "drinks": [
         "WATER",
@@ -309,6 +325,189 @@
         {
           "id": 5,
           "targetAudience": "ALL",
+          "title": "Trockenhaarschnitt",
+          "durationInMin": 20,
+          "price": 50
+        },
+        {
+          "targetAudience": "WOMEN",
+          "title": "Trockenhaarschnitt",
+          "durationInMin": 0,
+          "price": 0
+        }
+      ],
+      "employees": [
+        {
+          "id": 63,
+          "name": "Peter3333"
+        }
+      ],
+      "email": "my-company@gmx.de"
+    },
+    {
+      "id": 63,
+      "name": "my-company2",
+      "address": "Stuttgart",
+      "addressLongitude": 0,
+      "addressAltitude": 0,
+      "phoneNumber": "12345",
+      "website": "http://www.example.com/docs/resource1.html",
+      "hours": {
+        "open": "2023-01-01T09:00:00.594Z",
+        "close": "2023-01-01T19:00:00.972Z"
+      },
+      "description": "description2",
+      "rating": 5,
+      "reviews": 15,
+      "recommended": false,
+      "approved": true,
+      "priceCategory": 2,
+      "paymentMethods": [
+        "ON_SITE_CASH"
+      ],
+      "drinks": [
+        "COFFEE",
+        "SOFT_DRINKS"
+      ],
+      "logo": null,
+      "pictures": [],
+      "services": [
+        {
+          "id": 0,
+          "targetAudience": "MEN",
+          "title": "Waschen, Schneiden, Föhnen",
+          "durationInMin": 40,
+          "price": 30
+        },
+        {
+          "id": 1,
+          "targetAudience": "ALL",
+          "title": "Waschen, Föhnen",
+          "durationInMin": 45,
+          "price": 10
+        },
+        {
+          "id": 2,
+          "targetAudience": "ALL",
+          "title": "Waschen, Glätten2",
+          "durationInMin": 60,
+          "price": 20
+        },
+        {
+          "id": 3,
+          "targetAudience": "MEN",
+          "title": "Haare färben",
+          "durationInMin": 35,
+          "price": 45
+        },
+        {
+          "id": 4,
+          "targetAudience": "KIDS",
+          "title": "Strähnen",
+          "durationInMin": 30,
+          "price": 50
+        },
+        {
+          "id": 5,
+          "targetAudience": "KIDS",
+          "title": "Trockenhaarschnitt",
+          "durationInMin": 20,
+          "price": 50
+        },
+        {
+          "targetAudience": "KIDS",
+          "title": "Trockenhaarschnitt",
+          "durationInMin": 0,
+          "price": 0
+        }
+      ],
+      "employees": [
+        {
+          "id": 63,
+          "name": "Peter3333"
+        },
+        {
+          "id": 67,
+          "name": "Peter3333"
+        },
+        {
+          "id": 63,
+          "name": "Peter3333"
+        },
+        {
+          "name": "Peter33334"
+        }
+      ],
+      "email": "my-company@gmx.de"
+    },
+    {
+      "id": 64,
+      "name": "my-company3",
+      "address": "Stuttgart",
+      "addressLongitude": 0,
+      "addressAltitude": 0,
+      "phoneNumber": "12345",
+      "website": "http://www.example.com/docs/resource1.html",
+      "hours": {
+        "open": "2023-01-01T07:00:00.594Z",
+        "close": "2023-01-01T20:00:00.972Z"
+      },
+      "description": "description3",
+      "rating": 4.5,
+      "reviews": 10,
+      "recommended": true,
+      "approved": true,
+      "priceCategory": 3,
+      "paymentMethods": [
+        "PAYPAL",
+        "ON_SITE_CARD"
+      ],
+      "drinks": [
+        "CHAMPAGNE",
+        "COFFEE",
+        "SPARKLING_WINE"
+      ],
+      "logo": null,
+      "pictures": [],
+      "services": [
+        {
+          "id": 0,
+          "targetAudience": "MEN",
+          "title": "Waschen, Schneiden, Föhnen",
+          "durationInMin": 40,
+          "price": 30
+        },
+        {
+          "id": 1,
+          "targetAudience": "ALL",
+          "title": "Waschen, Föhnen",
+          "durationInMin": 45,
+          "price": 10
+        },
+        {
+          "id": 2,
+          "targetAudience": "ALL",
+          "title": "Waschen, Glätten2",
+          "durationInMin": 60,
+          "price": 20
+        },
+        {
+          "id": 3,
+          "targetAudience": "MEN",
+          "title": "Haare färben",
+          "durationInMin": 35,
+          "price": 45
+        },
+        {
+          "id": 4,
+          "targetAudience": "WOMEN",
+          "title": "Strähnen",
+          "durationInMin": 30,
+          "price": 50
+        },
+        {
+          "id": 5,
+          "targetAudience": "KIDS",
           "title": "Trockenhaarschnitt",
           "durationInMin": 20,
           "price": 50

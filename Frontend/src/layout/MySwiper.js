@@ -14,6 +14,8 @@ import mostImage from '../assets/most.jpg';
 import priceImage from '../assets/price.jpg';
 import locationImage from '../assets/location.jpg';
 import tipsImage from '../assets/tips.jpg';
+import luxuryImage from "../assets/luxury.jpg"
+
 import { Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,17 +23,18 @@ function MySwiper(props) {
   const navigate = useNavigate();
 
   const criteria = [
-    { id: 1, name: 'Best Ratings', src: ratingsImage },
-    { id: 2, name: 'Cheapest Prices', src: priceImage },
-    { id: 3, name: 'Near you', src: locationImage },
-    { id: 4, name: 'With Beard Trimming', src: beardImage },
-    { id: 5, name: 'Most Ratings', src: mostImage },
-    { id: 6, name: 'Our personal tips', src: tipsImage },
+    {name: 'Best Ratings', src: ratingsImage, value: { sortValue : 'Best Rating' } },
+    {name: 'Our personal tips', src: tipsImage, value: { sortValue : 'Suggested' } },
+    {name: 'Cheapest Prices', src: priceImage, value: { priceCategory: [1] } },
+    {name: 'Most Ratings', src: mostImage, value: { sortValue : 'Most Ratings' } },
+    {name: 'Luxurious Services', src: luxuryImage, value: { priceCategory: [3] } },
+    {name: 'Near you', src: locationImage },
+    {name: 'With Beard Trimming', src: beardImage },
   ];
 
-  const handleClick = () => {
+/*  const handleClick = () => {
     navigate('/filter', { state: { location: 'Test' } });
-  };
+  };*/
 
   return (
     <div style={{ position: 'relative' }} className="swiper-landing-page ">
@@ -44,13 +47,13 @@ function MySwiper(props) {
         navigation={true}
         modules={[Pagination, Navigation]}
       >
-        {criteria.map((currElement, index) => (
-          <SwiperSlide key={index} onClick={handleClick}>
+        {criteria.map((currElement) => (
+          <SwiperSlide key={currElement.name} onClick={() => navigate('/filter', { state: { [Object.keys(currElement.value)[0]]: Object.values(currElement.value)[0] }})}>
             <Box
               sx={{
                 padding: '0',
                 position: 'relative',
-                height: '200px',
+                height: '300px',
                 width: '300px',
                 borderRadius: '10px',
                 boxShadow: 'rgba(0, 0, 0, 0.6) 0px 2px 8px',
@@ -67,14 +70,14 @@ function MySwiper(props) {
                     filter: 'brightness(0.55) contrast(1.2)',
                   },
                   '& h4': {
-                    textShadow: '3px 3px 0px #6D5344',
+                    textShadow: '3px 3px 1px #6D5344',
                   },
                 },
               }}
             >
               <img src={currElement.src} alt="category" />
               <Typography
-                variant="h6"
+                variant="h4"
                 sx={{
                   textAlign: 'center',
                   position: 'absolute',
