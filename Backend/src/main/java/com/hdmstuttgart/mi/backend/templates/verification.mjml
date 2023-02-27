@@ -50,10 +50,7 @@
             Find your verification code down here!
           </mj-text>
           <mj-text color="#637381" font-size="16px">
-            blank_fullName,
-          </mj-text>
-          <mj-text color="#637381" font-size="16px">
-            thank you for signing up at OpenBarber! You just need to go through a short verification process in order to activate your business account.
+            Thank you for signing up at OpenBarber! You just need to go through a short verification process in order to activate your business account.
           </mj-text>
           <mj-text color="#637381" font-size="16px">
             Just login at our website and copy pasta the following code:

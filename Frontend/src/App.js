@@ -5,7 +5,7 @@ import ErrorPage from './pages/ErrorPage/ErrorPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LoginModal from './components/LoginModal/LoginModal';
 import { ThemeProvider } from '@mui/material/styles';
 import { basicTheme } from './themes/basicTheme';
@@ -18,11 +18,40 @@ import EditEnterprisePage from "./pages/EditEnterprise";
 function App() {
   const [loginVisible, setLoginVisible] = useState(false);
   const [signupVisible, setSignupVisible] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
+  function deleteJWTTokenFromStorage(){
+    let token = localStorage.getItem('tokenJWT');
+    if(token) {
+      localStorage.removeItem('tokenJWT')
+    } 
+  }
+
+  function checkForJWTToken() {
+    let token = localStorage.getItem('tokenJWT');
+    if(token) {
+      setIsLoggedIn(true)
+      return true
+    } 
+    setIsLoggedIn(false)
+    return false
+  }
+
+
+  useEffect(() => {
+    checkForJWTToken()
+  }, [])
+
 
   return (
     <ThemeProvider theme={basicTheme}>      
       <BrowserRouter>
-        <Header onLogin={() => setLoginVisible(true)} onSignup={() => setSignupVisible(true)} />
+        <Header onLogin={() => setLoginVisible(true)} 
+                onSignup={() => setSignupVisible(true)} 
+                isLoggedIn= {isLoggedIn} 
+                onLogout={() => setIsLoggedIn(false)}
+                deleteJWT={() => deleteJWTTokenFromStorage()} />
         <Routes>
           <Route path="*" element={<ErrorPage />} />
           <Route path="/" element={<LandingPage />} />
@@ -33,9 +62,9 @@ function App() {
           <Route path="edit" element={<EditEnterprisePage />} />
         </Routes>
         <Footer />
+        {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} onSuccess={() => setIsLoggedIn(true)} />}
+        {signupVisible && <SignupModal onClose={() => setSignupVisible(false)} />}
       </BrowserRouter>
-      {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} />}
-      {signupVisible && <SignupModal onClose={() => setSignupVisible(false)} />}
     </ThemeProvider>
   );
 }
