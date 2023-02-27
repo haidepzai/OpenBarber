@@ -59,10 +59,7 @@ const Filter = ({ filter, setFilter }) => {
     const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1)
     setFilter({
       ...filter,
-      hours: {
-        ...filter.hours,
-        open: changedValue.toISOString()
-      }
+      openingTime: changedValue.toISOString()
     });
   };
 
@@ -70,10 +67,7 @@ const Filter = ({ filter, setFilter }) => {
     const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1)
     setFilter({
       ...filter,
-      hours: {
-        ...filter.hours,
-        close: changedValue.toISOString()
-      }
+      closingTime: changedValue.toISOString()
     });
   };
 
@@ -181,8 +175,8 @@ const Filter = ({ filter, setFilter }) => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
                   name="open"
-                  label={!filter.hours.open && "Open"}
-                  value={filter.hours.open}
+                  label={!filter.openingTime && "Open"}
+                  value={filter.openingTime}
                   onChange={updateOpeningHour}
                   renderInput={(params) => <TextField {...params} InputLabelProps={{shrink: false}} />}
               />
@@ -190,8 +184,8 @@ const Filter = ({ filter, setFilter }) => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
                   name="close"
-                  label={!filter.hours.close && "Close"}
-                  value={filter.hours.close}
+                  label={!filter.closingTime && "Close"}
+                  value={filter.closingTime}
                   onChange={updateClosingHour}
                   renderInput={(params) => <TextField {...params} InputLabelProps={{shrink: false}} />}
               />

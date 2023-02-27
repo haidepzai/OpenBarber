@@ -17,10 +17,8 @@ const FilterPage = ({}) => {
     priceCategory: location.state.priceCategory || [],
     targetAudience: [],
     employeeCount: [0, 20],
-    hours: {
-      open: null,
-      close: null
-    },
+    openingTime: null,
+    closingTime: null,
     paymentMethods: [],
     drinks: [],
     recommended: true,

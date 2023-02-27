@@ -7,8 +7,8 @@ const DetailPageBG = ({ img }) => {
     <Box
       sx={{
         backgroundSize: 'cover',
-        backgroundImage: `url(${img})`,
-        backgroundPosition: 'center center',
+        backgroundImage: `url(${img ? URL.createObjectURL(img) : "https://www.americanexpress.com/de-de/amexcited/media/cache/default/cms/2021/12/Barbershops-Stuttgart-Herrenhaus-2.jpg"})`,
+        backgroundPosition: 'center',
 
         width: '100%',
         height: '40vh',
