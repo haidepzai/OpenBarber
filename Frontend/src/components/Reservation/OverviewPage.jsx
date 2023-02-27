@@ -104,13 +104,13 @@ const OverviewPage = ({ data, setData, handleStep, showErrors, noneEmpty, error,
                 />
                 <TextField
                     label="Phone Number"
-                    name="phone"
-                    value={data.personalData.phone}
+                    name="phoneNumber"
+                    value={data.personalData.phoneNumber}
                     onChange={handleChange}
                     fullWidth
-                    error={showErrors && !data.personalData.phone}
-                    helperText={showErrors && !data.personalData.phone && "Can't be empty!"}
-                    sx={{ paddingBottom: (showErrors && !data.personalData.phone) ? "5px" : "28px" }}
+                    error={showErrors && !data.personalData.phoneNumber}
+                    helperText={showErrors && !data.personalData.phoneNumber && "Can't be empty!"}
+                    sx={{ paddingBottom: (showErrors && !data.personalData.phoneNumber) ? "5px" : "28px" }}
                 />
             </Stack>
 
