@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Rating, Box, Typography } from '@mui/material';
+import dayjs from "dayjs";
 
 const AVATAR_URL = 'https://www.shareicon.net/data/2016/09/15/829473_man_512x512.png';
 
@@ -14,22 +15,22 @@ const ShopReview = ({ review }) => {
         ></Box>
         <Rating readOnly precision={0.5} value={review.rating} sx={{ color: 'primary.main' }} size="small" />
         <Typography variant="span" color="grey.400">
-          {review.date}
+          {dayjs(review.createdAt).format('DD/MM/YYYY hh:mm A')}
         </Typography>
       </Box>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography variant="h5">
           <Typography variant="span" sx={{ fontWeight: 600 }}>
-            {review.name}
+            {review.author}
           </Typography>
           &nbsp;wrote:
         </Typography>
 
         <Typography variant="body1">{review.comment}</Typography>
-        <Typography variant="span" color="grey.400" mt="auto">
+        {/*<Typography variant="span" color="grey.400" mt="auto">
           {review.name} has added 0 photos to the gallery.
-        </Typography>
+        </Typography>*/}
       </Box>
     </Box>
   );

@@ -261,19 +261,23 @@
   "enterprises": [
     {
       "id": 62,
+      "reviews": [
+        {
+          "author": "Author",
+          "comment": "Comment",
+          "rating": 2,
+          "createdAt": "2023-01-01T08:00:00.594Z"
+        }
+      ],
       "name": "my-company1",
       "address": "Stuttgart",
       "addressLongitude": 0,
       "addressAltitude": 0,
       "phoneNumber": "12345",
       "website": "http://www.example.com/docs/resource1.html",
-      "hours": {
-        "open": "2023-01-01T08:00:00.594Z",
-        "close": "2023-01-01T18:00:00.972Z"
-      },
+      "openingTime": "2023-01-01T08:00:00.594Z",
+      "closingTime": "2023-01-01T18:00:00.972Z",
       "description": "description1",
-      "rating": 4.5,
-      "reviews": 10,
       "recommended": true,
       "approved": true,
       "priceCategory": 1,
@@ -352,13 +356,23 @@
       "addressAltitude": 0,
       "phoneNumber": "12345",
       "website": "http://www.example.com/docs/resource1.html",
-      "hours": {
-        "open": "2023-01-01T09:00:00.594Z",
-        "close": "2023-01-01T19:00:00.972Z"
-      },
+      "openingTime": "2023-01-01T08:00:00.594Z",
+      "closingTime": "2023-01-01T18:00:00.972Z",
       "description": "description2",
-      "rating": 5,
-      "reviews": 15,
+      "reviews": [
+        {
+          "author": "Author",
+          "comment": "Comment",
+          "rating": 2,
+          "createdAt": "2023-01-01T08:00:00.594Z"
+        },
+        {
+          "author": "Author",
+          "comment": "Comment",
+          "rating": 3,
+          "createdAt": "2023-01-01T08:00:00.594Z"
+        }
+      ],
       "recommended": false,
       "approved": true,
       "priceCategory": 2,
@@ -448,13 +462,17 @@
       "addressAltitude": 0,
       "phoneNumber": "12345",
       "website": "http://www.example.com/docs/resource1.html",
-      "hours": {
-        "open": "2023-01-01T07:00:00.594Z",
-        "close": "2023-01-01T20:00:00.972Z"
-      },
+      "openingTime": "2023-01-01T08:00:00.594Z",
+      "closingTime": "2023-01-01T18:00:00.972Z",
       "description": "description3",
-      "rating": 4.5,
-      "reviews": 10,
+      "reviews": [
+        {
+          "author": "Author",
+          "comment": "Comment",
+          "rating": 2,
+          "createdAt": "2023-01-01T08:00:00.594Z"
+        }
+      ],
       "recommended": true,
       "approved": true,
       "priceCategory": 3,
