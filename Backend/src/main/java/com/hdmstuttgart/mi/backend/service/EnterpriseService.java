@@ -50,7 +50,12 @@ public class EnterpriseService {
         }
     }*/
 
-    public Enterprise createEnterprise(EnterpriseRequest request) {
+    public Enterprise createEnterprise(EnterpriseRequest request, String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow();
+
         byte[] logo = null;
         List<byte[]> pictures = new ArrayList<>();
         Set<PaymentMethod> paymentMethods = null;
@@ -107,7 +112,7 @@ public class EnterpriseService {
                     employees.add(employee);
                 }
             }
-            var enterprise = Enterprise.builder()
+            Enterprise enterprise = Enterprise.builder()
                 .name(request.getName())
                 .owner(request.getOwner())
                 .eMail(request.getEMail())
@@ -130,7 +135,9 @@ public class EnterpriseService {
                 .services(services)
                 .employees(employees)
                 .build();
-            return enterpriseRepository.save(enterprise);
+
+            user.setEnterprise(enterprise);
+            return userRepository.save(user).getEnterprise();
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
