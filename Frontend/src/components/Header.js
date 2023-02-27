@@ -5,9 +5,13 @@ import { Stack, Button, Divider, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import {useNavigate} from "react-router-dom";
 
-const Header = ({ onLogin, onSignup, /*isLoggedIn,*/ onLogout }) => {
+const Header = ({ onLogin, onSignup, isLoggedIn, onLogout, deleteJWT }) => {
 
-    const isLoggedIn = true;
+    function handleLogout() {
+      onLogout()
+      deleteJWT()
+    }
+
     const navigate = useNavigate();
 
     return (
@@ -47,7 +51,7 @@ const Header = ({ onLogin, onSignup, /*isLoggedIn,*/ onLogout }) => {
             {!(isLoggedIn) && <Button variant="contained" color="secondary" onClick={onLogin}>
               Login
             </Button>}
-            {isLoggedIn && <Button variant="contained" color="secondary" onClick={onLogout}>
+            {isLoggedIn && <Button variant="contained" color="secondary" onClick={handleLogout}>
               Logout
             </Button>}
           </Stack>

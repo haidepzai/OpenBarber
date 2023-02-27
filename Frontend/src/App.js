@@ -20,6 +20,14 @@ function App() {
   const [signupVisible, setSignupVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+
+  function deleteJWTTokenFromStorage(){
+    let token = localStorage.getItem('tokenJWT');
+    if(token) {
+      localStorage.removeItem('tokenJWT')
+    } 
+  }
+
   function checkForJWTToken() {
     let token = localStorage.getItem('tokenJWT');
     if(token) {
@@ -39,7 +47,11 @@ function App() {
   return (
     <ThemeProvider theme={basicTheme}>      
       <BrowserRouter>
-        <Header onLogin={() => setLoginVisible(true)} onSignup={() => setSignupVisible(true)} isLoggedIn= {isLoggedIn} onLogout={() => setIsLoggedIn(false)}/>
+        <Header onLogin={() => setLoginVisible(true)} 
+                onSignup={() => setSignupVisible(true)} 
+                isLoggedIn= {isLoggedIn} 
+                onLogout={() => setIsLoggedIn(false)}
+                deleteJWT={() => deleteJWTTokenFromStorage()} />
         <Routes>
           <Route path="*" element={<ErrorPage />} />
           <Route path="/" element={<LandingPage />} />
