@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import { Box } from '@mui/material';
 
@@ -6,8 +6,9 @@ import ShopDetailView from './components/ShopDetailView';
 import DetailPageBG from './components/DetailPageBG';
 
 import '../../css/DetailPage/DetailPage.css';
-
-const BARBER_SHOP = {
+import {useParams} from "react-router-dom";
+import axios from 'axios';
+/*const BARBER_SHOP = {
   name: 'Barber Shop',
   address: '1234 Main St, New York, NY 10001',
   phone: '(123) 456-7890',
@@ -62,15 +63,36 @@ const BARBER_SHOP = {
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
     },
   ],
-};
+};*/
 
 const DetailPage = () => {
+
+  const {routeId} = useParams();
+
+  const [shop, setShop] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const loadShop = async () => {
+    const response = await axios.get("http://localhost:8080/api/enterprises/" + routeId);
+    setShop(response.data);
+  }
+
+  useEffect(() => {
+    loadShop().then(()=> setLoading(false));
+  }, [])
+
+  useEffect(() => {
+    console.log(shop)
+  }, [shop])
+
   return (
     <>
+      {!loading &&
       <Box className="detailPage" sx={{ position: 'relative' }}>
-        <DetailPageBG img={BARBER_SHOP.gallery[0]} />
-        <ShopDetailView shop={BARBER_SHOP} />
+        <DetailPageBG img={shop.logo} />
+        <ShopDetailView shop={shop} />
       </Box>
+      }
     </>
   );
 };

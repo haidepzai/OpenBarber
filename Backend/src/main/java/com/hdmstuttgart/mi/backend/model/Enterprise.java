@@ -1,5 +1,6 @@
 package com.hdmstuttgart.mi.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import lombok.AllArgsConstructor;
@@ -34,8 +35,8 @@ public class Enterprise {
 
     @NotBlank(message = "Address is mandatory")
     private String address;
-    private long addressLongitude;
-    private long addressAltitude;
+    private double addressLongitude;
+    private double addressAltitude;
 
     /*@NotBlank(message = "Email is mandatory")
     @Column(*//*nullable = false, *//*unique = true)*/
@@ -51,18 +52,21 @@ public class Enterprise {
     private String openingTime;
     private String closingTime;
 
-    // Das später aus Reviews berechnen
-    private double rating;
-
-    // Hier später eigener Datentyp
-    private long reviews;
+//    // Das später aus Reviews berechnen
+//    private double rating;
+//
+//    // Hier später eigener Datentyp
+//    private long reviews;
+    @JsonIgnore
+    @OneToMany(cascade=CascadeType.ALL)
+    private List<Review> reviews;
 
     private boolean recommended;
 
     private boolean approved;
 
-    @Min(value = 1, message = "Price Category must be greater than or equal to 1")
-    @Max(value = 3, message = "Price Category must be smaller than or equal to 3")
+//    @Min(value = 1, message = "Price Category must be greater than or equal to 1")
+//    @Max(value = 3, message = "Price Category must be smaller than or equal to 3")
     private int priceCategory;
 
     @ElementCollection(targetClass = PaymentMethod.class)
@@ -73,7 +77,7 @@ public class Enterprise {
     @Enumerated(EnumType.STRING)
     private Set<Drink> drinks;
 
-    @Lob
+//    @Lob //TODO how?
     private byte[] logo;
 
     /*@Lob*/

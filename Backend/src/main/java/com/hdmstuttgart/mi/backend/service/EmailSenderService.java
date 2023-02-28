@@ -1,10 +1,13 @@
 package com.hdmstuttgart.mi.backend.service;
 
+import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import io.camassia.mjml.MJMLClient;
 import io.camassia.mjml.model.request.RenderRequest;
 import io.camassia.mjml.model.response.RenderResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,8 +24,16 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Optional;
 
+/**
+ * Description:
+ * Overall, this class provides a useful abstraction for sending emails with MJML templates, which can help to standardize
+ * the appearance of emails and make them more visually appealing. The use of Spring's dependency injection and the MJMLClient
+ * library make this class easy to use and extend.
+ */
 @Service
 public class EmailSenderService {
+    private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private JavaMailSender mailSender;
 
@@ -33,6 +44,9 @@ public class EmailSenderService {
 
     @Value("${mjmlSecrets.appId}")
     String appId;
+
+    @Value("${mailCredentials.username}")
+    String mailUsername;
 
     @Value("${mjmlSecrets.appKey}")
     String appKey;
@@ -53,7 +67,8 @@ public class EmailSenderService {
     public void insertDataIntoTemplate(String templateName, String emailAddress) throws IOException {
         readMJMLTemplatesIntoMap();
         User user = userRepository.findByEmail(emailAddress).orElseThrow();
-        String preparedText = mjmlTemplateTexts.get(templateName).replace("blank_verificationCode", user.getConfirmationCode());
+        String preparedText = mjmlTemplateTexts.get(templateName).replace("blank_verificationCode", user.getConfirmationCode())
+                .replace("blank_ratingURL", "http://localhost:3000/rating/" + user.getConfirmationCode());
         mjmlTemplateTexts.put(templateName, preparedText);
     }
 
@@ -63,7 +78,7 @@ public class EmailSenderService {
         this.mjmlClient = MJMLClient.newDefaultClient()
                 .withApplicationID(appId)
                 .withApplicationKey(appKey);
-
+        log.info("Found MJML client");
         //MJML string preparation for the request and send out
         insertDataIntoTemplate(templateName, email);
         RenderRequest request = new RenderRequest(mjmlTemplateTexts.get(templateName));
@@ -78,11 +93,11 @@ public class EmailSenderService {
         if(templateName.equals("verification")) {
             helper.setSubject("OpenBarber - Your verification code is here!");
         } else {
-            helper.setSubject("OpenBarber - Verification");
+            helper.setSubject("OpenBarber - Did you miss us?");
         }
-        helper.setFrom("openbarber@outlook.de");
+        helper.setFrom(mailUsername);
 
         mailSender.send(mimeMessage);
-        System.out.println("Mail sent successfully ... ");
+        log.debug("Mail sent successfully ... ");
     }
 }

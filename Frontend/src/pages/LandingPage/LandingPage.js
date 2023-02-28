@@ -41,9 +41,45 @@ const LandingPage = () => {
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
   const loadData = async () => {
-    const shopsResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/enterprises`);
-    const shopsData = await shopsResponse.json();
-    setShops(shopsData);
+    const res = await axios.get("http://localhost:8080/api/enterprises");
+    console.log(res);
+    const shopsData = res.data;
+
+    const promises = shopsData.map(shop => {
+      return new Promise((resolve, reject) => {
+        axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
+          shop.reviews = res.data;
+          console.log("found reviews", res.data);
+          resolve(shop);
+        }).catch(err => {
+          console.error("review request failed", err);
+          reject(err);
+        });
+      });
+    });
+    console.log(promises);
+    let shops = await Promise.all(promises);
+
+    // let shops = await Promise.all([shopsData.map(shop => {
+    //   return new Promise((resolve, reject) => {
+    //     axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
+    //       shop.reviews = res.data;
+    //       console.log("found reviews", res.data);
+    //       resolve(shop);
+    //     }).catch(err => {
+    //       console.error("review request failed", err);
+    //       reject(err);
+    //     });
+    //   });
+    // })]);
+    console.log("shops with review: ", shops);
+    setShops(shops);
+  }
+
+  const rating = (shop) => {
+    const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
+    const avg = (sum / shop.reviews.length) || 0;
+    return avg;
   }
 
   useEffect(() => {
@@ -80,7 +116,7 @@ const LandingPage = () => {
         </Stack>
         <Divider orientation="horizontal" sx={{ m: "12px 0", borderColor: "rgba(0, 0, 0, 0.24)" }} />
         <Stack direction="row" spacing={4} justifyContent="center" sx={{ pt: "20px" }}>
-          {shops.slice(0, 5).sort((a, b) => b.rating - a.rating).map((shop) => (
+          {shops.slice(0, 5).sort((a, b) => rating(b) - rating(a)).map((shop) => (
               <Box key={shop.id}>
                 <MediaCard
                     shop={shop}

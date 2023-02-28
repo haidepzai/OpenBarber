@@ -12,15 +12,13 @@ const FilterPage = ({}) => {
   const location = useLocation();
 
   const [filter, setFilter] = useState({
-    dateAndTime: location.state.dateAndTime ? dayjs(location.state.dateAndTime) : dayjs(),
+    dateAndTime: (location.state && location.state.dateAndTime) ? dayjs(location.state.dateAndTime) : dayjs(),
     location: '',
-    priceCategory: location.state.priceCategory || [],
+    priceCategory: (location.state && location.state.priceCategory) || [],
     targetAudience: [],
     employeeCount: [0, 20],
-    hours: {
-      open: null,
-      close: null
-    },
+    openingTime: null,
+    closingTime: null,
     paymentMethods: [],
     drinks: [],
     recommended: true,
