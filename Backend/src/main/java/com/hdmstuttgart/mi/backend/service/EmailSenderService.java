@@ -1,10 +1,13 @@
 package com.hdmstuttgart.mi.backend.service;
 
+import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import io.camassia.mjml.MJMLClient;
 import io.camassia.mjml.model.request.RenderRequest;
 import io.camassia.mjml.model.response.RenderResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,6 +26,8 @@ import java.util.Optional;
 
 @Service
 public class EmailSenderService {
+    private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private JavaMailSender mailSender;
 
@@ -67,7 +72,7 @@ public class EmailSenderService {
         this.mjmlClient = MJMLClient.newDefaultClient()
                 .withApplicationID(appId)
                 .withApplicationKey(appKey);
-
+        log.info("Found MJML client");
         //MJML string preparation for the request and send out
         insertDataIntoTemplate(templateName, email);
         RenderRequest request = new RenderRequest(mjmlTemplateTexts.get(templateName));
@@ -87,6 +92,6 @@ public class EmailSenderService {
         helper.setFrom(mailUsername);
 
         mailSender.send(mimeMessage);
-        System.out.println("Mail sent successfully ... ");
+        log.debug("Mail sent successfully ... ");
     }
 }
