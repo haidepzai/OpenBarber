@@ -12,12 +12,15 @@ const ShopDetailView = ({ shop }) => {
 
   const [reviews, setReviews] = React.useState([]);
   useEffect(() => {
-    axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
-      setReviews(res.data);
-    }).catch(err => {
-      console.error("review request failed", err);
-    });
-  }, [])
+    axios
+      .get('http://localhost:8080/api/reviews?enterpriseId=' + shop.id)
+      .then((res) => {
+        setReviews(res.data);
+      })
+      .catch((err) => {
+        console.error('review request failed', err);
+      });
+  }, []);
 
   return (
     <Box
@@ -34,9 +37,7 @@ const ShopDetailView = ({ shop }) => {
         Reviews
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {reviews && reviews.length > 0 && reviews.map((review, i) => (
-          <ShopReview key={i} review={review} />
-        ))}
+        {reviews && reviews.length > 0 && reviews.map((review, i) => <ShopReview key={i} review={review} />)}
       </Box>
     </Box>
   );

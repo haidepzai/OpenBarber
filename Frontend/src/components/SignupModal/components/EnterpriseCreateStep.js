@@ -31,12 +31,12 @@ const EnterpriseCreateStep = () => {
   const { ref: acRef } = usePlacesWidget({
     apiKey: GOOGLE_API_KEY,
     onPlaceSelected: (place) => {
-      console.log("new street:",place);
+      console.log('new street:', place);
       setData((d) => ({ ...d, enterpriseStreet: place }));
     },
     options: {
       types: ['address'],
-    }
+    },
   });
 
   function onSubmit(e) {
@@ -57,7 +57,6 @@ const EnterpriseCreateStep = () => {
     // }
 
     (async () => {
-
       const createEnterpriseReq = {
         name: data.enterpriseName,
         owner: data.enterpriseOwner,
@@ -70,8 +69,8 @@ const EnterpriseCreateStep = () => {
       const customConfig = {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
-        }
+          Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+        },
       };
 
       try {
@@ -84,7 +83,6 @@ const EnterpriseCreateStep = () => {
           res[1] = true;
           return res;
         });
-
       } catch (err) {
         console.log(err);
       }
@@ -104,28 +102,28 @@ const EnterpriseCreateStep = () => {
     <Stack component="form" height="100%" gap={2} pt={8} onSubmit={onSubmit}>
       {/* <Typography variant="h4">Please enter some information about your enterprise.</Typography> */}
 
-      <Box sx={{ display: 'flex', flexDirection:"column", gap: 4, maxWidth: "800px" }}>
-
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, maxWidth: '800px' }}>
         <Stack gap={4}>
           <Typography variant="h6">Setup your Enterprise</Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr 1fr', gap: 2 }}>
-            
-            <PropInput input={{
-              label: "Enterprise Name",
-              vr: "enterpriseName",
-              onBlur: onBlur,
-              error: errors.enterpriseName,
-              name: 'enterpriseName'
-            }}
+            <PropInput
+              input={{
+                label: 'Enterprise Name',
+                vr: 'enterpriseName',
+                onBlur: onBlur,
+                error: errors.enterpriseName,
+                name: 'enterpriseName',
+              }}
             />
 
-            <PropInput input={{
-              label: "Enterprise Owner",
-              vr: "enterpriseOwner",
-              onBlur: onBlur,
-              error: errors.enterpriseOwner,
-              name: 'enterpriseOwner'
-            }}
+            <PropInput
+              input={{
+                label: 'Enterprise Owner',
+                vr: 'enterpriseOwner',
+                onBlur: onBlur,
+                error: errors.enterpriseOwner,
+                name: 'enterpriseOwner',
+              }}
             />
 
             <TextField
@@ -139,7 +137,7 @@ const EnterpriseCreateStep = () => {
               onBlur={onBlur}
               inputRef={acRef}
               sx={{
-                gridColumn: "1/3"
+                gridColumn: '1/3',
               }}
             />
           </Box>
@@ -233,17 +231,7 @@ const EnterpriseCreateStep = () => {
           Back
         </Button> */}
         <Box flexGrow={1} />
-        <Button
-          type="submit"
-          disabled={
-            !(
-              data.enterpriseName &&
-              data.enterpriseOwner &&
-              data.enterpriseStreet
-            )
-          }
-          variant="contained"
-        >
+        <Button type="submit" disabled={!(data.enterpriseName && data.enterpriseOwner && data.enterpriseStreet)} variant="contained">
           Continue
         </Button>
       </Stack>

@@ -27,11 +27,11 @@ const SignupModal = ({ onClose, onSuccess, state }) => {
   });
 
   useEffect(() => {
-    document.body.style.overflow = "hidden"
+    document.body.style.overflow = 'hidden';
     const cb = (e) => {
       if (e.key === 'Escape') {
         onClose?.();
-        document.body.style.overflow = ""
+        document.body.style.overflow = '';
       }
     };
     document.addEventListener('keydown', cb);
@@ -47,7 +47,7 @@ const SignupModal = ({ onClose, onSuccess, state }) => {
         setCompletedSteps,
         close: () => {
           onClose?.();
-          document.body.style.overflow = ""
+          document.body.style.overflow = '';
         },
         onSuccess,
         data,

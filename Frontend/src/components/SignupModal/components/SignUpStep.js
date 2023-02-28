@@ -13,7 +13,7 @@ const SignUpStep = () => {
     setCompletedSteps,
     data: { email, password, confirmPassword },
     setData,
-    onSuccess
+    onSuccess,
   } = useContext(SignupContext);
 
   const [emailIsValid, setEmailIsValid] = useState(true);
@@ -59,8 +59,8 @@ const SignUpStep = () => {
 
         try {
           const response = await axios.post('http://localhost:8080/api/auth/register', registerRequest, customConfig);
-          console.log("response", response)
-          localStorage.setItem("tokenJWT", JSON.stringify(response.data));
+          console.log('response', response);
+          localStorage.setItem('tokenJWT', JSON.stringify(response.data));
 
           console.log('Successful sign up!');
           onSuccess();

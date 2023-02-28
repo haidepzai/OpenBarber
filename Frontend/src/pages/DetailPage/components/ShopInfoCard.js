@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {Box, Button, Rating, Tabs, Tab, Typography, Grid, Stack} from '@mui/material';
+import { Box, Button, Rating, Tabs, Tab, Typography, Grid, Stack } from '@mui/material';
 import GoogleMaps from '../../../components/GoogleMaps';
 import ReservationDialog from '../../../components/Reservation/ReservationDialog';
 import PhotoGallery from '../../../components/Gallery/PhotoGallery';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 const TabPanel = ({ children, value, index, ...props }) => (value === index ? <Box {...props}>{children}</Box> : null);
 
@@ -16,23 +16,29 @@ const ShopInfoCard = ({ shop, mobile }) => {
   const [reviews, setReviews] = React.useState([]);
   const [services, setServices] = React.useState([]);
   useEffect(() => {
-    axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
-      setReviews(res.data);
-    }).catch(err => {
-      console.error("review request failed", err);
-    });
-    axios.get("http://localhost:8080/api/services?enterpriseId=" + shop.id).then(res => {
-      setServices(res.data);
-    }).catch(err => {
-      console.error("review request failed", err);
-    });
+    axios
+      .get('http://localhost:8080/api/reviews?enterpriseId=' + shop.id)
+      .then((res) => {
+        setReviews(res.data);
+      })
+      .catch((err) => {
+        console.error('review request failed', err);
+      });
+    axios
+      .get('http://localhost:8080/api/services?enterpriseId=' + shop.id)
+      .then((res) => {
+        setServices(res.data);
+      })
+      .catch((err) => {
+        console.error('review request failed', err);
+      });
   }, []);
 
   const rating = () => {
-      const sum = reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
-      const avg = (sum / reviews.length) || 0;
-      return avg;
-  }
+    const sum = reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
+    const avg = sum / reviews.length || 0;
+    return avg;
+  };
 
   return (
     <>
@@ -79,11 +85,13 @@ const ShopInfoCard = ({ shop, mobile }) => {
 
           <TabPanel value={tab} index={0} sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
             <Stack direction="row" alignItems="center" spacing={1}>
-                <AccessTimeIcon />
-                <Typography variant="h6">Opening Hours:</Typography>
-                <Typography variant="h6" >{shop.openingTime ? dayjs(shop.openingTime, "hh:mm").format('hh:mm') : "N/A"} - {shop.openingTime ? dayjs(shop.closingTime, "hh:mm").format('hh:mm') : "N/A"}</Typography>
+              <AccessTimeIcon />
+              <Typography variant="h6">Opening Hours:</Typography>
+              <Typography variant="h6">
+                {shop.openingTime ? dayjs(shop.openingTime, 'hh:mm').format('hh:mm') : 'N/A'} -{' '}
+                {shop.openingTime ? dayjs(shop.closingTime, 'hh:mm').format('hh:mm') : 'N/A'}
+              </Typography>
             </Stack>
-
 
             <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h7" mb={1} sx={{ fontWeight: 600, color: 'grey.1000' }}>
@@ -98,61 +106,63 @@ const ShopInfoCard = ({ shop, mobile }) => {
 
           <TabPanel value={tab} index={1} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
             {services
-                .sort((a, b) => a.targetAudience?.toLowerCase().localeCompare(b.targetAudience?.toLowerCase()))
-                .map((service, i) => (
-              <Box
-                key={i}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  backgroundColor: 'grey.200',
-                  borderRadius: '100vw',
-                  px: 2,
-                  py: 1,
-                }}
-              >
-                <Typography variant="span" color="primary.main" sx={{ fontWeight: 600, minWidth: "30px" }}>
-                  {service.price}&euro;
-                </Typography>
-                <Typography variant="span" sx={{ width: "30px" }}>{service.targetAudience}</Typography>
-                <Typography variant="span">-</Typography>
-                <Typography variant="span">{service.title}</Typography>
-              </Box>
-            ))}
+              .sort((a, b) => a.targetAudience?.toLowerCase().localeCompare(b.targetAudience?.toLowerCase()))
+              .map((service, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    backgroundColor: 'grey.200',
+                    borderRadius: '100vw',
+                    px: 2,
+                    py: 1,
+                  }}
+                >
+                  <Typography variant="span" color="primary.main" sx={{ fontWeight: 600, minWidth: '30px' }}>
+                    {service.price}&euro;
+                  </Typography>
+                  <Typography variant="span" sx={{ width: '30px' }}>
+                    {service.targetAudience}
+                  </Typography>
+                  <Typography variant="span">-</Typography>
+                  <Typography variant="span">{service.title}</Typography>
+                </Box>
+              ))}
           </TabPanel>
 
           <TabPanel value={tab} index={2} sx={{ display: 'grid', gap: 2 }}>
-              <Grid container columns={4} spacing={2}>
-                  <Grid item xs={1}>
-                      <Typography variant="body1">Adresse:</Typography>
-                  </Grid>
-                  <Grid item xs={1}>
-                      <Typography variant="body1">{shop.address}</Typography>
-                  </Grid>
-                  <Grid item xs={2} />
-                  <Grid item xs={1}>
-                      <Typography variant="body1">Phone Number:</Typography>
-                  </Grid>
-                  <Grid item xs={1}>
-                      <Typography variant="body1">{shop.phoneNumber}</Typography>
-                  </Grid>
-                  <Grid item xs={2} />
-                  <Grid item xs={1}>
-                      <Typography variant="body1">E-Mail:</Typography>
-                  </Grid>
-                  <Grid item xs={1}>
-                      <Typography variant="body1">{shop.email}</Typography>
-                  </Grid>
-                  <Grid item xs={2} />
-                  <Grid item xs={1}>
-                      <Typography variant="body1">Webseite:</Typography>
-                  </Grid>
-                  <Grid item xs={1}>
-                      <Typography variant="body1">{shop.website}</Typography>
-                  </Grid>
-                  <Grid item xs={2} />
+            <Grid container columns={4} spacing={2}>
+              <Grid item xs={1}>
+                <Typography variant="body1">Adresse:</Typography>
               </Grid>
+              <Grid item xs={1}>
+                <Typography variant="body1">{shop.address}</Typography>
+              </Grid>
+              <Grid item xs={2} />
+              <Grid item xs={1}>
+                <Typography variant="body1">Phone Number:</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography variant="body1">{shop.phoneNumber}</Typography>
+              </Grid>
+              <Grid item xs={2} />
+              <Grid item xs={1}>
+                <Typography variant="body1">E-Mail:</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography variant="body1">{shop.email}</Typography>
+              </Grid>
+              <Grid item xs={2} />
+              <Grid item xs={1}>
+                <Typography variant="body1">Webseite:</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography variant="body1">{shop.website}</Typography>
+              </Grid>
+              <Grid item xs={2} />
+            </Grid>
           </TabPanel>
         </Box>
 
