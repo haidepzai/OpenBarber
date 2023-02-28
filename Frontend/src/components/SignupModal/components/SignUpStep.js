@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Stack, TextField, Typography, Button } from '@mui/material';
 import { SignupContext } from '../Signup.context';
-import axios from 'axios';
+import AuthContext from '../../../context/auth-context';
 
 const emailRegex =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -15,6 +15,8 @@ const SignUpStep = () => {
     setData,
     onSuccess,
   } = useContext(SignupContext);
+
+  const authCtx = useContext(AuthContext);
 
   const [emailIsValid, setEmailIsValid] = useState(true);
   const [passwordIsValid, setPasswordIsValid] = useState(true);
@@ -45,35 +47,28 @@ const SignUpStep = () => {
     onBlur('password');
     onBlur('confirmPassword');
     if (validEmail() && validPassword() && validConfirmPassword()) {
-      (async () => {
-        const registerRequest = {
-          email: email,
-          password: password,
-        };
-
-        const customConfig = {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        };
-
-        try {
-          const response = await axios.post('http://localhost:8080/api/auth/register', registerRequest, customConfig);
-          console.log('response', response);
-          localStorage.setItem('tokenJWT', JSON.stringify(response.data));
-
-          console.log('Successful sign up!');
-          onSuccess();
-          setCompletedSteps((v) => {
-            const res = [...v];
-            res[0] = true;
-            return res;
-          });
-          setActiveStep(1);
-        } catch (error) {
-          console.log(error);
-        }
-      })();
+      const registerRequest = {
+        email: email,
+        password: password,
+      };
+      const customConfig = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      try {
+        authCtx.onSignUp(registerRequest, customConfig);
+        console.log('Successful sign up!');
+        onSuccess();
+        setCompletedSteps((v) => {
+          const res = [...v];
+          res[0] = true;
+          return res;
+        });
+        setActiveStep(1);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
