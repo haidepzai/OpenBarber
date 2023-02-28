@@ -18,6 +18,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Defines a user with its properties.
+ */
 @Data
 @Builder
 @NoArgsConstructor
