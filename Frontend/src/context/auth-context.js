@@ -6,6 +6,7 @@ const AuthContext = React.createContext({
   isLoggedIn: false,
   onLogout: () => {},
   onLogin: (authRequest, customConfig) => {},
+  onSignUp: () => {},
   deleteJWTTokenFromStorage: () => {},
   setIsLoggedIn: () => {}
 });
@@ -40,15 +41,21 @@ export const AuthContextProvider = (props) => {
   };
 
   const loginHandler = async (authRequest, customConfig) => {
+    console.log("test")
     const response = await axios.post('http://localhost:8080/api/auth/authenticate', authRequest, customConfig);
     let resObj = response.data;
     localStorage.setItem('tokenJWT', JSON.stringify(resObj));
     let storedObj = JSON.parse(localStorage.getItem('tokenJWT'));
     console.log('Token from local storage:' + storedObj.token);
 
-    localStorage.setItem('isLoggedIn', '1');
     setIsLoggedIn(true);
   };
+
+  const signUpHandler = async (registerRequest, customConfig) => {
+    const response = await axios.post('http://localhost:8080/api/auth/register', registerRequest, customConfig);
+    console.log('response', response);
+    localStorage.setItem('tokenJWT', JSON.stringify(response.data));
+  }
 
   return (
     <AuthContext.Provider
@@ -57,7 +64,8 @@ export const AuthContextProvider = (props) => {
         onLogout: logoutHandler,
         onLogin: loginHandler,
         deleteJWTTokenFromStorage,
-        setIsLoggedIn
+        setIsLoggedIn,
+        onSignUp: signUpHandler
       }}
     >
       {props.children}

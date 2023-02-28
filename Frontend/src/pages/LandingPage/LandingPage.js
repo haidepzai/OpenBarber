@@ -1,12 +1,9 @@
-import { Button, Divider, Grid, Stack } from '@mui/material';
+import { Button, Divider, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import MediaCard from '../../components/CardComponent/MediaCard';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Search from '../../layout/Search';
 import { Box, Typography } from '@mui/material';
 import MySwiper from '../../layout/MySwiper';
-import barberShops from '../../mocks/shops';
-import apiCall from '../../api/axiosConfig';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import ReservationDialog from '../../components/Reservation/ReservationDialog';

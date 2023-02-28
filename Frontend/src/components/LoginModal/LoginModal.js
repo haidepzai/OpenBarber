@@ -76,27 +76,20 @@ const LoginModal = ({ onClose, onSuccess }) => {
   }, [onClose]);
 
   useEffect(() => {
-    //Beim ersten mal läuft das immer!
     const identifier = setTimeout(() => {
-      //To ensure that this will not invoke after every key stroke (debounce)
-      console.log('Checking form validity');
       setFormIsValid(
-        emailIsValid && passwordIsValid // Wenn beide True sind
+        emailIsValid && passwordIsValid
       );
     }, 500);
 
     // clean up function (will run before the actual useEffect - except for the first time)
-    // Läuft nicht beim 1. mal!!
-    // Läuft noch vor dem 1. Side Effect Execution!
     return () => {
-      console.log('CLEANUP');
       clearTimeout(identifier); //Clear the last timer before a new one is set
     }; // Run before every new side effect execution and before component removed
   }, [emailIsValid, passwordIsValid]); //Effect wird getriggert. sobald ein Wert sich ändert
 
   const emailChangeHandler = (event) => {
     dispatchEmail({ type: 'USER_INPUT', val: event.target.value }); //trigger emailReducer function
-
     setFormIsValid(emailState.isValid && passwordState.isValid);
   };
 
