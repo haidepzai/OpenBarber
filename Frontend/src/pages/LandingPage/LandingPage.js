@@ -8,6 +8,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import ReservationDialog from '../../components/Reservation/ReservationDialog';
 import { useNavigate } from 'react-router-dom';
+import { getEnterprises } from '../../context/EnterpriseActions';
 
 /*const theme = createTheme({
   palette: {
@@ -37,8 +38,7 @@ const LandingPage = () => {
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
   const loadData = async () => {
-    const res = await axios.get('http://localhost:8080/api/enterprises');
-    console.log(res);
+    const res = await getEnterprises();
     const shopsData = res.data;
 
     const promises = shopsData.map((shop) => {
