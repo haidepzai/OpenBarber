@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {Box, Button, Rating, Tabs, Tab, Typography, Grid, Stack} from '@mui/material';
 import GoogleMaps from '../../../components/GoogleMaps';
 import ReservationDialog from '../../../components/Reservation/ReservationDialog';
@@ -13,9 +13,24 @@ const ShopInfoCard = ({ shop, mobile }) => {
   const [tab, setTab] = useState(0);
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
+  const [reviews, setReviews] = React.useState([]);
+  const [services, setServices] = React.useState([]);
+  useEffect(() => {
+    axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
+      setReviews(res.data);
+    }).catch(err => {
+      console.error("review request failed", err);
+    });
+    axios.get("http://localhost:8080/api/services?enterpriseId=" + shop.id).then(res => {
+      setServices(res.data);
+    }).catch(err => {
+      console.error("review request failed", err);
+    });
+  }, []);
+
   const rating = () => {
-      const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
-      const avg = (sum / shop.reviews.length) || 0;
+      const sum = reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
+      const avg = (sum / reviews.length) || 0;
       return avg;
   }
 
@@ -49,7 +64,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Rating readOnly precision={0.5} value={rating()} sx={{ color: 'primary.main' }} size="small" />
               <Typography fontSize={14} variant="span" color="grey.600">
-                {shop.reviews.length} Review(s)
+                {reviews.length} Review(s)
               </Typography>
             </Box>
           </Box>
@@ -66,7 +81,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
             <Stack direction="row" alignItems="center" spacing={1}>
                 <AccessTimeIcon />
                 <Typography variant="h6">Opening Hours:</Typography>
-                <Typography variant="h6" >{dayjs(shop.openingTime).format('hh:mm A')} - {dayjs(shop.closingTime).format('hh:mm A')}</Typography>
+                <Typography variant="h6" >{shop.openingTime ? dayjs(shop.openingTime, "hh:mm").format('hh:mm') : "N/A"} - {shop.openingTime ? dayjs(shop.closingTime, "hh:mm").format('hh:mm') : "N/A"}</Typography>
             </Stack>
 
 
@@ -82,8 +97,8 @@ const ShopInfoCard = ({ shop, mobile }) => {
           </TabPanel>
 
           <TabPanel value={tab} index={1} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
-            {shop.services
-                .sort((a, b) => a.targetAudience.toLowerCase().localeCompare(b.targetAudience.toLowerCase()))
+            {services
+                .sort((a, b) => a.targetAudience?.toLowerCase().localeCompare(b.targetAudience?.toLowerCase()))
                 .map((service, i) => (
               <Box
                 key={i}

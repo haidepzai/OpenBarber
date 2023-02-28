@@ -44,9 +44,9 @@ public class ReviewService {
         }
 
         List<Review> reviews = reviewRepository.findAllByEnterpriseId(enterpriseId);
-        if (reviews.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No reviews found for enterprise with id = " + enterpriseId);
-        }
+//        if (reviews.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No reviews found for enterprise with id = " + enterpriseId);
+//        }
         return reviews;
     }
 

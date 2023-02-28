@@ -7,7 +7,7 @@ import DetailPageBG from './components/DetailPageBG';
 
 import '../../css/DetailPage/DetailPage.css';
 import {useParams} from "react-router-dom";
-
+import axios from 'axios';
 /*const BARBER_SHOP = {
   name: 'Barber Shop',
   address: '1234 Main St, New York, NY 10001',
@@ -73,10 +73,8 @@ const DetailPage = () => {
   const [loading, setLoading] = useState(true);
 
   const loadShop = async () => {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/enterprises/${routeId}`);
-
-    const responseData = await response.json();
-    setShop(responseData);
+    const response = await axios.get("http://localhost:8080/api/enterprises/" + routeId);
+    setShop(response.data);
   }
 
   useEffect(() => {

@@ -44,7 +44,36 @@ const LandingPage = () => {
     const res = await axios.get("http://localhost:8080/api/enterprises");
     console.log(res);
     const shopsData = res.data;
-    setShops(shopsData);
+
+    const promises = shopsData.map(shop => {
+      return new Promise((resolve, reject) => {
+        axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
+          shop.reviews = res.data;
+          console.log("found reviews", res.data);
+          resolve(shop);
+        }).catch(err => {
+          console.error("review request failed", err);
+          reject(err);
+        });
+      });
+    });
+    console.log(promises);
+    let shops = await Promise.all(promises);
+
+    // let shops = await Promise.all([shopsData.map(shop => {
+    //   return new Promise((resolve, reject) => {
+    //     axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
+    //       shop.reviews = res.data;
+    //       console.log("found reviews", res.data);
+    //       resolve(shop);
+    //     }).catch(err => {
+    //       console.error("review request failed", err);
+    //       reject(err);
+    //     });
+    //   });
+    // })]);
+    console.log("shops with review: ", shops);
+    setShops(shops);
   }
 
   const rating = (shop) => {

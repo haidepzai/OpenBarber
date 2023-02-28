@@ -32,9 +32,9 @@ public class ServiceService {
         }
 
         List<Service> services = serviceRepository.findAllByEnterpriseId(enterpriseId);
-        if (services.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No services found for enterprise with id = " + enterpriseId);
-        }
+//        if (services.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No services found for enterprise with id = " + enterpriseId);
+//        }
         return services;
     }
 

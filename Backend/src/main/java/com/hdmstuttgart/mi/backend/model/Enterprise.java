@@ -1,5 +1,6 @@
 package com.hdmstuttgart.mi.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import lombok.AllArgsConstructor;
@@ -51,11 +52,14 @@ public class Enterprise {
     private String openingTime;
     private String closingTime;
 
-    // Das später aus Reviews berechnen
-    private double rating;
-
-    // Hier später eigener Datentyp
-    private long reviews;
+//    // Das später aus Reviews berechnen
+//    private double rating;
+//
+//    // Hier später eigener Datentyp
+//    private long reviews;
+    @JsonIgnore
+    @OneToMany(cascade=CascadeType.ALL)
+    private List<Review> reviews;
 
     private boolean recommended;
 

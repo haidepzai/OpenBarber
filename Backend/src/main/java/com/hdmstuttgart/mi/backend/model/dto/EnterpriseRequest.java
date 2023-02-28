@@ -1,5 +1,6 @@
 package com.hdmstuttgart.mi.backend.model.dto;
 
+import com.hdmstuttgart.mi.backend.model.Review;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +22,6 @@ public class EnterpriseRequest {
     private String closingTime;
     private URL website;
     private double rating;
-    private long reviews;
     private boolean recommended;
     private boolean approved;
     private int priceCategory;
