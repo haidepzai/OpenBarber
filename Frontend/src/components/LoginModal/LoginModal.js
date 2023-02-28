@@ -1,18 +1,65 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Box, Typography, Stack, TextField, Button, Checkbox } from '@mui/material';
 import { ArrowBackRounded } from '@mui/icons-material';
 import OpenBarberLogo from '../../assets/logo_openbarber.svg';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../../context/auth-context';
+
+// Reducer um mehrere States zu handeln
+// Komplexere Update State Logik
+const emailReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    let isValid = false;
+
+    let regEmail =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (regEmail.test(action.val)) {
+      isValid = true;
+    } else {
+      isValid = false;
+    }
+    return { value: action.val, isValid: isValid };
+  }
+  //state.value ist latest value
+  if (action.type === 'INPUT_BLUR') {
+    return { value: state.value, isValid: state.value.includes('@') };
+  }
+  return { value: '', isValid: false };
+};
+
+const passwordReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    return { value: action.val, isValid: action.val.trim().length > 6 };
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return { value: state.value, isValid: state.value.trim().length > 6 };
+  }
+  return { value: '', isValid: false };
+};
 
 const LoginModal = ({ onClose, onSuccess }) => {
-  const [emailIsValid, setEmailIsValid] = useState(true);
-  const [passwordIsValid, setPasswordIsValid] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formIsValid, setFormIsValid] = useState(false);
+
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: '',
+    isValid: null,
+  });
+  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
+    value: '',
+    isValid: null,
+  });
+
+  const authCtx = useContext(AuthContext);
+
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+
+  // Object Destructuring : pull out certain properties from object
+  const { isValid: emailIsValid } = emailState; //Alias Assignment emailIsValid
+  const { isValid: passwordIsValid } = passwordState; //Allias Assignment not Value Assignment!!
+
   const navigate = useNavigate();
-  
 
   const portalElement = document.getElementById('overlays');
 
@@ -23,68 +70,70 @@ const LoginModal = ({ onClose, onSuccess }) => {
       }
     };
     document.addEventListener('keydown', cb);
-    return () => document.removeEventListener('keydown', cb);
+    return () => {
+      document.removeEventListener('keydown', cb);
+    };
   }, [onClose]);
 
-  const emailBlurHandler = (event) => {
-    let regEmail =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (regEmail.test(event.target.value)) {
-      setEmailIsValid(true);
-    } else {
-      setEmailIsValid(false);
-    }
+  useEffect(() => {
+    //Beim ersten mal läuft das immer!
+    const identifier = setTimeout(() => {
+      //To ensure that this will not invoke after every key stroke (debounce)
+      console.log('Checking form validity');
+      setFormIsValid(
+        emailIsValid && passwordIsValid // Wenn beide True sind
+      );
+    }, 500);
+
+    // clean up function (will run before the actual useEffect - except for the first time)
+    // Läuft nicht beim 1. mal!!
+    // Läuft noch vor dem 1. Side Effect Execution!
+    return () => {
+      console.log('CLEANUP');
+      clearTimeout(identifier); //Clear the last timer before a new one is set
+    }; // Run before every new side effect execution and before component removed
+  }, [emailIsValid, passwordIsValid]); //Effect wird getriggert. sobald ein Wert sich ändert
+
+  const emailChangeHandler = (event) => {
+    dispatchEmail({ type: 'USER_INPUT', val: event.target.value }); //trigger emailReducer function
+
+    setFormIsValid(emailState.isValid && passwordState.isValid);
   };
 
-  const passwordBlurHandler = (event) => {
-    if (event.target.value.length !== 0) {
-      setPasswordIsValid(true);
-    } else {
-      setPasswordIsValid(false);
-    }
+  const passwordChangeHandler = (event) => {
+    dispatchPassword({ type: 'USER_INPUT', val: event.target.value });
+    setFormIsValid(passwordState.isValid && emailState.isValid);
   };
 
-  let formIsValid = false;
+  const validateEmailHandler = () => {
+    dispatchEmail({ type: 'INPUT_BLUR' });
+  };
 
-  if (emailIsValid && passwordIsValid) {
-    formIsValid = true;
-  }
+  const validatePasswordHandler = () => {
+    dispatchPassword({ type: 'INPUT_BLUR' });
+  };
 
   const submitHandler = (event) => {
     event.preventDefault();
 
-    if (email.length === 0) {
-      setEmailIsValid(false);
-    }
-    if (password.length === 0) {
-      setPasswordIsValid(false);
-    }
     if (formIsValid) {
-    
-      (async () => {
-
-        const authRequest = {
-          "email": email,
-          "password": password
-        };
-
-        const customConfig = {
-          headers: {
-          'Content-Type': 'application/json'
-          }
-        };
-        
-        const response = await axios.post('http://localhost:8080/api/auth/authenticate', authRequest, customConfig);
-        let resObj = response.data
-        localStorage.setItem("tokenJWT", JSON.stringify(resObj));
-        let storedObj = JSON.parse(localStorage.getItem("tokenJWT"))
-        console.log('Token from local storage:' + storedObj.token)
-        onSuccess()
-        onClose()
-        navigate('/')
-      })();
-      
-        console.log('Done');
+      const authRequest = {
+        email: emailState.value,
+        password: passwordState.value,
+      };
+      const customConfig = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      authCtx.onLogin(authRequest, customConfig);
+      onSuccess();
+      onClose();
+      navigate('/');
+    } else if (!emailIsValid) {
+      emailInputRef.current.focus();
+    } else {
+      passwordInputRef.current.focus();
     }
   };
 
@@ -136,18 +185,20 @@ const LoginModal = ({ onClose, onSuccess }) => {
                 <TextField
                   label="Company Email"
                   required
+                  ref={emailInputRef}
                   error={!emailIsValid}
                   helperText={!emailIsValid && 'Please enter a correct email'}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onBlur={emailBlurHandler}
+                  onChange={emailChangeHandler}
+                  onBlur={validateEmailHandler}
                 />
                 <TextField
+                  ref={passwordInputRef}
                   label="Password"
                   required
                   error={!passwordIsValid}
                   helperText={!passwordIsValid && 'Please enter a password'}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onBlur={passwordBlurHandler}
+                  onChange={passwordChangeHandler}
+                  onBlur={validatePasswordHandler}
                 />
                 <Stack direction="row" alignItems="center">
                   <Checkbox />

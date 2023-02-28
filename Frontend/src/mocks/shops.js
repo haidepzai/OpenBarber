@@ -10,7 +10,7 @@ const barberShops = [
     geometry: {
       location: 'Stuttgart',
       lat: 48.783333,
-      lng: 9.183333
+      lng: 9.183333,
     },
     priceCategory: 2,
     services: [
@@ -68,7 +68,7 @@ const barberShops = [
     geometry: {
       location: 'Düsseldorf',
       lat: 51.233334,
-      lng: 6.783333
+      lng: 6.783333,
     },
     priceCategory: 1,
     services: [],
@@ -83,12 +83,13 @@ const barberShops = [
     rating: 5,
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    image: 'https://www.kopflausratgeber.de/fileadmin/_processed_/8/9/csm_2021_1_blog_teaser_Mit_Kopflaeusen_zum_Friseur_LICENER_767x512_0406d0757d.jpg',
+    image:
+      'https://www.kopflausratgeber.de/fileadmin/_processed_/8/9/csm_2021_1_blog_teaser_Mit_Kopflaeusen_zum_Friseur_LICENER_767x512_0406d0757d.jpg',
     reviews: 12,
     geometry: {
       location: 'Berlin, Germany',
       lat: 52.520008,
-      lng: 13.404954
+      lng: 13.404954,
     },
     priceCategory: 3,
     services: [],
@@ -108,7 +109,7 @@ const barberShops = [
     geometry: {
       location: 'Berlin, Germany',
       lat: 52.520008,
-      lng: 13.404954
+      lng: 13.404954,
     },
     priceCategory: 3,
     services: [],
@@ -128,7 +129,7 @@ const barberShops = [
     geometry: {
       location: 'Berlin, Germany',
       lat: 52.520008,
-      lng: 13.404954
+      lng: 13.404954,
     },
     priceCategory: 3,
     services: [],

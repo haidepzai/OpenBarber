@@ -5,63 +5,44 @@ import ErrorPage from './pages/ErrorPage/ErrorPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import LoginModal from './components/LoginModal/LoginModal';
 import { ThemeProvider } from '@mui/material/styles';
 import { basicTheme } from './themes/basicTheme';
 import FilterPage from './pages/FilterPage/FilterPage';
 import SignupModal from './components/SignupModal/SignupModal';
 import Datenschutz from './pages/Datenschutz';
-import SchedulerPage from "./pages/Scheduler";
-import EditEnterprisePage from "./pages/EditEnterprise";
+import SchedulerPage from './pages/Scheduler';
+import EditEnterprisePage from './pages/EditEnterprise';
+import AuthContext from './context/auth-context';
 
 function App() {
-  const [loginVisible, setLoginVisible] = useState(false);
-  const [signupVisible, setSignupVisible] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-
-  function deleteJWTTokenFromStorage(){
-    let token = localStorage.getItem('tokenJWT');
-    if(token) {
-      localStorage.removeItem('tokenJWT')
-    } 
-  }
-
-  function checkForJWTToken() {
-    let token = localStorage.getItem('tokenJWT');
-    if(token) {
-      setIsLoggedIn(true)
-      return true
-    } 
-    setIsLoggedIn(false)
-    return false
-  }
-
+  const ctx = useContext(AuthContext);
 
   useEffect(() => {
-    checkForJWTToken()
-  }, [])
+    ctx.checkForJWTToken();
+  }, []);
 
   const loadData = async () => {
-    const response = await fetch("http://localhost:8080/api/enterprises")
+    const response = await fetch('http://localhost:8080/api/enterprises');
     const responseData = await response.json();
-    console.log(responseData)
-  }
+    console.log(responseData);
+  };
 
   useEffect(() => {
-    loadData()
-  }, [])
-
+    loadData();
+  }, []);
 
   return (
-    <ThemeProvider theme={basicTheme}>      
+    <ThemeProvider theme={basicTheme}>
       <BrowserRouter>
-        <Header onLogin={() => setLoginVisible(true)} 
-                onSignup={() => setSignupVisible(true)} 
-                isLoggedIn= {isLoggedIn} 
-                onLogout={() => setIsLoggedIn(false)}
-                deleteJWT={() => deleteJWTTokenFromStorage()} />
+        <Header
+          onLogin={() => ctx.setLoginVisible(true)}
+          onSignup={() => ctx.setSignupVisible(true)}
+          isLoggedIn={ctx.isLoggedIn}
+          onLogout={() => ctx.onLogout}
+          deleteJWT={() => ctx.deleteJWTTokenFromStorage()}
+        />
         <Routes>
           <Route path="*" element={<ErrorPage />} />
           <Route path="/" element={<LandingPage />} />
@@ -72,8 +53,8 @@ function App() {
           <Route path="edit" element={<EditEnterprisePage />} />
         </Routes>
         <Footer />
-        {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} onSuccess={() => setIsLoggedIn(true)} />}
-        {signupVisible && <SignupModal onClose={() => setSignupVisible(false)} />}
+        {ctx.loginVisible && <LoginModal onClose={() => ctx.setLoginVisible(false)} onSuccess={() => ctx.setIsLoggedIn(true)} />}
+        {ctx.signupVisible && <SignupModal onClose={() => ctx.setSignupVisible(false)} />}
       </BrowserRouter>
     </ThemeProvider>
   );
