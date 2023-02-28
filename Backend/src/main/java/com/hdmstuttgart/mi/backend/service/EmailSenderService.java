@@ -24,6 +24,12 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Optional;
 
+/**
+ * Description:
+ * Overall, this class provides a useful abstraction for sending emails with MJML templates, which can help to standardize
+ * the appearance of emails and make them more visually appealing. The use of Spring's dependency injection and the MJMLClient
+ * library make this class easy to use and extend.
+ */
 @Service
 public class EmailSenderService {
     private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);
