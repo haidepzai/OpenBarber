@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.slf4j.Logger;
 
 
+
 //@RestController
 //@EnableAutoConfiguration
 //@EnableJpaAuditing
@@ -23,7 +24,7 @@ public class BackendApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
-        System.out.println("tested");
+        log.debug("Backend application started");
     }
 
 }
