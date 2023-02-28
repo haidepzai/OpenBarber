@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Box } from '@mui/material';
 
@@ -6,7 +6,7 @@ import ShopDetailView from './components/ShopDetailView';
 import DetailPageBG from './components/DetailPageBG';
 
 import '../../css/DetailPage/DetailPage.css';
-import {useParams} from "react-router-dom";
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 /*const BARBER_SHOP = {
   name: 'Barber Shop',
@@ -66,33 +66,32 @@ import axios from 'axios';
 };*/
 
 const DetailPage = () => {
-
-  const {routeId} = useParams();
+  const { routeId } = useParams();
 
   const [shop, setShop] = useState({});
   const [loading, setLoading] = useState(true);
 
   const loadShop = async () => {
-    const response = await axios.get("http://localhost:8080/api/enterprises/" + routeId);
+    const response = await axios.get('http://localhost:8080/api/enterprises/' + routeId);
     setShop(response.data);
-  }
+  };
 
   useEffect(() => {
-    loadShop().then(()=> setLoading(false));
-  }, [])
+    loadShop().then(() => setLoading(false));
+  }, []);
 
   useEffect(() => {
-    console.log(shop)
-  }, [shop])
+    console.log(shop);
+  }, [shop]);
 
   return (
     <>
-      {!loading &&
-      <Box className="detailPage" sx={{ position: 'relative' }}>
-        <DetailPageBG img={shop.logo} />
-        <ShopDetailView shop={shop} />
-      </Box>
-      }
+      {!loading && (
+        <Box className="detailPage" sx={{ position: 'relative' }}>
+          <DetailPageBG img={shop.logo} />
+          <ShopDetailView shop={shop} />
+        </Box>
+      )}
     </>
   );
 };

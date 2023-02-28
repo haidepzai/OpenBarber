@@ -29,12 +29,12 @@ const EmailVerificationStep = () => {
       const customConfig = {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+          Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
         },
       };
       try {
         const response = await axios.post('http://localhost:8080/api/auth/verify', verifyRequest, customConfig);
-        console.log("response", response);
+        console.log('response', response);
 
         setActiveStep(3);
         setCompletedSteps((cs) => {
@@ -89,7 +89,11 @@ const EmailVerificationStep = () => {
           Back
         </Button> */}
         <Box flexGrow={1} />
-        <Button type="submit" disabled={!verificationCode || verificationCode.length != 6 || completedSteps.slice(0, 2).some((e) => !e)} variant="contained">
+        <Button
+          type="submit"
+          disabled={!verificationCode || verificationCode.length != 6 || completedSteps.slice(0, 2).some((e) => !e)}
+          variant="contained"
+        >
           Continue
         </Button>
       </Stack>

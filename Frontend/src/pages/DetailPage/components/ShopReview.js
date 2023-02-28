@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Rating, Box, Typography } from '@mui/material';
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 const AVATAR_URL = 'https://www.shareicon.net/data/2016/09/15/829473_man_512x512.png';
 

@@ -30,12 +30,12 @@ const PhotoGallery = ({ pictures }) => {
   const [openPhotoswiper, setOpenPhotoswiper] = useState(false);
 
   const getPictureArray = () => {
-      if (pictures && pictures.length > 0) {
-          return pictures
-      } else {
-          return backupImages
-      }
-  }
+    if (pictures && pictures.length > 0) {
+      return pictures;
+    } else {
+      return backupImages;
+    }
+  };
 
   return (
     <Box>
@@ -43,16 +43,16 @@ const PhotoGallery = ({ pictures }) => {
         {backupImages.length} Photos
       </Typography>
       <ImageList sx={{ width: '100%', height: '344px', borderRadius: '5px', boxShadow: 4 }} cols={4} rowHeight={170} variant="quilted">
-          { getPictureArray().map((image, index) => (
-              <ImageListItem key={index} onClick={() => setOpenPhotoswiper(true)} sx={{ '&:hover': { cursor: 'pointer' } }}>
-                  <img
-                      src={`${image.src}?w=164&h=164&fit=crop&auto=format`}
-                      srcSet={`${image.src}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                      alt={image.name}
-                      loading="lazy"
-                  />
-              </ImageListItem>
-          ))}
+        {getPictureArray().map((image, index) => (
+          <ImageListItem key={index} onClick={() => setOpenPhotoswiper(true)} sx={{ '&:hover': { cursor: 'pointer' } }}>
+            <img
+              src={`${image.src}?w=164&h=164&fit=crop&auto=format`}
+              srcSet={`${image.src}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+              alt={image.name}
+              loading="lazy"
+            />
+          </ImageListItem>
+        ))}
       </ImageList>
       {openPhotoswiper && <PhotoSwiper images={backupImages} onClose={() => setOpenPhotoswiper(false)} />}
     </Box>

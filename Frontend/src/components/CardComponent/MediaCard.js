@@ -19,9 +19,9 @@ export default function MediaCard({ /*image, title, rating, description, link, r
 
   const rating = () => {
     const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
-    const avg = (sum / shop.reviews.length) || 0;
+    const avg = sum / shop.reviews.length || 0;
     return avg;
-  }
+  };
 
   return (
     <>
