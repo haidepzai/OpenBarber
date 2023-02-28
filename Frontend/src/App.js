@@ -18,6 +18,10 @@ import EditEnterprisePage from "./pages/EditEnterprise";
 function App() {
   const [loginVisible, setLoginVisible] = useState(false);
   const [signupVisible, setSignupVisible] = useState(false);
+  const [signupState, setSignupState] = useState({
+    completedSteps: [false, false, false, false],
+    currentStep: 0,
+  });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
@@ -43,7 +47,7 @@ function App() {
     checkForJWTToken()
   }, [])
 
-  const loadData = async () => {
+/*  const loadData = async () => {
     const response = await fetch("http://localhost:8080/api/enterprises")
     const responseData = await response.json();
     console.log(responseData)
@@ -51,7 +55,7 @@ function App() {
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, [])*/
 
 
   return (
@@ -65,15 +69,23 @@ function App() {
         <Routes>
           <Route path="*" element={<ErrorPage />} />
           <Route path="/" element={<LandingPage />} />
-          <Route path="shops/*" element={<DetailPage />} />
+          <Route path="shops/:routeId" element={<DetailPage />} />
           <Route path="filter" element={<FilterPage />} />
           <Route path="privacy-policy" element={<Datenschutz />} />
           <Route path="scheduler" element={<SchedulerPage />} />
           <Route path="edit" element={<EditEnterprisePage />} />
         </Routes>
         <Footer />
-        {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} onSuccess={() => setIsLoggedIn(true)} />}
-        {signupVisible && <SignupModal onClose={() => setSignupVisible(false)} />}
+        {loginVisible && <LoginModal
+          onClose={() => setLoginVisible(false)}
+          onSuccess={() => setIsLoggedIn(true)}
+          gotoSignup={(state) => {
+            setSignupState(state);
+            setLoginVisible(false);
+            setSignupVisible(true);
+          }}
+        />}
+        {signupVisible && <SignupModal state={signupState} onClose={() => setSignupVisible(false)} onSuccess={() => setIsLoggedIn(true)} />}
       </BrowserRouter>
     </ThemeProvider>
   );

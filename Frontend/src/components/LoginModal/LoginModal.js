@@ -6,7 +6,7 @@ import OpenBarberLogo from '../../assets/logo_openbarber.svg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const LoginModal = ({ onClose, onSuccess }) => {
+const LoginModal = ({ onClose, onSuccess, gotoSignup }) => {
   const [emailIsValid, setEmailIsValid] = useState(true);
   const [passwordIsValid, setPasswordIsValid] = useState(true);
   const [email, setEmail] = useState('');
@@ -74,11 +74,21 @@ const LoginModal = ({ onClose, onSuccess }) => {
           }
         };
         
-        const response = await axios.post('http://localhost:8080/api/auth/authenticate', authRequest, customConfig);
-        let resObj = response.data
-        localStorage.setItem("tokenJWT", JSON.stringify(resObj));
-        let storedObj = JSON.parse(localStorage.getItem("tokenJWT"))
-        console.log('Token from local storage:' + storedObj.token)
+        const res = await axios.post('http://localhost:8080/api/auth/authenticate', authRequest, customConfig);
+
+        localStorage.setItem("tokenJWT", JSON.stringify({ token: res.data.token }));
+        let storedObj = JSON.parse(localStorage.getItem("tokenJWT"));
+        console.log('Token from local storage:' + storedObj.token);
+
+        // Redirect to signup if not verified or has no enterprise
+        const { verified, hasEnterprise } = res.data;
+        if (!hasEnterprise || !verified) {
+          gotoSignup({
+            activeStep: hasEnterprise ? 2 : 1,
+            completedSteps: [true, hasEnterprise, verified, false]
+          });
+        }
+
         onSuccess()
         onClose()
         navigate('/')
@@ -144,6 +154,7 @@ const LoginModal = ({ onClose, onSuccess }) => {
                 <TextField
                   label="Password"
                   required
+                  type="password"
                   error={!passwordIsValid}
                   helperText={!passwordIsValid && 'Please enter a password'}
                   onChange={(e) => setPassword(e.target.value)}

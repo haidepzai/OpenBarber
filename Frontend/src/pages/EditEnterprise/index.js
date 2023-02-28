@@ -335,17 +335,14 @@ const EditEnterprisePage = () => {
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <TimePicker
                                                 name="open"
-                                                label={!enterprise.hours.open && "Open"}
-                                                value={enterprise.hours.open}
+                                                label={!enterprise.openingTime && "Open"}
+                                                value={enterprise.openingTime}
                                                 onChange={(newValue) => {
                                                     // date must always be the same in order to compare time(s) later (in filter)
                                                     const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1)
                                                     setEnterprise({
                                                         ...enterprise,
-                                                        hours: {
-                                                            ...enterprise.hours,
-                                                            open: changedValue.toISOString()
-                                                        }
+                                                        openingTime: changedValue.toISOString()
                                                     })
                                                 }}
                                                 renderInput={(params) => <TextField {...params} InputLabelProps={{shrink: false}} sx={{ paddingRight: "48px" }} />}
@@ -357,17 +354,14 @@ const EditEnterprisePage = () => {
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <TimePicker
                                                 name="close"
-                                                label={!enterprise.hours.close && "Close"}
-                                                value={enterprise.hours.close}
+                                                label={!enterprise.closingTime && "Close"}
+                                                value={enterprise.closingTime}
                                                 onChange={(newValue) => {
                                                     // date must always be the same in order to compare time(s) later (in filter)
                                                     const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1)
                                                     setEnterprise({
                                                         ...enterprise,
-                                                        hours: {
-                                                            ...enterprise.hours,
-                                                            close: changedValue.toISOString()
-                                                        }
+                                                        closingTime: changedValue.toISOString()
                                                     })
                                                 }}
                                                 renderInput={(params) => <TextField {...params} InputLabelProps={{shrink: false}} />}

@@ -10,6 +10,7 @@ const Header = ({ onLogin, onSignup, isLoggedIn, onLogout, deleteJWT }) => {
     function handleLogout() {
       onLogout()
       deleteJWT()
+      navigate('/')
     }
 
     const navigate = useNavigate();
