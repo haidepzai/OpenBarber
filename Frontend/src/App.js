@@ -17,11 +17,9 @@ import EditEnterprisePage from './pages/EditEnterprise';
 import AuthContext from './context/auth-context';
 
 function App() {
+  const [loginVisible, setLoginVisible] = useState(false);
+  const [signupVisible, setSignupVisible] = useState(false);
   const ctx = useContext(AuthContext);
-
-  useEffect(() => {
-    ctx.checkForJWTToken();
-  }, []);
 
   const loadData = async () => {
     const response = await fetch('http://localhost:8080/api/enterprises');
@@ -37,8 +35,8 @@ function App() {
     <ThemeProvider theme={basicTheme}>
       <BrowserRouter>
         <Header
-          onLogin={() => ctx.setLoginVisible(true)}
-          onSignup={() => ctx.setSignupVisible(true)}
+          onLogin={() => setLoginVisible(true)}
+          onSignup={() => setSignupVisible(true)}
           isLoggedIn={ctx.isLoggedIn}
           onLogout={() => ctx.onLogout}
           deleteJWT={() => ctx.deleteJWTTokenFromStorage()}
@@ -53,8 +51,8 @@ function App() {
           <Route path="edit" element={<EditEnterprisePage />} />
         </Routes>
         <Footer />
-        {ctx.loginVisible && <LoginModal onClose={() => ctx.setLoginVisible(false)} onSuccess={() => ctx.setIsLoggedIn(true)} />}
-        {ctx.signupVisible && <SignupModal onClose={() => ctx.setSignupVisible(false)} />}
+        {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} onSuccess={() => ctx.setIsLoggedIn(true)} />}
+        {signupVisible && <SignupModal onClose={() => setSignupVisible(false)} />}
       </BrowserRouter>
     </ThemeProvider>
   );

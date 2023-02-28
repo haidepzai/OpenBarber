@@ -5,13 +5,13 @@ import React, { useEffect, useState } from 'react';
 const AuthContext = React.createContext({
   isLoggedIn: false,
   onLogout: () => {},
-  onLogin: (email, password) => {},
+  onLogin: (authRequest, customConfig) => {},
+  deleteJWTTokenFromStorage: () => {},
+  setIsLoggedIn: () => {}
 });
 
 export const AuthContextProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loginVisible, setLoginVisible] = useState(false);
-  const [signupVisible, setSignupVisible] = useState(false);
 
   const deleteJWTTokenFromStorage = () => {
     let token = localStorage.getItem('tokenJWT');
@@ -57,9 +57,7 @@ export const AuthContextProvider = (props) => {
         onLogout: logoutHandler,
         onLogin: loginHandler,
         deleteJWTTokenFromStorage,
-        checkForJWTToken,
-        loginVisible,
-        signupVisible,
+        setIsLoggedIn
       }}
     >
       {props.children}
