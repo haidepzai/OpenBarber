@@ -14,7 +14,7 @@ import mostImage from '../assets/most.jpg';
 import priceImage from '../assets/price.jpg';
 import locationImage from '../assets/location.jpg';
 import tipsImage from '../assets/tips.jpg';
-import luxuryImage from "../assets/luxury.jpg"
+import luxuryImage from '../assets/luxury.jpg';
 
 import { Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -23,16 +23,16 @@ function MySwiper(props) {
   const navigate = useNavigate();
 
   const criteria = [
-    {name: 'Best Ratings', src: ratingsImage, value: { sortValue : 'Best Rating' } },
-    {name: 'Our personal tips', src: tipsImage, value: { sortValue : 'Suggested' } },
-    {name: 'Cheapest Prices', src: priceImage, value: { priceCategory: [1] } },
-    {name: 'Most Ratings', src: mostImage, value: { sortValue : 'Most Ratings' } },
-    {name: 'Luxurious Services', src: luxuryImage, value: { priceCategory: [3] } },
-    {name: 'Near you', src: locationImage },
-    {name: 'With Beard Trimming', src: beardImage },
+    { name: 'Best Ratings', src: ratingsImage, value: { sortValue: 'Best Rating' } },
+    { name: 'Our personal tips', src: tipsImage, value: { sortValue: 'Suggested' } },
+    { name: 'Cheapest Prices', src: priceImage, value: { priceCategory: [1] } },
+    { name: 'Most Ratings', src: mostImage, value: { sortValue: 'Most Ratings' } },
+    { name: 'Luxurious Services', src: luxuryImage, value: { priceCategory: [3] } },
+    { name: 'Near you', src: locationImage },
+    { name: 'With Beard Trimming', src: beardImage },
   ];
 
-/*  const handleClick = () => {
+  /*  const handleClick = () => {
     navigate('/filter', { state: { location: 'Test' } });
   };*/
 
@@ -48,7 +48,10 @@ function MySwiper(props) {
         modules={[Pagination, Navigation]}
       >
         {criteria.map((currElement) => (
-          <SwiperSlide key={currElement.name} onClick={() => navigate('/filter', { state: { [Object.keys(currElement.value)[0]]: Object.values(currElement.value)[0] }})}>
+          <SwiperSlide
+            key={currElement.name}
+            onClick={() => navigate('/filter', { state: { [Object.keys(currElement.value)[0]]: Object.values(currElement.value)[0] } })}
+          >
             <Box
               sx={{
                 padding: '0',
@@ -86,7 +89,7 @@ function MySwiper(props) {
                   transform: 'translate(-50%, -50%)',
                   margin: '0',
                   color: 'white.main',
-                  transition: '0.15s ease-in-out'
+                  transition: '0.15s ease-in-out',
                 }}
               >
                 {currElement.name}

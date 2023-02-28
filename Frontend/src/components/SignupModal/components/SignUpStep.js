@@ -3,7 +3,6 @@ import { Stack, TextField, Typography, Button } from '@mui/material';
 import { SignupContext } from '../Signup.context';
 import axios from 'axios';
 
-
 const emailRegex =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -46,16 +45,15 @@ const SignUpStep = () => {
     onBlur('confirmPassword');
     if (validEmail() && validPassword() && validConfirmPassword()) {
       (async () => {
-
         const registerRequest = {
-          "email": email,
-          "password": password
+          email: email,
+          password: password,
         };
 
         const customConfig = {
           headers: {
-          'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         };
 
         const response = await axios.post('http://localhost:8080/api/auth/register', registerRequest, customConfig);

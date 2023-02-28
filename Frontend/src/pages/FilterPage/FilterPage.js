@@ -1,14 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Search from '../../layout/Search';
 import { Box, Divider, Stack } from '@mui/material';
 import barberShops from '../../mocks/shops';
 import FilterResults from '../../components/FilterComponent/FilterResults';
 import Filter from '../../components/FilterComponent/Filter';
-import dayjs from "dayjs";
-import {useLocation} from "react-router-dom";
+import dayjs from 'dayjs';
+import { useLocation } from 'react-router-dom';
 
 const FilterPage = ({}) => {
-
   const location = useLocation();
 
   const [filter, setFilter] = useState({
@@ -19,7 +18,7 @@ const FilterPage = ({}) => {
     employeeCount: [0, 20],
     hours: {
       open: null,
-      close: null
+      close: null,
     },
     paymentMethods: [],
     drinks: [],
@@ -30,9 +29,9 @@ const FilterPage = ({}) => {
   const setDateAndTime = (newValue) => {
     setFilter({
       ...filter,
-      dateAndTime: newValue
-    })
-  }
+      dateAndTime: newValue,
+    });
+  };
 
   return (
     <>

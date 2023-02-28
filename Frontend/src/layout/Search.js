@@ -11,7 +11,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { getCurrentLocation, getGeocoordinates } from '../context/GoogleMapsActions';
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
@@ -19,8 +19,7 @@ function Search({ dateAndTime, setDateAndTime }) {
   const navigate = useNavigate();
   const routerLocation = useLocation();
 
-
-    /*const [dateValue, setDateValue] = useState(dayjs());*/
+  /*const [dateValue, setDateValue] = useState(dayjs());*/
   const [location, setLocation] = useState('');
 
   const [openDatePicker, setOpenDatePicker] = useState(false);
@@ -34,7 +33,7 @@ function Search({ dateAndTime, setDateAndTime }) {
   });
 
   const handleSubmit = async (event) => {
-      console.log(dateAndTime)
+    console.log(dateAndTime);
     if (location !== '') {
       const loc = location.formatted_address;
       console.log(location.formatted_address);
@@ -50,10 +49,9 @@ function Search({ dateAndTime, setDateAndTime }) {
       });*/
 
       navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString() } });
-
     } else {
-        navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString() } });
-        getCurrentLocation();
+      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString() } });
+      getCurrentLocation();
     }
   };
 

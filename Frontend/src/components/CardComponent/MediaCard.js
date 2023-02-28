@@ -11,18 +11,22 @@ import ReservationDialog from '../Reservation/ReservationDialog';
 import { useState } from 'react';
 
 export default function MediaCard({ /*image, title, rating, description, link, reviews*/ shop, setOpenReservationDialog }) {
-
   const handleClick = (event) => {
     event.stopPropagation();
     event.preventDefault();
     setOpenReservationDialog(true);
-  }
+  };
 
   return (
     <>
       <Card sx={{ maxWidth: 250, borderRadius: 3 }}>
         <CardActionArea component={RouterLink} to={`shops/${shop.id}`}>
-          <CardMedia component="img" height="140" image={ shop.logo ? URL.createObjectURL(shop.logo) : process.env.REACT_APP_BACKUP_IMAGE} alt="Barber" />
+          <CardMedia
+            component="img"
+            height="140"
+            image={shop.logo ? URL.createObjectURL(shop.logo) : process.env.REACT_APP_BACKUP_IMAGE}
+            alt="Barber"
+          />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
               {shop.name}
@@ -49,12 +53,13 @@ export default function MediaCard({ /*image, title, rating, description, link, r
               {shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0
               {shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0
               {shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0
-              {shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0{shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0
+              {shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0{shop.description} evhjre
+              ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0
               {shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0
             </Typography>
           </CardContent>
 
-          <CardActions sx={{ p: "0 16px 16px 16px" }}>
+          <CardActions sx={{ p: '0 16px 16px 16px' }}>
             {/*onClick={() => setOpenReservationDialog(true)}*/}
             <Button variant="contained" color="primary" onClick={handleClick}>
               Book Now
