@@ -1,5 +1,6 @@
 package com.hdmstuttgart.mi.backend.service;
 
+import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.AuthenticationRequest;
 import com.hdmstuttgart.mi.backend.model.dto.AuthenticationResponse;
@@ -8,6 +9,8 @@ import com.hdmstuttgart.mi.backend.model.dto.VerificationRequest;
 import com.hdmstuttgart.mi.backend.model.enums.UserRole;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +25,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+    private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -75,9 +79,11 @@ public class AuthenticationService {
                 .orElseThrow();
 
         if (user.getRole() != UserRole.UNVERIFIED) {
+            log.error("Email already verified!");
             throw new ResponseStatusException(HttpStatus.CONFLICT, "E-Mail already verified");
         }
         if (!request.getConfirmationCode().equals(user.getConfirmationCode())) {
+            log.error("wrong confirmation code!");
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Wrong confirmation code");
         }
         user.setRole(UserRole.VERIFIED);
