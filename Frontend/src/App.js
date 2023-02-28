@@ -21,16 +21,6 @@ function App() {
   const [signupVisible, setSignupVisible] = useState(false);
   const ctx = useContext(AuthContext);
 
-  const loadData = async () => {
-    const response = await fetch('http://localhost:8080/api/enterprises');
-    const responseData = await response.json();
-    console.log(responseData);
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
   return (
     <ThemeProvider theme={basicTheme}>
       <BrowserRouter>

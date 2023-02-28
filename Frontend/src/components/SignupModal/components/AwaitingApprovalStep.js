@@ -5,7 +5,7 @@ import { CheckCircleRounded } from '@mui/icons-material';
 import { SignupContext } from '../Signup.context';
 
 const AwaitingApprovalStep = () => {
-  const { close, setActiveStep, completedSteps, verificationCode } = useContext(SignupContext);
+  const { close } = useContext(SignupContext);
 
   return (
     <>

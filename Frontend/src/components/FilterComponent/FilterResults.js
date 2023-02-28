@@ -125,6 +125,7 @@ const FilterResults = ({ filter }) => {
           <Box key={shop.id} sx={{ margin: '20px 0' }}>
             <Stack direction="row" alignItems="center" spacing={3} sx={{ mb: '20px' }}>
               <img
+                alt="shop logo"
                 src={shop.logo ? URL.createObjectURL(shop.logo) : process.env.REACT_APP_BACKUP_IMAGE}
                 width="205px"
                 height="205px"

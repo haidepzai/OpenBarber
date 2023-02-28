@@ -7,10 +7,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Box, CardActionArea, Rating } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import ReservationDialog from '../Reservation/ReservationDialog';
-import { useState } from 'react';
 
-export default function MediaCard({ /*image, title, rating, description, link, reviews*/ shop, setOpenReservationDialog }) {
+export default function MediaCard({ shop, setOpenReservationDialog }) {
   const handleClick = (event) => {
     event.stopPropagation();
     event.preventDefault();
