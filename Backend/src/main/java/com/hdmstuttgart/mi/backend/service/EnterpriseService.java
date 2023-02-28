@@ -2,6 +2,7 @@ package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
 import com.hdmstuttgart.mi.backend.model.dto.ServiceRequest;
 import com.hdmstuttgart.mi.backend.model.dto.EmployeeRequest;
@@ -10,6 +11,8 @@ import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import com.hdmstuttgart.mi.backend.model.enums.ServiceTargetAudience;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
+import com.hdmstuttgart.mi.backend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -19,20 +22,20 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class EnterpriseService {
 
     private static final Logger log = LoggerFactory.getLogger(EnterpriseService.class);
     private final EnterpriseRepository enterpriseRepository;
-
-    public EnterpriseService(EnterpriseRepository enterpriseRepository) {
-        this.enterpriseRepository = enterpriseRepository;
-    }
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
     /*public Enterprise createEnterprise(EnterpriseRequest request, MultipartFile file){
         try {
@@ -48,7 +51,12 @@ public class EnterpriseService {
         }
     }*/
 
-    public Enterprise createEnterprise(EnterpriseRequest request) {
+    public Enterprise createEnterprise(EnterpriseRequest request, String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow();
+
         byte[] logo = null;
         List<byte[]> pictures = new ArrayList<>();
         Set<PaymentMethod> paymentMethods = null;
@@ -105,10 +113,12 @@ public class EnterpriseService {
                     employees.add(employee);
                 }
             }
-            var enterprise = Enterprise.builder()
+            Enterprise enterprise = Enterprise.builder()
                 .name(request.getName())
                 .owner(request.getOwner())
                 .eMail(request.getEMail())
+                .addressAltitude(request.getAddressAltitude())
+                .addressLongitude(request.getAddressLongitude())
                 .address(request.getAddress())
                 .logo(logo)
                 .pictures(pictures)
@@ -116,8 +126,7 @@ public class EnterpriseService {
                 .openingTime(request.getOpeningTime())
                 .closingTime(request.getClosingTime())
                 .website(request.getWebsite())
-                .rating(request.getRating())
-                .reviews(request.getReviews())
+                .reviews(new ArrayList<>())
                 .recommended(request.isRecommended())
                 .approved(request.isApproved())
                 .priceCategory(request.getPriceCategory())
@@ -126,7 +135,9 @@ public class EnterpriseService {
                 .services(services)
                 .employees(employees)
                 .build();
-            return enterpriseRepository.save(enterprise);
+
+            user.setEnterprise(enterprise);
+            return userRepository.save(user).getEnterprise();
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -143,6 +154,15 @@ public class EnterpriseService {
     public Enterprise getEnterpriseById(long id) {
         return enterpriseRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
+    }
+
+    public Enterprise getEnterpriseByUser(String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow();
+
+        return user.getEnterprise();
     }
 
     public Enterprise updateEnterprise(long id, Enterprise newEnterprise) {
@@ -163,8 +183,30 @@ public class EnterpriseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
     }
 
-    public Enterprise patchEnterprise(long id, Enterprise newEnterprise) {
-        return newEnterprise;
+    public Enterprise patchEnterprise(Enterprise updatedEnterprise, String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow();
+
+        Enterprise existingEnterprise = user.getEnterprise();
+
+        Field[] fields = Enterprise.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            try {
+                field.setAccessible(true);
+                Object newValue = field.get(updatedEnterprise);
+                if (newValue != null) {
+                    field.set(existingEnterprise, newValue);
+                }
+            } catch (IllegalAccessException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to update field: " + field.getName());
+
+            }
+        }
+
+        return enterpriseRepository.save(existingEnterprise);
     }
 
     public void deleteEnterprise(long id) {

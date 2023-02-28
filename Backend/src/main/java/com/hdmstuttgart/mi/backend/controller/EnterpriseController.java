@@ -27,22 +27,26 @@ public class EnterpriseController {
     /* @ModelAttribute: arguments fields == request parameters */
 
     @PostMapping
-    public ResponseEntity<Enterprise> createEnterprise(@ModelAttribute EnterpriseRequest enterpriseRequest) {
-
-        Enterprise createdEnterprise = enterpriseService.createEnterprise(enterpriseRequest);
+    public ResponseEntity<Enterprise> createEnterprise(@ModelAttribute EnterpriseRequest enterpriseRequest, @RequestHeader("Authorization") String token) {
+        Enterprise createdEnterprise = enterpriseService.createEnterprise(enterpriseRequest, token);
         return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
     public ResponseEntity<List<Enterprise>> getAllEnterprises() {
         List<Enterprise> enterprises = enterpriseService.getAllEnterprises();
         return new ResponseEntity<>(enterprises, HttpStatus.OK);
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<Enterprise> getEnterpriseByUser(@RequestHeader("Authorization") String token) {
+        Enterprise enterprise = enterpriseService.getEnterpriseByUser(token);
+        return new ResponseEntity<>(enterprise, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Enterprise> getEnterpriseById(@PathVariable long id) {
-        Enterprise enterprise =enterpriseService.getEnterpriseById(id);
+        Enterprise enterprise = enterpriseService.getEnterpriseById(id);
         return new ResponseEntity<>(enterprise, HttpStatus.OK);
     }
 
@@ -52,14 +56,14 @@ public class EnterpriseController {
         return new ResponseEntity<>(updatedEnterprise, HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Enterprise> patchEnterprise(@PathVariable long id, @RequestBody Enterprise newEnterprise) {
-        Enterprise updatedEnterprise = enterpriseService.patchEnterprise(id, newEnterprise);
+    @PatchMapping("/user")
+    public ResponseEntity<Enterprise> patchEnterprise(@RequestBody Enterprise newEnterprise, @RequestHeader("Authorization") String token) {
+        Enterprise updatedEnterprise = enterpriseService.patchEnterprise(newEnterprise, token);
         return new ResponseEntity<>(updatedEnterprise, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String>  deleteEnterprise(@PathVariable long id) {
+    public ResponseEntity<String> deleteEnterprise(@PathVariable long id) {
         enterpriseService.deleteEnterprise(id);
         return new ResponseEntity<>("Enterprise deleted with id = " + id, HttpStatus.NO_CONTENT);
     }

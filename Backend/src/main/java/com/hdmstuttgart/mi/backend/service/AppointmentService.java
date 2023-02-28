@@ -10,6 +10,8 @@ import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,6 +81,28 @@ public class AppointmentService {
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment not found with id = " + id));
     }
+
+    public Appointment patchAppointment(long id, Appointment updatedAppointment) {
+        Appointment existingAppointment = appointmentRepository.getById(id);
+
+        Field[] fields = Appointment.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            try {
+                field.setAccessible(true);
+                Object newValue = field.get(updatedAppointment);
+                if (newValue != null) {
+                    field.set(existingAppointment, newValue);
+                }
+            } catch (IllegalAccessException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to update field: " + field.getName());
+
+            }
+        }
+
+        return appointmentRepository.save(existingAppointment);
+    }
+
 
     public void deleteAppointment(long id) {
         if (!appointmentRepository.existsById(id)) {

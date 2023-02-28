@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Box, Typography, useMediaQuery } from '@mui/material';
 
 import ShopInfoCard from './ShopInfoCard';
 import ShopReview from './ShopReview';
+import axios from 'axios';
 
 const ShopDetailView = ({ shop }) => {
   const mobile = useMediaQuery('(max-width: 800px)');
   const sidePadding = mobile ? '2vw' : '10vw';
+
+  const [reviews, setReviews] = React.useState([]);
+  useEffect(() => {
+    axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
+      setReviews(res.data);
+    }).catch(err => {
+      console.error("review request failed", err);
+    });
+  }, [])
 
   return (
     <Box
@@ -24,7 +34,7 @@ const ShopDetailView = ({ shop }) => {
         Reviews
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {shop.reviews.map((review, i) => (
+        {reviews && reviews.length > 0 && reviews.map((review, i) => (
           <ShopReview key={i} review={review} />
         ))}
       </Box>

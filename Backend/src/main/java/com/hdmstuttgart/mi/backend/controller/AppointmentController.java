@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * Controller for appointments
+ */
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentController {
@@ -39,6 +42,12 @@ public class AppointmentController {
     @PutMapping("/{id}")
     public ResponseEntity<Appointment> updateAppointment(@PathVariable long id, @Valid @RequestBody Appointment newAppointment) {
         Appointment updatedAppointment = appointmentService.updateAppointment(id, newAppointment);
+        return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Appointment> patchAppointment(@PathVariable long id, @RequestBody Appointment newAppointment) {
+        Appointment updatedAppointment = appointmentService.patchAppointment(id, newAppointment);
         return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
     }
 
