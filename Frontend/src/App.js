@@ -46,7 +46,7 @@ function App() {
         <Routes>
           <Route path="*" element={<ErrorPage />} />
           <Route path="/" element={<LandingPage />} />
-          <Route path="shops/*" element={<DetailPage />} />
+          <Route path="shops/:routeId" element={<DetailPage />} />
           <Route path="filter" element={<FilterPage />} />
           <Route path="privacy-policy" element={<Datenschutz />} />
           <Route path="scheduler" element={<SchedulerPage />} />

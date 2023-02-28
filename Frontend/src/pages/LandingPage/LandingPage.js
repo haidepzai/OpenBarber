@@ -1,16 +1,16 @@
-import { Button, Divider, Grid, Stack } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import {Button, Divider, Grid, Stack} from '@mui/material';
+import React, {useEffect, useState} from 'react';
 import MediaCard from '../../components/CardComponent/MediaCard';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Search from '../../layout/Search';
 import { Box, Typography } from '@mui/material';
 import MySwiper from '../../layout/MySwiper';
 import barberShops from '../../mocks/shops';
-import apiCall from '../../api/axiosConfig';
-import axios from 'axios';
-import dayjs from 'dayjs';
-import ReservationDialog from '../../components/Reservation/ReservationDialog';
-import { useNavigate } from 'react-router-dom';
+import apiCall from "../../api/axiosConfig";
+import axios from "axios";
+import dayjs from "dayjs";
+import ReservationDialog from "../../components/Reservation/ReservationDialog";
+import {useNavigate} from "react-router-dom";
 
 /*const theme = createTheme({
   palette: {
@@ -33,21 +33,58 @@ import { useNavigate } from 'react-router-dom';
 });*/
 
 const LandingPage = () => {
+
   const navigate = useNavigate();
 
   const [dateAndTime, setDateAndTime] = useState(dayjs());
-  const [shops, setShops] = useState([]);
+  const [shops, setShops] = useState([])
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
   const loadData = async () => {
-    const shopsResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/enterprises`);
-    const shopsData = await shopsResponse.json();
-    setShops(shopsData);
-  };
+    const res = await axios.get("http://localhost:8080/api/enterprises");
+    console.log(res);
+    const shopsData = res.data;
+
+    const promises = shopsData.map(shop => {
+      return new Promise((resolve, reject) => {
+        axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
+          shop.reviews = res.data;
+          console.log("found reviews", res.data);
+          resolve(shop);
+        }).catch(err => {
+          console.error("review request failed", err);
+          reject(err);
+        });
+      });
+    });
+    console.log(promises);
+    let shops = await Promise.all(promises);
+
+    // let shops = await Promise.all([shopsData.map(shop => {
+    //   return new Promise((resolve, reject) => {
+    //     axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
+    //       shop.reviews = res.data;
+    //       console.log("found reviews", res.data);
+    //       resolve(shop);
+    //     }).catch(err => {
+    //       console.error("review request failed", err);
+    //       reject(err);
+    //     });
+    //   });
+    // })]);
+    console.log("shops with review: ", shops);
+    setShops(shops);
+  }
+
+  const rating = (shop) => {
+    const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
+    const avg = (sum / shop.reviews.length) || 0;
+    return avg;
+  }
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [])
 
   return (
     <>
@@ -58,32 +95,36 @@ const LandingPage = () => {
         <Search dateAndTime={dateAndTime} setDateAndTime={setDateAndTime} />
       </Box>
       {/*paddingLeft: "10vh", paddingRight: "10vh" */}
-      <Box sx={{ margin: '0 auto', maxWidth: '80%' }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: '36px', p: '0 15px' }}>
-          <Typography variant="h5">Which barbers would you like to see?</Typography>
-          <Button variant="text" onClick={() => navigate('/filter')} sx={{ fontSize: '15px' }}>
+      <Box sx={{ margin: '0 auto', maxWidth: "80%" }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: "36px", p: "0 15px" }}>
+          <Typography variant="h5">
+            Which barbers would you like to see?
+          </Typography>
+          <Button variant="text" onClick={() => navigate("/filter")} sx={{ fontSize: "15px" }}>
             Show All
           </Button>
         </Stack>
-        <Divider orientation="horizontal" sx={{ m: '12px 0', borderColor: 'rgba(0, 0, 0, 0.24)' }} />
+        <Divider orientation="horizontal" sx={{ m: "12px 0", borderColor: "rgba(0, 0, 0, 0.24)" }} />
         <MySwiper />
-        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: '36px', p: '0 15px' }}>
-          <Typography variant="h5">Top Barbers near your location</Typography>
-          <Button variant="text" onClick={() => navigate('/filter')} sx={{ fontSize: '15px' }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: "36px", p: "0 15px" }}>
+          <Typography variant="h5">
+            Top Barbers near your location
+          </Typography>
+          <Button variant="text" onClick={() => navigate("/filter")} sx={{ fontSize: "15px" }}>
             Show All
           </Button>
         </Stack>
-        <Divider orientation="horizontal" sx={{ m: '12px 0', borderColor: 'rgba(0, 0, 0, 0.24)' }} />
-        <Stack direction="row" spacing={4} justifyContent="center" sx={{ pt: '20px' }}>
-          {shops
-            .slice(0, 5)
-            .sort((a, b) => b.rating - a.rating)
-            .map((shop) => (
+        <Divider orientation="horizontal" sx={{ m: "12px 0", borderColor: "rgba(0, 0, 0, 0.24)" }} />
+        <Stack direction="row" spacing={4} justifyContent="center" sx={{ pt: "20px" }}>
+          {shops.slice(0, 5).sort((a, b) => rating(b) - rating(a)).map((shop) => (
               <Box key={shop.id}>
-                <MediaCard shop={shop} setOpenReservationDialog={setOpenReservationDialog} />
+                <MediaCard
+                    shop={shop}
+                    setOpenReservationDialog={setOpenReservationDialog}
+                />
                 <ReservationDialog open={openReservationDialog} handleClose={() => setOpenReservationDialog(false)} shop={shop} />
               </Box>
-            ))}
+          ))}
         </Stack>
       </Box>
     </>

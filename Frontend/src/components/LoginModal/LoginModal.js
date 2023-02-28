@@ -195,6 +195,7 @@ const LoginModal = ({ onClose, onSuccess }) => {
                   ref={passwordInputRef}
                   label="Password"
                   required
+                  type="password"
                   error={!passwordIsValid}
                   helperText={!passwordIsValid && 'Please enter a password'}
                   onChange={passwordChangeHandler}

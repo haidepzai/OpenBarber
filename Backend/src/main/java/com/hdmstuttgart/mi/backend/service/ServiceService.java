@@ -1,9 +1,12 @@
 package com.hdmstuttgart.mi.backend.service;
 
+import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.Service;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.List;
 @org.springframework.stereotype.Service
 public class ServiceService {
 
+    private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);
     private final ServiceRepository serviceRepository;
     private final EnterpriseRepository enterpriseRepository;
 
@@ -28,13 +32,14 @@ public class ServiceService {
 
     public List<Service> getServicesByEnterpriseId(Long enterpriseId) {
         if (!enterpriseRepository.existsById(enterpriseId)) {
+            log.warn("Enterprise not foundM");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
         }
 
         List<Service> services = serviceRepository.findAllByEnterpriseId(enterpriseId);
-        if (services.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No services found for enterprise with id = " + enterpriseId);
-        }
+//        if (services.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No services found for enterprise with id = " + enterpriseId);
+//        }
         return services;
     }
 

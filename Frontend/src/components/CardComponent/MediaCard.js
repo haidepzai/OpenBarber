@@ -17,6 +17,12 @@ export default function MediaCard({ /*image, title, rating, description, link, r
     setOpenReservationDialog(true);
   };
 
+  const rating = () => {
+    const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
+    const avg = (sum / shop.reviews.length) || 0;
+    return avg;
+  }
+
   return (
     <>
       <Card sx={{ maxWidth: 250, borderRadius: 3 }}>
@@ -33,9 +39,9 @@ export default function MediaCard({ /*image, title, rating, description, link, r
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Rating readOnly precision={0.5} value={shop.rating} sx={{ color: 'primary.main' }} size="small" />
+              <Rating readOnly precision={0.5} value={rating()} sx={{ color: 'primary.main' }} size="small" />
               <Typography variant="span" style={{ fontWeight: 600 }} color="grey.400">
-                {shop.reviews} Reviews
+                {shop.reviews.length} Review(s)
               </Typography>
             </Box>
 
