@@ -24,7 +24,7 @@ import java.util.Set;
 public class Enterprise {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotBlank(message = "Name is mandatory")
@@ -51,7 +51,7 @@ public class Enterprise {
     // private Hours hours;
     private String openingTime;
     private String closingTime;
-    
+
     @OneToMany(cascade=CascadeType.ALL)
     private List<Review> reviews;
 

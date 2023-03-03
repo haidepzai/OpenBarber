@@ -1,11 +1,10 @@
 package com.hdmstuttgart.mi.backend.controller;
 
-import com.hdmstuttgart.mi.backend.model.dto.AuthenticationRequest;
-import com.hdmstuttgart.mi.backend.model.dto.AuthenticationResponse;
-import com.hdmstuttgart.mi.backend.model.dto.RegisterRequest;
-import com.hdmstuttgart.mi.backend.model.dto.VerificationRequest;
+import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
+import com.hdmstuttgart.mi.backend.model.dto.*;
 import com.hdmstuttgart.mi.backend.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +28,14 @@ public class AuthenticationController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity verify(@RequestBody VerificationRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> verify(@RequestBody VerificationRequest request, @RequestHeader("Authorization") String token) {
         authenticationService.verify(request, token);
         return ResponseEntity.ok().body("E-mail verified successfully");
+    }
+
+    @ExceptionHandler(value = UserNotFoundException.class)
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    public ErrorDto handleNotFoundException(UserNotFoundException ex) {
+        return new ErrorDto(ex.getMessage());
     }
 }

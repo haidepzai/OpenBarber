@@ -1,5 +1,6 @@
 package com.hdmstuttgart.mi.backend.service;
 
+import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
@@ -52,7 +53,7 @@ public class EnterpriseService {
         String username = jwtService.extractUsername(token.substring(7));
 
         User user = userRepository.findByEmail(username)
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException(username));
 
         byte[] logo = null;
         List<byte[]> pictures = new ArrayList<>();
@@ -60,6 +61,7 @@ public class EnterpriseService {
         Set<Drink> drinks = null;
         List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
         List<Employee> employees = new ArrayList<>();
+
         try {
             if (request.getLogo() != null) {
                 logo = request.getLogo().getBytes();
@@ -70,20 +72,14 @@ public class EnterpriseService {
                 }
             }
             if (request.getDrinks() != null) {
-                drinks = new HashSet<Drink>(
-                        request.getDrinks()
-                                .stream()
-                                .map(Drink::valueOf)
-                                .collect(Collectors.toList())
-                );
+                drinks = request.getDrinks()
+                        .stream()
+                        .map(Drink::valueOf).collect(Collectors.toSet());
             }
             if (request.getPaymentMethods() != null) {
-                paymentMethods = new HashSet<PaymentMethod>(
-                        request.getPaymentMethods()
-                                .stream()
-                                .map(PaymentMethod::valueOf)
-                                .collect(Collectors.toList())
-                );
+                paymentMethods = request.getPaymentMethods()
+                        .stream()
+                        .map(PaymentMethod::valueOf).collect(Collectors.toSet());
             }
             if (request.getServices() != null) {
                 for (ServiceRequest serviceRequest : request.getServices()) {

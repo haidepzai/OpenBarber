@@ -1,6 +1,7 @@
 package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.BackendApplication;
+import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.AuthenticationRequest;
 import com.hdmstuttgart.mi.backend.model.dto.AuthenticationResponse;
@@ -64,8 +65,10 @@ public class AuthenticationService {
                 )
         );
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException(request.getEmail()));
+
         String jwtToken = jwtService.generateToken(user);
+
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .verified(user.getRole() != UserRole.UNVERIFIED)
@@ -77,7 +80,7 @@ public class AuthenticationService {
         String username = jwtService.extractUsername(token.substring(7));
 
         User user = userRepository.findByEmail(username)
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException(username));
 
         if (user.getRole() != UserRole.UNVERIFIED) {
             log.error("Email already verified!");
