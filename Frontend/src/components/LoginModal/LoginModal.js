@@ -41,14 +41,15 @@ const passwordReducer = (state, action) => {
 
 const LoginModal = ({ gotoSignup }) => {
   const [formIsValid, setFormIsValid] = useState(false);
+  const [loginIsFound, setLoginIsFound] = useState(true);
 
   const [emailState, dispatchEmail] = useReducer(emailReducer, {
     value: '',
-    isValid: null,
+    isValid: true,
   });
   const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
     value: '',
-    isValid: null,
+    isValid: true,
   });
 
   const authCtx = useContext(AuthContext);
@@ -80,7 +81,7 @@ const LoginModal = ({ gotoSignup }) => {
   useEffect(() => {
     const identifier = setTimeout(() => {
       setFormIsValid(
-        emailIsValid && passwordIsValid
+        emailIsValid && passwordIsValid && (emailState.length !== 0 || passwordState.length !== 0)
       );
     }, 500);
 
@@ -88,16 +89,16 @@ const LoginModal = ({ gotoSignup }) => {
     return () => {
       clearTimeout(identifier); //Clear the last timer before a new one is set
     }; // Run before every new side effect execution and before component removed
-  }, [emailIsValid, passwordIsValid]); //Effect wird getriggert. sobald ein Wert sich ändert
+  }, [emailIsValid, passwordIsValid, emailState.length, passwordState.length]); //Effect wird getriggert. sobald ein Wert sich ändert
 
   const emailChangeHandler = (event) => {
     dispatchEmail({ type: 'USER_INPUT', val: event.target.value }); //trigger emailReducer function
-    setFormIsValid(emailState.isValid && passwordState.isValid);
+    setFormIsValid(emailState.isValid && passwordState.isValid && (emailState.length !== 0 || passwordState.length !== 0));
   };
 
   const passwordChangeHandler = (event) => {
     dispatchPassword({ type: 'USER_INPUT', val: event.target.value });
-    setFormIsValid(passwordState.isValid && emailState.isValid);
+    setFormIsValid(passwordState.isValid && emailState.isValid && (emailState.length !== 0 || passwordState.length !== 0));
   };
 
   const validateEmailHandler = () => {
@@ -127,23 +128,28 @@ const LoginModal = ({ gotoSignup }) => {
             'Content-Type': 'application/json',
           },
         };
-        const res = await authCtx.onLogin(authRequest, customConfig);
-        console.log(res);
-        // Redirect to signup if not verified or has no enterprise
-        const { verified, hasEnterprise } = res.data;
-        if (!hasEnterprise || !verified) {
-          gotoSignup({
-            activeStep: hasEnterprise ? 2 : 1,
-            completedSteps: [true, hasEnterprise, verified, false]
-          });
-        } 
+        try {
+          const res = await authCtx.onLogin(authRequest, customConfig);
+          console.log(res);
+          // Redirect to signup if not verified or has no enterprise
+          const { verified, hasEnterprise } = res.data;
+          if (!hasEnterprise || !verified) {
+            gotoSignup({
+              activeStep: hasEnterprise ? 2 : 1,
+              completedSteps: [true, hasEnterprise, verified, false]
+            });
+            signUpCtx.setData((prevData) => ({ ...prevData, email: emailState.value}))
+          }
 
-        if (verified) {
-          authCtx.setIsLoggedIn(true);
-          signUpCtx.setLoginVisible(false);
-          navigate('/');
+          if (verified) {
+            authCtx.setIsLoggedIn(true);
+            signUpCtx.setLoginVisible(false);
+            navigate('/');
+          }
+        } catch (error) {
+          setLoginIsFound(false)
         }
-        
+
       } else if (!emailIsValid) {
         emailInputRef.current.focus();
       } else {
@@ -202,8 +208,8 @@ const LoginModal = ({ gotoSignup }) => {
                   label="Company Email"
                   required
                   ref={emailInputRef}
-                  error={!emailIsValid}
-                  helperText={!emailIsValid && 'Please enter a correct email'}
+                  error={!emailIsValid || !loginIsFound}
+                  helperText={(!emailIsValid && 'Please enter a correct email') || (!loginIsFound && 'No E-Mail found or password incorrect')}
                   onChange={emailChangeHandler}
                   onBlur={validateEmailHandler}
                 />
