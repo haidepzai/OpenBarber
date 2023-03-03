@@ -22,7 +22,7 @@ export const AuthContextProvider = (props) => {
   };
 
   const checkForJWTToken = () => {
-    let token = localStorage.getItem('isLoggedIn');
+    let token = localStorage.getItem('tokenJWT');
     if (token) {
       setIsLoggedIn(true);
       return true;
@@ -36,7 +36,7 @@ export const AuthContextProvider = (props) => {
   }, []);
 
   const logoutHandler = () => {
-    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('tokenJWT');
     setIsLoggedIn(false);
   };
 

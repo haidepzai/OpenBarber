@@ -9,7 +9,7 @@ import { footerTheme } from '../themes/footerTheme';
 import { Link } from 'react-router-dom';
 import '../css/Footer.css';
 
-function Footer(props) {
+function Footer() {
   return (
     <ThemeProvider theme={footerTheme}>
       <Stack direction="row" justifyContent="space-between" sx={{ backgroundColor: '#6D5344', p: '36px 48px', mt: '96px' }}>
