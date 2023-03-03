@@ -1,5 +1,5 @@
 import { Button, Divider, Stack } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import MediaCard from '../components/CardComponent/MediaCard';
 import Search from '../layout/Search';
 import { Box, Typography } from '@mui/material';
@@ -37,7 +37,7 @@ const LandingPage = () => {
   const [shops, setShops] = useState([]);
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     const res = await getEnterprises();
     const shopsData = res.data;
     console.log(shopsData)
@@ -57,25 +57,11 @@ const LandingPage = () => {
           });
       });
     });
-    console.log(promises);
     let shops = await Promise.all(promises);
 
-    // let shops = await Promise.all([shopsData.map(shop => {
-    //   return new Promise((resolve, reject) => {
-    //     axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
-    //       shop.reviews = res.data;
-    //       console.log("found reviews", res.data);
-    //       resolve(shop);
-    //     }).catch(err => {
-    //       console.error("review request failed", err);
-    //       reject(err);
-    //     });
-    //   });
-    // })]);
-    console.log('shops with review: ', shops);
     setShops(shops);
-  };
-
+  }, []);
+    
   const rating = (shop) => {
     const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
     const avg = sum / shop.reviews.length || 0;

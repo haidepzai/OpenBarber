@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import TodayIcon from '@mui/icons-material/Today';
 import ReservationDialog from '../Reservation/ReservationDialog';
 import { useLocation } from 'react-router-dom';
+import { getEnterprises } from '../../context/EnterpriseActions';
 
 const ratingNames = {
   5: 'Excellent',
@@ -89,9 +90,8 @@ const FilterResults = ({ filter }) => {
   };
 
   const loadData = async () => {
-    const shopsResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/enterprises`);
-    const shopsData = await shopsResponse.json();
-    setShops(shopsData);
+    const shops = await getEnterprises();
+    setShops(shops);
   };
 
   const rating = (shop) => {

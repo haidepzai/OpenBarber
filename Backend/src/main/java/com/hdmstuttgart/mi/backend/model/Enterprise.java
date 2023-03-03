@@ -51,13 +51,7 @@ public class Enterprise {
     // private Hours hours;
     private String openingTime;
     private String closingTime;
-
-//    // Das später aus Reviews berechnen
-//    private double rating;
-//
-//    // Hier später eigener Datentyp
-//    private long reviews;
-    @JsonIgnore
+    
     @OneToMany(cascade=CascadeType.ALL)
     private List<Review> reviews;
 
