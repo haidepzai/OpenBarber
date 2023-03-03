@@ -41,7 +41,15 @@ function App() {
           <Route path="edit" element={<EditEnterprisePage />} />
         </Routes>
         <Footer />
-        {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} onSuccess={() => ctx.setIsLoggedIn(true)} />}
+        {loginVisible && <LoginModal
+          onClose={() => setLoginVisible(false)}
+          onSuccess={() => ctx.setIsLoggedIn(true)}
+          gotoSignup={(state) => {
+            ctx.setSignupState(state);
+            setLoginVisible(false);
+            setSignupVisible(true);
+          }}
+        />}
         {signupVisible && <SignupModal state={ctx.signupState} onClose={() => setSignupVisible(false)} onSuccess={() => ctx.setIsLoggedIn(true)} />}
       </BrowserRouter>
     </ThemeProvider>
