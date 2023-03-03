@@ -1,30 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
 
-import { Box, Stepper, Step, StepButton, Stack, Typography, Button } from '@mui/material';
+import { Box, Stepper, Step, StepButton, Stack } from '@mui/material';
 import SignUpStep from './components/SignUpStep';
-import { SignupContext } from './Signup.context';
 import EnterpriseCreateStep from './components/EnterpriseCreateStep';
 import AwaitingApprovalStep from './components/AwaitingApprovalStep';
 import EmailVerificationStep from './components/EmailVerificationStep';
+import { SignupContext } from './Signup.context';
 
 const steps = ['Sign up', 'Sign up your enterprise', 'Verify your E-Mail', 'Wait for Approval'];
 
-const SignupModal = ({ onClose, onSuccess, state }) => {
-  const portalElement = document.getElementById('overlays');
-
-  const [activeStep, setActiveStep] = useState(state.activeStep || 0);
-  const [completedSteps, setCompletedSteps] = useState(state.completedSteps || Array(4).fill(false));
-  const [data, setData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    verificationCode: '',
-
-    enterpriseName: '',
-    enterpriseOwner: '',
-    enterpriseStreet: null,
-  });
+const SignupModal = ({ onClose }) => {
+  const portalElement = document.getElementById('overlays');  
+  const signUpCtx = useContext(SignupContext);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -39,21 +27,7 @@ const SignupModal = ({ onClose, onSuccess, state }) => {
   }, [onClose]);
 
   return (
-    <SignupContext.Provider
-      value={{
-        activeStep,
-        setActiveStep,
-        completedSteps,
-        setCompletedSteps,
-        close: () => {
-          onClose?.();
-          document.body.style.overflow = '';
-        },
-        onSuccess,
-        data,
-        setData,
-      }}
-    >
+    <Fragment>
       {ReactDOM.createPortal(
         <Box
           sx={{
@@ -83,26 +57,27 @@ const SignupModal = ({ onClose, onSuccess, state }) => {
               flexDirection: 'column',
             }}
           >
-            <Stepper nonLinear activeStep={activeStep}>
+            <Stepper nonLinear activeStep={signUpCtx.activeStep}>
               {steps.map((label, index) => (
-                <Step key={label} completed={completedSteps[index]}>
-                  <StepButton type="button" onClick={() => setActiveStep(index)} disabled={true}>
+                <Step key={label} completed={signUpCtx.completedSteps[index]}>
+                  <StepButton type="button" onClick={() => signUpCtx.setActiveStep(index)} disabled={true}>
                     {label}
                   </StepButton>
                 </Step>
               ))}
             </Stepper>
             <Stack flexGrow="1">
-              {activeStep === 0 && <SignUpStep />}
-              {activeStep === 1 && <EnterpriseCreateStep />}
-              {activeStep === 2 && <EmailVerificationStep />}
-              {activeStep === 3 && <AwaitingApprovalStep />}
+              {signUpCtx.activeStep === 0 && <SignUpStep />}
+              {signUpCtx.activeStep === 1 && <EnterpriseCreateStep />}
+              {signUpCtx.activeStep === 2 && <EmailVerificationStep />}
+              {signUpCtx.activeStep === 3 && <AwaitingApprovalStep />}
             </Stack>
           </Box>
         </Box>,
         portalElement
       )}
-    </SignupContext.Provider>
+    </Fragment>
+
   );
 };
 

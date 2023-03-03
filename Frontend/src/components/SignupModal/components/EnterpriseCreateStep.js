@@ -8,6 +8,7 @@ const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
 const PropInput = (props) => {
   const { data, setData } = useContext(SignupContext);
+
   return (
     <TextField
       required
@@ -20,7 +21,7 @@ const PropInput = (props) => {
 };
 
 const EnterpriseCreateStep = () => {
-  const { setActiveStep, completedSteps, setCompletedSteps, close, data, setData } = useContext(SignupContext);
+  const { setActiveStep, setCompletedSteps, close, data, setData } = useContext(SignupContext);
 
   const [errors, setErrors] = React.useState({
     enterpriseName: false,
@@ -39,7 +40,7 @@ const EnterpriseCreateStep = () => {
     },
   });
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
 
     // function toFormData(obj) {
@@ -56,37 +57,38 @@ const EnterpriseCreateStep = () => {
     //   return formData;
     // }
 
-    (async () => {
-      const createEnterpriseReq = {
-        name: data.enterpriseName,
-        owner: data.enterpriseOwner,
-        address: data.enterpriseStreet.formatted_address,
-        addressLongitude: Number(data.enterpriseStreet.geometry.location.lng()),
-        addressLatitude: Number(data.enterpriseStreet.geometry.location.lat()),
-      };
 
-      // form data config
-      const customConfig = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
-        },
-      };
+    const createEnterpriseReq = {
+      email: data.email,
+      name: data.enterpriseName,
+      owner: data.enterpriseOwner,
+      address: data.enterpriseStreet.formatted_address,
+      addressLongitude: Number(data.enterpriseStreet.geometry.location.lng()),
+      addressLatitude: Number(data.enterpriseStreet.geometry.location.lat()),
+    };
 
-      try {
-        const res = await axios.post('http://localhost:8080/api/enterprises', createEnterpriseReq, customConfig);
-        console.log('response', res);
+    // form data config
+    const customConfig = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+      },
+    };
 
-        setActiveStep(2);
-        setCompletedSteps((cs) => {
-          const res = [...cs];
-          res[1] = true;
-          return res;
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    })();
+    try {
+      const res = await axios.post('http://localhost:8080/api/enterprises', createEnterpriseReq, customConfig);
+      console.log('response', res);
+
+      setActiveStep(2);
+      setCompletedSteps((cs) => {
+        const res = [...cs];
+        res[1] = true;
+        return res;
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
   }
 
   function onBlur(e) {
