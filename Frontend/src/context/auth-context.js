@@ -8,7 +8,9 @@ const AuthContext = React.createContext({
   onLogin: (authRequest, customConfig) => {},
   onSignUp: () => {},
   deleteJWTTokenFromStorage: () => {},
-  setIsLoggedIn: () => {}
+  setIsLoggedIn: () => {},
+  setSignupState: () => {},
+  signupState: {}
 });
 
 export const AuthContextProvider = (props) => {
@@ -70,7 +72,8 @@ export const AuthContextProvider = (props) => {
         deleteJWTTokenFromStorage,
         setIsLoggedIn,
         onSignUp: signUpHandler,
-        signupState: signupState
+        signupState: signupState,
+        setSignupState
       }}
     >
       {props.children}

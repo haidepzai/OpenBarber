@@ -109,35 +109,38 @@ const LoginModal = ({ onClose, onSuccess, gotoSignup }) => {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    if (formIsValid) {
-      const authRequest = {
-        email: emailState.value,
-        password: passwordState.value,
-      };
-      const customConfig = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      const res = authCtx.onLogin(authRequest, customConfig);
+    (async () => {
+      if (formIsValid) {
+        const authRequest = {
+          email: emailState.value,
+          password: passwordState.value,
+        };
+        const customConfig = {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+        const res = await authCtx.onLogin(authRequest, customConfig);
+        console.log(res);
+        // Redirect to signup if not verified or has no enterprise
+        const { verified, hasEnterprise } = res.data;
+        if (!hasEnterprise || !verified) {
+          gotoSignup({
+            activeStep: hasEnterprise ? 2 : 1,
+            completedSteps: [true, hasEnterprise, verified, false]
+          });
+        }
 
-      // Redirect to signup if not verified or has no enterprise
-      const { verified, hasEnterprise } = res.data;
-      if (!hasEnterprise || !verified) {
-        gotoSignup({
-          activeStep: hasEnterprise ? 2 : 1,
-          completedSteps: [true, hasEnterprise, verified, false]
-        });
+        onSuccess();
+        onClose();
+        navigate('/');
+      } else if (!emailIsValid) {
+        emailInputRef.current.focus();
+      } else {
+        passwordInputRef.current.focus();
       }
+    })();
 
-      onSuccess();
-      onClose();
-      navigate('/');
-    } else if (!emailIsValid) {
-      emailInputRef.current.focus();
-    } else {
-      passwordInputRef.current.focus();
-    }
   };
 
   return (

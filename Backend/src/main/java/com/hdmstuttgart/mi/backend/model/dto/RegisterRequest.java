@@ -21,6 +21,7 @@ public class RegisterRequest {
     @Email
     private String email;
     private String password;
+    private String name;
 
 /*    private String enterpriseName;
     private String firstShopName; //redundant?
