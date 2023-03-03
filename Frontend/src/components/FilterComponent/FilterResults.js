@@ -10,7 +10,7 @@ import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import dayjs from 'dayjs';
 import TodayIcon from '@mui/icons-material/Today';
 import ReservationDialog from '../Reservation/ReservationDialog';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getEnterprises } from '../../context/EnterpriseActions';
 
 const ratingNames = {
@@ -29,6 +29,7 @@ const ratingNames = {
 
 const FilterResults = ({ filter }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [shops, setShops] = useState([]);
   const [sortValue, setSortValue] = useState((location.state && location.state.sortValue) || 'Suggested');
@@ -100,6 +101,10 @@ const FilterResults = ({ filter }) => {
     return avg;
   };
 
+  const goToShop = (id) => {
+    navigate(`/shops/${id}`);
+  }
+
   useEffect(() => {
     loadData();
   }, []);
@@ -129,7 +134,8 @@ const FilterResults = ({ filter }) => {
                 src={shop.logo ? URL.createObjectURL(shop.logo) : process.env.REACT_APP_BACKUP_IMAGE}
                 width="205px"
                 height="205px"
-                style={{ borderRadius: '4px', boxShadow: '-2px 2px 6px rgba(0, 0, 0, 0.4)', objectFit: 'cover', objectPosition: 'center' }}
+                style={{ borderRadius: '4px', boxShadow: '-2px 2px 6px rgba(0, 0, 0, 0.4)', objectFit: 'cover', objectPosition: 'center', cursor: 'pointer' }}      
+                onClick={() => goToShop(shop.id)}          
               />
               <Stack direction="column" spacing={1} sx={{ pb: '10px' }}>
                 <Typography variant="h6">{shop.name}</Typography>

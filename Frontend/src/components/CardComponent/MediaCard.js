@@ -9,7 +9,7 @@ import { Box, CardActionArea, Rating } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function MediaCard({ shop, setOpenReservationDialog }) {
-  console.log(shop)
+
   const handleClick = (event) => {
     event.stopPropagation();
     event.preventDefault();
