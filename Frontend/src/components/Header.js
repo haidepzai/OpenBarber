@@ -15,7 +15,7 @@ const Header = () => {
   
   function handleLogout() {
     authCtx.onLogout();
-    authCtx.deleteJWT();
+    authCtx.deleteJWTTokenFromStorage();
   }
 
   const navigate = useNavigate();

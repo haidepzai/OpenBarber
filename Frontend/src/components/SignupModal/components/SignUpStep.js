@@ -24,7 +24,7 @@ const SignUpStep = () => {
   const [passwordsMatch, setPasswordsMatch] = useState(true);
 
   const validEmail = () => emailRegex.test(email);
-  const validPassword = () => password.length !== 0;
+  const validPassword = () => password.length >= 8;
   const validConfirmPassword = () => password === confirmPassword;
 
   function onBlur(type) {
@@ -110,7 +110,7 @@ const SignUpStep = () => {
           type="password"
           value={password}
           error={!passwordIsValid}
-          helperText={!passwordIsValid && 'Please enter a password'}
+          helperText={!passwordIsValid && 'Password must be at least 8 characters long'}
           onChange={update('password')}
           onBlur={() => onBlur('password')}
         />
@@ -129,7 +129,7 @@ const SignUpStep = () => {
         <Button variant="outlined" onClick={close} tabIndex={-1}>
           Cancel
         </Button>
-        <Button type="submit" disabled={!(email && password && confirmPassword)} variant="contained">
+        <Button type="submit" disabled={!(email && password && confirmPassword) || password.length < 8 || !passwordsMatch} variant="contained">
           Continue
         </Button>
       </Stack>

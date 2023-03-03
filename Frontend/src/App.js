@@ -5,7 +5,7 @@ import ErrorPage from './pages/ErrorPage/ErrorPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import LoginModal from './components/LoginModal/LoginModal';
 import { ThemeProvider } from '@mui/material/styles';
 import { basicTheme } from './themes/basicTheme';
@@ -14,11 +14,9 @@ import SignupModal from './components/SignupModal/SignupModal';
 import Datenschutz from './pages/Datenschutz';
 import SchedulerPage from './pages/Scheduler';
 import EditEnterprisePage from './pages/EditEnterprise';
-import AuthContext from './context/auth-context';
-import { SignupContext, SignupProvider } from './components/SignupModal/Signup.context';
+import { SignupContext } from './components/SignupModal/Signup.context';
 
 function App() { 
-  const authCtx = useContext(AuthContext);
   const signUpCtx = useContext(SignupContext);
 
   return (
@@ -46,10 +44,9 @@ function App() {
             signUpCtx.setSignupVisible(true);
           }}
         />}
-        {signUpCtx.signupVisible && <SignupModal onClose={() => signUpCtx.setSignupVisible(false)} />}
+        {signUpCtx.signupVisible && <SignupModal/>}
       </BrowserRouter>
     </ThemeProvider>
-
   );
 }
 

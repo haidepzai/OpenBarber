@@ -15,39 +15,37 @@ const EmailVerificationStep = () => {
 
   const [error, setError] = React.useState(false);
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
-    if (!verificationCode || verificationCode.length != 6) {
+    if (!verificationCode || verificationCode.length !== 6) {
       setError(true);
     }
 
-    (async () => {
-      const verifyRequest = {
-        confirmationCode: verificationCode,
-      };
+    const verifyRequest = {
+      confirmationCode: verificationCode,
+    };
 
-      const customConfig = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
-        },
-      };
-      try {
-        const response = await axios.post('http://localhost:8080/api/auth/verify', verifyRequest, customConfig);
-        console.log('response', response);
+    const customConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+      },
+    };
+    try {
+      const response = await axios.post('http://localhost:8080/api/auth/verify', verifyRequest, customConfig);
+      console.log('response', response);
 
-        setActiveStep(3);
-        setCompletedSteps((cs) => {
-          const res = [...cs];
-          res[2] = true;
-          res[3] = true;
-          return res;
-        });
-      } catch (error) {
-        setError(true);
-        console.error(error);
-      }
-    })();
+      setActiveStep(3);
+      setCompletedSteps((cs) => {
+        const res = [...cs];
+        res[2] = true;
+        res[3] = true;
+        return res;
+      });
+    } catch (error) {
+      setError(true);
+      console.error(error);
+    }
   }
 
   return (

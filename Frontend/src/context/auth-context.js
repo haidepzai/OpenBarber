@@ -38,15 +38,12 @@ export const AuthContextProvider = (props) => {
   const logoutHandler = () => {
     localStorage.removeItem('tokenJWT');
     setIsLoggedIn(false);
-    console.log(isLoggedIn);
   };
 
   const loginHandler = async (authRequest, customConfig) => {
     const response = await axios.post('http://localhost:8080/api/auth/authenticate', authRequest, customConfig);
     let resObj = response.data;
     localStorage.setItem('tokenJWT', JSON.stringify(resObj));
-    let storedObj = JSON.parse(localStorage.getItem('tokenJWT'));
-    console.log('Token from local storage:' + storedObj.token);
 
     setIsLoggedIn(true);
     return response;

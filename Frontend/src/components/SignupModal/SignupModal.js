@@ -10,7 +10,7 @@ import { SignupContext } from './Signup.context';
 
 const steps = ['Sign up', 'Sign up your enterprise', 'Verify your E-Mail', 'Wait for Approval'];
 
-const SignupModal = ({ onClose }) => {
+const SignupModal = () => {
   const portalElement = document.getElementById('overlays');  
   const signUpCtx = useContext(SignupContext);
 
@@ -18,13 +18,13 @@ const SignupModal = ({ onClose }) => {
     document.body.style.overflow = 'hidden';
     const cb = (e) => {
       if (e.key === 'Escape') {
-        onClose?.();
+        signUpCtx.setSignupVisible(false);
         document.body.style.overflow = '';
       }
     };
     document.addEventListener('keydown', cb);
     return () => document.removeEventListener('keydown', cb);
-  }, [onClose]);
+  }, [signUpCtx]);
 
   return (
     <Fragment>
