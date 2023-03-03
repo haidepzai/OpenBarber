@@ -5,6 +5,7 @@ import { ArrowBackRounded } from '@mui/icons-material';
 import OpenBarberLogo from '../../assets/logo_openbarber.svg';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
+import { SignupContext } from '../SignupModal/Signup.context';
 
 // Reducer um mehrere States zu handeln
 // Komplexere Update State Logik
@@ -38,7 +39,7 @@ const passwordReducer = (state, action) => {
   return { value: '', isValid: false };
 };
 
-const LoginModal = ({ onClose, onSuccess, gotoSignup }) => {
+const LoginModal = ({ gotoSignup }) => {
   const [formIsValid, setFormIsValid] = useState(false);
 
   const [emailState, dispatchEmail] = useReducer(emailReducer, {
@@ -51,6 +52,7 @@ const LoginModal = ({ onClose, onSuccess, gotoSignup }) => {
   });
 
   const authCtx = useContext(AuthContext);
+  const signUpCtx = useContext(SignupContext);
 
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
@@ -66,14 +68,14 @@ const LoginModal = ({ onClose, onSuccess, gotoSignup }) => {
   useEffect(() => {
     const cb = (e) => {
       if (e.key === 'Escape') {
-        onClose?.();
+        signUpCtx.setLoginVisible(false);
       }
     };
     document.addEventListener('keydown', cb);
     return () => {
       document.removeEventListener('keydown', cb);
     };
-  }, [onClose]);
+  }, [signUpCtx]);
 
   useEffect(() => {
     const identifier = setTimeout(() => {
@@ -106,6 +108,11 @@ const LoginModal = ({ onClose, onSuccess, gotoSignup }) => {
     dispatchPassword({ type: 'INPUT_BLUR' });
   };
 
+  const handleSignUp = () => {
+    signUpCtx.setLoginVisible(false);
+    signUpCtx.setSignupVisible(true);
+  };
+
   const submitHandler = (event) => {
     event.preventDefault();
 
@@ -132,8 +139,8 @@ const LoginModal = ({ onClose, onSuccess, gotoSignup }) => {
         } 
 
         if (verified) {
-          onSuccess();
-          onClose();
+          authCtx.setIsLoggedIn(true);
+          signUpCtx.setLoginVisible(false);
           navigate('/');
         }
         
@@ -178,7 +185,7 @@ const LoginModal = ({ onClose, onSuccess, gotoSignup }) => {
               }}
             >
               <Stack direction="row" alignItems="center" gap={2} mb={8}>
-                <Button variant="outlined" size="medium" onClick={onClose} startIcon={<ArrowBackRounded />}>
+                <Button variant="outlined" size="medium" onClick={() => signUpCtx.setLoginVisible(false)} startIcon={<ArrowBackRounded />}>
                   Back
                 </Button>
                 <div style={{ flexGrow: 1 }}></div>
@@ -216,7 +223,7 @@ const LoginModal = ({ onClose, onSuccess, gotoSignup }) => {
                 </Stack>
               </Stack>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
-                <Button variant="outlined" size="large" sx={{ flexGrow: 1 }}>
+                <Button variant="outlined" size="large" sx={{ flexGrow: 1 }} onClick={handleSignUp}>
                   Sign Up Instead
                 </Button>
                 <Button type="submit" variant="contained" size="large" sx={{ flexGrow: 4 }} disabled={!formIsValid}>

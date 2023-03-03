@@ -4,12 +4,18 @@ import image from '../assets/logo_openbarber.svg';
 import { Stack, Button, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useNavigate } from 'react-router-dom';
+import { SignupContext } from './SignupModal/Signup.context';
+import { useContext } from 'react';
+import AuthContext from '../context/auth-context';
 
-const Header = ({ onLogin, onSignup, isLoggedIn, onLogout, deleteJWT }) => {
+const Header = () => {
+  
+  const signUpCtx = useContext(SignupContext);
+  const authCtx = useContext(AuthContext);
+  
   function handleLogout() {
-    console.log(onLogout())
-    onLogout();
-    deleteJWT();
+    authCtx.onLogout();
+    authCtx.deleteJWT();
   }
 
   const navigate = useNavigate();
@@ -17,7 +23,7 @@ const Header = ({ onLogin, onSignup, isLoggedIn, onLogout, deleteJWT }) => {
   return (
     <>
       <Grid container columns={12} alignItems="center" sx={{ borderBottom: 1, borderColor: 'grey.300', p: '5px 10%' }}>
-        <Grid xs={isLoggedIn ? 4 : 6}>
+        <Grid xs={authCtx.isLoggedIn ? 4 : 6}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <a href="/">
               <img src={image} width="50px" alt="logo"></img>
@@ -30,7 +36,7 @@ const Header = ({ onLogin, onSignup, isLoggedIn, onLogout, deleteJWT }) => {
           </Stack>
         </Grid>
 
-        {isLoggedIn && (
+        {authCtx.isLoggedIn && (
           <Grid item xs={4}>
             <Stack direction="row" alignItems="center" spacing={8}>
               <Button type="text" size="large" sx={{ '&:hover': { backgroundColor: '#fff' } }} onClick={() => navigate('/scheduler')}>
@@ -43,19 +49,19 @@ const Header = ({ onLogin, onSignup, isLoggedIn, onLogout, deleteJWT }) => {
           </Grid>
         )}
 
-        <Grid xs={isLoggedIn ? 4 : 6}>
+        <Grid xs={authCtx.isLoggedIn ? 4 : 6}>
           <Stack direction="row" justifyContent="flex-end" alignItems="flex-start" spacing={1}>
-            {!isLoggedIn && (
-              <Button variant="contained" color="secondary" onClick={onSignup}>
+            {!authCtx.isLoggedIn && (
+              <Button variant="contained" color="secondary" onClick={() => signUpCtx.setSignupVisible(true)}>
                 Sign Up
               </Button>
             )}
-            {!isLoggedIn && (
-              <Button variant="contained" color="secondary" onClick={onLogin}>
+            {!authCtx.isLoggedIn && (
+              <Button variant="contained" color="secondary" onClick={() => signUpCtx.setLoginVisible(true)}>
                 Login
               </Button>
             )}
-            {isLoggedIn && (
+            {authCtx.isLoggedIn && (
               <Button variant="contained" color="secondary" onClick={handleLogout}>
                 Logout
               </Button>
