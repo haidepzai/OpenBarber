@@ -17,9 +17,7 @@ import EditEnterprisePage from './pages/EditEnterprise';
 import AuthContext from './context/auth-context';
 import { SignupContext, SignupProvider } from './components/SignupModal/Signup.context';
 
-function App() {
-  const [loginVisible, setLoginVisible] = useState(false);
-
+function App() { 
   const authCtx = useContext(AuthContext);
   const signUpCtx = useContext(SignupContext);
 
@@ -27,13 +25,7 @@ function App() {
 
     <ThemeProvider theme={basicTheme}>
       <BrowserRouter>
-        <Header
-          onLogin={() => setLoginVisible(true)}
-          onSignup={() => signUpCtx.setSignupVisible(true)}
-          isLoggedIn={authCtx.isLoggedIn}
-          onLogout={() => authCtx.onLogout()}
-          deleteJWT={() => authCtx.deleteJWTTokenFromStorage()}
-        />
+        <Header/>
         <Routes>
           <Route path="*" element={<ErrorPage />} />
           <Route path="/" element={<LandingPage />} />
@@ -44,15 +36,13 @@ function App() {
           <Route path="edit" element={<EditEnterprisePage />} />
         </Routes>
         <Footer />
-        {loginVisible && <LoginModal
-          onClose={() => setLoginVisible(false)}
-          onSuccess={() => authCtx.setIsLoggedIn(true)}
+        {signUpCtx.loginVisible && <LoginModal
           gotoSignup={(state) => {
             console.log(state)
             signUpCtx.setSignupState(state);
             signUpCtx.setActiveStep(state.activeStep);
             signUpCtx.setCompletedSteps(state.completedSteps)
-            setLoginVisible(false);
+            signUpCtx.setLoginVisible(false);
             signUpCtx.setSignupVisible(true);
           }}
         />}

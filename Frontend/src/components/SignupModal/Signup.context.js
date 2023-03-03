@@ -20,6 +20,7 @@ export const SignupProvider = ({ children }) => {
         enterpriseStreet: null,
     });
     const [signupVisible, setSignupVisible] = useState(false);
+    const [loginVisible, setLoginVisible] = useState(false);
 
     const handleClose = () => {
         setSignupVisible(false);
@@ -39,6 +40,8 @@ export const SignupProvider = ({ children }) => {
             setSignupState,
             signupVisible,
             setSignupVisible,
+            loginVisible,
+            setLoginVisible
         }}
     >
         {children}
