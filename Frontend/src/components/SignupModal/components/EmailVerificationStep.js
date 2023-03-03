@@ -1,6 +1,6 @@
 import { Box, TextField, Typography, Stack, Button } from '@mui/material';
 import React, { useContext, useEffect } from 'react';
-import { SignupContext } from '../Signup.context';
+import { SignupContext } from '../../../context/Signup.context';
 import axios from 'axios';
 
 const EmailVerificationStep = () => {

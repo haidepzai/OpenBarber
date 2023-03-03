@@ -5,7 +5,7 @@ import { ArrowBackRounded } from '@mui/icons-material';
 import OpenBarberLogo from '../../assets/logo_openbarber.svg';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
-import { SignupContext } from '../SignupModal/Signup.context';
+import { SignupContext } from '../../context/Signup.context';
 
 // Reducer um mehrere States zu handeln
 // Komplexere Update State Logik
@@ -114,49 +114,46 @@ const LoginModal = ({ gotoSignup }) => {
     signUpCtx.setSignupVisible(true);
   };
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
 
-    (async () => {
-      if (formIsValid) {
-        const authRequest = {
-          email: emailState.value,
-          password: passwordState.value,
-        };
-        const customConfig = {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        };
-        try {
-          const res = await authCtx.onLogin(authRequest, customConfig);
-          console.log(res);
-          // Redirect to signup if not verified or has no enterprise
-          const { verified, hasEnterprise } = res.data;
-          if (!hasEnterprise || !verified) {
-            gotoSignup({
-              activeStep: hasEnterprise ? 2 : 1,
-              completedSteps: [true, hasEnterprise, verified, false]
-            });
-            signUpCtx.setData((prevData) => ({ ...prevData, email: emailState.value}))
-          }
-
-          if (verified) {
-            authCtx.setIsLoggedIn(true);
-            signUpCtx.setLoginVisible(false);
-            navigate('/');
-          }
-        } catch (error) {
-          setLoginIsFound(false)
+    if (formIsValid) {
+      const authRequest = {
+        email: emailState.value,
+        password: passwordState.value,
+      };
+      const customConfig = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      try {
+        const res = await authCtx.onLogin(authRequest, customConfig);
+        console.log(res);
+        // Redirect to signup if not verified or has no enterprise
+        const { verified, hasEnterprise } = res.data;
+        if (!hasEnterprise || !verified) {
+          gotoSignup({
+            activeStep: hasEnterprise ? 2 : 1,
+            completedSteps: [true, hasEnterprise, verified, false]
+          });
+          signUpCtx.setData((prevData) => ({ ...prevData, email: emailState.value }))
         }
 
-      } else if (!emailIsValid) {
-        emailInputRef.current.focus();
-      } else {
-        passwordInputRef.current.focus();
+        if (verified) {
+          authCtx.setIsLoggedIn(true);
+          signUpCtx.setLoginVisible(false);
+          navigate('/');
+        }
+      } catch (error) {
+        setLoginIsFound(false)
       }
-    })();
 
+    } else if (!emailIsValid) {
+      emailInputRef.current.focus();
+    } else {
+      passwordInputRef.current.focus();
+    }
   };
 
   return (

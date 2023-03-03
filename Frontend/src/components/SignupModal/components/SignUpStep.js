@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Stack, TextField, Typography, Button } from '@mui/material';
-import { SignupContext } from '../Signup.context';
+import { SignupContext } from '../../../context/Signup.context';
 import AuthContext from '../../../context/auth-context';
 
 const emailRegex =
