@@ -6,7 +6,7 @@ import SignUpStep from './components/SignUpStep';
 import EnterpriseCreateStep from './components/EnterpriseCreateStep';
 import AwaitingApprovalStep from './components/AwaitingApprovalStep';
 import EmailVerificationStep from './components/EmailVerificationStep';
-import { SignupContext } from './Signup.context';
+import { SignupContext } from '../../context/Signup.context';
 
 const steps = ['Sign up', 'Sign up your enterprise', 'Verify your E-Mail', 'Wait for Approval'];
 

@@ -1,6 +1,6 @@
 import { Stack, Typography, Button, Box, TextField } from '@mui/material';
 import React, { useContext } from 'react';
-import { SignupContext } from '../Signup.context';
+import { SignupContext } from '../../../context/Signup.context';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import axios from 'axios';
 

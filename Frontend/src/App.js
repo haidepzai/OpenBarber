@@ -14,7 +14,7 @@ import SignupModal from './components/SignupModal/SignupModal';
 import Datenschutz from './pages/Datenschutz';
 import SchedulerPage from './pages/Scheduler';
 import EditEnterprisePage from './pages/EditEnterprise';
-import { SignupContext } from './components/SignupModal/Signup.context';
+import { SignupContext } from './context/Signup.context';
 
 function App() { 
   const signUpCtx = useContext(SignupContext);

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 import { Stack, Typography, Button, Box } from '@mui/material';
 import { CheckCircleRounded } from '@mui/icons-material';
-import { SignupContext } from '../Signup.context';
+import { SignupContext } from '../../../context/Signup.context';
 
 const AwaitingApprovalStep = () => {
   const { close } = useContext(SignupContext);

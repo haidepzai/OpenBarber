@@ -4,7 +4,7 @@ import image from '../assets/logo_openbarber.svg';
 import { Stack, Button, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useNavigate } from 'react-router-dom';
-import { SignupContext } from './SignupModal/Signup.context';
+import { SignupContext } from '../context/Signup.context';
 import { useContext } from 'react';
 import AuthContext from '../context/auth-context';
 
