@@ -15,6 +15,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
 
   const [reviews, setReviews] = React.useState([]);
   const [services, setServices] = React.useState([]);
+
   useEffect(() => {
     axios
       .get('http://localhost:8080/api/reviews?enterpriseId=' + shop.id)
@@ -167,7 +168,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
         </Box>
 
         <Box sx={{ backgroundColor: 'grey.400', borderRadius: 2, padding: 0, boxShadow: 2, minHeight: '300px' }}>
-          <GoogleMaps />
+          <GoogleMaps lat={shop.addressLatitude} lng={shop.addressLongitude}/>
         </Box>
 
         <PhotoGallery pictures={shop.pictures} />
