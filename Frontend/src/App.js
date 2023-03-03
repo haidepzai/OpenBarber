@@ -31,7 +31,7 @@ function App() {
           onLogin={() => setLoginVisible(true)}
           onSignup={() => signUpCtx.setSignupVisible(true)}
           isLoggedIn={authCtx.isLoggedIn}
-          onLogout={() => authCtx.onLogout}
+          onLogout={() => authCtx.onLogout()}
           deleteJWT={() => authCtx.deleteJWTTokenFromStorage()}
         />
         <Routes>
@@ -51,6 +51,7 @@ function App() {
             console.log(state)
             signUpCtx.setSignupState(state);
             signUpCtx.setActiveStep(state.activeStep);
+            signUpCtx.setCompletedSteps(state.completedSteps)
             setLoginVisible(false);
             signUpCtx.setSignupVisible(true);
           }}

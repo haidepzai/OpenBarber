@@ -14,7 +14,7 @@ const SignupModal = ({ onClose }) => {
   const portalElement = document.getElementById('overlays');  
   const signUpCtx = useContext(SignupContext);
 
-  useEffect(() => {
+  useEffect(() => {    
     document.body.style.overflow = 'hidden';
     const cb = (e) => {
       if (e.key === 'Escape') {

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Header = ({ onLogin, onSignup, isLoggedIn, onLogout, deleteJWT }) => {
   function handleLogout() {
+    console.log(onLogout())
     onLogout();
     deleteJWT();
   }

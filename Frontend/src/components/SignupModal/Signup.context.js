@@ -38,7 +38,7 @@ export const SignupProvider = ({ children }) => {
             signupState: signupState,
             setSignupState,
             signupVisible,
-            setSignupVisible
+            setSignupVisible,
         }}
     >
         {children}

@@ -129,11 +129,14 @@ const LoginModal = ({ onClose, onSuccess, gotoSignup }) => {
             activeStep: hasEnterprise ? 2 : 1,
             completedSteps: [true, hasEnterprise, verified, false]
           });
-        }
+        } 
 
-        onSuccess();
-        onClose();
-        navigate('/');
+        if (verified) {
+          onSuccess();
+          onClose();
+          navigate('/');
+        }
+        
       } else if (!emailIsValid) {
         emailInputRef.current.focus();
       } else {
