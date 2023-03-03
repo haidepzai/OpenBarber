@@ -42,9 +42,7 @@ public class User implements UserDetails {
 
     private String confirmationCode;
 
-    private String firstname;
-
-    private String lastname;
+    private String name;
 
     @CreationTimestamp
     private Date createdAt;

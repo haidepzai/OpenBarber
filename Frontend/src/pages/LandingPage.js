@@ -40,6 +40,7 @@ const LandingPage = () => {
   const loadData = async () => {
     const res = await getEnterprises();
     const shopsData = res.data;
+    console.log(shopsData)
     
     const promises = shopsData.map((shop) => {
       return new Promise((resolve, reject) => {

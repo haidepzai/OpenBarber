@@ -36,6 +36,7 @@ public class AuthenticationService {
         var user = User.builder()
 //                .firstname(request.getFirstname())
 //                .lastname(request.getLastname())
+                .name(request.getName())
                 .email(request.getEmail())
                 .confirmationCode(UUID.randomUUID().toString().substring(0,6).toUpperCase())
                 .password(passwordEncoder.encode(request.getPassword()))
