@@ -29,6 +29,7 @@ public class EnterpriseRequest {
     private List<String> drinks;
     private List<ServiceRequest> services;
     private List<EmployeeRequest> employees;
+    private List<Review> reviews;
 
     /*private Set<PaymentMethod> paymentMethods;
     private Set<Drink> drinks;*/

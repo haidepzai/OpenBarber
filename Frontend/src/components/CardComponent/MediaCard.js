@@ -9,6 +9,7 @@ import { Box, CardActionArea, Rating } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function MediaCard({ shop, setOpenReservationDialog }) {
+  console.log(shop)
   const handleClick = (event) => {
     event.stopPropagation();
     event.preventDefault();
@@ -54,12 +55,7 @@ export default function MediaCard({ shop, setOpenReservationDialog }) {
               variant="body2"
               color="text.secondary"
             >
-              {shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0
-              {shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0
-              {shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0
-              {shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0{shop.description} evhjre
-              ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0
-              {shop.description} evhjre ve vpore kv revk vß0erk v0rek v0rke v0k re0vk re0vk r0ek vekivof disov f0v of v0df v0
+              {shop.description} {shop.address}
             </Typography>
           </CardContent>
 
