@@ -38,6 +38,7 @@ export const AuthContextProvider = (props) => {
   const logoutHandler = () => {
     localStorage.removeItem('tokenJWT');
     setIsLoggedIn(false);
+    console.log(isLoggedIn);
   };
 
   const loginHandler = async (authRequest, customConfig) => {

@@ -1,5 +1,5 @@
 import { Box, TextField, Typography, Stack, Button } from '@mui/material';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { SignupContext } from '../Signup.context';
 import axios from 'axios';
 
@@ -72,8 +72,8 @@ const EmailVerificationStep = () => {
         onInput={(e) => {
           setData((d) => ({ ...d, verificationCode: e.target.value }));
         }}
-        onBlur={(e) => {
-          if (!verificationCode || verificationCode.length != 6) {
+        onBlur={() => {
+          if (!verificationCode || verificationCode.length !== 6) {
             setError(true);
           } else {
             setError(false);
@@ -91,7 +91,7 @@ const EmailVerificationStep = () => {
         <Box flexGrow={1} />
         <Button
           type="submit"
-          disabled={!verificationCode || verificationCode.length != 6 || completedSteps.slice(0, 2).some((e) => !e)}
+          disabled={!verificationCode || verificationCode.length !== 6 || completedSteps.slice(0, 2).some((e) => !e)}
           variant="contained"
         >
           Continue
