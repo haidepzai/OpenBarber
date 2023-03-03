@@ -1,6 +1,5 @@
 package com.hdmstuttgart.mi.backend.service;
 
-import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
@@ -15,7 +14,6 @@ import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -117,7 +114,7 @@ public class EnterpriseService {
                 .name(request.getName())
                 .owner(request.getOwner())
                 .eMail(request.getEMail())
-                .addressAltitude(request.getAddressAltitude())
+                .addressLatitude(request.getAddressLatitude())
                 .addressLongitude(request.getAddressLongitude())
                 .address(request.getAddress())
                 .logo(logo)
@@ -171,7 +168,7 @@ public class EnterpriseService {
                     enterprise.setName(newEnterprise.getName());
                     enterprise.setAddress(newEnterprise.getAddress());
                     enterprise.setAddressLongitude(newEnterprise.getAddressLongitude());
-                    enterprise.setAddressAltitude(newEnterprise.getAddressAltitude());
+                    enterprise.setAddressLatitude(newEnterprise.getAddressLatitude());
                     enterprise.setEMail(newEnterprise.getEMail());
                     enterprise.setLogo(newEnterprise.getLogo());
                     enterprise.setPictures(newEnterprise.getPictures());

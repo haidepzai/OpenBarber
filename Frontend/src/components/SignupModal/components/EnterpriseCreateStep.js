@@ -62,7 +62,7 @@ const EnterpriseCreateStep = () => {
         owner: data.enterpriseOwner,
         address: data.enterpriseStreet.formatted_address,
         addressLongitude: Number(data.enterpriseStreet.geometry.location.lng()),
-        addressAltitude: Number(data.enterpriseStreet.geometry.location.lat()),
+        addressLatitude: Number(data.enterpriseStreet.geometry.location.lat()),
       };
 
       // form data config

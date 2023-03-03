@@ -38,8 +38,7 @@ const LandingPage = () => {
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
   const loadData = async () => {
-    const res = await getEnterprises();
-    const shopsData = res.data;
+    const shopsData = await getEnterprises();
 
     const promises = shopsData.map((shop) => {
       return new Promise((resolve, reject) => {

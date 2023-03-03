@@ -13,7 +13,7 @@ public class EnterpriseRequest {
     private String owner;
     private String address;
     private double addressLongitude;
-    private double addressAltitude;
+    private double addressLatitude;
     private String eMail;
     private MultipartFile logo;
     private List<MultipartFile> pictures;

@@ -36,7 +36,7 @@ public class Enterprise {
     @NotBlank(message = "Address is mandatory")
     private String address;
     private double addressLongitude;
-    private double addressAltitude;
+    private double addressLatitude;
 
     /*@NotBlank(message = "Email is mandatory")
     @Column(*//*nullable = false, *//*unique = true)*/
