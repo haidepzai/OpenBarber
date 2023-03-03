@@ -52,6 +52,7 @@ export const AuthContextProvider = (props) => {
     console.log('Token from local storage:' + storedObj.token);
 
     setIsLoggedIn(true);
+    return response;
   };
 
   const signUpHandler = async (registerRequest, customConfig) => {

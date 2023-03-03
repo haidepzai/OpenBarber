@@ -38,7 +38,7 @@ const passwordReducer = (state, action) => {
   return { value: '', isValid: false };
 };
 
-const LoginModal = ({ onClose, onSuccess }) => {
+const LoginModal = ({ onClose, onSuccess, gotoSignup }) => {
   const [formIsValid, setFormIsValid] = useState(false);
 
   const [emailState, dispatchEmail] = useReducer(emailReducer, {
@@ -119,7 +119,17 @@ const LoginModal = ({ onClose, onSuccess }) => {
           'Content-Type': 'application/json',
         },
       };
-      authCtx.onLogin(authRequest, customConfig);
+      const res = authCtx.onLogin(authRequest, customConfig);
+
+      // Redirect to signup if not verified or has no enterprise
+      const { verified, hasEnterprise } = res.data;
+      if (!hasEnterprise || !verified) {
+        gotoSignup({
+          activeStep: hasEnterprise ? 2 : 1,
+          completedSteps: [true, hasEnterprise, verified, false]
+        });
+      }
+
       onSuccess();
       onClose();
       navigate('/');
