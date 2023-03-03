@@ -42,8 +42,7 @@ function App() {
         </Routes>
         <Footer />
         {loginVisible && <LoginModal onClose={() => setLoginVisible(false)} onSuccess={() => ctx.setIsLoggedIn(true)} />}
-        {signupVisible && <SignupModal onClose={() => setSignupVisible(false)} />}
-        {signupVisible && <SignupModal state={signupState} onClose={() => setSignupVisible(false)} onSuccess={() => ctx.setIsLoggedIn(true)} />}
+        {signupVisible && <SignupModal state={ctx.signupState} onClose={() => setSignupVisible(false)} onSuccess={() => ctx.setIsLoggedIn(true)} />}
       </BrowserRouter>
     </ThemeProvider>
   );
