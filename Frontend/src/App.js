@@ -15,21 +15,24 @@ import Datenschutz from './pages/Datenschutz';
 import SchedulerPage from './pages/Scheduler';
 import EditEnterprisePage from './pages/EditEnterprise';
 import AuthContext from './context/auth-context';
+import { SignupContext, SignupProvider } from './components/SignupModal/Signup.context';
 
 function App() {
   const [loginVisible, setLoginVisible] = useState(false);
-  const [signupVisible, setSignupVisible] = useState(false);
-  const ctx = useContext(AuthContext);
+
+  const authCtx = useContext(AuthContext);
+  const signUpCtx = useContext(SignupContext);
 
   return (
+
     <ThemeProvider theme={basicTheme}>
       <BrowserRouter>
         <Header
           onLogin={() => setLoginVisible(true)}
-          onSignup={() => setSignupVisible(true)}
-          isLoggedIn={ctx.isLoggedIn}
-          onLogout={() => ctx.onLogout}
-          deleteJWT={() => ctx.deleteJWTTokenFromStorage()}
+          onSignup={() => signUpCtx.setSignupVisible(true)}
+          isLoggedIn={authCtx.isLoggedIn}
+          onLogout={() => authCtx.onLogout}
+          deleteJWT={() => authCtx.deleteJWTTokenFromStorage()}
         />
         <Routes>
           <Route path="*" element={<ErrorPage />} />
@@ -43,16 +46,19 @@ function App() {
         <Footer />
         {loginVisible && <LoginModal
           onClose={() => setLoginVisible(false)}
-          onSuccess={() => ctx.setIsLoggedIn(true)}
+          onSuccess={() => authCtx.setIsLoggedIn(true)}
           gotoSignup={(state) => {
-            ctx.setSignupState(state);
+            console.log(state)
+            signUpCtx.setSignupState(state);
+            signUpCtx.setActiveStep(state.activeStep);
             setLoginVisible(false);
-            setSignupVisible(true);
+            signUpCtx.setSignupVisible(true);
           }}
         />}
-        {signupVisible && <SignupModal state={ctx.signupState} onClose={() => setSignupVisible(false)} onSuccess={() => ctx.setIsLoggedIn(true)} />}
+        {signUpCtx.signupVisible && <SignupModal onClose={() => signUpCtx.setSignupVisible(false)} />}
       </BrowserRouter>
     </ThemeProvider>
+
   );
 }
 

@@ -5,20 +5,14 @@ import React, { useEffect, useState } from 'react';
 const AuthContext = React.createContext({
   isLoggedIn: false,
   onLogout: () => {},
-  onLogin: (authRequest, customConfig) => {},
-  onSignUp: () => {},
+  onLogin: async (authRequest, customConfig) => {},
+  onSignUp: async () => {},
   deleteJWTTokenFromStorage: () => {},
-  setIsLoggedIn: () => {},
-  setSignupState: () => {},
-  signupState: {}
+  setIsLoggedIn: () => {}
 });
 
 export const AuthContextProvider = (props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [signupState, setSignupState] = useState({
-    completedSteps: [false, false, false, false],
-    currentStep: 0,
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);  
 
   const deleteJWTTokenFromStorage = () => {
     let token = localStorage.getItem('tokenJWT');
@@ -59,7 +53,6 @@ export const AuthContextProvider = (props) => {
 
   const signUpHandler = async (registerRequest, customConfig) => {
     const response = await axios.post('http://localhost:8080/api/auth/register', registerRequest, customConfig);
-    console.log('response', response);
     localStorage.setItem('tokenJWT', JSON.stringify(response.data));
   }
 
@@ -71,9 +64,7 @@ export const AuthContextProvider = (props) => {
         onLogin: loginHandler,
         deleteJWTTokenFromStorage,
         setIsLoggedIn,
-        onSignUp: signUpHandler,
-        signupState: signupState,
-        setSignupState
+        onSignUp: signUpHandler,        
       }}
     >
       {props.children}

@@ -19,6 +19,7 @@ const SignUpStep = () => {
   const authCtx = useContext(AuthContext);
 
   const [emailIsValid, setEmailIsValid] = useState(true);
+  const [emailAlreadyInUse, setEmailAlreadyInUse] = useState(false);
   const [passwordIsValid, setPasswordIsValid] = useState(true);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
 
@@ -41,7 +42,8 @@ const SignUpStep = () => {
         break;
     }
   }
-  function onSubmit(e) {
+
+  async function onSubmit(e) {
     e.preventDefault();
     onBlur('email');
     onBlur('password');
@@ -57,8 +59,7 @@ const SignUpStep = () => {
         },
       };
       try {
-        authCtx.onSignUp(registerRequest, customConfig);
-        console.log('Successful sign up!');
+        await authCtx.onSignUp(registerRequest, customConfig);
         onSuccess();
         setCompletedSteps((v) => {
           const res = [...v];
@@ -67,7 +68,7 @@ const SignUpStep = () => {
         });
         setActiveStep(1);
       } catch (error) {
-        console.log(error);
+        setEmailAlreadyInUse(true);
       }
     }
   }
@@ -92,14 +93,14 @@ const SignUpStep = () => {
           Sign Up
         </Typography>
         <Typography variant="body1" color="textSecondary" marginBottom={4}>
-          Please enter your company email and create a password to sign up.
+          Please enter your company E-mail and create a password to sign up.
         </Typography>
         <TextField
           label="Company Email"
           required
           value={email}
-          error={!emailIsValid}
-          helperText={!emailIsValid && 'Please enter a correct email'}
+          error={!emailIsValid || emailAlreadyInUse}
+          helperText={(!emailIsValid && 'Please enter a correct E-mail') || (emailAlreadyInUse && 'E-Mail already in use')}
           onChange={update('email')}
           onBlur={() => onBlur('email')}
         />
