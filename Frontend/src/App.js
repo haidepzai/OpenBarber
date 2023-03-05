@@ -13,7 +13,7 @@ import FilterPage from './pages/FilterPage/FilterPage';
 import SignupModal from './components/SignupModal/SignupModal';
 import Datenschutz from './pages/Datenschutz';
 import SchedulerPage from './pages/Scheduler';
-import EditEnterprisePage from './pages/EditEnterprise';
+import EditEnterprisePage from './pages/EditEnterprise/EditEnterprise';
 import { SignupContext } from './context/Signup.context';
 
 function App() { 

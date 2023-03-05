@@ -19,7 +19,7 @@ public class ServiceDto {
     private String title;
     private String description;
     private int durationInMin;
-    private String targetAudience;
+    private ServiceTargetAudience targetAudience;
 
     /*@ManyToOne
     @JsonIgnore

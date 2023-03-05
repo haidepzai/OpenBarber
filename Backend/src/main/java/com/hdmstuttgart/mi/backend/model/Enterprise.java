@@ -79,7 +79,7 @@ public class Enterprise {
     @CollectionTable(name = "enterprise_pictures")
     private List<byte[]> pictures;
 
-    @OneToMany(cascade=CascadeType.ALL) /*(mappedBy = "enterprise")*/
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "enterprise") /*(mappedBy = "enterprise")*/
     private List<Service> services;
 
     @OneToMany(cascade=CascadeType.ALL) /*(mappedBy = "enterprise")*/

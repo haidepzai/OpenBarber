@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Stack, Typography} from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 
 const Stylist = ({ stylist, onClick }) => {

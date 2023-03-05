@@ -1,8 +1,12 @@
 package com.hdmstuttgart.mi.backend.controller;
 
+import com.hdmstuttgart.mi.backend.exception.UnauthorizedException;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.EnterpriseDto;
 import com.hdmstuttgart.mi.backend.service.EnterpriseService;
+import com.hdmstuttgart.mi.backend.service.JwtService;
+import com.hdmstuttgart.mi.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +18,11 @@ import java.util.List;
 public class EnterpriseController {
 
     private final EnterpriseService enterpriseService;
+    private final UserService userService;
 
-    public EnterpriseController(EnterpriseService enterpriseService) {
+    public EnterpriseController(EnterpriseService enterpriseService, UserService userService) {
         this.enterpriseService = enterpriseService;
+        this.userService = userService;
     }
 
     /* @ModelAttribute: arguments fields == request parameters */
@@ -46,7 +52,24 @@ public class EnterpriseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Enterprise> updateEnterprise(@PathVariable long id, @RequestBody EnterpriseDto newEnterprise) {
+    public ResponseEntity<Enterprise> updateEnterprise(
+            @PathVariable long id,
+            @RequestBody EnterpriseDto newEnterprise
+            //@RequestHeader("Authorization") String token
+    ) {
+
+        /*
+        // Validate the JWT token and extract the user information
+        String email = JwtService.verifyTokenAndGetEmail(token);
+        User user = userService.getUserByEmail(email);
+
+        // Check if the user is authorized to perform the operation based on their email
+        if (!user.getEmail().equals(newEnterprise.getEmail())) {
+            throw new UnauthorizedException("User is not authorized to perform this operation");
+        }
+        */
+
+
         Enterprise updatedEnterprise = enterpriseService.updateEnterprise(id, newEnterprise);
         return new ResponseEntity<>(updatedEnterprise, HttpStatus.OK);
     }
