@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState } from 'react';
+import React, { Fragment, useContext, useReducer, useState } from 'react';
 import { Stack, TextField, Typography, Button, CircularProgress } from '@mui/material';
 import { SignupContext } from '../../../context/Signup.context';
 import AuthContext from '../../../context/auth-context';
@@ -6,37 +6,78 @@ import AuthContext from '../../../context/auth-context';
 const emailRegex =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-const SignUpStep = () => {
-  const {
-    close,
-    setActiveStep,
-    setCompletedSteps,
-    data: { email, password, confirmPassword },
-    setData,
-  } = useContext(SignupContext);
+const initialState = {
+  enteredEmail: '',
+  emailIsValid: true,
+  emailAlreadyInUse: false,
+  enteredPassword: '',
+  passwordIsValid: true,
+  passwordsMatch: true,
+  enteredConfirmPassWord: '',
+};
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_ENTERED_EMAIL':
+      return {
+        ...state,
+        enteredEmail: action.payload,
+      };
+    case 'SET_EMAIL_IS_VALID':
+      return {
+        ...state,
+        emailIsValid: action.payload,
+      };
+    case 'SET_EMAIL_ALREADY_IN_USE':
+      return {
+        ...state,
+        emailAlreadyInUse: action.payload,
+      };
+    case 'SET_ENTERED_PASSWORD':
+      return {
+        ...state,
+        enteredPassword: action.payload,
+      };
+    case 'SET_PASSWORD_IS_VALID':
+      return {
+        ...state,
+        passwordIsValid: action.payload,
+      };
+    case 'SET_PASSWORDS_MATCH':
+      return {
+        ...state,
+        passwordsMatch: action.payload,
+      };
+    case 'SET_ENTERED_CONFIRM_PASSWORD':
+      return {
+        ...state,
+        enteredConfirmPassWord: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+const SignUpStep = () => {
+  const signUpContext = useContext(SignupContext);
   const authCtx = useContext(AuthContext);
 
-  const [emailIsValid, setEmailIsValid] = useState(true);
-  const [emailAlreadyInUse, setEmailAlreadyInUse] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  const [passwordIsValid, setPasswordIsValid] = useState(true);
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
-
-  const validEmail = () => emailRegex.test(email);
-  const validPassword = () => password.length >= 8;
-  const validConfirmPassword = () => password === confirmPassword;
+  const validEmail = () => emailRegex.test(state.enteredEmail);
+  const validPassword = () => state.enteredPassword.length >= 8;
+  const validConfirmPassword = () => state.enteredPassword === state.enteredConfirmPassWord;
 
   function onBlur(type) {
     switch (type) {
       case 'email':
-        setEmailIsValid(validEmail());
+        dispatch({ type: 'SET_EMAIL_IS_VALID', payload: validEmail() });
         break;
       case 'password':
-        setPasswordIsValid(validPassword());
+        dispatch({ type: 'SET_PASSWORD_IS_VALID', payload: validPassword() });
         break;
       case 'confirmPassword':
-        setPasswordsMatch(validConfirmPassword());
+        dispatch({ type: 'SET_PASSWORDS_MATCH', payload: validConfirmPassword() });
         break;
       default:
         break;
@@ -52,8 +93,8 @@ const SignUpStep = () => {
 
     if (validEmail() && validPassword() && validConfirmPassword()) {
       const registerRequest = {
-        email: email,
-        password: password,
+        email: state.enteredEmail,
+        password: state.enteredPassword,
       };
       const customConfig = {
         headers: {
@@ -63,33 +104,22 @@ const SignUpStep = () => {
       try {
         authCtx.setIsLoading(true);
         await authCtx.onSignUp(registerRequest, customConfig);
-        console.log(email)
-        setData((d) => ({ ...d, email: email }));
+        signUpContext.setData((d) => ({
+          ...d,
+          email: state.enteredEmail
+        }));
       } catch (error) {
-        setEmailAlreadyInUse(true);        
+        dispatch({ type: 'SET_EMAIL_ALREADY_IN_USE', payload: true });
       }
-      setCompletedSteps((v) => {
+      signUpContext.setCompletedSteps((v) => {
         const res = [...v];
         res[0] = true;
         return res;
       });
-      setActiveStep(1);
+      signUpContext.setActiveStep(1);
       authCtx.setIsLoading(false);
     }
   }
-
-  const update = (type) => {
-    return (e) => {
-      setData((d) => ({ ...d, [type]: e.target.value }));
-      setCompletedSteps((v) => {
-        const res = [...v];
-        res[0] = false;
-        res[1] = false;
-        res[2] = false;
-        return res;
-      });
-    };
-  };
 
   return (
     <Fragment>
@@ -110,38 +140,48 @@ const SignUpStep = () => {
             <TextField
               label="Company Email"
               required
-              value={email}
-              error={!emailIsValid || emailAlreadyInUse}
-              helperText={(!emailIsValid && 'Please enter a correct E-mail') || (emailAlreadyInUse && 'E-Mail already in use')}
-              onChange={update('email')}
+              value={state.enteredEmail}
+              error={!state.emailIsValid || state.emailAlreadyInUse}
+              helperText={(!state.emailIsValid && 'Please enter a correct E-mail') || (state.emailAlreadyInUse && 'E-Mail already in use')}
+              onChange={(e) => dispatch({ type: 'SET_ENTERED_EMAIL', payload: e.target.value })}
               onBlur={() => onBlur('email')}
             />
             <TextField
               label="Password"
               required
               type="password"
-              value={password}
-              error={!passwordIsValid}
-              helperText={!passwordIsValid && 'Password must be at least 8 characters long'}
-              onChange={update('password')}
+              value={state.enteredPassword}
+              error={!state.passwordIsValid}
+              helperText={!state.passwordIsValid && 'Password must be at least 8 characters long'}
+              onChange={(e) => dispatch({ type: 'SET_ENTERED_PASSWORD', payload: e.target.value })}
               onBlur={() => onBlur('password')}
             />
             <TextField
               label="Confirm Password"
               required
               type="password"
-              value={confirmPassword}
-              error={!passwordsMatch}
-              helperText={!passwordsMatch && 'Passwords do not match'}
-              onChange={update('confirmPassword')}
+              value={state.enteredConfirmPassWord}
+              error={!state.passwordsMatch}
+              helperText={!state.passwordsMatch && 'Passwords do not match'}
+              onChange={(e) => dispatch({ type: 'SET_ENTERED_CONFIRM_PASSWORD', payload: e.target.value })}
               onBlur={() => onBlur('confirmPassword')}
             />
           </Stack>
           <Stack direction="row" justifyContent="space-between" marginTop="auto">
-            <Button variant="outlined" onClick={close} tabIndex={-1}>
+            <Button variant="outlined" onClick={() => signUpContext.close()} tabIndex={-1}>
               Cancel
             </Button>
-            <Button type="submit" disabled={!(email && password && confirmPassword) || password.length < 8 || !passwordsMatch} variant="contained">
+            <Button 
+              type="submit" 
+              disabled={
+                !(state.enteredEmail && 
+                state.enteredPassword && 
+                state.enteredConfirmPassWord) || 
+                state.enteredPassword.length < 8 || 
+                !state.passwordsMatch
+                } 
+                variant="contained"
+              >
               Continue
             </Button>
           </Stack>
