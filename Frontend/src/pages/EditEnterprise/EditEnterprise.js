@@ -17,10 +17,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Snackbar from '@mui/material/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
 import AuthContext from '../../context/auth-context.js';
-import { getShop } from '../../context/EnterpriseActions.js';
-
-const img =
-  'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80';
+import { getShopByEmail } from '../../context/EnterpriseActions.js';
+import { getUserById, updateUser } from '../../context/UserActions.js';
 
 const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', 'PAYPAL'];
 const drinkOptions = ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'];
@@ -30,19 +28,18 @@ const EditEnterprisePage = () => {
   const [enterprise, setEnterprise] = useState({});
 
   const authCtx = useContext(AuthContext);
-  const userUrl = `http://localhost:8080/api/users/${authCtx.userId}`
-  const enterpriseUrl = 'http://localhost:8080/api/enterprises/3';
+
+  const enterpriseUrl = 'http://localhost:8080/api/enterprises/';
 
   // PERSISTENCE METHODS
 
   const loadEnterprise = async () => {
-    const shop = await getShop(3);
+    const shop = await getShopByEmail(authCtx.email);
     setEnterprise(shop);
   };
 
   const loadUser = async () => {
-    const userResponse = await fetch(userUrl);
-    const userData = await userResponse.json();
+    const userData = await getUserById(authCtx.userId);
     authCtx.setUser(userData);
   };
 
@@ -52,8 +49,8 @@ const EditEnterprisePage = () => {
     setLoading(false);
   };
 
-  const saveEnterprise = async () => {    
-    await fetch(enterpriseUrl, {
+  const saveEnterprise = async () => {
+    await fetch(`${enterpriseUrl}${enterprise.id}`, {
       method: 'PUT',
       body: JSON.stringify(enterprise),
       headers: {
@@ -95,14 +92,13 @@ const EditEnterprisePage = () => {
   };
 
   const saveUser = async () => {
-    await fetch(userUrl, {
-      method: 'PUT',
-      body: JSON.stringify(authCtx.user),
-      headers: {
-        'Content-type': 'application/json',
-      },
-    });
-    handleSnackbarOpen('User Changes saved!');
+    try {
+      await updateUser(authCtx.userId, authCtx.user);
+      handleSnackbarOpen('User Changes saved!');
+    } catch (error) {
+      handleSnackbarOpen('User could not be saved');
+    }
+    
   };
 
   const resetUser = async () => {
@@ -556,29 +552,15 @@ const EditEnterprisePage = () => {
                 }}
               >
                 <Stack direction="row">
-                  <Stack direction="column" spacing={1}>
-                    <Typography variant="body1">First Name</Typography>
-                    <TextField
-                      InputLabelProps={{ shrink: false }}
-                      name="firstName"
-                      placeholder="First Name"
-                      value={authCtx.user.firstName === null ? '' : authCtx.user.firstName}
-                      onChange={handleUserChange}
-                      /*fullWidth*/
-                      sx={{ paddingRight: '48px' }}
-                    />
-                  </Stack>
-                  <Stack direction="column" spacing={1}>
-                    <Typography variant="body1">First Name</Typography>
-                    <TextField
-                      InputLabelProps={{ shrink: false }}
-                      name="lastName"
-                      placeholder="Last Name"
-                      value={authCtx.user.lastName === null ? '' : authCtx.user.lastName}
-                      onChange={handleUserChange}
-                      fullWidth
-                    />
-                  </Stack>
+                  <Typography variant="body1">Name</Typography>
+                  <TextField
+                    InputLabelProps={{ shrink: false }}
+                    name="name"
+                    placeholder="Name"
+                    value={authCtx.user.name === null ? '' : authCtx.user.name}
+                    onChange={handleUserChange}
+                    fullWidth
+                  />
                 </Stack>
 
                 <Stack direction="row">

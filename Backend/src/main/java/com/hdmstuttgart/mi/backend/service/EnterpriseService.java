@@ -150,6 +150,11 @@ public class EnterpriseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
     }
 
+    public Enterprise getEnterpriseByEmail(String email) {
+        return enterpriseRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with email = " + email));
+    }
+
     public Enterprise getEnterpriseByUser(String token) {
         String username = jwtService.extractUsername(token.substring(7));
 

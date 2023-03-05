@@ -47,6 +47,12 @@ public class EnterpriseController {
         return new ResponseEntity<>(enterprise, HttpStatus.OK);
     }
 
+    @GetMapping("/email")
+    public ResponseEntity<Enterprise> getEnterpriseByEmail(@RequestParam String email) {
+        Enterprise enterprise = enterpriseService.getEnterpriseByEmail(email);
+        return new ResponseEntity<>(enterprise, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Enterprise> getEnterpriseById(@PathVariable long id) {
         Enterprise enterprise = enterpriseService.getEnterpriseById(id);
