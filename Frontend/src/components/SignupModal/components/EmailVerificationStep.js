@@ -1,7 +1,7 @@
 import { Box, TextField, Typography, Stack, Button } from '@mui/material';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { SignupContext } from '../../../context/Signup.context';
-import axios from 'axios';
+import AuthContext from '../../../context/auth-context';
 
 const EmailVerificationStep = () => {
   const {
@@ -12,8 +12,9 @@ const EmailVerificationStep = () => {
     setActiveStep,
     close,
   } = useContext(SignupContext);
+  const authCtx = useContext(AuthContext);
 
-  const [error, setError] = React.useState(false);
+  const [error, setError] = useState(false);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -32,8 +33,7 @@ const EmailVerificationStep = () => {
       },
     };
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/verify', verifyRequest, customConfig);
-      console.log('response', response);
+      await authCtx.verifyHandler(verifyRequest, customConfig);
 
       setActiveStep(3);
       setCompletedSteps((cs) => {
