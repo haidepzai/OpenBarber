@@ -8,11 +8,14 @@ const AuthContext = React.createContext({
   onLogin: async (authRequest, customConfig) => {},
   onSignUp: async () => {},
   deleteJWTTokenFromStorage: () => {},
-  setIsLoggedIn: () => {}
+  setIsLoggedIn: () => {},
+  isLoading: false,
+  setIsLoading: () => {}
 });
 
 export const AuthContextProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);  
+  const [isLoading, setIsLoading] = useState(false)
 
   const deleteJWTTokenFromStorage = () => {
     let token = localStorage.getItem('tokenJWT');
@@ -62,7 +65,9 @@ export const AuthContextProvider = (props) => {
         onLogin: loginHandler,
         deleteJWTTokenFromStorage,
         setIsLoggedIn,
-        onSignUp: signUpHandler,        
+        onSignUp: signUpHandler,   
+        isLoading,
+        setIsLoading
       }}
     >
       {props.children}
