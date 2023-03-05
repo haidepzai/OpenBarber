@@ -1,5 +1,5 @@
-import { Button, Divider, Stack } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Button, CircularProgress, Divider, Stack } from '@mui/material';
+import React, { useEffect, useState, useCallback } from 'react';
 import MediaCard from '../../components/CardComponent/MediaCard';
 import Search from '../../layout/Search';
 import { Box, Typography } from '@mui/material';
@@ -10,34 +10,16 @@ import ReservationDialog from '../../components/Reservation/ReservationDialog';
 import { useNavigate } from 'react-router-dom';
 import { getEnterprises } from '../../context/EnterpriseActions';
 
-/*const theme = createTheme({
-  palette: {
-    type: 'light',
-    /!* colors from https://m2.material.io/inline-tools/color/ *!/
-    primary: {
-      main: '#6D5344',
-      contrastText: '#fff',
-    },
-    secondary: {
-      main: '#445e6d',
-    },
-    analogous: {
-      main: '#6d4449',
-    },
-    white: {
-      main: '#fff',
-    },
-  },
-});*/
-
 const LandingPage = () => {
   const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const [dateAndTime, setDateAndTime] = useState(dayjs());
   const [shops, setShops] = useState([]);
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     const shopsData = await getEnterprises();
 
     const promises = shopsData.map((shop) => {
@@ -55,24 +37,14 @@ const LandingPage = () => {
           });
       });
     });
-    console.log(promises);
+
     let shops = await Promise.all(promises);
 
-    // let shops = await Promise.all([shopsData.map(shop => {
-    //   return new Promise((resolve, reject) => {
-    //     axios.get("http://localhost:8080/api/reviews?enterpriseId=" + shop.id).then(res => {
-    //       shop.reviews = res.data;
-    //       console.log("found reviews", res.data);
-    //       resolve(shop);
-    //     }).catch(err => {
-    //       console.error("review request failed", err);
-    //       reject(err);
-    //     });
-    //   });
-    // })]);
     console.log('shops with review: ', shops);
+
+    setIsLoading(false);
     setShops(shops);
-  };
+  }, []);
 
   const rating = (shop) => {
     const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
@@ -109,17 +81,24 @@ const LandingPage = () => {
           </Button>
         </Stack>
         <Divider orientation="horizontal" sx={{ m: '12px 0', borderColor: 'rgba(0, 0, 0, 0.24)' }} />
-        <Stack direction="row" spacing={4} justifyContent="center" sx={{ pt: '20px' }}>
-          {shops
-            .slice(0, 5)
-            .sort((a, b) => rating(b) - rating(a))
-            .map((shop) => (
-              <Box key={shop.id}>
-                <MediaCard shop={shop} setOpenReservationDialog={setOpenReservationDialog} />
-                <ReservationDialog open={openReservationDialog} handleClose={() => setOpenReservationDialog(false)} shop={shop} />
-              </Box>
-            ))}
-        </Stack>
+        {isLoading &&
+          <Stack alignItems="center" justifyContent="center" flexGrow="1">
+            <CircularProgress />
+          </Stack>
+        }
+        {!isLoading &&
+          <Stack direction="row" spacing={4} justifyContent="center" sx={{ pt: '20px' }}>
+            {shops
+              .slice(0, 5)
+              .sort((a, b) => rating(b) - rating(a))
+              .map((shop) => (
+                <Box key={shop.id}>
+                  <MediaCard shop={shop} setOpenReservationDialog={setOpenReservationDialog} />
+                  <ReservationDialog open={openReservationDialog} handleClose={() => setOpenReservationDialog(false)} shop={shop} />
+                </Box>
+              ))}
+          </Stack>
+        }
       </Box>
     </>
   );

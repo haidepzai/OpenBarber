@@ -28,9 +28,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<String> verify(@RequestBody VerificationRequest request, @RequestHeader("Authorization") String token) {
-        authenticationService.verify(request, token);
-        return ResponseEntity.ok().body("E-mail verified successfully");
+    public ResponseEntity<AuthenticationResponse> verify(@RequestBody VerificationRequest request, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(authenticationService.verify(request, token));
     }
 
     @ExceptionHandler(value = UserNotFoundException.class)

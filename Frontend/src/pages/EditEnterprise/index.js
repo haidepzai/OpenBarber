@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Box, Checkbox, Divider, FormGroup, ImageListItemBar, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -9,10 +8,6 @@ import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Button from '@mui/material/Button';
 import CollectionsIcon from '@mui/icons-material/Collections';
-import FormLabel from '@mui/material/FormLabel';
-import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
-import FormControl from '@mui/material/FormControl';
-import PaymentIcon from '@mui/icons-material/Payment';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import ServiceTable from '../../components/EditEnterprise/Service/ServiceTable.tsx';
 import EmployeeTable from '../../components/EditEnterprise/Employee/EmployeeTable.tsx';
@@ -21,46 +16,45 @@ import ImageList from '@mui/material/ImageList';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Snackbar from '@mui/material/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
+import AuthContext from '../../context/auth-context.js';
+import { getShop } from '../../context/EnterpriseActions.js';
 
-const loggedInEnterpriseId = 62;
-const loggedInUserId = 63;
 const img =
   'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80';
+
 const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', 'PAYPAL'];
 const drinkOptions = ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'];
-const enterpriseUrl = `http://localhost:8080/api/enterprises/${loggedInEnterpriseId}`;
-const userUrl = `http://localhost:8080/api/users/${loggedInUserId}`;
 
 const EditEnterprisePage = () => {
   const [loading, setLoading] = useState(true);
   const [enterprise, setEnterprise] = useState({});
-  const [user, setUser] = useState({});
+
+  const authCtx = useContext(AuthContext);
+  const userUrl = `http://localhost:8080/api/users/${authCtx.userId}`
+  const enterpriseUrl = 'http://localhost:8080/api/enterprises/3';
 
   // PERSISTENCE METHODS
 
   const loadEnterprise = async () => {
-    const enterpriseResponse = await fetch(enterpriseUrl);
-    const enterpriseData = await enterpriseResponse.json();
-    setEnterprise(enterpriseData);
-    console.log();
+    const shop = await getShop(3);
+    setEnterprise(shop);
   };
 
   const loadUser = async () => {
     const userResponse = await fetch(userUrl);
     const userData = await userResponse.json();
-    setUser(userData);
+    authCtx.setUser(userData);
   };
 
   const loadData = async () => {
-    await loadEnterprise();
     await loadUser();
+    await loadEnterprise();
     setLoading(false);
   };
 
   const saveEnterprise = async () => {
-    // JSON
-
     const { logo, pictures, employees, ...enterpriseJSONData } = enterprise;
+
     await fetch(enterpriseUrl, {
       method: 'PATCH',
       body: JSON.stringify(enterpriseJSONData),
@@ -104,7 +98,7 @@ const EditEnterprisePage = () => {
   const saveUser = async () => {
     await fetch(userUrl, {
       method: 'PUT',
-      body: JSON.stringify(user),
+      body: JSON.stringify(authCtx.user),
       headers: {
         'Content-type': 'application/json',
       },
@@ -147,8 +141,8 @@ const EditEnterprisePage = () => {
   const handleUserChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setUser({
-      ...user,
+    authCtx.setUser({
+      ...authCtx.user,
       [name]: value,
     });
   };
@@ -177,11 +171,11 @@ const EditEnterprisePage = () => {
 
   /* START - SNACKBAR */
 
-  const [snackPack, setSnackPack] = React.useState([]);
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-  const [messageInfo, setMessageInfo] = React.useState(undefined);
+  const [snackPack, setSnackPack] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [messageInfo, setMessageInfo] = useState(undefined);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (snackPack.length && !messageInfo) {
       // Set a new snack when we don't have an active one
       setMessageInfo({ ...snackPack[0] });
@@ -264,7 +258,7 @@ const EditEnterprisePage = () => {
                     InputLabelProps={{ shrink: false }}
                     name="name"
                     placeholder="Name of the Enterprise"
-                    value={enterprise.name}
+                    value={enterprise.name === null ? '' : enterprise.name}
                     onChange={handleEnterpriseChange}
                     fullWidth
                   />
@@ -276,7 +270,7 @@ const EditEnterprisePage = () => {
                     InputLabelProps={{ shrink: false }}
                     name="address"
                     placeholder="e.g. Stuttgart"
-                    value={enterprise.address}
+                    value={enterprise.address === null ? '' : enterprise.address}
                     onChange={handleEnterpriseChange}
                     fullWidth
                   />
@@ -288,7 +282,7 @@ const EditEnterprisePage = () => {
                     InputLabelProps={{ shrink: false }}
                     name="phoneNumber"
                     placeholder="e.g. 0157 12345678"
-                    value={enterprise.phoneNumber}
+                    value={enterprise.phoneNumber === null ? '' : enterprise.phoneNumber}
                     onChange={handleEnterpriseChange}
                     fullWidth
                   />
@@ -300,7 +294,7 @@ const EditEnterprisePage = () => {
                     InputLabelProps={{ shrink: false }}
                     name="website"
                     placeholder="e.g. http://www.my-company.de"
-                    value={enterprise.website}
+                    value={enterprise.website === null ? '' : enterprise.website}
                     onChange={handleEnterpriseChange}
                     fullWidth
                   />
@@ -312,7 +306,7 @@ const EditEnterprisePage = () => {
                     InputLabelProps={{ shrink: false }}
                     name="email"
                     placeholder="e.g. my-company@support.de"
-                    value={enterprise.email}
+                    value={enterprise.email === null ? '' : enterprise.email}
                     onChange={handleEnterpriseChange}
                     fullWidth
                   />
@@ -325,7 +319,7 @@ const EditEnterprisePage = () => {
                       <TimePicker
                         name="open"
                         label={!enterprise.openingTime && 'Open'}
-                        value={enterprise.openingTime}
+                        value={enterprise.openingTime === null ? '' : enterprise.openingTime}
                         onChange={(newValue) => {
                           // date must always be the same in order to compare time(s) later (in filter)
                           const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1);
@@ -344,7 +338,7 @@ const EditEnterprisePage = () => {
                       <TimePicker
                         name="close"
                         label={!enterprise.closingTime && 'Close'}
-                        value={enterprise.closingTime}
+                        value={enterprise.closingTime === null ? '' : enterprise.closingTime}
                         onChange={(newValue) => {
                           // date must always be the same in order to compare time(s) later (in filter)
                           const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1);
@@ -363,7 +357,7 @@ const EditEnterprisePage = () => {
                   <Typography variant="body1">Price Category</Typography>
                   <ToggleButtonGroup
                     name="priceCategory"
-                    value={enterprise.priceCategory}
+                    value={enterprise.priceCategory === null ? '' : enterprise.priceCategory}
                     exclusive
                     onChange={(event, value) => {
                       setEnterprise({
@@ -569,7 +563,7 @@ const EditEnterprisePage = () => {
                       InputLabelProps={{ shrink: false }}
                       name="firstName"
                       placeholder="First Name"
-                      value={user.firstName}
+                      value={authCtx.user.firstName === null ? '' : authCtx.user.firstName}
                       onChange={handleUserChange}
                       /*fullWidth*/
                       sx={{ paddingRight: '48px' }}
@@ -581,7 +575,7 @@ const EditEnterprisePage = () => {
                       InputLabelProps={{ shrink: false }}
                       name="lastName"
                       placeholder="Last Name"
-                      value={user.lastName}
+                      value={authCtx.user.lastName === null ? '' : authCtx.user.lastName}
                       onChange={handleUserChange}
                       fullWidth
                     />
@@ -595,7 +589,7 @@ const EditEnterprisePage = () => {
                     InputLabelProps={{ shrink: false }}
                     name="email"
                     placeholder="E-Mail Address"
-                    value={user.email}
+                    value={authCtx.user.email === null ? '' : authCtx.user.email}
                     onChange={handleUserChange}
                     fullWidth
                   />
@@ -608,7 +602,7 @@ const EditEnterprisePage = () => {
                     InputLabelProps={{ shrink: false }}
                     name="password"
                     placeholder="Password"
-                    value={user.password}
+                    value={authCtx.user.password === null ? '' : authCtx.user.password}
                     onChange={handleUserChange}
                     fullWidth
                   />

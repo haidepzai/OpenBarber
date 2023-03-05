@@ -73,10 +73,11 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .verified(user.getRole() != UserRole.UNVERIFIED)
                 .hasEnterprise(user.getEnterprise() != null)
+                .userId(user.getId())
                 .build();
     }
 
-    public void verify(VerificationRequest request, String token) {
+    public AuthenticationResponse verify(VerificationRequest request, String token) {
         String username = jwtService.extractUsername(token.substring(7));
 
         User user = userRepository.findByEmail(username)
@@ -92,5 +93,9 @@ public class AuthenticationService {
         }
         user.setRole(UserRole.VERIFIED);
         userRepository.save(user);
+
+        return AuthenticationResponse.builder()
+                .userId(user.getId())
+                .build();
     }
 }

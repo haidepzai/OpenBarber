@@ -3,7 +3,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import React from 'react';
-import {Box, Stack, Typography} from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -15,13 +15,8 @@ require('dayjs/locale/de')
 const OverviewPage = ({ data, setData, handleStep, showErrors, noneEmpty, error, setError }) => {
 
     const handleChange = (event) => {
-        setData({
-            ...data,
-            personalData: {
-                ...data.personalData,
-                [event.target.name]: event.target.value
-            }
-        })
+        setData({ type: 'set_personal_data', payload: event.target.value });
+
         if (noneEmpty) {
             setError({
                 ...error,
@@ -31,9 +26,9 @@ const OverviewPage = ({ data, setData, handleStep, showErrors, noneEmpty, error,
     }
 
     return (
-        <Box sx={{padding: "20px", overflow: "auto"}}>
+        <Box sx={{ padding: "20px", overflow: "auto" }}>
 
-            <Typography variant="h6" sx={{marginBottom: "20px"}}>
+            <Typography variant="h6" sx={{ marginBottom: "20px" }}>
                 Your Contact Details And Reminder
             </Typography>
 
