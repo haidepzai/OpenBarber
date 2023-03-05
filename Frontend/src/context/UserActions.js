@@ -8,12 +8,10 @@ export const getUserById = async (id) => {
 
 export const updateUser = async (id, user) => {
     try {
-        const response = await axios.put(`http://localhost:8080/api/users/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify(user),
+        const response = await axios.put(`http://localhost:8080/api/users/${id}`, JSON.stringify(user), {
             headers: {
                 'Content-type': 'application/json',
-                Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+                Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
             },
         });
         return response;

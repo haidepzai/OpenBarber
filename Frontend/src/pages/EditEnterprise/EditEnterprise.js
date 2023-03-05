@@ -55,7 +55,7 @@ const EditEnterprisePage = () => {
       body: JSON.stringify(enterprise),
       headers: {
         'Content-type': 'application/json',
-        Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+        Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
       },
     });
 
