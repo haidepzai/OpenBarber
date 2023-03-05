@@ -36,11 +36,7 @@ public class ServiceService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
         }
 
-        List<Service> services = serviceRepository.findAllByEnterpriseId(enterpriseId);
-//        if (services.isEmpty()) {
-//            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No services found for enterprise with id = " + enterpriseId);
-//        }
-        return services;
+        return serviceRepository.findAllByEnterpriseId(enterpriseId);
     }
 
     public Service getServiceById(long id) {
@@ -51,7 +47,7 @@ public class ServiceService {
     public Service updateService(long id, Service newService) {
         return serviceRepository.findById(id)
                 .map(service -> {
-//                    service.setPrice(newService.getPrice());
+                    service.setPrice(newService.getPrice());
                     service.setTitle(newService.getTitle());
                     service.setDescription(newService.getDescription());
                     service.setDurationInMin(newService.getDurationInMin());

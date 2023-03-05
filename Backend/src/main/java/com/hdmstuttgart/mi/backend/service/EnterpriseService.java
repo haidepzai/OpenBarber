@@ -185,7 +185,6 @@ public class EnterpriseService {
                     }
                     enterprise.setServices(services);
 
-
                     return enterpriseRepository.save(enterprise);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
