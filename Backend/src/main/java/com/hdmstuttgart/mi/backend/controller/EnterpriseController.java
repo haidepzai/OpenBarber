@@ -19,10 +19,12 @@ public class EnterpriseController {
 
     private final EnterpriseService enterpriseService;
     private final UserService userService;
+    private final JwtService jwtService;
 
-    public EnterpriseController(EnterpriseService enterpriseService, UserService userService) {
+    public EnterpriseController(EnterpriseService enterpriseService, UserService userService, JwtService jwtService) {
         this.enterpriseService = enterpriseService;
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     /* @ModelAttribute: arguments fields == request parameters */
@@ -54,21 +56,17 @@ public class EnterpriseController {
     @PutMapping("/{id}")
     public ResponseEntity<Enterprise> updateEnterprise(
             @PathVariable long id,
-            @RequestBody EnterpriseDto newEnterprise
-            //@RequestHeader("Authorization") String token
+            @RequestBody EnterpriseDto newEnterprise,
+            @RequestHeader("Authorization") String token
     ) {
-
-        /*
         // Validate the JWT token and extract the user information
-        String email = JwtService.verifyTokenAndGetEmail(token);
+        String email = jwtService.extractUsername(token.substring(7));
         User user = userService.getUserByEmail(email);
 
         // Check if the user is authorized to perform the operation based on their email
         if (!user.getEmail().equals(newEnterprise.getEmail())) {
             throw new UnauthorizedException("User is not authorized to perform this operation");
         }
-        */
-
 
         Enterprise updatedEnterprise = enterpriseService.updateEnterprise(id, newEnterprise);
         return new ResponseEntity<>(updatedEnterprise, HttpStatus.OK);
@@ -81,7 +79,17 @@ public class EnterpriseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteEnterprise(@PathVariable long id) {
+    public ResponseEntity<String> deleteEnterprise(@PathVariable long id, @RequestHeader("Authorization") String token) {
+        // Validate the JWT token and extract the user information
+        String email = jwtService.extractUsername(token.substring(7));
+        User user = userService.getUserByEmail(email);
+        Enterprise enterprise = enterpriseService.getEnterpriseById(id);
+
+        // Check if the user is authorized to perform the operation based on their email
+        if (!user.getEmail().equals(enterprise.getEmail())) {
+            throw new UnauthorizedException("User is not authorized to perform this operation");
+        }
+
         enterpriseService.deleteEnterprise(id);
         return new ResponseEntity<>("Enterprise deleted with id = " + id, HttpStatus.NO_CONTENT);
     }
