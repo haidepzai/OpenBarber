@@ -14,4 +14,5 @@ public class AuthenticationResponse {
     private String token;
     private boolean verified;
     private boolean hasEnterprise;
+    private long userId;
 }

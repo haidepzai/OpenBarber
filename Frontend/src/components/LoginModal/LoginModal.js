@@ -129,7 +129,6 @@ const LoginModal = ({ gotoSignup }) => {
       };
       try {
         const res = await authCtx.onLogin(authRequest, customConfig);
-        console.log(res);
         // Redirect to signup if not verified or has no enterprise
         const { verified, hasEnterprise } = res.data;
         if (!hasEnterprise || !verified) {
@@ -143,7 +142,7 @@ const LoginModal = ({ gotoSignup }) => {
         if (verified) {
           authCtx.setIsLoggedIn(true);
           signUpCtx.setLoginVisible(false);
-          navigate('/');
+          navigate('/');          
         }
       } catch (error) {
         setLoginIsFound(false)

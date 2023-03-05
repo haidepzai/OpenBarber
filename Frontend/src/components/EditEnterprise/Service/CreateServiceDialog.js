@@ -6,7 +6,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import MenuItem from '@mui/material/MenuItem';
 import { InputAdornment, Stack, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import EuroIcon from '@mui/icons-material/Euro';
 
 const targetAudienceOptions = ['ALL', 'MEN', 'WOMEN', 'CHILDREN'];
@@ -54,7 +54,7 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
     });
   };
 
-  const validate = () => {
+  const validate = useCallback(() => {
     let targetAudienceError = '';
     let titleError = '';
     let durationInMinError = '';
@@ -86,11 +86,11 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
       price: priceError,
     });
     return !(targetAudienceError || titleError || durationInMinError || priceError);
-  };
+  }, [service.durationInMin, service.price, service.targetAudience, service.title, uniqueServices]);
 
   useEffect(() => {
     validate();
-  }, [service]);
+  }, [service, validate]);
 
   return (
     <>

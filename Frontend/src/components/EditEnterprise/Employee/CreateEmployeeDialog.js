@@ -4,7 +4,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Box, Stack, TextField, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
@@ -57,7 +57,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
     });
   };
 
-  const validate = () => {
+  const validate = useCallback(() => {
     let nameError = '';
     if (employee.name === '') {
       nameError = 'Choose a name!';
@@ -70,11 +70,11 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
       name: nameError,
     });
     return !nameError;
-  };
+  }, [employee.name, errors, uniqueEmployees]);
 
   useEffect(() => {
     validate();
-  }, [employee]);
+  }, [employee, validate]);
 
   return (
     <>
