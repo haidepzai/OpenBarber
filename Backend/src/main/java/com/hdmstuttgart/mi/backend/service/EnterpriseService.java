@@ -109,7 +109,7 @@ public class EnterpriseService {
             Enterprise enterprise = Enterprise.builder()
                 .name(request.getName())
                 .owner(request.getOwner())
-                .eMail(request.getEMail())
+                .email(request.getEmail())
                 .addressLatitude(request.getAddressLatitude())
                 .addressLongitude(request.getAddressLongitude())
                 .address(request.getAddress())
@@ -165,7 +165,7 @@ public class EnterpriseService {
                     enterprise.setAddress(newEnterprise.getAddress());
                     enterprise.setAddressLongitude(newEnterprise.getAddressLongitude());
                     enterprise.setAddressLatitude(newEnterprise.getAddressLatitude());
-                    enterprise.setEMail(newEnterprise.getEMail());
+                    enterprise.setEmail(newEnterprise.getEmail());
                     enterprise.setLogo(newEnterprise.getLogo());
                     enterprise.setPictures(newEnterprise.getPictures());
                     enterprise.setWebsite(newEnterprise.getWebsite());

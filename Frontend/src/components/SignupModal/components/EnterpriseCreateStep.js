@@ -56,8 +56,6 @@ const EnterpriseCreateStep = () => {
     //   }
     //   return formData;
     // }
-
-
     const createEnterpriseReq = {
       email: data.email,
       name: data.enterpriseName,
@@ -92,7 +90,6 @@ const EnterpriseCreateStep = () => {
   }
 
   function onBlur(e) {
-    console.log(e.target.value);
     if (e.target.value === '') {
       setErrors((err) => ({ ...err, [e.target.name]: true }));
     } else {

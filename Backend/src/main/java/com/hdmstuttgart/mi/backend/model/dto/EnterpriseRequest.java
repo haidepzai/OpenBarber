@@ -14,7 +14,7 @@ public class EnterpriseRequest {
     private String address;
     private double addressLongitude;
     private double addressLatitude;
-    private String eMail;
+    private String email;
     private MultipartFile logo;
     private List<MultipartFile> pictures;
     private String phoneNumber;
