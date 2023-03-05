@@ -1,6 +1,7 @@
 package com.hdmstuttgart.mi.backend.service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -18,6 +19,7 @@ import java.util.function.Function;
 public class JwtService {
 
     private static final String SECRET_KEY = "28482B4D6251655468576D5A7134743777217A24432646294A404E635266556A"; //TODO move to .env
+    private static final long EXPIRATION_TIME = 86400000; // 24 hours in milliseconds
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -46,6 +48,20 @@ public class JwtService {
                 .compact();
     }
 
+    public static String generateToken(String email) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + EXPIRATION_TIME);
+
+        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(now)
+                .setExpiration(expiration)
+                .signWith(key)
+                .compact();
+    }
+
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
@@ -71,5 +87,17 @@ public class JwtService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public static String verifyTokenAndGetEmail(String token) throws JwtException {
+        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
     }
 }

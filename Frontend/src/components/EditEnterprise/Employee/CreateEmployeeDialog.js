@@ -74,7 +74,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
 
   useEffect(() => {
     validate();
-  }, [employee, validate]);
+  }, [employee]);
 
   return (
     <>

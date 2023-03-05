@@ -1,23 +1,22 @@
 import React from 'react';
-import {Box, IconButton, Typography} from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import Stylist from "./Stylist";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {StaticDatePicker} from "@mui/x-date-pickers/StaticDatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import TextField from "@mui/material/TextField";
-import {useState} from "react";
-
+import { useState } from "react";
 
 
 const mockStylists = [
-    {name: "Any"},
-    {name: "Alexandra", titel: "Junior Stylist", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg"},
-    {name: "Peter", titel: "Junior Stylist", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVWjI1XVRB5hg9hZ24rMkPtmLCb9jU_NoBQ&usqp=CAU"},
-    {name: "Laura", titel: "Senior Stylist", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg"},
-    {name: "Paul", titel: "Senior Stylist", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVWjI1XVRB5hg9hZ24rMkPtmLCb9jU_NoBQ&usqp=CAU"},
+    { name: "Any" },
+    { name: "Alexandra", titel: "Junior Stylist", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg" },
+    { name: "Peter", titel: "Junior Stylist", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVWjI1XVRB5hg9hZ24rMkPtmLCb9jU_NoBQ&usqp=CAU" },
+    { name: "Laura", titel: "Senior Stylist", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg" },
+    { name: "Paul", titel: "Senior Stylist", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVWjI1XVRB5hg9hZ24rMkPtmLCb9jU_NoBQ&usqp=CAU" },
 ]
 
 const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate }) => {
@@ -30,24 +29,24 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate }) => {
     }
 
     return (
-        <Box sx={{padding: "20px", overflowY: "auto" }}>
-            <Typography variant="h6" sx={{marginBottom: "20px"}}>
+        <Box sx={{ padding: "20px", overflowY: "auto" }}>
+            <Typography variant="h6" sx={{ marginBottom: "20px" }}>
                 Choose your Stylist & Appointment
             </Typography>
             <Typography variant="overline" display="block" gutterBottom>
                 Choose your Stylist
             </Typography>
-            <Accordion sx={{marginBottom: "20px"}} expanded={expanded}>
+            <Accordion sx={{ marginBottom: "20px" }} expanded={expanded}>
                 <Box sx={{ position: "relative" }} onClick={() => setExpanded(!expanded)}>
                     <Stylist stylist={pickedStylist} onClick={setExpanded} selected />
                     <Box sx={{ position: "absolute", right: "20px", top: "50%", transform: "translateY(-50%)" }}>
                         {expanded ?
                             <IconButton type="button" aria-label="delete">
-                                <ExpandLessIcon/>
+                                <ExpandLessIcon />
                             </IconButton>
                             :
                             <IconButton type="button" aria-label="delete">
-                                <ExpandMoreIcon/>
+                                <ExpandMoreIcon />
                             </IconButton>
                         }
                     </Box>
@@ -67,12 +66,12 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate }) => {
                     onChange={(newValue) => {
                         pickDate(newValue);
                     }}
-                    renderInput={(params) => <TextField {...params}/>}
+                    renderInput={(params) => <TextField {...params} />}
                 />
             </LocalizationProvider>
             {pickedDate &&
                 <Box sx={{ width: "100%", border: "1px solid rgb(236,236,236)", padding: "10px 20px", boxSizing: "border-box" }}>
-                    <Typography sx={{ fontSize: "14px"}}>Appointments for {pickedDate.format("DD/MM/YYYY")}</Typography>
+                    <Typography sx={{ fontSize: "14px" }}>Appointments for {pickedDate.format("DD/MM/YYYY")}</Typography>
                 </Box>
             }
         </Box>

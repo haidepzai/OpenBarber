@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 public class Service {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotNull(message = "Price is mandatory")
@@ -35,7 +35,6 @@ public class Service {
     private ServiceTargetAudience targetAudience;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "enterprise_id")
     private Enterprise enterprise;
 }

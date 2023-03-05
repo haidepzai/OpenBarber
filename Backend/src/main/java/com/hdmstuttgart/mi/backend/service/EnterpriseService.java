@@ -89,7 +89,7 @@ public class EnterpriseService {
                             .title(serviceRequest.getTitle())
                             .description(serviceRequest.getDescription())
                             .durationInMin(serviceRequest.getDurationInMin())
-                            .targetAudience(ServiceTargetAudience.valueOf(serviceRequest.getTargetAudience()))
+                            .targetAudience(serviceRequest.getTargetAudience())
                             .build();
                     services.add(service);
                 }
@@ -172,6 +172,20 @@ public class EnterpriseService {
                     enterprise.setWebsite(newEnterprise.getWebsite());
                     enterprise.setPhoneNumber(newEnterprise.getPhoneNumber());
                     enterprise.setApproved(newEnterprise.isApproved());
+
+                    // update services
+                    List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
+                    for (ServiceDto serviceDto : newEnterprise.getServices()) {
+                        com.hdmstuttgart.mi.backend.model.Service service = new com.hdmstuttgart.mi.backend.model.Service();
+                        service.setTitle(serviceDto.getTitle());
+                        service.setPrice(serviceDto.getPrice());
+                        service.setTargetAudience(serviceDto.getTargetAudience());
+                        service.setEnterprise(enterprise);
+                        services.add(service);
+                    }
+                    enterprise.setServices(services);
+
+
                     return enterpriseRepository.save(enterprise);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));

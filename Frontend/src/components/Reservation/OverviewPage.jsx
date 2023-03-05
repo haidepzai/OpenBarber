@@ -15,7 +15,7 @@ require('dayjs/locale/de')
 const OverviewPage = ({ data, setData, handleStep, showErrors, noneEmpty, error, setError }) => {
 
     const handleChange = (event) => {
-        setData({ type: 'set_personal_data', payload: event.target.value });
+        setData({ type: 'set_personal_data', payload: {[event.target.name]: event.target.value }});
 
         if (noneEmpty) {
             setError({
