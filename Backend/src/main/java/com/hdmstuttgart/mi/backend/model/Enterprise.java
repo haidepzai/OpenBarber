@@ -41,7 +41,7 @@ public class Enterprise {
     /*@NotBlank(message = "Email is mandatory")
     @Column(*//*nullable = false, *//*unique = true)*/
     @Email
-    private String eMail;
+    private String email;
 
     private String phoneNumber;
 
