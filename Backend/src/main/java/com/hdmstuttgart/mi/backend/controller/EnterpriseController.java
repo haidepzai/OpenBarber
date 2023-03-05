@@ -1,16 +1,11 @@
 package com.hdmstuttgart.mi.backend.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
-import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
+import com.hdmstuttgart.mi.backend.model.dto.EnterpriseDto;
 import com.hdmstuttgart.mi.backend.service.EnterpriseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -27,8 +22,8 @@ public class EnterpriseController {
     /* @ModelAttribute: arguments fields == request parameters */
 
     @PostMapping
-    public ResponseEntity<Enterprise> createEnterprise(@ModelAttribute EnterpriseRequest enterpriseRequest, @RequestHeader("Authorization") String token) {
-        Enterprise createdEnterprise = enterpriseService.createEnterprise(enterpriseRequest, token);
+    public ResponseEntity<Enterprise> createEnterprise(@ModelAttribute EnterpriseDto enterpriseDto, @RequestHeader("Authorization") String token) {
+        Enterprise createdEnterprise = enterpriseService.createEnterprise(enterpriseDto, token);
         return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
     }
 
@@ -51,7 +46,7 @@ public class EnterpriseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Enterprise> updateEnterprise(@PathVariable long id, @RequestBody Enterprise newEnterprise) {
+    public ResponseEntity<Enterprise> updateEnterprise(@PathVariable long id, @RequestBody EnterpriseDto newEnterprise) {
         Enterprise updatedEnterprise = enterpriseService.updateEnterprise(id, newEnterprise);
         return new ResponseEntity<>(updatedEnterprise, HttpStatus.OK);
     }
