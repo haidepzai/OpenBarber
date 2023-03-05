@@ -53,7 +53,6 @@ const EditEnterprisePage = () => {
   };
 
   const saveEnterprise = async () => {    
-    console.log(enterprise)
     await fetch(enterpriseUrl, {
       method: 'PUT',
       body: JSON.stringify(enterprise),

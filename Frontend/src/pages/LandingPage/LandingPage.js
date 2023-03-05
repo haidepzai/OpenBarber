@@ -28,19 +28,15 @@ const LandingPage = () => {
           .get('http://localhost:8080/api/reviews?enterpriseId=' + shop.id)
           .then((res) => {
             shop.reviews = res.data;
-            console.log('found reviews', res.data);
             resolve(shop);
           })
           .catch((err) => {
-            console.error('review request failed', err);
             reject(err);
           });
       });
     });
 
     let shops = await Promise.all(promises);
-
-    console.log('shops with review: ', shops);
 
     setIsLoading(false);
     setShops(shops);

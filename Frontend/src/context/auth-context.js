@@ -75,6 +75,7 @@ export const AuthContextProvider = (props) => {
   const verifyHandler = async (verifyRequest, customConfig) => {
     const response = await axios.post('http://localhost:8080/api/auth/verify', verifyRequest, customConfig);
     setUserId(response.data.userId);
+    setIsLoggedIn(true);
   }
 
   return (
