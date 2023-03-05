@@ -142,6 +142,7 @@ const LoginModal = ({ gotoSignup }) => {
         if (verified) {
           authCtx.setIsLoggedIn(true);
           signUpCtx.setLoginVisible(false);
+          authCtx.setEmail(emailState.value);
           navigate('/');          
         }
       } catch (error) {

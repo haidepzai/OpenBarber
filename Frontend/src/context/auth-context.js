@@ -13,9 +13,11 @@ const AuthContext = React.createContext({
   setIsLoading: () => { },
   verifyHandler: async (verifyRequest, customConfig) => { },
   userId: 0,
+  token: '',
+  setEmail: () => { },
+  email: '',
   user: {},
-  setUser: () => { },
-  token: ''
+  setUser: () => {}
 });
 
 export const AuthContextProvider = (props) => {
@@ -23,7 +25,8 @@ export const AuthContextProvider = (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [userId, setUserId] = useState(0);
   const [token, setToken] = useState('');
-  const [user, setUser] = useState({})
+  const [email, setEmail] = useState('');
+  const [user, setUser] = useState({});
 
   const deleteJWTTokenFromStorage = () => {
     let token = localStorage.getItem('tokenJWT');
@@ -55,8 +58,9 @@ export const AuthContextProvider = (props) => {
   const loginHandler = async (authRequest, customConfig) => {
     const response = await axios.post('http://localhost:8080/api/auth/authenticate', authRequest, customConfig);
     let resObj = response.data;
-    let token = localStorage.setItem('tokenJWT', JSON.stringify(resObj));
-    setToken(token)
+    localStorage.setItem('tokenJWT', resObj.token);
+
+    setToken(resObj.token)
     setUserId(resObj.userId);
 
     if (resObj.verified) {
@@ -91,9 +95,11 @@ export const AuthContextProvider = (props) => {
         setIsLoading,
         verifyHandler,
         userId,
+        token,
+        email,
+        setEmail,
         user,
-        setUser,
-        token
+        setUser
       }}
     >
       {props.children}

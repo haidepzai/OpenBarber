@@ -52,9 +52,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto, HttpServletRequest request) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto, @RequestHeader("Authorization") String token) {
         // Get the email of the authenticated user from the JWT token
-        String email = jwtService.extractUsername(request.getHeader("Authorization"));
+        String email = jwtService.extractUsername(token.substring(7));
 
         // Check if the authenticated user matches the user being updated
         User user = userService.getUserById(id);

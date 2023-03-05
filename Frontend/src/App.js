@@ -20,7 +20,6 @@ function App() {
   const signUpCtx = useContext(SignupContext);
 
   return (
-
     <ThemeProvider theme={basicTheme}>
       <BrowserRouter>
         <Header/>
