@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class ServiceRequest {
+public class ServiceDto {
 
     private double price;
     private String title;

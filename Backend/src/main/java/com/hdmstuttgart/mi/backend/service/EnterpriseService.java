@@ -3,9 +3,9 @@ package com.hdmstuttgart.mi.backend.service;
 import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.User;
-import com.hdmstuttgart.mi.backend.model.dto.EnterpriseRequest;
-import com.hdmstuttgart.mi.backend.model.dto.ServiceRequest;
-import com.hdmstuttgart.mi.backend.model.dto.EmployeeRequest;
+import com.hdmstuttgart.mi.backend.model.dto.EnterpriseDto;
+import com.hdmstuttgart.mi.backend.model.dto.ServiceDto;
+import com.hdmstuttgart.mi.backend.model.dto.EmployeeDto;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
@@ -49,7 +49,7 @@ public class EnterpriseService {
         }
     }*/
 
-    public Enterprise createEnterprise(EnterpriseRequest request, String token) {
+    public Enterprise createEnterprise(EnterpriseDto request, String token) {
         String username = jwtService.extractUsername(token.substring(7));
 
         User user = userRepository.findByEmail(username)
@@ -79,10 +79,11 @@ public class EnterpriseService {
             if (request.getPaymentMethods() != null) {
                 paymentMethods = request.getPaymentMethods()
                         .stream()
-                        .map(PaymentMethod::valueOf).collect(Collectors.toSet());
+                        .map(method -> PaymentMethod.valueOf(method.name()))
+                        .collect(Collectors.toSet());
             }
             if (request.getServices() != null) {
-                for (ServiceRequest serviceRequest : request.getServices()) {
+                for (ServiceDto serviceRequest : request.getServices()) {
                     var service = com.hdmstuttgart.mi.backend.model.Service.builder()
                             .price(serviceRequest.getPrice())
                             .title(serviceRequest.getTitle())
@@ -94,13 +95,13 @@ public class EnterpriseService {
                 }
             }
             if (request.getEmployees() != null) {
-                for (EmployeeRequest employeeRequest : request.getEmployees()) {
+                for (EmployeeDto employeeDto : request.getEmployees()) {
                     byte[] picture = null;
-                    if (employeeRequest.getPicture() != null) {
-                        picture = employeeRequest.getPicture().getBytes();
+                    if (employeeDto.getPicture() != null) {
+                        picture = employeeDto.getPicture().getBytes();
                     }
                     var employee = Employee.builder()
-                            .name(employeeRequest.getName())
+                            .name(employeeDto.getName())
                             .picture(picture)
                             .build();
                     employees.add(employee);
@@ -158,7 +159,7 @@ public class EnterpriseService {
         return user.getEnterprise();
     }
 
-    public Enterprise updateEnterprise(long id, Enterprise newEnterprise) {
+    public Enterprise updateEnterprise(long id, EnterpriseDto newEnterprise) {
         return enterpriseRepository.findById(id)
                 .map(enterprise -> {
                     enterprise.setName(newEnterprise.getName());
@@ -166,8 +167,8 @@ public class EnterpriseService {
                     enterprise.setAddressLongitude(newEnterprise.getAddressLongitude());
                     enterprise.setAddressLatitude(newEnterprise.getAddressLatitude());
                     enterprise.setEmail(newEnterprise.getEmail());
-                    enterprise.setLogo(newEnterprise.getLogo());
-                    enterprise.setPictures(newEnterprise.getPictures());
+                    //enterprise.setLogo(newEnterprise.getLogo());
+                    //enterprise.setPictures(newEnterprise.getPictures());
                     enterprise.setWebsite(newEnterprise.getWebsite());
                     enterprise.setPhoneNumber(newEnterprise.getPhoneNumber());
                     enterprise.setApproved(newEnterprise.isApproved());
