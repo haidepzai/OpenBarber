@@ -48,7 +48,10 @@ export const AuthContextProvider = (props) => {
     let resObj = response.data;
     localStorage.setItem('tokenJWT', JSON.stringify(resObj));
 
-    setIsLoggedIn(true);
+    if(resObj.verified) {
+      setIsLoggedIn(true);
+    }    
+    
     return response;
   };
 

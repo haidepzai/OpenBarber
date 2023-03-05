@@ -19,6 +19,7 @@ const SignUpStep = () => {
 
   const [emailIsValid, setEmailIsValid] = useState(true);
   const [emailAlreadyInUse, setEmailAlreadyInUse] = useState(false);
+
   const [passwordIsValid, setPasswordIsValid] = useState(true);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
 
@@ -62,8 +63,10 @@ const SignUpStep = () => {
       try {
         authCtx.setIsLoading(true);
         await authCtx.onSignUp(registerRequest, customConfig);
+        console.log(email)
+        setData((d) => ({ ...d, email: email }));
       } catch (error) {
-        setEmailAlreadyInUse(true);
+        setEmailAlreadyInUse(true);        
       }
       setCompletedSteps((v) => {
         const res = [...v];
