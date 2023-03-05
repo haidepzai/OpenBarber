@@ -28,8 +28,8 @@ const img =
   'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80';
 const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', 'PAYPAL'];
 const drinkOptions = ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'];
-const enterpriseUrl = `http://localhost:3001/enterprises/${loggedInEnterpriseId}`;
-const userUrl = `http://localhost:3001/users/${loggedInUserId}`;
+const enterpriseUrl = `http://localhost:8080/api/enterprises/${loggedInEnterpriseId}`;
+const userUrl = `http://localhost:8080/api/users/${loggedInUserId}`;
 
 const EditEnterprisePage = () => {
   const [loading, setLoading] = useState(true);
