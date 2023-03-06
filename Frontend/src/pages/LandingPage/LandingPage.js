@@ -21,7 +21,7 @@ const LandingPage = () => {
 
   const loadData = useCallback(async () => {
     const shopsData = await getEnterprises();
-
+    console.log(shopsData)
     const promises = shopsData.map((shop) => {
       return new Promise((resolve, reject) => {
         axios

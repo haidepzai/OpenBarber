@@ -15,6 +15,7 @@ import java.util.Set;
 
 @Data
 public class EnterpriseDto {
+    private Long id;
     private String name;
     private String owner;
     private String address;

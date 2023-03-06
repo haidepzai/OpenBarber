@@ -19,6 +19,7 @@ public class EnterpriseMapper {
 
     public EnterpriseDto toDto(Enterprise enterprise) {
         EnterpriseDto dto = new EnterpriseDto();
+        dto.setId(enterprise.getId());
         dto.setName(enterprise.getName());
         dto.setOwner(enterprise.getOwner());
         dto.setAddress(enterprise.getAddress());
@@ -67,6 +68,7 @@ public class EnterpriseMapper {
 
     public Enterprise toEntity(EnterpriseDto dto) {
         Enterprise enterprise = new Enterprise();
+        enterprise.setId(dto.getId());
         enterprise.setName(dto.getName());
         enterprise.setOwner(dto.getOwner());
         enterprise.setAddress(dto.getAddress());
