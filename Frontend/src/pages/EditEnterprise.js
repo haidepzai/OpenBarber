@@ -9,17 +9,17 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Button from '@mui/material/Button';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import ServiceTable from '../../components/EditEnterprise/Service/ServiceTable.tsx'
-import EmployeeTable from '../../components/EditEnterprise/Employee/EmployeeTable.tsx'
+import ServiceTable from '../components/EditEnterprise/Service/ServiceTable.tsx'
+import EmployeeTable from '../components/EditEnterprise/Employee/EmployeeTable.tsx'
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageList from '@mui/material/ImageList';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Snackbar from '@mui/material/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
-import AuthContext from '../../context/auth-context.js';
-import { getShopByEmail } from '../../actions/EnterpriseActions.js';
-import { getUserById } from '../../actions/UserActions.js';
-import EditPersonalInfo from '../../components/EditEnterprise/EditPersonalInfo.jsx';
+import AuthContext from '../context/auth-context.js';
+import { getShopByEmail } from '../actions/EnterpriseActions.js';
+import { getUserById } from '../actions/UserActions.js';
+import EditPersonalInfo from '../components/EditEnterprise/EditPersonalInfo.jsx';
 
 const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', 'PAYPAL'];
 const drinkOptions = ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'];
