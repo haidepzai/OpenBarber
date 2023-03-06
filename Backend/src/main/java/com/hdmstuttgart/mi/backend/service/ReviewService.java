@@ -55,16 +55,13 @@ public class ReviewService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id = " + id));
     }
 
-//    public Review updateReview(long id, Review newReview) {
-//        return reviewRepository.findById(id)
-//                .map(review -> {
-//                    review.setAuthor(newReview.getAuthor());
-//                    review.setRating(newReview.getRating());
-//
-//                    return reviewRepository.save(employee);
-//                })
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id = " + id));
-//    }
+    public Review updateReview(long id, Review newReview) {
+        Review existingReview = getReviewById(id);
+        existingReview.setAuthor(newReview.getAuthor());
+        existingReview.setComment(newReview.getComment());
+        existingReview.setRating(newReview.getRating());
+        return reviewRepository.save(existingReview);
+    }
 
     public void deleteReview(long id) {
         if (!reviewRepository.existsById(id)) {

@@ -1,9 +1,10 @@
 package com.hdmstuttgart.mi.backend.controller;
 
 import com.hdmstuttgart.mi.backend.exception.UnauthorizedException;
+import com.hdmstuttgart.mi.backend.mapper.ServiceMapper;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.Service;
-import com.hdmstuttgart.mi.backend.model.User;
+import com.hdmstuttgart.mi.backend.model.dto.ServiceDto;
 import com.hdmstuttgart.mi.backend.service.EnterpriseService;
 import com.hdmstuttgart.mi.backend.service.JwtService;
 import com.hdmstuttgart.mi.backend.service.ServiceService;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/services")
@@ -21,51 +23,67 @@ public class ServiceController {
     private final ServiceService serviceService;
     private final UserService userService;
     private final EnterpriseService enterpriseService;
+    private final ServiceMapper serviceMapper;
 
-    public ServiceController(ServiceService serviceService, UserService userService, EnterpriseService enterpriseService) {
+    public ServiceController(ServiceService serviceService, UserService userService, EnterpriseService enterpriseService, ServiceMapper serviceMapper) {
         this.serviceService = serviceService;
         this.userService = userService;
         this.enterpriseService = enterpriseService;
+        this.serviceMapper = serviceMapper;
     }
 
     @PostMapping
-    public ResponseEntity<Service> createService(
-            @Valid
-            @RequestBody Service service,
+    public ResponseEntity<ServiceDto> createService(
+            @Valid @RequestBody ServiceDto serviceDto,
             @RequestParam Long enterpriseId,
             @RequestHeader("Authorization") String token
     ) {
-
         // Validate the JWT token and extract the user information
         String email = JwtService.verifyTokenAndGetEmail(token);
-        User user = userService.getUserByEmail(email);
-        Enterprise enterprise = enterpriseService.getEnterpriseById(enterpriseId);
-
+        userService.getUserByEmail(email);
         // Check if the user is authorized to perform the operation based on their email
-        if (!user.getEmail().equals(enterprise.getEmail())) {
+        Enterprise enterprise = enterpriseService.getEnterpriseById(enterpriseId);
+        if (!email.equals(enterprise.getEmail())) {
             throw new UnauthorizedException("User is not authorized to perform this operation");
         }
 
+        // Convert the DTO to the entity
+        Service service = serviceMapper.toEntity(serviceDto);
         Service createdService = serviceService.createService(service, enterpriseId);
-        return new ResponseEntity<>(createdService, HttpStatus.CREATED);
+
+        // Convert the created entity to DTO and return it in the response
+        ServiceDto createdServiceDto = serviceMapper.toDto(createdService);
+        return new ResponseEntity<>(createdServiceDto, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Service>> getServicesByEnterpriseId(@RequestParam Long enterpriseId) {
-        List<Service> services = serviceService.getServicesByEnterpriseId(enterpriseId);
-        return new ResponseEntity<>(services, HttpStatus.OK);
+    public ResponseEntity<List<ServiceDto>> getServicesByEnterpriseId(@RequestParam Long enterpriseId) {
+        List<ServiceDto> serviceDtos = serviceService.getServicesByEnterpriseId(enterpriseId)
+                .stream()
+                .map(serviceMapper::toDto)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(serviceDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Service> getServiceById(@PathVariable long id) {
+    public ResponseEntity<ServiceDto> getServiceById(@PathVariable long id) {
         Service service = serviceService.getServiceById(id);
-        return new ResponseEntity<>(service, HttpStatus.OK);
+
+        // Convert the entity to DTO and return it in the response
+        ServiceDto serviceDto = serviceMapper.toDto(service);
+        return new ResponseEntity<>(serviceDto, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Service> updateService(@PathVariable long id, @Valid @RequestBody Service newService) {
+    public ResponseEntity<ServiceDto> updateService(@PathVariable long id, @Valid @RequestBody ServiceDto newServiceDto) {
+        // Convert the DTO to the entity
+        Service newService = serviceMapper.toEntity(newServiceDto);
         Service updatedService = serviceService.updateService(id, newService);
-        return new ResponseEntity<>(updatedService, HttpStatus.OK);
+
+        // Convert the updated entity to DTO and return it in the response
+        ServiceDto updatedServiceDto = serviceMapper.toDto(updatedService);
+        return new ResponseEntity<>(updatedServiceDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
