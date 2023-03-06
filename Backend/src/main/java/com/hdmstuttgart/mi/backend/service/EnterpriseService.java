@@ -99,7 +99,7 @@ public class EnterpriseService {
             .openingTime(request.getOpeningTime())
             .closingTime(request.getClosingTime())
             .website(request.getWebsite())
-            .reviews(new ArrayList<>())
+            .reviews(request.getReviews()) //new ArrayList<>
             .recommended(request.isRecommended())
             .approved(request.isApproved())
             .priceCategory(request.getPriceCategory())
@@ -154,8 +154,10 @@ public class EnterpriseService {
                     enterprise.setPhoneNumber(newEnterprise.getPhoneNumber());
                     enterprise.setApproved(newEnterprise.isApproved());
                     enterprise.setPriceCategory(newEnterprise.getPriceCategory());
+                    enterprise.setOpeningTime(newEnterprise.getOpeningTime());
+                    enterprise.setClosingTime(newEnterprise.getClosingTime());
 
-                    //Update Payment Methods
+                    // Update Payment Methods
                     if (newEnterprise.getPaymentMethods() != null) {
                         Set<PaymentMethod> paymentMethodsSet = newEnterprise.getPaymentMethods()
                                 .stream()
@@ -167,7 +169,7 @@ public class EnterpriseService {
                     }
 
 
-                    //Update Drinks
+                    // Update Drinks
                     if (newEnterprise.getDrinks() != null) {
                         Set<Drink> drinksSet = newEnterprise.getDrinks()
                                 .stream()
@@ -177,7 +179,7 @@ public class EnterpriseService {
                         enterprise.setDrinks(drinksSet);
                     }
 
-                    // update services
+                    // Update services
                     if (newEnterprise.getServices() != null) {
                         List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
                         for (com.hdmstuttgart.mi.backend.model.Service serviceRequest : newEnterprise.getServices()) {
@@ -191,6 +193,23 @@ public class EnterpriseService {
                         }
                         enterprise.setServices(services);
                     }
+
+                    // Update employees
+                    if (newEnterprise.getEmployees() != null) {
+                        List<Employee> employees = new ArrayList<>();
+                        for (Employee employeeRequest : newEnterprise.getEmployees()) {
+                            Employee employee = new Employee();
+                            employee.setName(employeeRequest.getName());
+                            employee.setEnterprise(enterprise);
+                            byte[] picture = null;
+                            if (employeeRequest.getPicture() != null) {
+                                picture = employeeRequest.getPicture();
+                            }
+                            employee.setPicture(picture);
+                        }
+                        enterprise.setEmployees(employees);
+                    }
+
                     return enterpriseRepository.save(enterprise);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));

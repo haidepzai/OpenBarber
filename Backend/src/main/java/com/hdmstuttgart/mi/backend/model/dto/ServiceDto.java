@@ -20,6 +20,7 @@ public class ServiceDto {
     private String description;
     private int durationInMin;
     private ServiceTargetAudience targetAudience;
+    private Long enterpriseId;
 
     /*@ManyToOne
     @JsonIgnore

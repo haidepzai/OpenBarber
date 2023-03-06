@@ -7,4 +7,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class EmployeeDto {
     private String name;
     private MultipartFile picture;
+    private Long enterpriseId;
 }
