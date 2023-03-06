@@ -22,6 +22,7 @@ import { Button } from '@mui/material';
 import DeleteEmployeesDialog from './DeleteEmployeesDialog.js';
 import CreateEmployeeDialog from './CreateEmployeeDialog.js';
 import EditIcon from '@mui/icons-material/Edit';
+import { deleteEmployeeById } from '../../../context/EmployeeActions.js';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -262,6 +263,12 @@ export default function EmployeeTable(props: EmployeeTableProps) {
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employees.length) : 0;
 
   const deleteEmployees = () => {
+    //Delete from DB
+    const employeesToDelete = employees.filter((employee) => selected.includes(employee.name));
+    employeesToDelete.forEach((employee) => {
+      deleteEmployeeById(employee.id);
+    })    
+    //Update UI
     const newEmployees = employees.filter((employee) => !selected.includes(employee.name));
     setEmployees(newEmployees);
   };

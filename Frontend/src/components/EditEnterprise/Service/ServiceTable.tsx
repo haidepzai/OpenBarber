@@ -342,7 +342,7 @@ export default function ServiceTable(props: ServiceTableProps) {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={service.id}
+                      key={service.title + '-' + service.targetAudience}
                       selected={isItemSelected}
                     >
                       <TableCell sx={{ p: '0', textAlign: 'center' }}>

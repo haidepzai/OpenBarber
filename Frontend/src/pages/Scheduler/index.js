@@ -61,10 +61,6 @@ const getEmployeeInstances = (employees) => [
   ...new Map(employees.map((employee) => ({ id: employee.id, text: employee.name })).map((e) => [e.id, e])).values(),
 ];
 
-const appointmentUrl = 'http://localhost:3001/appointments';
-const serviceUrl = 'http://localhost:3001/services';
-const employeeUrl = 'http://localhost:3001/employees';
-
 const grouping = [{ resourceName: 'employee' }];
 
 const PREFIX = 'Demo';
@@ -374,7 +370,7 @@ const SchedulerPage = () => {
           const customConfig = {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+              Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
             },
           };
 
@@ -428,7 +424,7 @@ const SchedulerPage = () => {
       const tokenConfig = {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+          Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
         },
       };
       console.log(tokenConfig);
