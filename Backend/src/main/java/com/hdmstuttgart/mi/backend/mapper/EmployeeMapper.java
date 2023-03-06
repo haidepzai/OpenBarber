@@ -1,7 +1,6 @@
 package com.hdmstuttgart.mi.backend.mapper;
 
 import com.hdmstuttgart.mi.backend.model.Employee;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.dto.EmployeeDto;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mock.web.MockMultipartFile;

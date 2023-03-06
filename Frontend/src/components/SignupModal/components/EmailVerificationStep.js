@@ -29,7 +29,7 @@ const EmailVerificationStep = () => {
     const customConfig = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+        Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
       },
     };
     try {

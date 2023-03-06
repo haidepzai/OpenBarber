@@ -50,3 +50,13 @@ export const getShopByUser = async () => {
         throw new Error("Could not fetch enterprises");
     }
 }
+
+export const createEnterprise = async (createEnterpriseReq, customConfig) => {
+    try {
+        const res = await axios.post('http://localhost:8080/api/enterprises', createEnterpriseReq, customConfig);
+        return res;
+    } catch (error) {
+        throw new Error("Could not create Enterprise");
+    }    
+
+}

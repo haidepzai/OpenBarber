@@ -2,7 +2,7 @@ import { Stack, Typography, Button, Box, TextField } from '@mui/material';
 import React, { useContext } from 'react';
 import { SignupContext } from '../../../context/Signup.context';
 import { usePlacesWidget } from 'react-google-autocomplete';
-import axios from 'axios';
+import { createEnterprise } from '../../../context/EnterpriseActions';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
@@ -26,9 +26,10 @@ const EnterpriseCreateStep = () => {
   const [errors, setErrors] = React.useState({
     enterpriseName: false,
     enterpriseOwner: false,
-    enterpriseCity: false,
     enterpriseStreet: false,
+    enterprisePhoneNumber: false,
   });
+
   const { ref: acRef } = usePlacesWidget({
     apiKey: GOOGLE_API_KEY,
     onPlaceSelected: (place) => {
@@ -63,20 +64,19 @@ const EnterpriseCreateStep = () => {
       address: data.enterpriseStreet.formatted_address,
       addressLongitude: Number(data.enterpriseStreet.geometry.location.lng()),
       addressLatitude: Number(data.enterpriseStreet.geometry.location.lat()),
+      phoneNumber: data.enterprisePhoneNumber
     };
 
     // form data config
     const customConfig = {
       headers: {
         'Content-Type': 'multipart/form-data',
-        Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
+        Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
       },
     };
 
     try {
-      const res = await axios.post('http://localhost:8080/api/enterprises', createEnterpriseReq, customConfig);
-      console.log('response', res);
-
+      await createEnterprise(createEnterpriseReq, customConfig);
       setActiveStep(2);
       setCompletedSteps((cs) => {
         const res = [...cs];
@@ -86,11 +86,16 @@ const EnterpriseCreateStep = () => {
     } catch (err) {
       console.log(err);
     }
-
   }
 
   function onBlur(e) {
-    if (e.target.value === '') {
+    if(e.target.name === "enterprisePhoneNumber") {
+      if (!/[0-9]/.test(e.target.value)) {
+        setErrors((err) => ({ ...err, [e.target.name]: true }));
+      } else {
+        setErrors((err) => ({ ...err, [e.target.name]: false }));
+      }
+    } else if (e.target.value === '') {
       setErrors((err) => ({ ...err, [e.target.name]: true }));
     } else {
       setErrors((err) => ({ ...err, [e.target.name]: false }));
@@ -137,6 +142,17 @@ const EnterpriseCreateStep = () => {
               inputRef={acRef}
               sx={{
                 gridColumn: '1/3',
+              }}
+            />
+
+            <PropInput
+              input={{
+                label: 'Phone number',
+                vr: 'enterprisePhoneNumber',
+                onBlur: onBlur,
+                error: errors.enterprisePhoneNumber,
+                name: 'enterprisePhoneNumber',
+                type: 'number'
               }}
             />
           </Box>

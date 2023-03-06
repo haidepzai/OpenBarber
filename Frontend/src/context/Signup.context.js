@@ -17,6 +17,7 @@ export const SignupProvider = ({ children }) => {
 
         enterpriseName: '',
         enterpriseOwner: '',
+        enterprisePhoneNumber: '',
         enterpriseStreet: null,
     });
     const [signupVisible, setSignupVisible] = useState(false);
