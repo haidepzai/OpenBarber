@@ -37,19 +37,13 @@ export const AuthContextProvider = (props) => {
   const checkForJWTToken = async () => {    
     let token = localStorage.getItem('accessToken');
     let refreshToken = localStorage.getItem('refreshToken');
-    if (token) {
+    if (token && refreshToken) {
       const user = await getUserByToken();
       setUserId(user.id);
       setEmail(user.email);
       setIsLoggedIn(true);      
       return true;
-    } else if (refreshToken) {
-      const user = await getUserByToken();
-      setUserId(user.id);
-      setEmail(user.email);
-      setIsLoggedIn(true);
-      return true;
-    }
+    }     
     setIsLoggedIn(false);
     return false;
   };
