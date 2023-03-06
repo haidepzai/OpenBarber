@@ -1,12 +1,11 @@
 package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.User;
-import com.hdmstuttgart.mi.backend.model.dto.UserDto;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,10 +16,12 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> getAllUsers() {
@@ -51,10 +52,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, UserDto user) {
+    public User updateUser(Long id, User user) {
         User existingUser = getUserById(id);
         existingUser.setEmail(user.getEmail());
-        //existingUser.setPassword(user.getPassword());
+        existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
         //existingUser.setConfirmationCode(user.getConfirmationCode());
         existingUser.setName(user.getName());
         existingUser.setEnterprise(user.getEnterprise());

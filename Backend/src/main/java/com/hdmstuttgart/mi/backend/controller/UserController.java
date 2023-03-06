@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -26,9 +27,12 @@ public class UserController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         List<User> users = userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        List<UserDto> userDtos = users.stream()
+                .map(UserDto::fromUser)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(userDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -39,16 +43,19 @@ public class UserController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+    public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
-        return ResponseEntity.ok(user);
+        UserDto userDto = UserDto.fromUser(user);
+        return ResponseEntity.ok(userDto);
     }
 
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
+        User user = userDto.toUser();
         User createdUser = userService.createUser(user);
-        return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
+        UserDto createdUserDto = UserDto.fromUser(createdUser);
+        return ResponseEntity.created(URI.create("/api/users/" + createdUser.getId())).body(createdUserDto);
     }
 
     @PutMapping("/{id}")
@@ -63,7 +70,7 @@ public class UserController {
         }
 
         // Update the user
-        User updatedUser = userService.updateUser(id, userDto);
+        User updatedUser = userService.updateUser(id, userDto.toUser());
         UserDto updatedUserDto = UserDto.fromUser(updatedUser);
         return ResponseEntity.ok(updatedUserDto);
     }
