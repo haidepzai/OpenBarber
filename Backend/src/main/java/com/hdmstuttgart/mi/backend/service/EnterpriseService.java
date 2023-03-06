@@ -98,7 +98,7 @@ public class EnterpriseService {
             .openingTime(request.getOpeningTime())
             .closingTime(request.getClosingTime())
             .website(request.getWebsite())
-            .reviews(request.getReviews()) //new ArrayList<>
+            .reviews(request.getReviews())
             .recommended(request.isRecommended())
             .approved(request.isApproved())
             .priceCategory(request.getPriceCategory())

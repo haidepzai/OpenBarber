@@ -27,9 +27,9 @@ const setRefreshToken = (refreshToken) => {
 // Add an interceptor to automatically add an access token to outgoing requests
 api.interceptors.request.use(
   (config) => {
-    const accessToken = getAccessToken();
-    if (accessToken) {
-      config.headers['Authorization'] = `Bearer ${accessToken}`;
+    const refreshToken = getRefreshToken();
+    if (refreshToken) {
+      config.headers['Authorization'] = `Bearer ${refreshToken}`;
     }
     return config;
   },
