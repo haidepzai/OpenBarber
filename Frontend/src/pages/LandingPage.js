@@ -1,14 +1,14 @@
 import { Button, CircularProgress, Divider, Stack } from '@mui/material';
 import React, { useEffect, useState, useCallback } from 'react';
-import MediaCard from '../../components/CardComponent/MediaCard';
-import Search from '../../layout/Search';
+import MediaCard from '../components/CardComponent/MediaCard';
+import Search from '../layout/Search';
 import { Box, Typography } from '@mui/material';
-import MySwiper from '../../layout/MySwiper';
+import MySwiper from '../layout/MySwiper';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import ReservationDialog from '../../components/Reservation/ReservationDialog';
+import ReservationDialog from '../components/Reservation/ReservationDialog';
 import { useNavigate } from 'react-router-dom';
-import { getEnterprises } from '../../actions/EnterpriseActions';
+import { getEnterprises } from '../actions/EnterpriseActions';
 
 const LandingPage = () => {
   const navigate = useNavigate();
