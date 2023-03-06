@@ -9,8 +9,8 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Button from '@mui/material/Button';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import ServiceTable from '../components/EditEnterprise/Service/ServiceTable.tsx'
-import EmployeeTable from '../components/EditEnterprise/Employee/EmployeeTable.tsx'
+import ServiceTable from '../components/EditEnterprise/Service/ServiceTable.tsx';
+import EmployeeTable from '../components/EditEnterprise/Employee/EmployeeTable.tsx';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageList from '@mui/material/ImageList';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -57,7 +57,7 @@ const EditEnterprisePage = () => {
       body: JSON.stringify(enterprise),
       headers: {
         'Content-type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
       },
     });
 
@@ -92,7 +92,6 @@ const EditEnterprisePage = () => {
     await loadEnterprise();
     handleSnackbarOpen('Enterprise Data reset!');
   };
-
 
   // CLIENT-ONLY METHODS
 
@@ -413,7 +412,13 @@ const EditEnterprisePage = () => {
                 </Stack>
                 {enterprise.logo && (
                   <Box sx={{ mt: '24px' }}>
-                    <img alt="enterprise logo" src={URL.createObjectURL(enterprise.logo)} width="100%" height="auto" style={{ maxHeight: '250px', objectFit: 'cover' }} />
+                    <img
+                      alt="enterprise logo"
+                      src={URL.createObjectURL(enterprise.logo)}
+                      width="100%"
+                      height="auto"
+                      style={{ maxHeight: '250px', objectFit: 'cover' }}
+                    />
                   </Box>
                 )}
               </Box>

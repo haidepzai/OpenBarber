@@ -30,8 +30,7 @@ function Search({ dateAndTime, setDateAndTime }) {
     },
   });
 
-  const handleSubmit = async (event) => {
-    console.log(dateAndTime);
+  const handleSubmit = async () => {
     if (location !== '') {
       const loc = location.formatted_address;
       console.log(location.formatted_address);
@@ -49,7 +48,7 @@ function Search({ dateAndTime, setDateAndTime }) {
       navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc: loc } });
     } else {
       const loc = getCurrentLocation();
-      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc: loc } });      
+      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc: loc } });
     }
   };
 

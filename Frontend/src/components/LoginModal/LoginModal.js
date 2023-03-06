@@ -80,9 +80,7 @@ const LoginModal = ({ gotoSignup }) => {
 
   useEffect(() => {
     const identifier = setTimeout(() => {
-      setFormIsValid(
-        emailIsValid && passwordIsValid && (emailState.length !== 0 || passwordState.length !== 0)
-      );
+      setFormIsValid(emailIsValid && passwordIsValid && (emailState.length !== 0 || passwordState.length !== 0));
     }, 500);
 
     // clean up function (will run before the actual useEffect - except for the first time)
@@ -134,21 +132,20 @@ const LoginModal = ({ gotoSignup }) => {
         if (!hasEnterprise || !verified) {
           gotoSignup({
             activeStep: hasEnterprise ? 2 : 1,
-            completedSteps: [true, hasEnterprise, verified, false]
+            completedSteps: [true, hasEnterprise, verified, false],
           });
-          signUpCtx.setData((prevData) => ({ ...prevData, email: emailState.value }))
+          signUpCtx.setData((prevData) => ({ ...prevData, email: emailState.value }));
         }
 
         if (verified) {
           authCtx.setIsLoggedIn(true);
           signUpCtx.setLoginVisible(false);
           authCtx.setEmail(emailState.value);
-          navigate('/');          
+          navigate('/');
         }
       } catch (error) {
-        setLoginIsFound(false)
+        setLoginIsFound(false);
       }
-
     } else if (!emailIsValid) {
       emailInputRef.current.focus();
     } else {

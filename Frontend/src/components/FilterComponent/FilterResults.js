@@ -103,7 +103,7 @@ const FilterResults = ({ filter, loc }) => {
 
   const goToShop = (id) => {
     navigate(`/shops/${id}`);
-  }
+  };
 
   useEffect(() => {
     loadData();
@@ -113,7 +113,9 @@ const FilterResults = ({ filter, loc }) => {
     <Fragment>
       <Box sx={{ flex: '4 1 0' }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: '100%', m: '20px 0' }}>
-          <Typography variant="body1">{shops.length} Barber Shops available in {loc ?? sortValue}</Typography>
+          <Typography variant="body1">
+            {shops.length} Barber Shops available in {loc ?? sortValue}
+          </Typography>
           <FormControl>
             <InputLabel id="sort">Sort</InputLabel>
             <Select labelId="sort" id="sort" value={sortValue} label="Sort" onChange={handleChange} sx={{ width: '200px' }}>
@@ -124,12 +126,12 @@ const FilterResults = ({ filter, loc }) => {
             </Select>
           </FormControl>
         </Stack>
-        {(shops.length === 0 || shops === undefined) &&
+        {(shops.length === 0 || shops === undefined) && (
           <Stack alignItems="center" justifyContent="center" flexGrow="1">
             <CircularProgress />
           </Stack>
-        }
-        {shops.length !== 0 &&
+        )}
+        {shops.length !== 0 && (
           <>
             {shops
               .filter(filterFunction)
@@ -142,7 +144,13 @@ const FilterResults = ({ filter, loc }) => {
                       src={shop.logo ? URL.createObjectURL(shop.logo) : process.env.REACT_APP_BACKUP_IMAGE}
                       width="205px"
                       height="205px"
-                      style={{ borderRadius: '4px', boxShadow: '-2px 2px 6px rgba(0, 0, 0, 0.4)', objectFit: 'cover', objectPosition: 'center', cursor: 'pointer' }}
+                      style={{
+                        borderRadius: '4px',
+                        boxShadow: '-2px 2px 6px rgba(0, 0, 0, 0.4)',
+                        objectFit: 'cover',
+                        objectPosition: 'center',
+                        cursor: 'pointer',
+                      }}
                       onClick={() => goToShop(shop.id)}
                     />
                     <Stack direction="column" spacing={1} sx={{ pb: '10px' }}>
@@ -157,11 +165,16 @@ const FilterResults = ({ filter, loc }) => {
                       <Typography variant="body1" sx={{ fontSize: '18px', fontWeight: 'bold', letterSpacing: '3px' }}>
                         <Typography
                           variant="span"
-                          sx={{ color: shop.priceCategory === 1 || shop.priceCategory === 2 || shop.priceCategory === 3 ? 'black' : 'rgba(0, 0, 0, 0.2)' }}
+                          sx={{
+                            color: shop.priceCategory === 1 || shop.priceCategory === 2 || shop.priceCategory === 3 ? 'black' : 'rgba(0, 0, 0, 0.2)',
+                          }}
                         >
                           &#8364;
                         </Typography>
-                        <Typography variant="span" sx={{ color: shop.priceCategory === 2 || shop.priceCategory === 3 ? 'black' : 'rgba(0, 0, 0, 0.2)' }}>
+                        <Typography
+                          variant="span"
+                          sx={{ color: shop.priceCategory === 2 || shop.priceCategory === 3 ? 'black' : 'rgba(0, 0, 0, 0.2)' }}
+                        >
                           &#8364;
                         </Typography>
                         <Typography variant="span" sx={{ color: shop.priceCategory === 3 ? 'black' : 'rgba(0, 0, 0, 0.2)' }}>
@@ -195,7 +208,7 @@ const FilterResults = ({ filter, loc }) => {
                 </Box>
               ))}
           </>
-        }
+        )}
       </Box>
     </Fragment>
   );

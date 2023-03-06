@@ -12,11 +12,11 @@ import AuthContext from '../../context/auth-context';
 const steps = ['Sign up', 'Sign up your enterprise', 'Verify your E-Mail', 'Wait for Approval'];
 
 const SignupModal = () => {
-  const portalElement = document.getElementById('overlays');  
+  const portalElement = document.getElementById('overlays');
   const signUpCtx = useContext(SignupContext);
   const authCtx = useContext(AuthContext);
 
-  useEffect(() => {    
+  useEffect(() => {
     document.body.style.overflow = 'hidden';
     const cb = (e) => {
       if (e.key === 'Escape') {
@@ -80,7 +80,6 @@ const SignupModal = () => {
         portalElement
       )}
     </Fragment>
-
   );
 };
 

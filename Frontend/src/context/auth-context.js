@@ -5,24 +5,24 @@ import { getUserByToken } from '../actions/UserActions';
 //Default Werte des Context (werden unten im Provider dann gesetzt)
 const AuthContext = React.createContext({
   isLoggedIn: false,
-  onLogout: () => { },
-  onLogin: async (authRequest, customConfig) => { },
-  onSignUp: async (registerRequest, customConfig) => { },
-  deleteJWTTokenFromStorage: () => { },
-  setIsLoggedIn: () => { },
+  onLogout: () => {},
+  onLogin: async (authRequest, customConfig) => {},
+  onSignUp: async (registerRequest, customConfig) => {},
+  deleteJWTTokenFromStorage: () => {},
+  setIsLoggedIn: () => {},
   isLoading: false,
-  setIsLoading: () => { },
-  verifyHandler: async (verifyRequest, customConfig) => { },
+  setIsLoading: () => {},
+  verifyHandler: async (verifyRequest, customConfig) => {},
   userId: 0,
-  setEmail: () => { },
+  setEmail: () => {},
   email: '',
   user: {},
-  setUser: () => { }
+  setUser: () => {},
 });
 
 export const AuthContextProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState(0);
   const [email, setEmail] = useState('');
   const [user, setUser] = useState({});
@@ -34,16 +34,16 @@ export const AuthContextProvider = (props) => {
     }
   };
 
-  const checkForJWTToken = async () => {    
+  const checkForJWTToken = async () => {
     let token = localStorage.getItem('accessToken');
     let refreshToken = localStorage.getItem('refreshToken');
     if (token && refreshToken) {
       const user = await getUserByToken();
       setUserId(user.id);
       setEmail(user.email);
-      setIsLoggedIn(true);      
+      setIsLoggedIn(true);
       return true;
-    }     
+    }
     setIsLoggedIn(false);
     return false;
   };
@@ -52,7 +52,7 @@ export const AuthContextProvider = (props) => {
   useEffect(() => {
     const authenticate = async () => {
       await checkForJWTToken();
-    }    
+    };
     authenticate().catch(console.error);
   }, []);
 
@@ -84,15 +84,15 @@ export const AuthContextProvider = (props) => {
       return response;
     } catch (error) {
       throw new Error(error);
-    }    
-  }
+    }
+  };
 
   const verifyHandler = async (verifyRequest, customConfig) => {
     const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/verify`, verifyRequest, customConfig);
     setUserId(response.data.userId);
     setIsLoggedIn(true);
     return response;
-  }
+  };
 
   return (
     <AuthContext.Provider
@@ -110,7 +110,7 @@ export const AuthContextProvider = (props) => {
         email,
         setEmail,
         user,
-        setUser
+        setUser,
       }}
     >
       {props.children}

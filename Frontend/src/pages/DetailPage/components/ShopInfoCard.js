@@ -168,7 +168,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
         </Box>
 
         <Box sx={{ backgroundColor: 'grey.400', borderRadius: 2, padding: 0, boxShadow: 2, minHeight: '300px' }}>
-          <GoogleMaps lat={shop.addressLatitude} lng={shop.addressLongitude}/>
+          <GoogleMaps lat={shop.addressLatitude} lng={shop.addressLongitude} />
         </Box>
 
         <PhotoGallery pictures={shop.pictures} />
