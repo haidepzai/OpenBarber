@@ -1,4 +1,5 @@
 import axios from "axios";
+import { makeRequest } from "../context/http-interceptor";
 
 export const getUserById = async (id) => {
     try {
@@ -26,12 +27,8 @@ export const updateUser = async (id, user) => {
 }
 
 export const getUserByToken = async () => {
-    try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/info/`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-            },
-        });
+    try {        
+        const response = await makeRequest(`${process.env.REACT_APP_BACKEND_URL}/users/info/`);
         return response;
     } catch (err) {
         throw new Error("Could not find user");

@@ -32,7 +32,6 @@ public class EnterpriseService {
 
     public Enterprise createEnterprise(Enterprise request, String token) {
         String username = jwtService.extractUsername(token.substring(7));
-
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
@@ -108,7 +107,6 @@ public class EnterpriseService {
             .services(services)
             .employees(employees)
             .build();
-
         user.setEnterprise(enterprise);
         return userRepository.save(user).getEnterprise();
     }

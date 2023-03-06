@@ -1,6 +1,7 @@
 package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.BackendApplication;
+import com.hdmstuttgart.mi.backend.exception.UserAlreadyExistsException;
 import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.*;
@@ -33,6 +34,10 @@ public class AuthenticationService {
     private final EmailSenderService emailSenderService;
 
     public AuthenticationResponse register(RegisterRequest request) {
+        if(userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException(request.getEmail());
+        }
+
         var user = User.builder()
 //                .firstname(request.getFirstname())
 //                .lastname(request.getLastname())
@@ -44,6 +49,7 @@ public class AuthenticationService {
                 .build();
         userRepository.save(user);
         var jwtToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
 
         try {
             emailSenderService.sendEmailWithTemplate(user.getEmail(), "verification");
@@ -53,6 +59,7 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -67,9 +74,11 @@ public class AuthenticationService {
                 .orElseThrow(() -> new UserNotFoundException(request.getEmail()));
 
         String jwtToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .refreshToken(refreshToken)
                 .verified(user.getRole() != UserRole.UNVERIFIED)
                 .hasEnterprise(user.getEnterprise() != null)
                 .userId(user.getId())

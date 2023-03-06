@@ -39,14 +39,14 @@ export const AuthContextProvider = (props) => {
     let refreshToken = localStorage.getItem('refreshToken');
     if (token) {
       const user = await getUserByToken();
-      setUserId(user.data.id);
-      setEmail(user.data.email);
+      setUserId(user.id);
+      setEmail(user.email);
       setIsLoggedIn(true);      
       return true;
     } else if (refreshToken) {
       const user = await getUserByToken();
-      setUserId(user.data.id);
-      setEmail(user.data.email);
+      setUserId(user.id);
+      setEmail(user.email);
       setIsLoggedIn(true);
       return true;
     }
@@ -72,6 +72,7 @@ export const AuthContextProvider = (props) => {
     const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/authenticate`, authRequest, customConfig);
     let resObj = response.data;
     localStorage.setItem('accessToken', resObj.token);
+    localStorage.setItem('refreshToken', resObj.refreshToken);
 
     setUserId(resObj.userId);
     if (resObj.verified) {
@@ -83,7 +84,8 @@ export const AuthContextProvider = (props) => {
 
   const signUpHandler = async (registerRequest, customConfig) => {
     const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/register`, registerRequest, customConfig);
-    localStorage.setItem('accessToken', JSON.stringify(response.data));
+    localStorage.setItem('accessToken', response.data.token);
+    localStorage.setItem('refreshToken', response.data.refreshToken);
   }
 
   const verifyHandler = async (verifyRequest, customConfig) => {
