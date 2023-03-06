@@ -87,7 +87,7 @@ public class ServiceController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteService(@PathVariable long id) {
+    public ResponseEntity<String> deleteService(@PathVariable long id, @RequestHeader("Authorization") String token) {
         serviceService.deleteService(id);
         return new ResponseEntity<>("Service deleted with id = " + id, HttpStatus.NO_CONTENT);
     }

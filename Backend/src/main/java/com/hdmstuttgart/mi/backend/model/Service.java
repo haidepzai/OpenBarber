@@ -25,6 +25,7 @@ public class Service {
     private double price;
 
     @NotBlank(message = "Title is mandatory")
+    @Column(nullable = false, unique = true)
     private String title;
 
     private String description;
@@ -35,6 +36,7 @@ public class Service {
     private ServiceTargetAudience targetAudience;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "enterprise_id")
     private Enterprise enterprise;
 }

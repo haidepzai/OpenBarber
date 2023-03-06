@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
 public class ServiceService {
@@ -63,5 +64,13 @@ public class ServiceService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found with id = " + id);
         }
         serviceRepository.deleteById(id);
+    }
+
+    public void deleteServiceFromEnterprise(long id, long enterpriseId) {
+        if (!serviceRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found with id = " + id);
+        }
+        List<Service> services = getServicesByEnterpriseId(enterpriseId);
+        services.stream().filter(service -> id == service.getId()).findAny().ifPresent(serviceToDelete -> serviceRepository.deleteById(serviceToDelete.getId()));
     }
 }

@@ -22,6 +22,7 @@ import { Button } from '@mui/material';
 import DeleteServicesDialog from './DeleteServicesDialog';
 import CreateServiceDialog from './CreateServiceDialog';
 import EditIcon from '@mui/icons-material/Edit';
+import { deleteServiceById } from '../../../context/ServiceActions';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -214,6 +215,7 @@ interface Service {
   price: number;
 }
 
+
 export default function ServiceTable(props: ServiceTableProps) {
   const { services, setServices } = props;
   const [order, setOrder] = React.useState<Order>('asc');
@@ -273,7 +275,13 @@ export default function ServiceTable(props: ServiceTableProps) {
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - services.length) : 0;
 
-  const deleteServices = () => {
+  const deleteServices = async () => {
+    //Delete from DB
+    const servicesToDelete = services.filter((service) => selected.includes(service.title));
+    servicesToDelete.forEach((service) => {
+      deleteServiceById(service.id);
+    })    
+    //Update UI
     const newServices = services.filter((service) => !selected.includes(service.title));
     setServices(newServices);
   };
@@ -334,7 +342,7 @@ export default function ServiceTable(props: ServiceTableProps) {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={service.title + '-' + service.targetAudience}
+                      key={service.id}
                       selected={isItemSelected}
                     >
                       <TableCell sx={{ p: '0', textAlign: 'center' }}>
