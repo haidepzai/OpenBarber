@@ -1,11 +1,9 @@
-import { Divider, Paper, TextField, Typography } from '@mui/material'
-import { Button } from 'bootstrap'
+import { Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material'
 import React, { Fragment, useContext } from 'react'
-import { Stack } from 'react-bootstrap'
 import AuthContext from '../../context/auth-context'
 import { updateUser } from '../../context/UserActions'
 
-const EditPersonalInfo = ({onLoadingUser, onOpenSnackBar}) => {
+const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
     const authCtx = useContext(AuthContext);
 
     const saveUser = async () => {
@@ -35,7 +33,6 @@ const EditPersonalInfo = ({onLoadingUser, onOpenSnackBar}) => {
 
     return (
         <Fragment>
-
             <Typography variant="h1" sx={{ fontSize: '22px', fontWeight: '500', color: 'rgba(0, 0, 0, 1)', m: '40px 0 10px 24px' }}>
                 Personal Info
             </Typography>
@@ -104,7 +101,7 @@ const EditPersonalInfo = ({onLoadingUser, onOpenSnackBar}) => {
 
                 <Divider orientation="horizontal" sx={{ mb: '24px' }} />
 
-                <Stack direction="row" alignContent="center" justifyContent="space-between" sx={{ p: '0 24px 24px 24px' }} spacing={4}>
+                <Stack direction="row" aligncontent="center" justifyContent="space-between" sx={{ p: '0 24px 24px 24px' }} spacing={4}>
                     <Button variant="outlined" onClick={resetUser}>
                         Reset
                     </Button>
