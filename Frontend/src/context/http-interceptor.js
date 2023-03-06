@@ -24,87 +24,57 @@ const setRefreshToken = (refreshToken) => {
   localStorage.setItem('refreshToken', refreshToken);
 };
 
-// Add a request interceptor
+// Add an interceptor to automatically add an access token to outgoing requests
 api.interceptors.request.use(
-    async (config) => {
-      const accessToken = getAccessToken();
-      if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-      }
-      return config;
-    },
-    (error) => {
-      Promise.reject(error);
+  (config) => {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
-  );
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-// Add a response interceptor
+// Add an interceptor to automatically refresh the token on 401 errors
 api.interceptors.response.use(
-    (response) => {
-      return response;
-    },
-    async (error) => {
-      const originalRequest = error.config;
-      const refreshToken = getRefreshToken();
-  
-      if (
-        error.response.status === 401 &&
-        originalRequest.url === `${process.env.REACT_APP_API_BASE_URL}/api/auth/refresh`
-      ) {
-        // If the refresh token request fails, log out the user
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    // If the request is unauthorized and we haven't already retried
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        // Get a new access token with the refresh token
+        const refreshToken = getRefreshToken();
+        const response = await axios.post('/auth/refresh', { refreshToken });
+        const { accessToken } = response.data;
+
+        // Update the access token in local storage
+        setAccessToken(accessToken);
+
+        // Retry the original request with the new access token
+        originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+        return api(originalRequest);
+      } catch (error) {
+        // If refreshing the token fails, redirect to the login page
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.reload();
+        window.location.replace('/login');
         return Promise.reject(error);
       }
-  
-      if (
-        error.response.status === 401 &&
-        !originalRequest._retry &&
-        refreshToken
-      ) {
-        originalRequest._retry = true;
-        try {
-          const response = await api.post(
-            `${process.env.REACT_APP_API_BASE_URL}/auth/refresh`,
-            {
-              refreshToken,
-            }
-          );
-          const { accessToken } = response.data;
-          setAccessToken(accessToken);
-          api.defaults.headers.common[
-            'Authorization'
-          ] = `Bearer ${accessToken}`;
-          return api(originalRequest);
-        } catch (error) {
-          // If the refresh token request fails, log out the user
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          window.location.reload();
-          return Promise.reject(error);
-        }
-      }
-  
-      return Promise.reject(error);
     }
-  );
 
-const headers = {
-    Authorization: `Bearer ${getAccessToken()}`,
-  };
+    return Promise.reject(error);
+  }
+);
 
 // Function to make an authenticated API request
-const makeRequest = async (url, method = 'get', data = null, config = headers) => {
-  const accessToken = getAccessToken();
-
-  if (!accessToken) {
-    // If there's no access token, redirect to home
-    window.location.replace('/');
-  }
-
-  const response = await api({ url, method, data, headers });
-
+const makeRequest = async (url, method = 'get', data = null) => {
+  const response = await api({ url, method, data });
   return response.data;
 };
 

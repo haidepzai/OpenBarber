@@ -54,11 +54,12 @@ export const AuthContextProvider = (props) => {
     return false;
   };
 
+  // wird immer zuerst aufgerufen, als aller erstes
   useEffect(() => {
-    const checkJWTToken = async () => {
+    const authenticate = async () => {
       await checkForJWTToken();
     }    
-    checkJWTToken().catch(console.error);
+    authenticate().catch(console.error);
   }, []);
 
   const logoutHandler = () => {
