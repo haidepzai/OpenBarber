@@ -1,9 +1,14 @@
 import axios from "axios";
 
 export const getUserById = async (id) => {
-    const userResponse = await fetch(`http://localhost:8080/api/users/${id}`);
-    const userData = await userResponse.json();
-    return userData;
+    try {
+        const userResponse = await fetch(`http://localhost:8080/api/users/${id}`);
+        const userData = await userResponse.json();
+        return userData;
+    } catch (err) {
+        throw new Error("Could not get user");
+    }
+
 }
 
 export const updateUser = async (id, user) => {
@@ -16,6 +21,6 @@ export const updateUser = async (id, user) => {
         });
         return response;
     } catch (err) {
-        throw new Error("Something went wrong");
+        throw new Error("Could not update user");
     }
 }

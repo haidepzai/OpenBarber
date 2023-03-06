@@ -1,35 +1,52 @@
 import axios from "axios";
 
 export const getEnterprises = async () => {
-    const response = await fetch('http://localhost:8080/api/enterprises');
-    const responseData = await response.json();
-    return responseData;
+    try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/enterprises`);
+        const responseData = await response.json();
+        return responseData;
+    } catch (error) {
+        throw new Error("Could not fetch enterprises");
+    }
+
 }
 
 export const getShop = async (id) => {
-    const response = await axios.get('http://localhost:8080/api/enterprises/' + id);
+    try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/enterprises/` + id);
 
-    return response.data;
+        return response.data;
+    } catch (error) {
+        throw new Error("Could not fetch enterprises");
+    }
+
 }
 
 export const getShopByEmail = async (email) => {
     const config = {
         method: 'GET',
-        params: {email: email},
+        params: { email: email },
     }
-    const response = await axios.get('http://localhost:8080/api/enterprises/email', config);
-
-    return response.data;
+    try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/enterprises/email`, config);
+        return response.data;
+    } catch (error) {
+        throw new Error("Could not fetch enterprises");
+    }
 }
 
 export const getShopByUser = async () => {
     const config = {
         method: 'GET',
         headers: {
-            Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('tokenJWT')).token,
-          },
+            Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
+        },
     }
-    const response = await axios.get('http://localhost:8080/api/enterprises/', config);
+    try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/enterprises/`, config);
 
-    return response.data;
+        return response.data;
+    } catch (error) {
+        throw new Error("Could not fetch enterprises");
+    }
 }
