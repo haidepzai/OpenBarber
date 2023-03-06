@@ -51,6 +51,7 @@ const EditEnterprisePage = () => {
   };
 
   const saveEnterprise = async () => {
+    console.log(enterprise);
     await fetch(`${enterpriseUrl}${enterprise.id}`, {
       method: 'PUT',
       body: JSON.stringify(enterprise),

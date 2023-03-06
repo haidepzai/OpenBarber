@@ -25,7 +25,7 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
   const [errors, setErrors] = useState({
     targetAudience: '',
     title: '',
-    durationInMin: '',
+    durationInMin: 0,
     price: '',
   });
 

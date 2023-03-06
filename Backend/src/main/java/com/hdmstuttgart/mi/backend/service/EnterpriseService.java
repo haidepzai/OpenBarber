@@ -7,6 +7,7 @@ import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
+import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -19,7 +20,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 @Service
 @RequiredArgsConstructor
 public class EnterpriseService {
@@ -28,20 +28,7 @@ public class EnterpriseService {
     private final EnterpriseRepository enterpriseRepository;
     private final JwtService jwtService;
     private final UserRepository userRepository;
-
-    /*public Enterprise createEnterprise(EnterpriseRequest request, MultipartFile file){
-        try {
-            var enterprise = Enterprise.builder()
-                    .name(request.getName())
-                    .eMail(request.getEMail())
-                    .address(request.getAddress())
-                    .file(file.getBytes())
-                    .build();
-            return enterpriseRepository.save(enterprise);
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
-        }
-    }*/
+    private final ServiceRepository serviceRepository;
 
     public Enterprise createEnterprise(Enterprise request, String token) {
         String username = jwtService.extractUsername(token.substring(7));
@@ -166,19 +153,44 @@ public class EnterpriseService {
                     enterprise.setWebsite(newEnterprise.getWebsite());
                     enterprise.setPhoneNumber(newEnterprise.getPhoneNumber());
                     enterprise.setApproved(newEnterprise.isApproved());
+                    enterprise.setPriceCategory(newEnterprise.getPriceCategory());
+
+                    //Update Payment Methods
+                    if (newEnterprise.getPaymentMethods() != null) {
+                        Set<PaymentMethod> paymentMethodsSet = newEnterprise.getPaymentMethods()
+                                .stream()
+                                .map(paymentMethod -> PaymentMethod.valueOf(paymentMethod.toString()))
+                                .collect(Collectors.toSet());
+
+                        // Set paymentMethods in Enterprise entity
+                        enterprise.setPaymentMethods(paymentMethodsSet);
+                    }
+
+
+                    //Update Drinks
+                    if (newEnterprise.getDrinks() != null) {
+                        Set<Drink> drinksSet = newEnterprise.getDrinks()
+                                .stream()
+                                .map(drinks -> Drink.valueOf(drinks.name()))
+                                .collect(Collectors.toSet());
+
+                        enterprise.setDrinks(drinksSet);
+                    }
 
                     // update services
-                    List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
-                    for (com.hdmstuttgart.mi.backend.model.Service serviceRequest : newEnterprise.getServices()) {
-                        com.hdmstuttgart.mi.backend.model.Service service = new com.hdmstuttgart.mi.backend.model.Service();
-                        service.setTitle(serviceRequest.getTitle());
-                        service.setPrice(serviceRequest.getPrice());
-                        service.setTargetAudience(serviceRequest.getTargetAudience());
-                        service.setEnterprise(enterprise);
-                        services.add(service);
+                    if (newEnterprise.getServices() != null) {
+                        List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
+                        for (com.hdmstuttgart.mi.backend.model.Service serviceRequest : newEnterprise.getServices()) {
+                            com.hdmstuttgart.mi.backend.model.Service service = new com.hdmstuttgart.mi.backend.model.Service();
+                            service.setTitle(serviceRequest.getTitle());
+                            service.setPrice(serviceRequest.getPrice());
+                            service.setTargetAudience(serviceRequest.getTargetAudience());
+                            service.setDurationInMin(serviceRequest.getDurationInMin());
+                            service.setEnterprise(enterprise);
+                            services.add(service);
+                        }
+                        enterprise.setServices(services);
                     }
-                    enterprise.setServices(services);
-
                     return enterpriseRepository.save(enterprise);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));

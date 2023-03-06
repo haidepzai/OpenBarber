@@ -64,10 +64,12 @@ public class Enterprise {
     private int priceCategory;
 
     @ElementCollection(targetClass = PaymentMethod.class)
+    @CollectionTable(name = "enterprise_payment_methods", joinColumns = @JoinColumn(name = "enterprise_id"))
     @Enumerated(EnumType.STRING)
     private Set<PaymentMethod> paymentMethods;
 
     @ElementCollection(targetClass = Drink.class)
+    @CollectionTable(name = "enterprise_drinks", joinColumns = @JoinColumn(name = "enterprise_id"))
     @Enumerated(EnumType.STRING)
     private Set<Drink> drinks;
 
