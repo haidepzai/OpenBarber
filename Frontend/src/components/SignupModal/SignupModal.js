@@ -7,24 +7,27 @@ import EnterpriseCreateStep from './components/EnterpriseCreateStep';
 import AwaitingApprovalStep from './components/AwaitingApprovalStep';
 import EmailVerificationStep from './components/EmailVerificationStep';
 import { SignupContext } from '../../context/Signup.context';
+import AuthContext from '../../context/auth-context';
 
 const steps = ['Sign up', 'Sign up your enterprise', 'Verify your E-Mail', 'Wait for Approval'];
 
 const SignupModal = () => {
   const portalElement = document.getElementById('overlays');  
   const signUpCtx = useContext(SignupContext);
+  const authCtx = useContext(AuthContext);
 
   useEffect(() => {    
     document.body.style.overflow = 'hidden';
     const cb = (e) => {
       if (e.key === 'Escape') {
+        authCtx.onLogout();
         signUpCtx.setSignupVisible(false);
         document.body.style.overflow = '';
       }
     };
     document.addEventListener('keydown', cb);
     return () => document.removeEventListener('keydown', cb);
-  }, [signUpCtx]);
+  }, [authCtx, signUpCtx]);
 
   return (
     <Fragment>

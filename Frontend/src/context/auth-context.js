@@ -83,15 +83,21 @@ export const AuthContextProvider = (props) => {
   };
 
   const signUpHandler = async (registerRequest, customConfig) => {
-    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/register`, registerRequest, customConfig);
-    localStorage.setItem('accessToken', response.data.token);
-    localStorage.setItem('refreshToken', response.data.refreshToken);
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/register`, registerRequest, customConfig);
+      localStorage.setItem('accessToken', response.data.token);
+      localStorage.setItem('refreshToken', response.data.refreshToken);
+      return response;
+    } catch (error) {
+      throw new Error(error);
+    }    
   }
 
   const verifyHandler = async (verifyRequest, customConfig) => {
     const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/verify`, verifyRequest, customConfig);
     setUserId(response.data.userId);
     setIsLoggedIn(true);
+    return response;
   }
 
   return (
