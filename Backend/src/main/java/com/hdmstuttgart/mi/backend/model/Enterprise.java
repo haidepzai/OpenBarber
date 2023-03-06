@@ -95,32 +95,4 @@ public class Enterprise {
     @Lob
     private List<Blob> pictures;*/
 
-
-
-
-
-
-/*    @OneToMany
-    private List<Service> services;*/
-
-/*    @OneToMany
-    private List<Employee> employees;*/
-
-/*    private double getRating() {
-        double rating = 0;
-        int count = 0;
-        for(Employee employee : employees) {
-            for(Appointment appointment : employee.getAppointments()) {
-                if(appointment.getRating() != 0) {
-                    rating += appointment.getRating();
-                    count++;
-                }
-            }
-        }
-        return count == 0 ? 0 : rating / count;
-    }*/
-
-/*    public void addEmployee(Employee employee){
-        this.employees.add(employee);
-    }*/
 }

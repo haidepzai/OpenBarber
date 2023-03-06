@@ -259,6 +259,7 @@ const EditEnterprisePage = () => {
                     value={enterprise.phoneNumber === null ? '' : enterprise.phoneNumber}
                     onChange={handleEnterpriseChange}
                     fullWidth
+                    type="number"
                   />
                 </Stack>
 
