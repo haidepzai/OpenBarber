@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { getUserByToken } from './UserActions';
+import { getUserByToken } from '../actions/UserActions';
 
 //Default Werte des Context (werden unten im Provider dann gesetzt)
 const AuthContext = React.createContext({

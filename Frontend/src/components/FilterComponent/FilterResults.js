@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import TodayIcon from '@mui/icons-material/Today';
 import ReservationDialog from '../Reservation/ReservationDialog';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getEnterprises } from '../../context/EnterpriseActions';
+import { getEnterprises } from '../../actions/EnterpriseActions';
 
 const ratingNames = {
   5: 'Excellent',
