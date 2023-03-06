@@ -3,6 +3,7 @@ package com.hdmstuttgart.mi.backend.model.dto;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.Review;
 import com.hdmstuttgart.mi.backend.model.Service;
+import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import com.hdmstuttgart.mi.backend.service.ServiceService;
 import lombok.Data;
@@ -26,14 +27,13 @@ public class EnterpriseDto {
     private String openingTime;
     private String closingTime;
     private URL website;
-    private double rating;
     private boolean recommended;
     private boolean approved;
     private int priceCategory;
     private Set<PaymentMethod> paymentMethods;
-    private Set<String> drinks;
-    private List<ServiceDto> services;
-    private List<EmployeeDto> employees;
+    private Set<Drink> drinks;
+    private List<Service> services;
+    private List<Employee> employees;
     private List<Review> reviews;
 
     /*private Set<PaymentMethod> paymentMethods;

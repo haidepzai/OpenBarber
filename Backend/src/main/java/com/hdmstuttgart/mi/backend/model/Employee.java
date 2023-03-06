@@ -32,11 +32,6 @@ public class Employee {
     /*@Lob
     private Blob picture;*/
 
-/*    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "enterprise_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore*/
-
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "enterprise_id")

@@ -3,13 +3,9 @@ package com.hdmstuttgart.mi.backend.service;
 import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.User;
-import com.hdmstuttgart.mi.backend.model.dto.EnterpriseDto;
-import com.hdmstuttgart.mi.backend.model.dto.ServiceDto;
-import com.hdmstuttgart.mi.backend.model.dto.EmployeeDto;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
-import com.hdmstuttgart.mi.backend.model.enums.ServiceTargetAudience;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,7 +43,7 @@ public class EnterpriseService {
         }
     }*/
 
-    public Enterprise createEnterprise(EnterpriseDto request, String token) {
+    public Enterprise createEnterprise(Enterprise request, String token) {
         String username = jwtService.extractUsername(token.substring(7));
 
         User user = userRepository.findByEmail(username)
@@ -62,79 +56,74 @@ public class EnterpriseService {
         List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
         List<Employee> employees = new ArrayList<>();
 
-        try {
-            if (request.getLogo() != null) {
-                logo = request.getLogo().getBytes();
-            }
-            if (request.getPictures() != null) {
-                for (MultipartFile pictureData : request.getPictures()) {
-                    pictures.add(pictureData.getBytes());
-                }
-            }
-            if (request.getDrinks() != null) {
-                drinks = request.getDrinks()
-                        .stream()
-                        .map(Drink::valueOf).collect(Collectors.toSet());
-            }
-            if (request.getPaymentMethods() != null) {
-                paymentMethods = request.getPaymentMethods()
-                        .stream()
-                        .map(method -> PaymentMethod.valueOf(method.name()))
-                        .collect(Collectors.toSet());
-            }
-            if (request.getServices() != null) {
-                for (ServiceDto serviceRequest : request.getServices()) {
-                    var service = com.hdmstuttgart.mi.backend.model.Service.builder()
-                            .price(serviceRequest.getPrice())
-                            .title(serviceRequest.getTitle())
-                            .description(serviceRequest.getDescription())
-                            .durationInMin(serviceRequest.getDurationInMin())
-                            .targetAudience(serviceRequest.getTargetAudience())
-                            .build();
-                    services.add(service);
-                }
-            }
-            if (request.getEmployees() != null) {
-                for (EmployeeDto employeeDto : request.getEmployees()) {
-                    byte[] picture = null;
-                    if (employeeDto.getPicture() != null) {
-                        picture = employeeDto.getPicture().getBytes();
-                    }
-                    var employee = Employee.builder()
-                            .name(employeeDto.getName())
-                            .picture(picture)
-                            .build();
-                    employees.add(employee);
-                }
-            }
-            Enterprise enterprise = Enterprise.builder()
-                .name(request.getName())
-                .owner(request.getOwner())
-                .email(request.getEmail())
-                .addressLatitude(request.getAddressLatitude())
-                .addressLongitude(request.getAddressLongitude())
-                .address(request.getAddress())
-                .logo(logo)
-                .pictures(pictures)
-                .phoneNumber(request.getPhoneNumber())
-                .openingTime(request.getOpeningTime())
-                .closingTime(request.getClosingTime())
-                .website(request.getWebsite())
-                .reviews(new ArrayList<>())
-                .recommended(request.isRecommended())
-                .approved(request.isApproved())
-                .priceCategory(request.getPriceCategory())
-                .paymentMethods(paymentMethods)
-                .drinks(drinks)
-                .services(services)
-                .employees(employees)
-                .build();
-
-            user.setEnterprise(enterprise);
-            return userRepository.save(user).getEnterprise();
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+        if (request.getLogo() != null) {
+            logo = request.getLogo();
         }
+        if (request.getPictures() != null) {
+            pictures.addAll(request.getPictures());
+        }
+        if (request.getDrinks() != null) {
+            drinks = request.getDrinks()
+                    .stream()
+                    .map(drinkName -> Drink.valueOf(drinkName.name()))
+                    .collect(Collectors.toSet());
+        }
+        if (request.getPaymentMethods() != null) {
+            paymentMethods = request.getPaymentMethods()
+                    .stream()
+                    .map(method -> PaymentMethod.valueOf(method.name()))
+                    .collect(Collectors.toSet());
+        }
+        if (request.getServices() != null) {
+            for (com.hdmstuttgart.mi.backend.model.Service serviceRequest : request.getServices()) {
+                var service = com.hdmstuttgart.mi.backend.model.Service.builder()
+                        .price(serviceRequest.getPrice())
+                        .title(serviceRequest.getTitle())
+                        .description(serviceRequest.getDescription())
+                        .durationInMin(serviceRequest.getDurationInMin())
+                        .targetAudience(serviceRequest.getTargetAudience())
+                        .build();
+                services.add(service);
+            }
+        }
+        if (request.getEmployees() != null) {
+            for (Employee employeeRequest : request.getEmployees()) {
+                byte[] picture = null;
+                if (employeeRequest.getPicture() != null) {
+                    picture = employeeRequest.getPicture();
+                }
+                var employee = Employee.builder()
+                        .name(employeeRequest.getName())
+                        .picture(picture)
+                        .build();
+                employees.add(employee);
+            }
+        }
+        Enterprise enterprise = Enterprise.builder()
+            .name(request.getName())
+            .owner(request.getOwner())
+            .email(request.getEmail())
+            .addressLatitude(request.getAddressLatitude())
+            .addressLongitude(request.getAddressLongitude())
+            .address(request.getAddress())
+            .logo(logo)
+            .pictures(pictures)
+            .phoneNumber(request.getPhoneNumber())
+            .openingTime(request.getOpeningTime())
+            .closingTime(request.getClosingTime())
+            .website(request.getWebsite())
+            .reviews(new ArrayList<>())
+            .recommended(request.isRecommended())
+            .approved(request.isApproved())
+            .priceCategory(request.getPriceCategory())
+            .paymentMethods(paymentMethods)
+            .drinks(drinks)
+            .services(services)
+            .employees(employees)
+            .build();
+
+        user.setEnterprise(enterprise);
+        return userRepository.save(user).getEnterprise();
     }
 
     public List<Enterprise> getAllEnterprises() {
@@ -164,7 +153,7 @@ public class EnterpriseService {
         return user.getEnterprise();
     }
 
-    public Enterprise updateEnterprise(long id, EnterpriseDto newEnterprise) {
+    public Enterprise updateEnterprise(long id, Enterprise newEnterprise) {
         return enterpriseRepository.findById(id)
                 .map(enterprise -> {
                     enterprise.setName(newEnterprise.getName());
@@ -180,11 +169,11 @@ public class EnterpriseService {
 
                     // update services
                     List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
-                    for (ServiceDto serviceDto : newEnterprise.getServices()) {
+                    for (com.hdmstuttgart.mi.backend.model.Service serviceRequest : newEnterprise.getServices()) {
                         com.hdmstuttgart.mi.backend.model.Service service = new com.hdmstuttgart.mi.backend.model.Service();
-                        service.setTitle(serviceDto.getTitle());
-                        service.setPrice(serviceDto.getPrice());
-                        service.setTargetAudience(serviceDto.getTargetAudience());
+                        service.setTitle(serviceRequest.getTitle());
+                        service.setPrice(serviceRequest.getPrice());
+                        service.setTargetAudience(serviceRequest.getTargetAudience());
                         service.setEnterprise(enterprise);
                         services.add(service);
                     }
