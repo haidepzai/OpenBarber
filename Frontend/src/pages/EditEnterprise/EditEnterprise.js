@@ -18,7 +18,7 @@ import Snackbar from '@mui/material/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
 import AuthContext from '../../context/auth-context.js';
 import { getShopByEmail } from '../../context/EnterpriseActions.js';
-import { getUserById, updateUser } from '../../context/UserActions.js';
+import { getUserById } from '../../context/UserActions.js';
 import EditPersonalInfo from '../../components/EditEnterprise/EditPersonalInfo.jsx';
 
 const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', 'PAYPAL'];
@@ -57,7 +57,7 @@ const EditEnterprisePage = () => {
       body: JSON.stringify(enterprise),
       headers: {
         'Content-type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       },
     });
 

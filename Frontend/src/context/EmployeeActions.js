@@ -7,7 +7,7 @@ export const deleteEmployeeById = async (id) => {
     try {
         const response = await axios.delete(`${employeeUrl}${id}`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
             },
         })
         return response;

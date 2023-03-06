@@ -39,7 +39,7 @@ export const getShopByUser = async () => {
     const config = {
         method: 'GET',
         headers: {
-            Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         },
     }
     try {

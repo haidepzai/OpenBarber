@@ -370,7 +370,7 @@ const SchedulerPage = () => {
           const customConfig = {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`
             },
           };
 
@@ -424,7 +424,7 @@ const SchedulerPage = () => {
       const tokenConfig = {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         },
       };
       console.log(tokenConfig);

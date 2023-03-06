@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { getUserByToken } from './UserActions';
 
 //Default Werte des Context (werden unten im Provider dann gesetzt)
 const AuthContext = React.createContext({
@@ -13,33 +14,40 @@ const AuthContext = React.createContext({
   setIsLoading: () => { },
   verifyHandler: async (verifyRequest, customConfig) => { },
   userId: 0,
-  token: '',
   setEmail: () => { },
   email: '',
   user: {},
-  setUser: () => {}
+  setUser: () => { }
 });
 
 export const AuthContextProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false)
   const [userId, setUserId] = useState(0);
-  const [token, setToken] = useState('');
   const [email, setEmail] = useState('');
   const [user, setUser] = useState({});
 
   const deleteJWTTokenFromStorage = () => {
-    let token = localStorage.getItem('tokenJWT');
+    let token = localStorage.getItem('accessToken');
     if (token) {
-      localStorage.removeItem('tokenJWT');
+      localStorage.removeItem('accessToken');
     }
   };
 
-  const checkForJWTToken = () => {
-    let token = localStorage.getItem('tokenJWT');
+  const checkForJWTToken = async () => {    
+    let token = localStorage.getItem('accessToken');
+    let refreshToken = localStorage.getItem('refreshToken');
     if (token) {
+      const user = await getUserByToken();
+      setUserId(user.data.id);
+      setEmail(user.data.email);
+      setIsLoggedIn(true);      
+      return true;
+    } else if (refreshToken) {
+      const user = await getUserByToken();
+      setUserId(user.data.id);
+      setEmail(user.data.email);
       setIsLoggedIn(true);
-      setToken(token);
       return true;
     }
     setIsLoggedIn(false);
@@ -47,22 +55,24 @@ export const AuthContextProvider = (props) => {
   };
 
   useEffect(() => {
-    checkForJWTToken();
+    const checkJWTToken = async () => {
+      await checkForJWTToken();
+    }    
+    checkJWTToken().catch(console.error);
   }, []);
 
   const logoutHandler = () => {
-    localStorage.removeItem('tokenJWT');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     setIsLoggedIn(false);
   };
 
   const loginHandler = async (authRequest, customConfig) => {
     const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/authenticate`, authRequest, customConfig);
     let resObj = response.data;
-    localStorage.setItem('tokenJWT', resObj.token);
+    localStorage.setItem('accessToken', resObj.token);
 
-    setToken(resObj.token)
     setUserId(resObj.userId);
-
     if (resObj.verified) {
       setIsLoggedIn(true);
     }
@@ -72,8 +82,7 @@ export const AuthContextProvider = (props) => {
 
   const signUpHandler = async (registerRequest, customConfig) => {
     const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/register`, registerRequest, customConfig);
-    let token = localStorage.setItem('tokenJWT', JSON.stringify(response.data));
-    setToken(token);
+    localStorage.setItem('accessToken', JSON.stringify(response.data));
   }
 
   const verifyHandler = async (verifyRequest, customConfig) => {
@@ -95,7 +104,6 @@ export const AuthContextProvider = (props) => {
         setIsLoading,
         verifyHandler,
         userId,
-        token,
         email,
         setEmail,
         user,
