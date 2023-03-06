@@ -108,15 +108,15 @@ const SignUpStep = () => {
           ...d,
           email: state.enteredEmail
         }));
+        signUpContext.setCompletedSteps((v) => {
+          const res = [...v];
+          res[0] = true;
+          return res;
+        });
+        signUpContext.setActiveStep(1);
       } catch (error) {
         dispatch({ type: 'SET_EMAIL_ALREADY_IN_USE', payload: true });
       }
-      signUpContext.setCompletedSteps((v) => {
-        const res = [...v];
-        res[0] = true;
-        return res;
-      });
-      signUpContext.setActiveStep(1);
       authCtx.setIsLoading(false);
     }
   }
@@ -171,17 +171,17 @@ const SignUpStep = () => {
             <Button variant="outlined" onClick={() => signUpContext.close()} tabIndex={-1}>
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={
-                !(state.enteredEmail && 
-                state.enteredPassword && 
-                state.enteredConfirmPassWord) || 
-                state.enteredPassword.length < 8 || 
+                !(state.enteredEmail &&
+                  state.enteredPassword &&
+                  state.enteredConfirmPassWord) ||
+                state.enteredPassword.length < 8 ||
                 !state.passwordsMatch
-                } 
-                variant="contained"
-              >
+              }
+              variant="contained"
+            >
               Continue
             </Button>
           </Stack>

@@ -3,9 +3,17 @@ import React, { useContext } from 'react';
 import { Stack, Typography, Button, Box } from '@mui/material';
 import { CheckCircleRounded } from '@mui/icons-material';
 import { SignupContext } from '../../../context/Signup.context';
+import AuthContext from '../../../context/auth-context';
 
 const AwaitingApprovalStep = () => {
-  const { close } = useContext(SignupContext);
+  const signUpContext = useContext(SignupContext);
+  const authCtx = useContext(AuthContext);
+
+  const handleClose = () => {
+    signUpContext.setSignupVisible(false);
+    authCtx.setIsLoggedIn(true);
+    document.body.style.overflow = '';
+}
 
   return (
     <>
@@ -20,7 +28,7 @@ const AwaitingApprovalStep = () => {
 
       <Stack direction="row" justifyContent="space-between" marginTop="auto" width="100%" gap={2}>
         <Box flexGrow={1} />
-        <Button onClick={close} variant="contained">
+        <Button onClick={handleClose} variant="contained">
           Finish
         </Button>
       </Stack>

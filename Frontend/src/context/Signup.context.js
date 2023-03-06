@@ -1,4 +1,5 @@
-import { createContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
+import AuthContext from './auth-context';
 
 export const SignupContext = createContext();
 
@@ -22,8 +23,11 @@ export const SignupProvider = ({ children }) => {
     });
     const [signupVisible, setSignupVisible] = useState(false);
     const [loginVisible, setLoginVisible] = useState(false);
+    
+    const authCtx = useContext(AuthContext);
 
     const handleClose = () => {
+        authCtx.onLogout(); //delete token if close sign up process
         setSignupVisible(false);
         document.body.style.overflow = '';
     }
