@@ -134,8 +134,8 @@ const FilterResults = ({ filter, loc }) => {
                 src={shop.logo ? URL.createObjectURL(shop.logo) : process.env.REACT_APP_BACKUP_IMAGE}
                 width="205px"
                 height="205px"
-                style={{ borderRadius: '4px', boxShadow: '-2px 2px 6px rgba(0, 0, 0, 0.4)', objectFit: 'cover', objectPosition: 'center', cursor: 'pointer' }}      
-                onClick={() => goToShop(shop.id)}          
+                style={{ borderRadius: '4px', boxShadow: '-2px 2px 6px rgba(0, 0, 0, 0.4)', objectFit: 'cover', objectPosition: 'center', cursor: 'pointer' }}
+                onClick={() => goToShop(shop.id)}
               />
               <Stack direction="column" spacing={1} sx={{ pb: '10px' }}>
                 <Typography variant="h6">{shop.name}</Typography>
