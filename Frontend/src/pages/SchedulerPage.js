@@ -18,14 +18,12 @@ import {
   GroupingPanel,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { styled, alpha } from '@mui/material/styles';
-import { useCallback, useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
+import { useEffect, useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import ContentCutIcon from '@mui/icons-material/ContentCut';
+import Select from '@mui/material/Select';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { FormGroup, Stack, Typography } from '@mui/material';
