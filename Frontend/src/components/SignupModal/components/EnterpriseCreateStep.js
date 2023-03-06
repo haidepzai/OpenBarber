@@ -70,12 +70,13 @@ const EnterpriseCreateStep = () => {
     // form data config
     const customConfig = {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       },
     };
 
     try {
+      console.log(createEnterpriseReq)
       await createEnterprise(createEnterpriseReq, customConfig);
       setActiveStep(2);
       setCompletedSteps((cs) => {
