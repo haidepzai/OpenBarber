@@ -27,7 +27,7 @@ const ratingNames = {
   0: 'Bad',
 };
 
-const FilterResults = ({ filter }) => {
+const FilterResults = ({ filter, loc }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -112,7 +112,7 @@ const FilterResults = ({ filter }) => {
   return (
     <Box sx={{ flex: '4 1 0' }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: '100%', m: '20px 0' }}>
-        <Typography variant="body1">{shops.length} Barber Shops available near you / in Stuttgart</Typography>
+        <Typography variant="body1">{shops.length} Barber Shops available in {loc ?? sortValue}</Typography>
         <FormControl>
           <InputLabel id="sort">Sort</InputLabel>
           <Select labelId="sort" id="sort" value={sortValue} label="Sort" onChange={handleChange} sx={{ width: '200px' }}>

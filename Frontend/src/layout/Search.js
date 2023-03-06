@@ -10,13 +10,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { getCurrentLocation, getGeocoordinates } from '../context/GoogleMapsActions';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
 function Search({ dateAndTime, setDateAndTime }) {
   const navigate = useNavigate();
-  const routerLocation = useLocation();
 
   /*const [dateValue, setDateValue] = useState(dayjs());*/
   const [location, setLocation] = useState('');
@@ -47,10 +46,10 @@ function Search({ dateAndTime, setDateAndTime }) {
         search: `?location=${loc}`,
       });*/
 
-      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString() } });
+      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc: loc } });
     } else {
-      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString() } });
-      getCurrentLocation();
+      const loc = getCurrentLocation();
+      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc: loc } });      
     }
   };
 
