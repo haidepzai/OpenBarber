@@ -71,7 +71,7 @@ const EnterpriseCreateStep = () => {
     const customConfig = {
       headers: {
         'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${localStorage.getItem('tokenJWT')}`
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       },
     };
 

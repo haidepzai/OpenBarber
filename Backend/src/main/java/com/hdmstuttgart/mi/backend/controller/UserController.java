@@ -43,6 +43,14 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
+    @GetMapping("/info")
+    public ResponseEntity<UserDto> getUserInfo(@RequestHeader("Authorization") String token) {
+        String email = jwtService.extractUsername(token.substring(7));
+        User user = userService.getUserByEmail(email);
+        UserDto userDto = UserMapper.toDto(user);
+        return ResponseEntity.ok(userDto);
+    }
+
     @GetMapping("/email/{email}")
     public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
