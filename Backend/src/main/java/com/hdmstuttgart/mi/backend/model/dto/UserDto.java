@@ -18,6 +18,7 @@ public class UserDto {
     private Long id;
     private String email;
     private String name;
+    private String password;
     private Enterprise enterprise;
     private UserRole role;
     private Date createdAt;
