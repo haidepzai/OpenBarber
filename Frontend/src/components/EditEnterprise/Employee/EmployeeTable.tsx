@@ -22,7 +22,7 @@ import { Button } from '@mui/material';
 import DeleteEmployeesDialog from './DeleteEmployeesDialog.js';
 import CreateEmployeeDialog from './CreateEmployeeDialog.js';
 import EditIcon from '@mui/icons-material/Edit';
-import { deleteEmployeeById } from '../../../context/EmployeeActions.js';
+import { deleteEmployeeById } from '../../../actions/EmployeeActions.js';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {

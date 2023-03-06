@@ -22,7 +22,7 @@ import { Button } from '@mui/material';
 import DeleteServicesDialog from './DeleteServicesDialog';
 import CreateServiceDialog from './CreateServiceDialog';
 import EditIcon from '@mui/icons-material/Edit';
-import { deleteServiceById } from '../../../context/ServiceActions';
+import { deleteServiceById } from '../../../actions/ServiceActions';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {

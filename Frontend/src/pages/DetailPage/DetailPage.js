@@ -7,7 +7,7 @@ import DetailPageBG from './components/DetailPageBG';
 
 import '../../css/DetailPage/DetailPage.css';
 import { useParams } from 'react-router-dom';
-import { getShop } from '../../context/EnterpriseActions';
+import { getShop } from '../../actions/EnterpriseActions';
 
 const DetailPage = () => {
   const { routeId } = useParams();

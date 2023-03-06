@@ -1,7 +1,7 @@
 import { Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material'
 import React, { Fragment, useContext } from 'react'
 import AuthContext from '../../context/auth-context'
-import { updateUser } from '../../context/UserActions'
+import { updateUser } from '../../actions/UserActions'
 
 const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
     const authCtx = useContext(AuthContext);

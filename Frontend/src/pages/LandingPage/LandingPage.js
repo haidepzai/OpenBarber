@@ -8,7 +8,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import ReservationDialog from '../../components/Reservation/ReservationDialog';
 import { useNavigate } from 'react-router-dom';
-import { getEnterprises } from '../../context/EnterpriseActions';
+import { getEnterprises } from '../../actions/EnterpriseActions';
 
 const LandingPage = () => {
   const navigate = useNavigate();

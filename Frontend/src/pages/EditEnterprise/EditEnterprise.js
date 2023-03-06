@@ -17,8 +17,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Snackbar from '@mui/material/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
 import AuthContext from '../../context/auth-context.js';
-import { getShopByEmail } from '../../context/EnterpriseActions.js';
-import { getUserById } from '../../context/UserActions.js';
+import { getShopByEmail } from '../../actions/EnterpriseActions.js';
+import { getUserById } from '../../actions/UserActions.js';
 import EditPersonalInfo from '../../components/EditEnterprise/EditPersonalInfo.jsx';
 
 const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', 'PAYPAL'];

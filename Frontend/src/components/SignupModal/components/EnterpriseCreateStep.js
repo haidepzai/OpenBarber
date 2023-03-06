@@ -2,7 +2,7 @@ import { Stack, Typography, Button, Box, TextField } from '@mui/material';
 import React, { useContext } from 'react';
 import { SignupContext } from '../../../context/Signup.context';
 import { usePlacesWidget } from 'react-google-autocomplete';
-import { createEnterprise } from '../../../context/EnterpriseActions';
+import { createEnterprise } from '../../../actions/EnterpriseActions';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
