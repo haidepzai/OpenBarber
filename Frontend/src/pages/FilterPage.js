@@ -37,7 +37,7 @@ const FilterPage = () => {
       </Box>
       <Stack direction="row" spacing={4} sx={{ maxWidth: '1500px', margin: '0 auto', padding: '0px 50px' }}>
         <Filter filter={filter} setFilter={setFilter} />
-        <FilterResults filter={filter} loc={location.state?.loc}/>
+        <FilterResults filter={filter} loc={location.state?.loc} />
       </Stack>
     </>
   );

@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity<UserDto> getUserInfo(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<UserDto> getUserByToken(@RequestHeader("Authorization") String token) {
         String email = jwtService.extractUsername(token.substring(7));
         User user = userService.getUserByEmail(email);
         UserDto userDto = UserMapper.toDto(user);
@@ -87,7 +87,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable Long id, HttpServletRequest request) {
         // Get the email of the authenticated user from the JWT token
-        String email = jwtService.extractUsername(request.getHeader("Authorization"));
+        String email = jwtService.extractUsername(request.getHeader("Authorization").substring(7));
 
         // Check if the authenticated user matches the user being deleted
         User user = userService.getUserById(id);

@@ -16,13 +16,13 @@ import SchedulerPage from './pages/SchedulerPage';
 import EditEnterprisePage from './pages/EditEnterprise';
 import { SignupContext } from './context/Signup.context';
 
-function App() { 
+function App() {
   const signUpCtx = useContext(SignupContext);
 
   return (
     <ThemeProvider theme={basicTheme}>
       <BrowserRouter>
-        <Header/>
+        <Header />
         <Routes>
           <Route path="*" element={<ErrorPage />} />
           <Route path="/" element={<LandingPage />} />
@@ -33,17 +33,19 @@ function App() {
           <Route path="edit" element={<EditEnterprisePage />} />
         </Routes>
         <Footer />
-        {signUpCtx.loginVisible && <LoginModal
-          gotoSignup={(state) => {
-            console.log(state)
-            signUpCtx.setSignupState(state);
-            signUpCtx.setActiveStep(state.activeStep);
-            signUpCtx.setCompletedSteps(state.completedSteps)
-            signUpCtx.setLoginVisible(false);
-            signUpCtx.setSignupVisible(true);
-          }}
-        />}
-        {signUpCtx.signupVisible && <SignupModal/>}
+        {signUpCtx.loginVisible && (
+          <LoginModal
+            gotoSignup={(state) => {
+              console.log(state);
+              signUpCtx.setSignupState(state);
+              signUpCtx.setActiveStep(state.activeStep);
+              signUpCtx.setCompletedSteps(state.completedSteps);
+              signUpCtx.setLoginVisible(false);
+              signUpCtx.setSignupVisible(true);
+            }}
+          />
+        )}
+        {signUpCtx.signupVisible && <SignupModal />}
       </BrowserRouter>
     </ThemeProvider>
   );

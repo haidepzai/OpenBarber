@@ -13,7 +13,7 @@ const AwaitingApprovalStep = () => {
     signUpContext.setSignupVisible(false);
     authCtx.setIsLoggedIn(true);
     document.body.style.overflow = '';
-}
+  };
 
   return (
     <>

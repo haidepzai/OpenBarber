@@ -64,19 +64,19 @@ const EnterpriseCreateStep = () => {
       address: data.enterpriseStreet.formatted_address,
       addressLongitude: Number(data.enterpriseStreet.geometry.location.lng()),
       addressLatitude: Number(data.enterpriseStreet.geometry.location.lat()),
-      phoneNumber: data.enterprisePhoneNumber
+      phoneNumber: data.enterprisePhoneNumber,
     };
 
     // form data config
     const customConfig = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
       },
     };
 
     try {
-      console.log(createEnterpriseReq)
+      console.log(createEnterpriseReq);
       await createEnterprise(createEnterpriseReq, customConfig);
       setActiveStep(2);
       setCompletedSteps((cs) => {
@@ -90,7 +90,7 @@ const EnterpriseCreateStep = () => {
   }
 
   function onBlur(e) {
-    if(e.target.name === "enterprisePhoneNumber") {
+    if (e.target.name === 'enterprisePhoneNumber') {
       if (!/[0-9]/.test(e.target.value)) {
         setErrors((err) => ({ ...err, [e.target.name]: true }));
       } else {
@@ -153,7 +153,7 @@ const EnterpriseCreateStep = () => {
                 onBlur: onBlur,
                 error: errors.enterprisePhoneNumber,
                 name: 'enterprisePhoneNumber',
-                type: 'number'
+                type: 'number',
               }}
             />
           </Box>

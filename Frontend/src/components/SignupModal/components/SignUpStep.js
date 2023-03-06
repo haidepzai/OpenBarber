@@ -106,7 +106,7 @@ const SignUpStep = () => {
         await authCtx.onSignUp(registerRequest, customConfig);
         signUpContext.setData((d) => ({
           ...d,
-          email: state.enteredEmail
+          email: state.enteredEmail,
         }));
         signUpContext.setCompletedSteps((v) => {
           const res = [...v];
@@ -123,12 +123,12 @@ const SignUpStep = () => {
 
   return (
     <Fragment>
-      {authCtx.isLoading &&
+      {authCtx.isLoading && (
         <Stack alignItems="center" justifyContent="center" flexGrow="1">
           <CircularProgress />
         </Stack>
-      }
-      {!authCtx.isLoading &&
+      )}
+      {!authCtx.isLoading && (
         <Stack component="form" onSubmit={onSubmit} height="100%">
           <Stack gap={2} mt={8} mb="auto" width="max(500px, 50%)">
             <Typography variant="h4" fontWeight="bold">
@@ -174,9 +174,7 @@ const SignUpStep = () => {
             <Button
               type="submit"
               disabled={
-                !(state.enteredEmail &&
-                  state.enteredPassword &&
-                  state.enteredConfirmPassWord) ||
+                !(state.enteredEmail && state.enteredPassword && state.enteredConfirmPassWord) ||
                 state.enteredPassword.length < 8 ||
                 !state.passwordsMatch
               }
@@ -186,7 +184,7 @@ const SignUpStep = () => {
             </Button>
           </Stack>
         </Stack>
-      }
+      )}
     </Fragment>
   );
 };

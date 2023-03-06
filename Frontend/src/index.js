@@ -7,9 +7,9 @@ import { SignupProvider } from './context/Signup.context';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <AuthContextProvider>
-        <SignupProvider>
-            <App />
-        </SignupProvider>
-    </AuthContextProvider>
+  <AuthContextProvider>
+    <SignupProvider>
+      <App />
+    </SignupProvider>
+  </AuthContextProvider>
 );

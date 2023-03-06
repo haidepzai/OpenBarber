@@ -76,12 +76,12 @@ const LandingPage = () => {
           </Button>
         </Stack>
         <Divider orientation="horizontal" sx={{ m: '12px 0', borderColor: 'rgba(0, 0, 0, 0.24)' }} />
-        {isLoading &&
+        {isLoading && (
           <Stack alignItems="center" justifyContent="center" flexGrow="1">
             <CircularProgress />
           </Stack>
-        }
-        {!isLoading &&
+        )}
+        {!isLoading && (
           <Stack direction="row" spacing={4} justifyContent="center" sx={{ pt: '20px' }}>
             {shops
               .slice(0, 5)
@@ -93,7 +93,7 @@ const LandingPage = () => {
                 </Box>
               ))}
           </Stack>
-        }
+        )}
       </Box>
     </>
   );
