@@ -32,6 +32,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.verify(request, token));
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthenticationResponse> refresh(@RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authenticationService.refresh(request));
+    }
+
     @ExceptionHandler(value = UserNotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public ErrorDto handleNotFoundException(UserNotFoundException ex) {

@@ -24,12 +24,14 @@ public class ServiceController {
     private final UserService userService;
     private final EnterpriseService enterpriseService;
     private final ServiceMapper serviceMapper;
+    private final JwtService jwtService;
 
-    public ServiceController(ServiceService serviceService, UserService userService, EnterpriseService enterpriseService, ServiceMapper serviceMapper) {
+    public ServiceController(ServiceService serviceService, UserService userService, EnterpriseService enterpriseService, ServiceMapper serviceMapper, JwtService jwtService) {
         this.serviceService = serviceService;
         this.userService = userService;
         this.enterpriseService = enterpriseService;
         this.serviceMapper = serviceMapper;
+        this.jwtService = jwtService;
     }
 
     @PostMapping
@@ -39,7 +41,7 @@ public class ServiceController {
             @RequestHeader("Authorization") String token
     ) {
         // Validate the JWT token and extract the user information
-        String email = JwtService.verifyTokenAndGetEmail(token);
+        String email = jwtService.extractUsername(token.substring(7));
         userService.getUserByEmail(email);
         // Check if the user is authorized to perform the operation based on their email
         Enterprise enterprise = enterpriseService.getEnterpriseById(enterpriseId);

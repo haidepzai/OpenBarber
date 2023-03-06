@@ -3,10 +3,7 @@ package com.hdmstuttgart.mi.backend.service;
 import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
 import com.hdmstuttgart.mi.backend.model.User;
-import com.hdmstuttgart.mi.backend.model.dto.AuthenticationRequest;
-import com.hdmstuttgart.mi.backend.model.dto.AuthenticationResponse;
-import com.hdmstuttgart.mi.backend.model.dto.RegisterRequest;
-import com.hdmstuttgart.mi.backend.model.dto.VerificationRequest;
+import com.hdmstuttgart.mi.backend.model.dto.*;
 import com.hdmstuttgart.mi.backend.model.enums.UserRole;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -44,7 +43,7 @@ public class AuthenticationService {
                 .role(UserRole.UNVERIFIED)
                 .build();
         userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtService.generateAccessToken(user);
 
         try {
             emailSenderService.sendEmailWithTemplate(user.getEmail(), "verification");
@@ -67,7 +66,7 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException(request.getEmail()));
 
-        String jwtToken = jwtService.generateToken(user);
+        String jwtToken = jwtService.generateAccessToken(user);
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -97,5 +96,30 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .userId(user.getId())
                 .build();
+    }
+
+    public AuthenticationResponse refresh(RefreshTokenRequest request) {
+        // Get the username from the refresh token
+        String username = jwtService.extractUsername(request.getRefreshToken());
+
+        // Load the user from the database
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // Validate the refresh token
+        jwtService.isRefreshTokenValid(request.getRefreshToken(), user);
+
+        // Authenticate the user
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        // Generate new access and refresh tokens
+        String accessToken = jwtService.generateAccessToken(userDetails);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        // Return the new tokens in the response
+        return new AuthenticationResponse(accessToken, refreshToken);
     }
 }

@@ -9,14 +9,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
-
-    private String token;
+public class RefreshTokenRequest {
     private String refreshToken;
-    private boolean verified;
-    private boolean hasEnterprise;
-    private long userId;
 
-    public AuthenticationResponse(String token, String refreshToken) {
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
