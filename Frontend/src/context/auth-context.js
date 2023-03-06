@@ -56,7 +56,7 @@ export const AuthContextProvider = (props) => {
   };
 
   const loginHandler = async (authRequest, customConfig) => {
-    const response = await axios.post('http://localhost:8080/api/auth/authenticate', authRequest, customConfig);
+    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/authenticate`, authRequest, customConfig);
     let resObj = response.data;
     localStorage.setItem('tokenJWT', resObj.token);
 
@@ -71,13 +71,13 @@ export const AuthContextProvider = (props) => {
   };
 
   const signUpHandler = async (registerRequest, customConfig) => {
-    const response = await axios.post('http://localhost:8080/api/auth/register', registerRequest, customConfig);
+    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/register`, registerRequest, customConfig);
     let token = localStorage.setItem('tokenJWT', JSON.stringify(response.data));
     setToken(token);
   }
 
   const verifyHandler = async (verifyRequest, customConfig) => {
-    const response = await axios.post('http://localhost:8080/api/auth/verify', verifyRequest, customConfig);
+    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/verify`, verifyRequest, customConfig);
     setUserId(response.data.userId);
     setIsLoggedIn(true);
   }
