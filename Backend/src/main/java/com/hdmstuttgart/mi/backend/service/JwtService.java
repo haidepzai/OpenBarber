@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,8 @@ import java.util.function.Function;
 public class JwtService {
 
     private static final String SECRET_KEY = "28482B4D6251655468576D5A7134743777217A24432646294A404E635266556A"; //TODO move to .env
-    private static final long EXPIRATION_TIME = 86400000; // 24 hours in milliseconds
+    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // 15 minutes in seconds
+    private static final long REFRESH_TOKEN_EXPIRATION_TIME = 30 * 24 * 60 * 60; // 30 days in seconds
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -30,39 +32,33 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateAccessToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return generateToken(claims, userDetails, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
-    public String generateToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails
-    ) {
-        return Jwts
-                .builder()
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
+    public String generateRefreshToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return generateToken(claims, userDetails, REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
-    public static String generateToken(String email) {
-        Date now = new Date();
-        Date expiration = new Date(now.getTime() + EXPIRATION_TIME);
-
-        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-
+    private String generateToken(Map<String, Object> claims, UserDetails userDetails, long expirationTime) {
+        Instant now = Instant.now();
         return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(key)
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(now.plusSeconds(expirationTime)))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isAccessTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    public boolean isRefreshTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
@@ -78,26 +74,22 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
-                .setSigningKey(getSignInKey())
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+    private Key getSigningKey() {
+        byte[] keyBytes = SECRET_KEY.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public static String verifyTokenAndGetEmail(String token) throws JwtException {
-        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.getSubject();
+    public String refreshAccessToken(String refreshToken, UserDetails userDetails) {
+        final Claims claims = extractAllClaims(refreshToken);
+        if (!claims.getSubject().equals(userDetails.getUsername())) {
+            throw new IllegalArgumentException("Invalid refresh token for this user");
+        }
+        return generateAccessToken(userDetails);
     }
 }
