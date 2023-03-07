@@ -50,7 +50,6 @@ public class ServiceService {
                 .map(service -> {
                     service.setPrice(newService.getPrice());
                     service.setTitle(newService.getTitle());
-                    service.setDescription(newService.getDescription());
                     service.setDurationInMin(newService.getDurationInMin());
                     service.setTargetAudience(newService.getTargetAudience());
 

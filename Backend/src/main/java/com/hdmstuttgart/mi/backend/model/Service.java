@@ -29,8 +29,6 @@ public class Service {
     @Column(nullable = false, unique = true)
     private String title;
 
-    private String description;
-
     @NotNull(message = "Duration is mandatory")
     private int durationInMin;
 
