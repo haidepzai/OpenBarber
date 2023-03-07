@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Stack, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 
-const Stylist = ({ stylist, onClick }) => {
+const Stylist = ({ employee, onClick }) => {
     return (
         <Stack
             position="relative"
@@ -16,17 +16,17 @@ const Stylist = ({ stylist, onClick }) => {
             }}
             onClick={onClick}>
             <Avatar
-                alt={stylist.name}
-                src={stylist.picture}
+                alt={employee.name}
+                src={employee.picture}
                 sx={{ width: 50, height: 50 }}
             />
             <Box>
-                <Typography sx={{ lineHeight: "unset" }}>{stylist.name}</Typography>
+                <Typography sx={{ lineHeight: "unset" }}>{employee.name}</Typography>
                 <Typography variant="overline" sx={{
                     textTransform: 'uppercase',
                     lineHeight: "unset",
                     color: "#666"
-                }}>{stylist.titel}</Typography>
+                }}>{employee.titel}</Typography>
             </Box>
         </Stack>
     );

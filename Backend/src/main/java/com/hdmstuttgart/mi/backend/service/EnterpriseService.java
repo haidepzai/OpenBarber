@@ -205,6 +205,7 @@ public class EnterpriseService {
                                 picture = employeeRequest.getPicture();
                             }
                             employee.setPicture(picture);
+                            employee.setTitle(employeeRequest.getTitle());
                         }
                         enterprise.setEmployees(employees);
                     }

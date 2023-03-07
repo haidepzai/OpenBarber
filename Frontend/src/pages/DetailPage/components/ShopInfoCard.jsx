@@ -6,6 +6,7 @@ import ReservationDialog from '../../../components/Reservation/ReservationDialog
 import PhotoGallery from '../../../components/Gallery/PhotoGallery';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import dayjs from 'dayjs';
+import { convertDateToTime } from '../../../shared/ConvertTime';
 
 const TabPanel = ({ children, value, index, ...props }) => (value === index ? <Box {...props}>{children}</Box> : null);
 
@@ -89,8 +90,8 @@ const ShopInfoCard = ({ shop, mobile }) => {
               <AccessTimeIcon />
               <Typography variant="h6">Opening Hours:</Typography>
               <Typography variant="h6">
-                {shop.openingTime ? dayjs(shop.openingTime, 'hh:mm').format('hh:mm') : 'N/A'} -{' '}
-                {shop.openingTime ? dayjs(shop.closingTime, 'hh:mm').format('hh:mm') : 'N/A'}
+                {shop.openingTime ? convertDateToTime(shop.openingTime) : 'N/A'} -{' '}
+                {shop.openingTime ? convertDateToTime(shop.closingTime) : 'N/A'}
               </Typography>
             </Stack>
 
