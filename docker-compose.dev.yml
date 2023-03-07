@@ -4,10 +4,13 @@
 #
 # CMD: docker compose -f docker-compose.dev.yml up -d
 
-version: '3.7'
+version: '3.8'
 
 services:
-
+  frontend:
+    build: ./Frontend
+    ports:
+      - "3000:3000"
   database:
     image: postgres:alpine
     container_name: openbarber-pgdb

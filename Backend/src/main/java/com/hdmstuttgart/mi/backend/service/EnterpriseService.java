@@ -65,7 +65,6 @@ public class EnterpriseService {
                 var service = com.hdmstuttgart.mi.backend.model.Service.builder()
                         .price(serviceRequest.getPrice())
                         .title(serviceRequest.getTitle())
-                        .description(serviceRequest.getDescription())
                         .durationInMin(serviceRequest.getDurationInMin())
                         .targetAudience(serviceRequest.getTargetAudience())
                         .build();

@@ -115,7 +115,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 2,
+                    gap: 8,
                     backgroundColor: 'grey.200',
                     borderRadius: '100vw',
                     px: 2,
