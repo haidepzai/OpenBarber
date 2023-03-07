@@ -7,13 +7,14 @@ import { Box, Stack, TextField } from '@mui/material';
 import React, { useEffect, useState, useCallback, useReducer, useContext } from 'react';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { createEmployee } from '../../../actions/EmployeeActions';
+import { createEmployee, updateStylist } from '../../../actions/EmployeeActions';
 import AuthContext from '../../../context/auth-context';
 
 const initialState = {
   name: '',
   title: '',
-  picture: null
+  picture: null,
+  id: undefined
 };
 
 const employeeReducer = (state, action) => {
@@ -24,6 +25,8 @@ const employeeReducer = (state, action) => {
       return { ...state, title: action.payload };
     case 'SET_PICTURE':
       return { ...state, picture: action.payload };
+    case 'SET_ID':
+      return { ...state, id: action.payload };
     case 'RESET':
       return initialState;
     default:
@@ -83,7 +86,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
       // Update Employee
       if (editingMode()) {
         updateEmployee(employee);
-        //await updateStylist(editedEmployee.id, employee);
+        await updateStylist(editedEmployee.id, employee);
         setEditedEmployee(undefined);
       } else { // Add Employee
         addEmployee(employee);
@@ -98,10 +101,11 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
   }
 
   useEffect(() => {
-    if (editingMode()) {   
-      dispatch({ type: 'SET_NAME', payload: editedEmployee.name });   
-      dispatch({ type: 'SET_TITLE', payload: editedEmployee.title });  
-    } 
+    if (editingMode()) {
+      dispatch({ type: 'SET_NAME', payload: editedEmployee.name });
+      dispatch({ type: 'SET_TITLE', payload: editedEmployee.title });
+      dispatch({ type: 'SET_ID', payload: editedEmployee.id });
+    }
   }, [])
 
 
