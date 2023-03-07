@@ -8,11 +8,11 @@ import Typography from '@mui/material/Typography';
 import { Box, CardActionArea, Rating } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
-export default function MediaCard({ shop, setOpenReservationDialog }) {
+export default function MediaCard({ shop, setOpenModal }) {
   const handleClick = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    setOpenReservationDialog(true);
+    setOpenModal(shop.id);
   };
 
   const rating = () => {
