@@ -18,8 +18,6 @@ const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', '
 const drinkOptions = ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'];
 
 const Filter = ({ filter, setFilter }) => {
-  const { state } = useLocation();
-
   /*const updateFilter = (topic, property) => {
     setFilter({
       ...filter,
