@@ -11,7 +11,7 @@ import { useState } from "react";
 import mockStylists from '../../mocks/stylists';
 import { DateTimePicker } from '@mui/x-date-pickers';
 
-const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate }) => {
+const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmployees }) => {
 
     const [expanded, setExpanded] = useState(false);
 
@@ -43,7 +43,7 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate }) => {
                         }
                     </Box>
                 </Box>
-                {mockStylists.filter((employee) => employee.name !== pickedStylist.name).map((employee) => (
+                {shopEmployees.filter((employee) => employee.name !== pickedStylist.name).map((employee) => (
                     <Stylist key={employee.name} employee={employee} onClick={() => handlePick(employee)} />
                 ))}
             </Accordion>

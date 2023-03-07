@@ -180,7 +180,7 @@ function ReservationDialog({ open, handleClose, shop }) {
                     }
 
                     {activeStep === 1 &&
-                        <DatePage pickedStylist={data.employee} pickStylist={pickStylist} pickedDate={data.appointmentDateTime} pickDate={pickDate} />
+                        <DatePage pickedStylist={data.employee} pickStylist={pickStylist} pickedDate={data.appointmentDateTime} pickDate={pickDate} shopEmployees={shop.employees} />
                     }
 
                     {activeStep === 2 &&
