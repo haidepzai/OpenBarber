@@ -25,7 +25,8 @@ const initialState = {
         email: "",
         phoneNumber: "",
     },
-    note: ""
+    note: "",
+    paymentMethod: "ON_SITE_CASH"
 };
 
 const initialErrorState = {
@@ -48,6 +49,8 @@ const reducer = (state, action) => {
             return { ...state, personalData: { ...state.personalData, ...action.payload } };
         case 'set_enterprise_id':
             return { ...state, enterpriseId: action.payload };
+        case 'set_payment_method':
+            return { ...state, paymentMethod: action.payload };
         default:
             throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -60,6 +63,7 @@ function ReservationDialog({ open, handleClose, shop }) {
     const [showSuccessScreen, setShowSuccessScreen] = useState(false);
 
     useEffect(() => {
+        console.log(shop);
         console.log(shop.id);
         dispatch({type: 'set_enterprise_id', payload: shop.id})
     }, [shop.id]);
@@ -177,15 +181,36 @@ function ReservationDialog({ open, handleClose, shop }) {
                     </Box>
 
                     {activeStep === 0 &&
-                        <ServicePage pickedServices={data.services} pickService={pickService} removeService={removeService} name={shop.name} shopServices={shop.services}/>
+                        <ServicePage 
+                            pickedServices={data.services} 
+                            pickService={pickService} 
+                            removeService={removeService} 
+                            name={shop.name} 
+                            shopServices={shop.services}
+                            />
                     }
 
                     {activeStep === 1 &&
-                        <DatePage pickedStylist={data.employee} pickStylist={pickStylist} pickedDate={data.appointmentDateTime} pickDate={pickDate} shopEmployees={shop.employees} />
+                        <DatePage 
+                            pickedStylist={data.employee} 
+                            pickStylist={pickStylist} 
+                            pickedDate={data.appointmentDateTime} 
+                            pickDate={pickDate} 
+                            shopEmployees={shop.employees} 
+                        />
                     }
 
                     {activeStep === 2 &&
-                        <OverviewPage data={data} setData={dispatch} handleStep={handleStep} showErrors={!!error[2]} noneEmpty={validate(2)} error={error} setError={setError} />
+                        <OverviewPage 
+                            data={data} 
+                            dispatch={dispatch} 
+                            handleStep={handleStep} 
+                            showErrors={!!error[2]} 
+                            noneEmpty={validate(2)} 
+                            error={error} 
+                            setError={setError} 
+                            shopPaymentMethods={shop.paymentMethods}
+                        />
                     }
 
                     <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px", borderTop: "1px solid rgba(0, 0, 0, 0.3)", boxShadow: "0 -3px 10px rgba(0, 0, 0, 0.3)", zIndex: "1" }}>

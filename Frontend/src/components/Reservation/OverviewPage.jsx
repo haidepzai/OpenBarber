@@ -9,13 +9,19 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Overview from "./Overview";
-require('dayjs/locale/de')
+require('dayjs/locale/de');
 
+const paymentMethods = {
+    ON_SITE_CASH: 'On Site (Cash)',
+    ON_SITE_CARD: 'On Site (Card)',
+    BANK_TRANSFER: 'Bank transfer',
+    PAYPAL: 'PayPal'
+}
 
-const OverviewPage = ({ data, setData, handleStep, showErrors, noneEmpty, error, setError }) => {
+const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error, setError, shopPaymentMethods }) => {
 
     const handleChange = (event) => {
-        setData({ type: 'set_personal_data', payload: {[event.target.name]: event.target.value }});
+        dispatch({ type: 'set_personal_data', payload: { [event.target.name]: event.target.value } });
 
         if (noneEmpty) {
             setError({
@@ -117,10 +123,22 @@ const OverviewPage = ({ data, setData, handleStep, showErrors, noneEmpty, error,
                     aria-labelledby="demo-radio-buttons-group-label"
                     defaultValue="female"
                     name="radio-buttons-group"
+                    value={data.paymentMethod}
+                    onChange={(event) => dispatch({ type: 'set_payment_method', payload: event.target.value })}
                 >
-                    <FormControlLabel value="On Site (Cash or Card)" control={<Radio />} label="On Site (Cash or Card)" />
-                    <FormControlLabel value="Paypal" control={<Radio />} label="Paypal" />
-                    <FormControlLabel value="Bank Transfer" control={<Radio />} label="Bank Transfer" />
+                    {shopPaymentMethods.length !== 0 && shopPaymentMethods !== undefined &&
+                        shopPaymentMethods.map((paymentMethod) => (
+                            <FormControlLabel
+                                key={paymentMethod}
+                                value={paymentMethod}
+                                control={<Radio />}
+                                label={paymentMethods[paymentMethod]}
+                            />
+                        ))
+                    }
+                    {(shopPaymentMethods.length === 0 || shopPaymentMethods === undefined) &&
+                        <FormControlLabel value="ON_SITE_CASH" control={<Radio />} label="On Site (Cash or Card)" />
+                    }
                 </RadioGroup>
             </FormControl>
         </Box>

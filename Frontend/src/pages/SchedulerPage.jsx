@@ -418,14 +418,12 @@ const SchedulerPage = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const basicConfig = { headers: { 'Content-type': 'application/json' } };
       const tokenConfig = {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
       };
-      console.log(tokenConfig);
 
       let res = await axios.get('http://localhost:8080/api/enterprises/user', tokenConfig);
       let enterprise = res.data;
