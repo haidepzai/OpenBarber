@@ -14,3 +14,34 @@ export const deleteServiceById = async (id) => {
     throw new Error('Could not delete service');
   }
 };
+
+export const createService = async (service, enterpriseId) => {
+  const config = {
+    method: 'POST',
+    params: { enterpriseId: enterpriseId },
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+    },
+  };
+  try {
+    const response = await axios.post(`${serviceUrl}`, service, config);
+    return response;
+  } catch (err) {
+    throw new Error('Could not delete service');
+  }
+}
+
+export const updateService = async (id, service) => {
+  const config = {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+    },
+  };
+  try {
+    const response = await axios.put(`${serviceUrl}${id}`, service, config);
+    return response;
+  } catch (err) {
+    throw new Error('Could not delete service');
+  }
+}
