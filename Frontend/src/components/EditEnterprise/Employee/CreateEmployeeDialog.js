@@ -4,9 +4,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Box, Stack, TextField } from '@mui/material';
-import React, { useEffect, useState, useCallback, useReducer } from 'react';
+import React, { useEffect, useState, useCallback, useReducer, useContext } from 'react';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { createEmployee } from '../../../actions/EmployeeActions';
+import AuthContext from '../../../context/auth-context';
 
 const initialState = {
   name: '',
@@ -33,16 +35,10 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
   const editingMode = () => editedEmployee && setEditedEmployee && updateEmployee && !addEmployee;
 
   const [initialClick, setInitialClick] = useState(false);
-
   const [errors, setErrors] = useState(initialState);
+  const authCtx = useContext(AuthContext);
 
-  const [employee, dispatch] = useReducer(employeeReducer, () => {
-    if (editingMode()) {
-      return editedEmployee;
-    } else {
-      return initialState;
-    }
-  });
+  const [employee, dispatch] = useReducer(employeeReducer, initialState);
 
   const handleClose = () => {
     setOpen(false);
@@ -80,15 +76,18 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
     return !nameError;
   }, [employee.name, errors, uniqueEmployees]);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (validate()) {
       handleClose();
 
+      // Update Employee
       if (editingMode()) {
         updateEmployee(employee);
+        //await updateStylist(editedEmployee.id, employee);
         setEditedEmployee(undefined);
-      } else {
+      } else { // Add Employee
         addEmployee(employee);
+        await createEmployee(employee, authCtx.user.enterprise.id);
         dispatch({ type: 'RESET' });
       }
       setInitialClick(false);
@@ -99,8 +98,12 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
   }
 
   useEffect(() => {
-    validate();
-  }, [employee]);
+    if (editingMode()) {   
+      dispatch({ type: 'SET_NAME', payload: editedEmployee.name });   
+      dispatch({ type: 'SET_TITLE', payload: editedEmployee.title });  
+    } 
+  }, [])
+
 
   return (
     <>
