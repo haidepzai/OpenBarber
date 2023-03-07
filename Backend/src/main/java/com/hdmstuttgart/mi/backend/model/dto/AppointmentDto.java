@@ -3,9 +3,11 @@ package com.hdmstuttgart.mi.backend.model.dto;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.Service;
+import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public class AppointmentDto {
     private Long id;
@@ -14,6 +16,7 @@ public class AppointmentDto {
     private String customerPhoneNumber;
     private String customerEmail;
     private LocalDateTime appointmentDateTime;
+    private Set<PaymentMethod> paymentMethods;
 
     private boolean confirmed;
 

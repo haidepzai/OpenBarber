@@ -114,6 +114,7 @@ function ReservationDialog({ open, handleClose, shop }) {
             enterpriseId: shop.id,
             employee: data.employee,
             services: data.services,
+            paymentMethod: data.paymentMethod
           };
         console.log(requestObject);
         let res = await createAppointment(requestObject, shop.id);
