@@ -59,6 +59,7 @@ function ReservationDialog({ open, handleClose, shop }) {
     const [showSuccessScreen, setShowSuccessScreen] = useState(false);
 
     useEffect(() => {
+        console.log(shop.id);
         dispatch({type: 'set_enterprise_id', payload: shop.id})
     }, [shop.id]);
 
@@ -175,7 +176,7 @@ function ReservationDialog({ open, handleClose, shop }) {
                     </Box>
 
                     {activeStep === 0 &&
-                        <ServicePage pickedServices={data.services} pickService={pickService} removeService={removeService} name={shop.name} />
+                        <ServicePage pickedServices={data.services} pickService={pickService} removeService={removeService} name={shop.name} shopServices={shop.services}/>
                     }
 
                     {activeStep === 1 &&

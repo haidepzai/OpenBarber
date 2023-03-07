@@ -33,7 +33,7 @@ const FilterResults = ({ filter, loc }) => {
 
   const [shops, setShops] = useState([]);
   const [sortValue, setSortValue] = useState((location.state && location.state.sortValue) || 'Suggested');
-  const [openReservationDialog, setOpenReservationDialog] = useState(false);
+  const [openModal, setOpenModal] = useState();
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -193,7 +193,7 @@ const FilterResults = ({ filter, loc }) => {
                       </Stack>
                       <Button
                         variant="contained"
-                        onClick={() => setOpenReservationDialog(true)}
+                        onClick={() => setOpenModal(shop.id)}
                         endIcon={<TodayIcon />}
                         sx={{ maxWidth: 'fit-content', '& > span': { marginLeft: '14px' } }}
                       >
@@ -204,7 +204,7 @@ const FilterResults = ({ filter, loc }) => {
 
                   <Divider />
 
-                  <ReservationDialog open={openReservationDialog} handleClose={() => setOpenReservationDialog(false)} shop={shop} />
+                  {openModal === shop.id && <ReservationDialog open={openModal === shop.id} handleClose={() => setOpenModal(undefined)} shop={shop} />}
                 </Box>
               ))}
           </>

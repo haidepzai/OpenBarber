@@ -16,8 +16,8 @@ const DetailPage = () => {
   const [loading, setLoading] = useState(true);
 
   const loadShop = async () => {
-    const shops = await getShop(routeId);
-    setShop(shops);
+    const enterprise = await getShop(routeId);
+    setShop(enterprise);
   };
 
   useEffect(() => {
