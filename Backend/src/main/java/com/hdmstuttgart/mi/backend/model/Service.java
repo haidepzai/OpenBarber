@@ -26,7 +26,7 @@ public class Service {
     private double price;
 
     @NotBlank(message = "Title is mandatory")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String title;
 
     @NotNull(message = "Duration is mandatory")

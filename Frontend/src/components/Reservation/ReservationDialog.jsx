@@ -13,9 +13,10 @@ import dayjs from 'dayjs';
 const steps = ['Services', 'Date', 'Booking'];
 
 const initialState = {
-    shop: 1,
+    enterpriseId: "",
     services: [],
     employee: { name: "Any" },
+    employeeId: "",
     appointmentDateTime: dayjs(),
     personalData: {
         formOfAddress: "None",
@@ -40,13 +41,13 @@ const reducer = (state, action) => {
         case 'remove_service':
             return { ...state, services: state.services.filter((service) => service !== action.payload) };
         case 'set_employee':
-            return { ...state, employee: action.payload };
+            return { ...state, employee: action.payload, employeeId: action.payload.id };
         case 'set_date':
             return { ...state, appointmentDateTime: action.payload };
         case 'set_personal_data':
             return { ...state, personalData: { ...state.personalData, ...action.payload } };
         case 'set_enterprise_id':
-            return { ...state, shop: action.payload };
+            return { ...state, enterpriseId: action.payload };
         default:
             throw new Error(`Unhandled action type: ${action.type}`);
     }

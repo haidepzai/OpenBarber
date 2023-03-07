@@ -1,10 +1,55 @@
 import { Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material'
-import React, { Fragment, useContext } from 'react'
+import React, { Fragment, useContext, useReducer, useState } from 'react'
 import AuthContext from '../../context/auth-context'
 import { updateUser } from '../../actions/UserActions'
 
+const emailReducer = (state, action) => {
+    if (action.type === 'USER_INPUT') {
+        let isValid = false;
+
+        let regEmail =
+            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (regEmail.test(action.val)) {
+            isValid = true;
+        } else {
+            isValid = false;
+        }
+        return { value: action.val, isValid: isValid };
+    }
+    //state.value ist latest value
+    if (action.type === 'INPUT_BLUR') {
+        return { value: state.value, isValid: state.value.includes('@') };
+    }
+    return { value: '', isValid: false };
+};
+
+const passwordReducer = (state, action) => {
+    if (action.type === 'USER_INPUT') {
+        return { value: action.val, isValid: action.val.trim().length > 6 };
+    }
+    if (action.type === 'INPUT_BLUR') {
+        return { value: state.value, isValid: state.value.trim().length > 6 };
+    }
+    return { value: '', isValid: false };
+};
+
 const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
     const authCtx = useContext(AuthContext);
+
+    const [formIsValid, setFormIsValid] = useState(false);
+
+    const [emailState, dispatchEmail] = useReducer(emailReducer, {
+        value: '',
+        isValid: true,
+    });
+    const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
+        value: '',
+        isValid: true,
+    });
+
+    // Object Destructuring : pull out certain properties from object
+    const { isValid: emailIsValid } = emailState; //Alias Assignment emailIsValid
+    const { isValid: passwordIsValid } = passwordState; //Allias Assignment not Value Assignment!!
 
     const saveUser = async () => {
         try {
@@ -22,6 +67,11 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
     };
 
     const handleUserChange = (event) => {
+        if (event.target.name === 'email') {
+            emailChangeHandler(event);
+        } else if (event.target.name === 'password') {
+            passwordChangeHandler(event);
+        }
         const name = event.target.name;
         const value = event.target.value;
         authCtx.setUser({
@@ -29,6 +79,24 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
             [name]: value,
         });
     };
+
+    const emailChangeHandler = (event) => {
+        dispatchEmail({ type: 'USER_INPUT', val: event.target.value }); //trigger emailReducer function
+        setFormIsValid(emailState.isValid && passwordState.isValid && (emailState.length !== 0 || passwordState.length !== 0));
+    };
+
+    const passwordChangeHandler = (event) => {
+        dispatchPassword({ type: 'USER_INPUT', val: event.target.value });
+        setFormIsValid(passwordState.isValid && emailState.isValid && (emailState.length !== 0 || passwordState.length !== 0));
+    };
+
+    const validateEmailHandler = () => {
+        dispatchEmail({ type: 'INPUT_BLUR' });
+      };
+    
+      const validatePasswordHandler = () => {
+        dispatchPassword({ type: 'INPUT_BLUR' });
+      };
 
 
     return (
@@ -80,8 +148,12 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
                             name="email"
                             placeholder="E-Mail Address"
                             value={authCtx.user.email === null ? '' : authCtx.user.email}
+                            error={!emailIsValid}
+                            helperText={!emailIsValid && 'Please enter a correct email'}
                             onChange={handleUserChange}
+                            onBlur={validateEmailHandler}
                             fullWidth
+
                         />
                     </Stack>
 
@@ -92,8 +164,10 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
                             InputLabelProps={{ shrink: false }}
                             name="password"
                             placeholder="Password"
-                            value={authCtx.user.password === null ? '' : authCtx.user.password}
+                            error={!passwordIsValid}
+                            helperText={!passwordIsValid && 'Please enter a password'}
                             onChange={handleUserChange}
+                            onBlur={validatePasswordHandler}
                             fullWidth
                         />
                     </Stack>
@@ -105,7 +179,7 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
                     <Button variant="outlined" onClick={resetUser}>
                         Reset
                     </Button>
-                    <Button variant="contained" onClick={saveUser}>
+                    <Button variant="contained" onClick={saveUser} disabled={!formIsValid}>
                         Save Changes
                     </Button>
                 </Stack>
