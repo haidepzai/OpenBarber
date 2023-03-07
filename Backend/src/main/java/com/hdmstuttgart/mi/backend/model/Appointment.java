@@ -65,8 +65,9 @@ public class Appointment {
 
     @ManyToMany
     @JoinTable(
-            name = "appointment_services",
-            joinColumns = @JoinColumn(name = "appointment_id", referencedColumnName = "services_id"))
+            name = "appointment_service",
+            joinColumns = @JoinColumn(name = "appointment_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id"))
     private List<Service> services = new ArrayList<>();
 
     public List<Service> getServices() {
