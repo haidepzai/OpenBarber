@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,14 +17,16 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Appointment {
 
-//    @Id
-//    @GeneratedValue
-//    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
+    /*
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
+    */
 
     private boolean reviewed;
 
@@ -49,8 +52,6 @@ public class Appointment {
     @Size(max = 500, message = "Rating Text should not exceed 500 characters")
     private String ratingText;*/
 
-    @ManyToMany
-    private List<Service> services;
 
     @ManyToOne
     @JsonIgnore
@@ -61,6 +62,20 @@ public class Appointment {
     @JsonIgnore
     @JoinColumn(name = "employee_id")
     private Employee employee;
+
+    @ManyToMany
+    @JoinTable(
+            name = "appointment_services",
+            joinColumns = @JoinColumn(name = "appointment_id", referencedColumnName = "services_id"))
+    private List<Service> services = new ArrayList<>();
+
+    public List<Service> getServices() {
+        return services;
+    }
+
+    public void setServices(List<Service> services) {
+        this.services = services;
+    }
 /*    public int getTotalDuration(){
         int totalDuration = 0;
         for(Service service : services)
