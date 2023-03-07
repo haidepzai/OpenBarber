@@ -8,10 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -38,11 +35,12 @@ public class Enterprise {
     private double addressLongitude;
     private double addressLatitude;
 
-    /*@NotBlank(message = "Email is mandatory")
-    @Column(*//*nullable = false, *//*unique = true)*/
+    @NotBlank(message = "Email is mandatory")
+    @Column(nullable = false, unique = true)
     @Email
     private String email;
 
+    @Pattern(regexp="(^$|[0-9]{10})", message = "Invalid phone number")
     private String phoneNumber;
 
     private URL website;
@@ -59,8 +57,8 @@ public class Enterprise {
 
     private boolean approved;
 
-//    @Min(value = 1, message = "Price Category must be greater than or equal to 1")
-//    @Max(value = 3, message = "Price Category must be smaller than or equal to 3")
+    @Min(value = 0, message = "Price Category must be greater than or equal to 0")
+    @Max(value = 3, message = "Price Category must be smaller than or equal to 3")
     private int priceCategory;
 
     @ElementCollection(targetClass = PaymentMethod.class)
@@ -87,12 +85,7 @@ public class Enterprise {
     @OneToMany(cascade=CascadeType.ALL, mappedBy = "enterprise")
     private List<Employee> employees;
 
-
-/*    @Lob
-    private byte[] file;
-    @Lob
-    private Blob logo;
-    @Lob
-    private List<Blob> pictures;*/
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "enterprise")
+    private List<Appointment> appointments;
 
 }

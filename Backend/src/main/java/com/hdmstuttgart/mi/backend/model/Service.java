@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Builder
@@ -39,4 +40,8 @@ public class Service {
     @JsonIgnore
     @JoinColumn(name = "enterprise_id")
     private Enterprise enterprise;
+
+    @ManyToMany(mappedBy = "services")
+    @JsonIgnore
+    private List<Appointment> appointments;
 }
