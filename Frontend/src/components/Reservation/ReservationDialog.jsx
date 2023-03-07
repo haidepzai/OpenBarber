@@ -9,6 +9,7 @@ import DatePage from "./DatePage";
 import OverviewPage from "./OverviewPage";
 import SuccessScreen from "./SuccessScreen";
 import dayjs from 'dayjs';
+import { createAppointment } from '../../actions/AppointmentActions';
 
 const steps = ['Services', 'Date', 'Booking'];
 
@@ -65,7 +66,7 @@ function ReservationDialog({ open, handleClose, shop }) {
     useEffect(() => {
         console.log(shop);
         console.log(shop.id);
-        dispatch({type: 'set_enterprise_id', payload: shop.id})
+        dispatch({ type: 'set_enterprise_id', payload: shop.id })
     }, [shop.id]);
 
     const validate = (step) => {
@@ -107,9 +108,20 @@ function ReservationDialog({ open, handleClose, shop }) {
     }
 
     //TODO: Send Data to backend
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        const requestObject = {
+            customerName: `${data.personalData.firstName} ${data.personalData.lastName}`,
+            customerPhoneNumber: data.personalData.phoneNumber,
+            customerEmail: data.personalData.email,
+            appointmentDateTime: data.appointmentDateTime,
+            enterpriseId: shop.id,
+            employee: data.employee,
+            services: data.services,
+          };
+        console.log(requestObject);
+        let res = await createAppointment(requestObject, shop.id);
         setShowSuccessScreen(true);
-        console.log(data)
+        console.log(res);
     }
 
     const handleStep = (step) => {
@@ -123,7 +135,7 @@ function ReservationDialog({ open, handleClose, shop }) {
             setError({
                 ...error,
                 0: ""
-            })
+            });
         }
     }
 
@@ -141,7 +153,7 @@ function ReservationDialog({ open, handleClose, shop }) {
             setError({
                 ...error,
                 1: ""
-            })
+            });
         }
     }
 
@@ -154,7 +166,6 @@ function ReservationDialog({ open, handleClose, shop }) {
             return false
         }
     }
-
 
     return (
         <Dialog
@@ -181,34 +192,34 @@ function ReservationDialog({ open, handleClose, shop }) {
                     </Box>
 
                     {activeStep === 0 &&
-                        <ServicePage 
-                            pickedServices={data.services} 
-                            pickService={pickService} 
-                            removeService={removeService} 
-                            name={shop.name} 
+                        <ServicePage
+                            pickedServices={data.services}
+                            pickService={pickService}
+                            removeService={removeService}
+                            name={shop.name}
                             shopServices={shop.services}
-                            />
+                        />
                     }
 
                     {activeStep === 1 &&
-                        <DatePage 
-                            pickedStylist={data.employee} 
-                            pickStylist={pickStylist} 
-                            pickedDate={data.appointmentDateTime} 
-                            pickDate={pickDate} 
-                            shopEmployees={shop.employees} 
+                        <DatePage
+                            pickedStylist={data.employee}
+                            pickStylist={pickStylist}
+                            pickedDate={data.appointmentDateTime}
+                            pickDate={pickDate}
+                            shopEmployees={shop.employees}
                         />
                     }
 
                     {activeStep === 2 &&
-                        <OverviewPage 
-                            data={data} 
-                            dispatch={dispatch} 
-                            handleStep={handleStep} 
-                            showErrors={!!error[2]} 
-                            noneEmpty={validate(2)} 
-                            error={error} 
-                            setError={setError} 
+                        <OverviewPage
+                            data={data}
+                            dispatch={dispatch}
+                            handleStep={handleStep}
+                            showErrors={!!error[2]}
+                            noneEmpty={validate(2)}
+                            error={error}
+                            setError={setError}
                             shopPaymentMethods={shop.paymentMethods}
                         />
                     }

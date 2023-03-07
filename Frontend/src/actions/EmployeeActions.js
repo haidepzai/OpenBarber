@@ -24,10 +24,10 @@ export const createEmployee = async (employee, enterpriseId) => {
     },
   };
   try {
-    const response = await axios.post(`${employeeUrl}`, employee, config);
+    const response = await axios.post(employeeUrl, employee, config);
     return response;
   } catch (err) {
-    throw new Error('Could not delete employee');
+    throw new Error('Could not create employee');
   }
 }
 
