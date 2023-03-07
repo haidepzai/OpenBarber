@@ -78,4 +78,11 @@ const makeRequest = async (url, method = 'get', data = null) => {
   return response.data;
 };
 
-export { makeRequest, setAccessToken, setRefreshToken };
+const refreshToken = async () => {
+  const refreshToken = getRefreshToken();
+  const response = await axios.post('/auth/refresh', { refreshToken });
+  console.log(response);
+  return response;
+}
+
+export { makeRequest, setAccessToken, setRefreshToken, refreshToken };

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { getUserByToken } from '../actions/UserActions';
+import { refreshToken } from './interceptor';
 
 //Default Werte des Context (werden unten im Provider dann gesetzt)
 const AuthContext = React.createContext({
@@ -50,9 +51,13 @@ export const AuthContextProvider = (props) => {
 
   // wird immer zuerst aufgerufen, als aller erstes
   useEffect(() => {
+    const getRefreshToken = async () => {
+      await refreshToken();
+    }
     const authenticate = async () => {
       await checkForJWTToken();
     };
+    //getRefreshToken().catch(console.error);
     authenticate().catch(console.error);
   }, []);
 

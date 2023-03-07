@@ -30,7 +30,11 @@ public class AppointmentService {
         this.serviceRepository = serviceRepository;
     }
 
-    public Appointment createAppointment(Appointment appointment, long enterpriseId, long employeeId, List<Long> serviceIds) {
+    public Appointment createAppointment(Appointment appointment, long enterpriseId) {
+        long employeeId = appointment.getEmployee().getId();
+        List<Long> serviceIds = appointment.getServices()
+                .stream().map(Service::getId)
+                .collect(Collectors.toList());
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found enterprise with id = " + enterpriseId));
         Employee employee = employeeRepository.findById(employeeId)
@@ -74,6 +78,7 @@ public class AppointmentService {
                     appointment.setCustomerEmail(newAppointment.getCustomerEmail());
                     appointment.setAppointmentDateTime(newAppointment.getAppointmentDateTime());
                     appointment.setConfirmed(newAppointment.isConfirmed());
+                    appointment.setPaymentMethods(newAppointment.getPaymentMethods());
 //                    Appointment.setRating(newAppointment.getRating());
 //                    Appointment.setRatingText(newAppointment.getRatingText());
 

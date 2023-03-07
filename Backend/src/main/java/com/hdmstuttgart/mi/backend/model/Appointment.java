@@ -1,6 +1,7 @@
 package com.hdmstuttgart.mi.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -10,6 +11,7 @@ import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -45,13 +47,10 @@ public class Appointment {
 
     private boolean confirmed;
 
-/*    @Min(value = 1, message = "Rating must be between 1 and 5")
-    @Max(value = 5, message = "Rating must be between 1 and 5")
-    private int rating;
-
-    @Size(max = 500, message = "Rating Text should not exceed 500 characters")
-    private String ratingText;*/
-
+    @ElementCollection(targetClass = PaymentMethod.class)
+    @CollectionTable(name = "appointment_payment_methods", joinColumns = @JoinColumn(name = "appointment_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<PaymentMethod> paymentMethods;
 
     @ManyToOne
     @JsonIgnore
@@ -78,10 +77,4 @@ public class Appointment {
         this.services = services;
     }
 
-/*    public int getTotalDuration(){
-        int totalDuration = 0;
-        for(Service service : services)
-            totalDuration += service.getDurationInMin();
-        return totalDuration;
-    }*/
 }
