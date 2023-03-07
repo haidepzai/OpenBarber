@@ -17,7 +17,7 @@ const Stylist = ({ stylist, onClick }) => {
             onClick={onClick}>
             <Avatar
                 alt={stylist.name}
-                src={stylist.image}
+                src={stylist.picture}
                 sx={{ width: 50, height: 50 }}
             />
             <Box>

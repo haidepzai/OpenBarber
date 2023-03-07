@@ -197,7 +197,7 @@ const FilterResults = ({ filter, loc }) => {
                         endIcon={<TodayIcon />}
                         sx={{ maxWidth: 'fit-content', '& > span': { marginLeft: '14px' } }}
                       >
-                        Termin Buchen
+                        Book Now
                       </Button>
                     </Stack>
                   </Stack>

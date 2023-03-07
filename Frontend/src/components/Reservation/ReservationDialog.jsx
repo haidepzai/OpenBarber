@@ -92,6 +92,7 @@ function ReservationDialog({ open, handleClose, shop }) {
         }
     }
 
+    //TODO: Send Data to backend
     const handleSubmit = () => {
         setShowSuccessScreen(true);
         console.log("Successfully booked your appointment!", data)

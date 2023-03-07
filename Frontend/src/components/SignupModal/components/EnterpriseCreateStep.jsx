@@ -33,7 +33,6 @@ const EnterpriseCreateStep = () => {
   const { ref: acRef } = usePlacesWidget({
     apiKey: GOOGLE_API_KEY,
     onPlaceSelected: (place) => {
-      console.log('new street:', place);
       setData((d) => ({ ...d, enterpriseStreet: place }));
     },
     options: {

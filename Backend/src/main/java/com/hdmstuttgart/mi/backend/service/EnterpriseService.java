@@ -80,6 +80,7 @@ public class EnterpriseService {
                 }
                 var employee = Employee.builder()
                         .name(employeeRequest.getName())
+                        .title(employeeRequest.getTitle())
                         .picture(picture)
                         .build();
                 employees.add(employee);

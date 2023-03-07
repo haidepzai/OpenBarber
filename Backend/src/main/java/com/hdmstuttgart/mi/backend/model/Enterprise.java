@@ -40,7 +40,6 @@ public class Enterprise {
     @Email
     private String email;
 
-    @Pattern(regexp="(^$|[0-9]{10})", message = "Invalid phone number")
     private String phoneNumber;
 
     private URL website;
@@ -49,9 +48,6 @@ public class Enterprise {
     // private Hours hours;
     private String openingTime;
     private String closingTime;
-
-    @OneToMany(cascade=CascadeType.ALL)
-    private List<Review> reviews;
 
     private boolean recommended;
 
@@ -88,4 +84,6 @@ public class Enterprise {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "enterprise")
     private List<Appointment> appointments;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "enterprise")
+    private List<Review> reviews;
 }

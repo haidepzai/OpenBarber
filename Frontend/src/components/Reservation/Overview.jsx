@@ -27,7 +27,7 @@ const Overview = ({ booked, data, handleStep }) => {
                 <Stack direction="column" gap={1} sx={{ width: "100%", padding: "0 16px 0 24px"}}>
                     {data.services.map((service, index) => (
                         <Stack key={service.name} direction="row" justifyContent="space-between" sx={{ width: "100%"}}>
-                            <Typography sx={{ lineHeight: "unset", textTransform: "capitalize", fontSize: data.services.length > 1 ? "14px" : "16px" }}>{(index !== 0 ? " + " : "") + service.gender + " > " + service.name}</Typography>
+                            <Typography sx={{ lineHeight: "unset", textTransform: "capitalize", fontSize: data.services.length > 1 ? "14px" : "16px" }}>{(index !== 0 ? " + " : "") + service.targetAudience + " > " + service.name}</Typography>
                             <Typography sx={{lineHeight: "unset", fontSize: data.services.length > 1 ? "14px" : "16px" }}>{service.price} &#8364;</Typography>
                         </Stack>
                     ))}
@@ -45,7 +45,7 @@ const Overview = ({ booked, data, handleStep }) => {
                 <Stack direction="row" alignItems="center" spacing={3}>
                     <Avatar
                         alt="Alexandra"
-                        src={data.stylist.image}
+                        src={data.stylist.picture}
                         sx={{ width: 35, height: 35 }}
                     />
                     <Box>

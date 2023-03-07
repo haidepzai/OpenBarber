@@ -66,9 +66,9 @@ public class AppointmentService {
     public Appointment updateAppointment(long id, Appointment newAppointment) {
         return appointmentRepository.findById(id)
                 .map(appointment -> {
-//                    appointment.setEnterprise(newAppointment.getEnterprise());
-//                    appointment.setEmployee(newAppointment.getEmployee());
-//                    appointment.setServices(newAppointment.getServices());
+                    appointment.setEnterprise(newAppointment.getEnterprise());
+                    appointment.setEmployee(newAppointment.getEmployee());
+                    appointment.setServices(newAppointment.getServices());
                     appointment.setCustomerName(newAppointment.getCustomerName());
                     appointment.setCustomerPhoneNumber(newAppointment.getCustomerPhoneNumber());
                     appointment.setCustomerEmail(newAppointment.getCustomerEmail());

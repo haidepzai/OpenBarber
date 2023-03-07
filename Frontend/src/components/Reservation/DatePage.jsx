@@ -9,15 +9,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
+import mockStylists from '../../mocks/stylists';
 
-
-const mockStylists = [
-    { name: "Any" },
-    { name: "Alexandra", titel: "Junior Stylist", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg" },
-    { name: "Peter", titel: "Junior Stylist", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVWjI1XVRB5hg9hZ24rMkPtmLCb9jU_NoBQ&usqp=CAU" },
-    { name: "Laura", titel: "Senior Stylist", image: "https://as2.ftcdn.net/v2/jpg/02/48/30/91/1000_F_248309112_rOMWh2P9z4lI5tgDXrB8cAVKCzlNRO88.jpg" },
-    { name: "Paul", titel: "Senior Stylist", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVWjI1XVRB5hg9hZ24rMkPtmLCb9jU_NoBQ&usqp=CAU" },
-]
 
 const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate }) => {
 
