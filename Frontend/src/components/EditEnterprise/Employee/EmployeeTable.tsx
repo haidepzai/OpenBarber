@@ -74,6 +74,12 @@ const headCells: readonly HeadCell[] = [
     label: 'Name of Employee',
   },
   {
+    id: 'title',
+    numeric: false,
+    disablePadding: true,
+    label: 'Title',
+  },
+  {
     id: 'picture',
     numeric: false,
     disablePadding: false,
@@ -199,6 +205,7 @@ interface Employee {
   id: number;
   name: string;
   picture: any;
+  title: string;
 }
 
 export default function EmployeeTable(props: EmployeeTableProps) {
@@ -352,12 +359,15 @@ export default function EmployeeTable(props: EmployeeTableProps) {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {employee.name}
                       </TableCell>
+                      <TableCell component="th" id={labelId} scope="row" padding="none" align="right">
+                        {employee.title}
+                      </TableCell>
                       {/*<TableCell align="right">{employee.picture}</TableCell>*/}
                       <TableCell align="right">
                         {employee.picture && (
                           <img
                             src={URL.createObjectURL(employee.picture)}
-                            alt={employee.picture.name}
+                            alt="employee"
                             height="60px"
                             width="60px"
                             style={{ objectFit: 'cover', margin: '6px 12px 0 0', borderRadius: '100%' }}
