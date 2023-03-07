@@ -26,6 +26,8 @@ public class Employee {
     @NotBlank(message = "Name is mandatory")
     private String name;
 
+    private String title;
+
     @Lob
     private byte[] picture;
 

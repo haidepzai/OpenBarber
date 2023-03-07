@@ -19,6 +19,7 @@ public class EmployeeMapper {
     public EmployeeDto toDto(Employee employee) {
         EmployeeDto dto = new EmployeeDto();
         dto.setName(employee.getName());
+        dto.setTitle(employee.getTitle());
         // Convert byte[] logo to MultipartFile
         if (employee.getPicture() != null) {
             ByteArrayResource logoResource = new ByteArrayResource(employee.getPicture());
@@ -36,6 +37,7 @@ public class EmployeeMapper {
     public Employee toEntity(EmployeeDto employeeDto) throws IOException {
         return Employee.builder()
                 .name(employeeDto.getName())
+                .title(employeeDto.getTitle())
                 .picture(employeeDto.getPicture().getBytes())
                 .build();
     }

@@ -49,6 +49,7 @@ public class EmployeeService {
                 .map(employee -> {
                     employee.setName(newEmployee.getName());
                     employee.setPicture(newEmployee.getPicture());
+                    employee.setTitle(newEmployee.getTitle());
 
                     return employeeRepository.save(employee);
                 })

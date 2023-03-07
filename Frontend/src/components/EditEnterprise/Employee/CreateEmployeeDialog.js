@@ -3,13 +3,30 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Box, Stack, TextField, Typography } from '@mui/material';
-import React, { useEffect, useState, useCallback } from 'react';
+import { Box, Stack, TextField } from '@mui/material';
+import React, { useEffect, useState, useCallback, useReducer } from 'react';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const initialState = {
   name: '',
+  title: '',
+  picture: null
+};
+
+const employeeReducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_NAME':
+      return { ...state, name: action.payload };
+    case 'SET_TITLE':
+      return { ...state, title: action.payload };
+    case 'SET_PICTURE':
+      return { ...state, picture: action.payload };
+    case 'RESET':
+      return initialState;
+    default:
+      return state;
+  }
 };
 
 const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee, uniqueEmployees, addEmployee, updateEmployee }) => {
@@ -19,7 +36,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
 
   const [errors, setErrors] = useState(initialState);
 
-  const [employee, setEmployee] = useState(() => {
+  const [employee, dispatch] = useReducer(employeeReducer, () => {
     if (editingMode()) {
       return editedEmployee;
     } else {
@@ -37,24 +54,15 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setEmployee({
-      ...employee,
-      [name]: value,
-    });
+    dispatch({ type: `SET_${name.toUpperCase()}`, payload: value });
   };
 
   const handlePictureUpload = (event) => {
-    setEmployee({
-      ...employee,
-      picture: event.target.files[0],
-    });
+    dispatch({ type: 'SET_PICTURE', payload: event.target.files[0] });
   };
 
   const handlePictureDelete = () => {
-    setEmployee({
-      ...employee,
-      picture: null,
-    });
+    dispatch({ type: 'SET_PICTURE', payload: null });
   };
 
   const validate = useCallback(() => {
@@ -71,6 +79,24 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
     });
     return !nameError;
   }, [employee.name, errors, uniqueEmployees]);
+
+  const handleClick = () => {
+    if (validate()) {
+      handleClose();
+
+      if (editingMode()) {
+        updateEmployee(employee);
+        setEditedEmployee(undefined);
+      } else {
+        addEmployee(employee);
+        dispatch({ type: 'RESET' });
+      }
+      setInitialClick(false);
+    }
+    if (!initialClick) {
+      setInitialClick(true);
+    }
+  }
 
   useEffect(() => {
     validate();
@@ -95,6 +121,19 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
               sx={{ mt: '20px' }}
             />
 
+            <TextField
+              type="text"
+              label="Title"
+              name="title"
+              placeholder="Title of Employee"
+              value={employee.title}
+              onChange={handleChange}
+              fullWidth
+              //error={initialClick && errors.title !== ''}
+              //helperText={initialClick && errors.title}
+              sx={{ mt: '20px' }}
+            />
+
             <Stack direction="column" spacing={4} alignItems="center">
               <Stack direction="row" justifyContent={employee.picture ? 'space-between' : 'center'} sx={{ width: '100%' }}>
                 <Button variant="contained" component="label" endIcon={<PhotoCamera />}>
@@ -109,7 +148,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
               </Stack>
               {employee.picture && (
                 <Box sx={{ mt: '24px' }}>
-                  <img src={URL.createObjectURL(employee.picture)} width="100%" height="auto" style={{ maxHeight: '250px', objectFit: 'cover' }} />
+                  <img alt="employee" src={URL.createObjectURL(employee.picture)} width="100%" height="auto" style={{ maxHeight: '250px', objectFit: 'cover' }} />
                 </Box>
               )}
             </Stack>
@@ -122,23 +161,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
 
           <Button
             variant="contained"
-            onClick={() => {
-              if (validate()) {
-                handleClose();
-
-                if (editingMode()) {
-                  updateEmployee(employee);
-                  setEditedEmployee(undefined);
-                } else {
-                  addEmployee(employee);
-                  setEmployee(initialState);
-                }
-                setInitialClick(false);
-              }
-              if (!initialClick) {
-                setInitialClick(true);
-              }
-            }}
+            onClick={handleClick}
           >
             {editingMode() ? 'Save' : 'Add'}
           </Button>
