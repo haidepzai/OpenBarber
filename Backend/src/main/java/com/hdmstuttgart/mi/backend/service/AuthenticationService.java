@@ -129,6 +129,9 @@ public class AuthenticationService {
         String refreshToken = jwtService.generateRefreshToken(user);
 
         // Return the new tokens in the response
-        return new AuthenticationResponse(accessToken, refreshToken);
+       return AuthenticationResponse.builder()
+               .token(accessToken)
+               .refreshToken(refreshToken)
+               .build();
     }
 }

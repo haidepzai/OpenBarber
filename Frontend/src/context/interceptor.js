@@ -27,9 +27,9 @@ const setRefreshToken = (refreshToken) => {
 // Add an interceptor to automatically add an access token to outgoing requests
 api.interceptors.request.use(
   (config) => {
-    const refreshToken = getRefreshToken();
-    if (refreshToken) {
-      config.headers['Authorization'] = `Bearer ${refreshToken}`;
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
     return config;
   },
@@ -63,7 +63,7 @@ api.interceptors.response.use(
         // If refreshing the token fails, redirect to the login page
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.replace('/login');
+        window.location.replace('/');
         return Promise.reject(error);
       }
     }

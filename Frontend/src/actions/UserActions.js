@@ -1,11 +1,10 @@
 import axios from 'axios';
-import { makeRequest } from '../context/http-interceptor';
+import { makeRequest } from '../context/interceptor';
 
 export const getUserById = async (id) => {
   try {
-    const userResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${id}`);
-    const userData = await userResponse.json();
-    return userData;
+    const userResponse = await makeRequest(`${process.env.REACT_APP_BACKEND_URL}/users/${id}`);
+    return userResponse;
   } catch (err) {
     throw new Error('Could not get user');
   }
