@@ -64,8 +64,6 @@ function ReservationDialog({ open, handleClose, shop }) {
     const [showSuccessScreen, setShowSuccessScreen] = useState(false);
 
     useEffect(() => {
-        console.log(shop);
-        console.log(shop.id);
         dispatch({ type: 'set_enterprise_id', payload: shop.id })
     }, [shop.id]);
 
@@ -107,7 +105,6 @@ function ReservationDialog({ open, handleClose, shop }) {
         }
     }
 
-    //TODO: Send Data to backend
     const handleSubmit = async () => {
         const requestObject = {
             customerName: `${data.personalData.firstName} ${data.personalData.lastName}`,
