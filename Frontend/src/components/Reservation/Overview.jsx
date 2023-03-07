@@ -9,7 +9,7 @@ import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 const Overview = ({ booked, data, handleStep }) => {
 
     const totalDuration = () => {
-        return data.services.map((service) => parseInt(service.duration)).reduce((prev, next) => prev + next);
+        return data.services.map((service) => parseInt(service.durationInMin)).reduce((prev, next) => prev + next);
     }
 
     const totalPrice = () => {
@@ -26,8 +26,8 @@ const Overview = ({ booked, data, handleStep }) => {
                 <ContentCutIcon fontSize="large" />
                 <Stack direction="column" gap={1} sx={{ width: "100%", padding: "0 16px 0 24px"}}>
                     {data.services.map((service, index) => (
-                        <Stack key={service.name} direction="row" justifyContent="space-between" sx={{ width: "100%"}}>
-                            <Typography sx={{ lineHeight: "unset", textTransform: "capitalize", fontSize: data.services.length > 1 ? "14px" : "16px" }}>{(index !== 0 ? " + " : "") + service.targetAudience + " > " + service.name}</Typography>
+                        <Stack key={service.title} direction="row" justifyContent="space-between" sx={{ width: "100%"}}>
+                            <Typography sx={{ lineHeight: "unset", textTransform: "capitalize", fontSize: data.services.length > 1 ? "14px" : "16px" }}>{(index !== 0 ? " + " : "") + service.targetAudience + " > " + service.title}</Typography>
                             <Typography sx={{lineHeight: "unset", fontSize: data.services.length > 1 ? "14px" : "16px" }}>{service.price} &#8364;</Typography>
                         </Stack>
                     ))}
