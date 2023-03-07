@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -8,13 +8,15 @@ import ServicePage from "./ServicePage";
 import DatePage from "./DatePage";
 import OverviewPage from "./OverviewPage";
 import SuccessScreen from "./SuccessScreen";
+import dayjs from 'dayjs';
 
 const steps = ['Services', 'Date', 'Booking'];
 
 const initialState = {
+    shop: 1,
     services: [],
-    stylist: { name: "Any" },
-    date: "",
+    employee: { name: "Any" },
+    appointmentDateTime: dayjs(),
     personalData: {
         formOfAddress: "None",
         firstName: "",
@@ -26,9 +28,9 @@ const initialState = {
 };
 
 const initialErrorState = {
-    0: "",
-    1: "",
-    2: ""
+    0: "", //Service
+    1: "", //Date
+    2: "" //Personal Info
 };
 
 const reducer = (state, action) => {
@@ -37,12 +39,14 @@ const reducer = (state, action) => {
             return { ...state, services: [...state.services, action.payload] };
         case 'remove_service':
             return { ...state, services: state.services.filter((service) => service !== action.payload) };
-        case 'set_stylist':
-            return { ...state, stylist: action.payload };
+        case 'set_employee':
+            return { ...state, employee: action.payload };
         case 'set_date':
-            return { ...state, date: action.payload };
+            return { ...state, appointmentDateTime: action.payload };
         case 'set_personal_data':
             return { ...state, personalData: { ...state.personalData, ...action.payload } };
+        case 'set_enterprise_id':
+            return { ...state, shop: action.payload };
         default:
             throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -54,12 +58,16 @@ function ReservationDialog({ open, handleClose, shop }) {
     const [activeStep, setActiveStep] = useState(0);
     const [showSuccessScreen, setShowSuccessScreen] = useState(false);
 
+    useEffect(() => {
+        dispatch({type: 'set_enterprise_id', payload: shop.id})
+    }, [shop.id]);
+
     const validate = (step) => {
         switch (step) {
             case 0:
                 return data.services.length > 0
             case 1:
-                return !!data.date
+                return !!data.appointmentDateTime
             case 2:
                 return !Object.values(data.personalData).map(Boolean).includes(false)
             default:
@@ -95,7 +103,7 @@ function ReservationDialog({ open, handleClose, shop }) {
     //TODO: Send Data to backend
     const handleSubmit = () => {
         setShowSuccessScreen(true);
-        console.log("Successfully booked your appointment!", data)
+        console.log(data)
     }
 
     const handleStep = (step) => {
@@ -104,6 +112,7 @@ function ReservationDialog({ open, handleClose, shop }) {
 
     const pickService = (newService) => {
         dispatch({ type: 'set_services', payload: newService });
+        // Reset error
         if (error[0]) {
             setError({
                 ...error,
@@ -116,8 +125,8 @@ function ReservationDialog({ open, handleClose, shop }) {
         dispatch({ type: 'remove_service', payload: oldService });
     }
 
-    const pickStylist = (stylist) => {
-        dispatch({ type: 'set_stylist', payload: stylist });
+    const pickStylist = (employee) => {
+        dispatch({ type: 'set_employee', payload: employee });
     }
 
     const pickDate = (date) => {
@@ -170,7 +179,7 @@ function ReservationDialog({ open, handleClose, shop }) {
                     }
 
                     {activeStep === 1 &&
-                        <DatePage pickedStylist={data.stylist} pickStylist={pickStylist} pickedDate={data.date} pickDate={pickDate} />
+                        <DatePage pickedStylist={data.employee} pickStylist={pickStylist} pickedDate={data.appointmentDateTime} pickDate={pickDate} />
                     }
 
                     {activeStep === 2 &&

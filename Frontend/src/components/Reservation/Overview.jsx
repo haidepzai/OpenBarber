@@ -20,7 +20,7 @@ const Overview = ({ booked, data, handleStep }) => {
         <Box sx={{ borderRadius: "8px", border: "1px solid rgb(236,236,236)", marginBottom: "20px" }}>
             <Stack direction="row" alignItems="center" spacing={3} sx={{ borderTop: "1px solid rgb(236,236,236)", padding: " 16px 24px" }}>
                 <CalendarMonthIcon fontSize="large" />
-                <Typography sx={{ lineHeight: "unset" }}>{data.date.locale('en').format('dddd[, ] DD.MM.YYYY[ at ]hh:mm[ o\' clock]')}</Typography>
+                <Typography sx={{ lineHeight: "unset" }}>{data.appointmentDateTime.locale('en').format('dddd[, ] DD.MM.YYYY[ at ]hh:mm[ o\' clock]')}</Typography>
             </Stack>
             <Stack direction="row" alignItems={data.services.length > 1 ? "start" : "center"} sx={{ borderTop: "1px solid rgb(236,236,236)", padding: "16px 16px 16px 24px", '&:hover': { backgroundColor: !booked && "rgba(0, 0, 0, 0.1)", cursor: !booked && "pointer"} }} onClick={() => handleStep(0)}>
                 <ContentCutIcon fontSize="large" />
@@ -45,16 +45,16 @@ const Overview = ({ booked, data, handleStep }) => {
                 <Stack direction="row" alignItems="center" spacing={3}>
                     <Avatar
                         alt="Alexandra"
-                        src={data.stylist.picture}
+                        src={data.employee.picture}
                         sx={{ width: 35, height: 35 }}
                     />
                     <Box>
-                        <Typography sx={{ lineHeight: "unset" }}>{data.stylist.name}</Typography>
+                        <Typography sx={{ lineHeight: "unset" }}>{data.employee.name}</Typography>
                         <Typography variant="overline" sx={{
                             textTransform: 'uppercase',
                             lineHeight: "unset",
                             color: "#666"
-                        }}>{data.stylist.titel}</Typography>
+                        }}>{data.employee.titel}</Typography>
                     </Box>
                 </Stack>
                 {!booked &&
@@ -65,7 +65,7 @@ const Overview = ({ booked, data, handleStep }) => {
             </Stack>
             <Stack direction="row" alignItems="center" spacing={3} sx={{ borderTop: "1px solid rgb(236,236,236)", padding: "16px 24px"  }}>
                 <HourglassBottomIcon fontSize="large" />
-                <Typography sx={{ lineHeight: "unset" }}>Duration: {totalDuration()} Minutes (ends approx. at {data.date.add(totalDuration(), 'minutes').format('hh:mm[ o\' clock]')})</Typography>
+                <Typography sx={{ lineHeight: "unset" }}>Duration: {totalDuration()} Minutes (ends approx. at {data.appointmentDateTime.add(totalDuration(), 'minutes').format('hh:mm[ o\' clock]')})</Typography>
             </Stack>
         </Box>
     );

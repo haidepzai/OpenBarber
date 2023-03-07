@@ -77,6 +77,7 @@ public class Appointment {
     public void setServices(List<Service> services) {
         this.services = services;
     }
+
 /*    public int getTotalDuration(){
         int totalDuration = 0;
         for(Service service : services)
