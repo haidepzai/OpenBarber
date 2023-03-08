@@ -445,7 +445,7 @@ const SchedulerPage = () => {
 
       const maped_appointments = appointments.map((appointment) => ({
         ...appointment,
-        title: appointment.title ? appointment.title : services.find((service) => service.id === appointment.services[0]).title,
+        title: appointment.customerName,
       }));
       console.log('mapped', maped_appointments);
       setData(maped_appointments);
