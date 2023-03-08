@@ -11,6 +11,8 @@ import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,12 +24,14 @@ public class AppointmentService {
     private final EnterpriseRepository enterpriseRepository;
     private final EmployeeRepository employeeRepository;
     private final ServiceRepository serviceRepository;
+    private final EmailSenderService emailSenderService;
 
-    public AppointmentService(AppointmentRepository appointmentRepository, EnterpriseRepository enterpriseRepository, EmployeeRepository employeeRepository, ServiceRepository serviceRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, EnterpriseRepository enterpriseRepository, EmployeeRepository employeeRepository, ServiceRepository serviceRepository, EmailSenderService emailSenderService) {
         this.appointmentRepository = appointmentRepository;
         this.enterpriseRepository = enterpriseRepository;
         this.employeeRepository = employeeRepository;
         this.serviceRepository = serviceRepository;
+        this.emailSenderService = emailSenderService;
     }
 
     public Appointment createAppointment(Appointment appointment, long enterpriseId) {
@@ -47,6 +51,14 @@ public class AppointmentService {
         appointment.setEnterprise(enterprise);
         appointment.setEmployee(employee);
         appointment.setServices(services);
+
+        try {
+            emailSenderService.sendEmailWithTemplate(appointment, "appointment", appointment.getCustomerEmail());
+        } catch (MessagingException | IOException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+        }
+
+
         return appointmentRepository.save(appointment);
     }
 
