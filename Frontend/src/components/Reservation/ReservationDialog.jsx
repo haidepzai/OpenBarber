@@ -1,14 +1,15 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useReducer, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Stack, Typography } from '@mui/material';
 import ServicePage from './ServicePage';
 import DatePage from './DatePage';
 import OverviewPage from './OverviewPage';
 import SuccessScreen from './SuccessScreen';
 import { createAppointment } from '../../actions/AppointmentActions';
+import AuthContext from '../../context/auth-context';
 
 const steps = ['Services', 'Date', 'Booking'];
 
@@ -62,6 +63,8 @@ function ReservationDialog({ open, handleClose, shop }) {
   const [activeStep, setActiveStep] = useState(0);
   const [showSuccessScreen, setShowSuccessScreen] = useState(false);
 
+  const authCtx = useContext(AuthContext);
+
   useEffect(() => {
     dispatch({ type: 'set_enterprise_id', payload: shop.id });
   }, [shop.id]);
@@ -105,6 +108,7 @@ function ReservationDialog({ open, handleClose, shop }) {
   };
 
   const handleSubmit = async () => {
+    authCtx.setIsLoading(true);
     const isoDateTime = data.appointmentDateTime.toISOString();
     const requestObject = {
       customerName: `${data.personalData.firstName} ${data.personalData.lastName}`,
@@ -118,9 +122,14 @@ function ReservationDialog({ open, handleClose, shop }) {
       paymentMethod: data.paymentMethod,
     };
     console.log(requestObject);
-    let res = await createAppointment(requestObject, shop.id);
-    setShowSuccessScreen(true);
-    console.log(res);
+    try {
+      let res = await createAppointment(requestObject, shop.id);
+      setShowSuccessScreen(true);
+      console.log(res);
+    } catch (error) {
+      console.log("Could not book");
+    }
+    authCtx.setIsLoading(false);
   };
 
   const handleStep = (step) => {
@@ -219,16 +228,25 @@ function ReservationDialog({ open, handleClose, shop }) {
           )}
 
           {activeStep === 2 && (
-            <OverviewPage
-              data={data}
-              dispatch={dispatch}
-              handleStep={handleStep}
-              showErrors={!!error[2]}
-              noneEmpty={validate(2)}
-              error={error}
-              setError={setError}
-              shopPaymentMethods={shop.paymentMethods}
-            />
+            <Fragment>
+              {authCtx.isLoading && (
+                <Stack alignItems="center" justifyContent="center" flexGrow="1">
+                  <CircularProgress />
+                </Stack>
+              )}
+              {!authCtx.isLoading && (
+                <OverviewPage
+                  data={data}
+                  dispatch={dispatch}
+                  handleStep={handleStep}
+                  showErrors={!!error[2]}
+                  noneEmpty={validate(2)}
+                  error={error}
+                  setError={setError}
+                  shopPaymentMethods={shop.paymentMethods}
+                />
+              )}
+            </Fragment>
           )}
 
           <Box
