@@ -5,8 +5,8 @@ import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
 import ShopInfoCard from './ShopInfoCard';
 import ShopReview from './ShopReview';
 import axios from 'axios';
-import barberShops from '../../../mocks/shops';
-import Review from '../../../components/Review';
+import barberShops from '../../mocks/shops';
+import Review from '../../components/Review';
 import { CheckCircleRounded } from '@mui/icons-material';
 
 const ShopDetailView = ({ shop }) => {

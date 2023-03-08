@@ -1,8 +1,8 @@
 import React from 'react';
-import '../../css/ErrorPage/ErrorPage.css';
-import '../../css/App.css';
-import image from './assets/error_404.png';
-import Header from '../../components/Header';
+import '../css/ErrorPage/ErrorPage.css';
+import '../css/App.css';
+import image from '../assets/error_404.png';
+import Header from '../components/Header';
 
 const ErrorPage = () => {
   return (
