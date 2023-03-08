@@ -1,7 +1,10 @@
 package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.BackendApplication;
+import com.hdmstuttgart.mi.backend.model.Appointment;
+import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.User;
+import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import io.camassia.mjml.MJMLClient;
 import io.camassia.mjml.model.request.RenderRequest;
@@ -21,6 +24,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -39,6 +44,9 @@ public class EmailSenderService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     private MJMLClient mjmlClient;
 
@@ -92,6 +100,50 @@ public class EmailSenderService {
         //template specific email subjects
         if(templateName.equals("verification")) {
             helper.setSubject("OpenBarber - Your verification code is here!");
+        } else {
+            helper.setSubject("OpenBarber - Did you miss us?");
+        }
+        helper.setFrom(mailUsername);
+
+        mailSender.send(mimeMessage);
+        log.debug("Mail sent successfully ... ");
+    }
+
+    public void insertDataIntoTemplate(String templateName, Appointment appointment) throws IOException {
+        readMJMLTemplatesIntoMap();
+        String appointmentDate = appointment.getAppointmentDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm"));
+        String customerName = appointment.getCustomerName();
+        Employee employee = employeeRepository.findById(appointment.getEmployee().getId()).orElseThrow();
+        String employeeName = employee.getName();
+
+
+        String preparedText = mjmlTemplateTexts.get(templateName)
+                .replace("blank_username", customerName)
+                .replace("blank_stylist", employeeName)
+                .replace("blank_appointmentDate", appointmentDate);
+        mjmlTemplateTexts.put(templateName, preparedText);
+    }
+
+    public void sendEmailWithTemplate(Appointment appointment, String templateName, String email) throws MessagingException, IOException {
+
+                //MJML API setup
+        this.mjmlClient = MJMLClient.newDefaultClient()
+                .withApplicationID(appId)
+                .withApplicationKey(appKey);
+        log.info("Found MJML client");
+        //MJML string preparation for the request and send out
+        insertDataIntoTemplate(templateName, appointment);
+        RenderRequest request = new RenderRequest(mjmlTemplateTexts.get(templateName));
+        RenderResponse response = mjmlClient.render(request);
+        String plainHTML = response.getHTML();
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        helper.setText(plainHTML, true);
+        helper.setTo(email);
+
+        //template specific email subjects
+        if(templateName.equals("appointment")) {
+            helper.setSubject("OpenBarber - Your appointment!");
         } else {
             helper.setSubject("OpenBarber - Did you miss us?");
         }
