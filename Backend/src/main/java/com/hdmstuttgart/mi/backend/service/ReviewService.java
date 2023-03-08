@@ -1,13 +1,9 @@
 package com.hdmstuttgart.mi.backend.service;
 
-import com.hdmstuttgart.mi.backend.model.Appointment;
-import com.hdmstuttgart.mi.backend.model.Employee;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
-import com.hdmstuttgart.mi.backend.model.Review;
-import com.hdmstuttgart.mi.backend.repository.AppointmentRepository;
-import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
-import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
-import com.hdmstuttgart.mi.backend.repository.ReviewRepository;
+import com.hdmstuttgart.mi.backend.exception.UnauthorizedException;
+import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
+import com.hdmstuttgart.mi.backend.model.*;
+import com.hdmstuttgart.mi.backend.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,11 +16,15 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final EnterpriseRepository enterpriseRepository;
     private final AppointmentRepository appointmentRepository;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
-    public ReviewService(ReviewRepository reviewRepository, EnterpriseRepository enterpriseRepository, AppointmentRepository appointmentRepository) {
+    public ReviewService(ReviewRepository reviewRepository, EnterpriseRepository enterpriseRepository, AppointmentRepository appointmentRepository, JwtService jwtService, UserRepository userRepository) {
         this.reviewRepository = reviewRepository;
         this.enterpriseRepository = enterpriseRepository;
         this.appointmentRepository = appointmentRepository;
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
     public Review createReview(Review review, Long enterpriseId, UUID reviewUuid) {
@@ -41,6 +41,18 @@ public class ReviewService {
     }
 
     public Review createReview(Review review, Long enterpriseId) {
+        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
+        review.setEnterprise(enterprise);
+        return reviewRepository.save(review);
+    }
+
+    public Review createReview(Review review, Long enterpriseId, String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+
+        userRepository.findByEmail(username)
+                .orElseThrow(() -> new UnauthorizedException("Not allowed to review"));
+
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
         review.setEnterprise(enterprise);

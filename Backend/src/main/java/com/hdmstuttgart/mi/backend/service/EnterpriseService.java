@@ -1,5 +1,6 @@
 package com.hdmstuttgart.mi.backend.service;
 
+import com.hdmstuttgart.mi.backend.exception.UnauthorizedException;
 import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.User;
@@ -138,7 +139,14 @@ public class EnterpriseService {
         return user.getEnterprise();
     }
 
-    public Enterprise updateEnterprise(long id, Enterprise newEnterprise) {
+    public Enterprise updateEnterprise(long id, Enterprise newEnterprise, String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        if (user.getEnterprise().getId() != id) {
+            throw new UnauthorizedException("Not allowed to update enterprise");
+        }
         return enterpriseRepository.findById(id)
                 .map(enterprise -> {
                     enterprise.setName(newEnterprise.getName());

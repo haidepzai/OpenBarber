@@ -1,5 +1,6 @@
 package com.hdmstuttgart.mi.backend.controller;
 
+import com.hdmstuttgart.mi.backend.exception.UnauthorizedException;
 import com.hdmstuttgart.mi.backend.mapper.ReviewMapper;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.Review;
@@ -39,6 +40,20 @@ public class ReviewController {
         Enterprise enterprise = enterpriseService.getEnterpriseById(enterpriseId);
         Review review = ReviewMapper.toEntity(reviewDto, enterprise);
         Review createdReview = reviewService.createReview(review, enterpriseId);
+        ReviewDto createdReviewDto = ReviewMapper.toDto(createdReview);
+        return new ResponseEntity<>(createdReviewDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/auth")
+    public ResponseEntity<ReviewDto> createReviewAuthenticated(@Valid @RequestBody ReviewDto reviewDto, @RequestParam Long enterpriseId, @RequestHeader("Authorization") String token) {
+
+        if (token.isEmpty()) {
+            throw new UnauthorizedException("Not allowed to review");
+        }
+
+        Enterprise enterprise = enterpriseService.getEnterpriseById(enterpriseId);
+        Review review = ReviewMapper.toEntity(reviewDto, enterprise);
+        Review createdReview = reviewService.createReview(review, enterpriseId, token);
         ReviewDto createdReviewDto = ReviewMapper.toDto(createdReview);
         return new ResponseEntity<>(createdReviewDto, HttpStatus.CREATED);
     }

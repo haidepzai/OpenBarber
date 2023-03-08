@@ -1,13 +1,15 @@
 import React, { Fragment, useState } from 'react';
 
 import { Box, Button, Rating, TextField, Typography } from '@mui/material';
-import { createReview } from '../actions/ReviewActions';
+import { createReview, createReviewAuth } from '../actions/ReviewActions';
 
 const Review = ({ shop, onReview }) => {
   const [value, setValue] = useState(1);
   const [name, setName] = useState('');
   const [nameIsValid, setNameIsValid] = useState(true);
   const [comment, setComment] = useState('');
+
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleClick = async () => {
     const reviewRequest = {
@@ -17,10 +19,11 @@ const Review = ({ shop, onReview }) => {
       createdAt: new Date(),
     };
     try {
-      await createReview(reviewRequest, shop.id);
+      await createReviewAuth(reviewRequest, shop.id);
       onReview(true);
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
+      setErrorMessage("Please login to review");
     }
   };
 
@@ -59,6 +62,8 @@ const Review = ({ shop, onReview }) => {
           multiline
           rows={3}
           sx={{ mb: 3, mt: 3, width: '50%' }}
+          error={errorMessage.length > 0}
+          helperText={errorMessage.length > 0 && errorMessage}
         />
 
         <Box sx={{ display: 'flex', gap: 4, pb: 3, mb: 5, width: '50%', margin: 'auto' }}>
