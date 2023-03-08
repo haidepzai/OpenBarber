@@ -9,17 +9,20 @@ const barberShops = [
       {
         author: "Hans",
         comment: "War geil",
-        rating: 4
+        rating: 4,
+        createdAt: new Date()
       },
       {
         author: "Dieter",
         comment: "War ok",
-        rating: 2
+        rating: 2,
+        createdAt: new Date()
       },
       {
         author: "Peter",
         comment: "Naja",
-        rating: 1
+        rating: 1,
+        createdAt: new Date()
       },
     ],
     geometry: {
@@ -83,17 +86,20 @@ const barberShops = [
       {
         author: "Hans",
         comment: "War geil",
-        rating: 4
+        rating: 4,
+        createdAt: new Date()
       },
       {
         author: "Dieter",
         comment: "War ok",
-        rating: 2
+        rating: 2,
+        createdAt: new Date()
       },
       {
         author: "Peter",
         comment: "Naja",
-        rating: 1
+        rating: 1,
+        createdAt: new Date()
       },
     ],
     geometry: {
@@ -158,17 +164,20 @@ const barberShops = [
       {
         author: "Hans",
         comment: "War geil",
-        rating: 4
+        rating: 4,
+        createdAt: new Date()
       },
       {
         author: "Dieter",
         comment: "War ok",
-        rating: 2
+        rating: 2,
+        createdAt: new Date()
       },
       {
         author: "Peter",
         comment: "Naja",
-        rating: 1
+        rating: 1,
+        createdAt: new Date()
       },
     ],
     geometry: {
@@ -232,17 +241,20 @@ const barberShops = [
       {
         author: "Hans",
         comment: "War geil",
-        rating: 4
+        rating: 4,
+        createdAt: new Date()
       },
       {
         author: "Dieter",
         comment: "War ok",
-        rating: 2
+        rating: 2,
+        createdAt: new Date()
       },
       {
         author: "Peter",
         comment: "Naja",
-        rating: 1
+        rating: 1,
+        createdAt: new Date()
       },
     ],
     geometry: {
@@ -306,17 +318,20 @@ const barberShops = [
       {
         author: "Hans",
         comment: "War geil",
-        rating: 4
+        rating: 4,
+        createdAt: new Date()
       },
       {
         author: "Dieter",
         comment: "War ok",
-        rating: 2
+        rating: 2,
+        createdAt: new Date()
       },
       {
         author: "Peter",
         comment: "Naja",
-        rating: 1
+        rating: 1,
+        createdAt: new Date()
       },
     ],
     geometry: {
