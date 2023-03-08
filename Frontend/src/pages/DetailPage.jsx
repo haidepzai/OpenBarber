@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 
 import { Box } from '@mui/material';
 
-import ShopDetailView from './components/ShopDetailView';
-import DetailPageBG from './components/DetailPageBG';
+import ShopDetailView from '../components/DetailPage/ShopDetailView';
+import DetailPageBG from '../components/DetailPage/DetailPageBG';
 
-import '../../css/DetailPage/DetailPage.css';
+import '../css/DetailPage/DetailPage.css';
 import { useParams } from 'react-router-dom';
-import { getShop } from '../../actions/EnterpriseActions';
+import { getShop } from '../actions/EnterpriseActions';
 
 const DetailPage = () => {
   const { routeId } = useParams();

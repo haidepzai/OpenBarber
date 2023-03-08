@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Button, Rating, Tabs, Tab, Typography, Grid, Stack } from '@mui/material';
-import GoogleMaps from '../../../components/GoogleMaps';
-import ReservationDialog from '../../../components/Reservation/ReservationDialog';
-import PhotoGallery from '../../../components/Gallery/PhotoGallery';
+import GoogleMaps from '../../components/GoogleMaps';
+import ReservationDialog from '../../components/Reservation/ReservationDialog';
+import PhotoGallery from '../../components/Gallery/PhotoGallery';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import dayjs from 'dayjs';
-import { convertDateToTime } from '../../../shared/ConvertTime';
+import { convertDateToTime } from '../../shared/ConvertTime';
 
 const TabPanel = ({ children, value, index, ...props }) => (value === index ? <Box {...props}>{children}</Box> : null);
 

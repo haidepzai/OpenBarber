@@ -1,7 +1,7 @@
 import './css/App.css';
-import DetailPage from './pages/DetailPage/DetailPage';
+import DetailPage from './pages/DetailPage';
 import LandingPage from './pages/LandingPage';
-import ErrorPage from './pages/ErrorPage/ErrorPage';
+import ErrorPage from './pages/ErrorPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
