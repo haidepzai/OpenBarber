@@ -8,17 +8,16 @@ import ServicePage from "./ServicePage";
 import DatePage from "./DatePage";
 import OverviewPage from "./OverviewPage";
 import SuccessScreen from "./SuccessScreen";
-import dayjs from 'dayjs';
 import { createAppointment } from '../../actions/AppointmentActions';
 
 const steps = ['Services', 'Date', 'Booking'];
 
 const initialState = {
     enterpriseId: "",
-    services: [],
+    services: [{ targetAudience: 'ALL', title: 'Waschen, Schneiden, Föhnen', durationInMin: '60', price: '30,00' },],
     employee: { name: "Any" },
     employeeId: "",
-    appointmentDateTime: dayjs(),
+    appointmentDateTime: new Date(),
     personalData: {
         formOfAddress: "None",
         firstName: "",
@@ -106,13 +105,15 @@ function ReservationDialog({ open, handleClose, shop }) {
     }
 
     const handleSubmit = async () => {
+        const isoDateTime = data.appointmentDateTime.toISOString();
         const requestObject = {
             customerName: `${data.personalData.firstName} ${data.personalData.lastName}`,
             customerPhoneNumber: data.personalData.phoneNumber,
             customerEmail: data.personalData.email,
-            appointmentDateTime: data.appointmentDateTime,
+            appointmentDateTime: isoDateTime,
             enterpriseId: shop.id,
             employee: data.employee,
+            employeeId: data.employee.id,
             services: data.services,
             paymentMethod: data.paymentMethod
           };
@@ -146,7 +147,8 @@ function ReservationDialog({ open, handleClose, shop }) {
     }
 
     const pickDate = (date) => {
-        dispatch({ type: 'set_date', payload: date });
+        const realDate = new Date(date)
+        dispatch({ type: 'set_date', payload: realDate });
         if (error[1]) {
             setError({
                 ...error,

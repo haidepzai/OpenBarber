@@ -11,6 +11,9 @@ import { useState } from "react";
 import mockStylists from '../../mocks/stylists';
 import { DateTimePicker } from '@mui/x-date-pickers';
 
+const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+
+
 const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmployees }) => {
 
     const [expanded, setExpanded] = useState(false);
@@ -67,7 +70,7 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
 
             {pickedDate &&
                 <Box sx={{ width: "100%", border: "1px solid rgb(236,236,236)", padding: "10px 20px", boxSizing: "border-box", marginTop: "20px" }}>
-                    <Typography sx={{ fontSize: "14px" }}>Appointment for {pickedDate.format("DD/MM/YYYY hh:mm")}</Typography>
+                    <Typography sx={{ fontSize: "14px" }}>Appointment for {pickedDate.toLocaleString('de-DE', options)}</Typography>
                 </Box>
             }
         </Box>
