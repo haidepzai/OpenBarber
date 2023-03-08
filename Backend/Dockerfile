@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy the project files into the image
 COPY . .
 
-# Build all the dependencies in preparation to go offline. 
-# This is a separate step so the dependencies will be cached unless 
+# Build all the dependencies in preparation to go offline.
+# This is a separate step so the dependencies will be cached unless
 # the pom.xml file has changed.
 RUN ./mvnw dependency:go-offline -B
 

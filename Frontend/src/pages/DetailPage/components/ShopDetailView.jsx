@@ -1,17 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Box, Typography, useMediaQuery } from '@mui/material';
 
 import ShopInfoCard from './ShopInfoCard';
 import ShopReview from './ShopReview';
 import axios from 'axios';
+import barberShops from '../../../mocks/shops';
 
 const ShopDetailView = ({ shop }) => {
   const mobile = useMediaQuery('(max-width: 800px)');
   const sidePadding = mobile ? '2vw' : '10vw';
 
-  const [reviews, setReviews] = React.useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [mockReviews, setMockReviews] = useState([]);
+
   useEffect(() => {
+    const fakeReviews = Object.values(barberShops)[0].reviews;
+    setMockReviews(fakeReviews);
     axios
       .get('http://localhost:8080/api/reviews?enterpriseId=' + shop.id)
       .then((res) => {
@@ -37,7 +42,11 @@ const ShopDetailView = ({ shop }) => {
         Reviews
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {reviews && reviews.length > 0 && reviews.map((review, i) => <ShopReview key={i} review={review} />)}
+        {mockReviews && mockReviews.length > 0 &&
+          mockReviews
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map((review, i) => <ShopReview key={i} review={review} />)
+        }
       </Box>
     </Box>
   );
