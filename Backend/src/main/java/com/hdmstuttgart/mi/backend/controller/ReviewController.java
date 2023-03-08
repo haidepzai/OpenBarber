@@ -26,10 +26,19 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody ReviewDto reviewDto, Long enterpriseId, UUID reviewUuid) {
+    public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody ReviewDto reviewDto, @RequestParam Long enterpriseId,@RequestParam UUID reviewUuid) {
         Enterprise enterprise = enterpriseService.getEnterpriseById(enterpriseId);
         Review review = ReviewMapper.toEntity(reviewDto, enterprise);
         Review createdReview = reviewService.createReview(review, enterpriseId, reviewUuid);
+        ReviewDto createdReviewDto = ReviewMapper.toDto(createdReview);
+        return new ResponseEntity<>(createdReviewDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity<ReviewDto> createReviewForEnterprise(@Valid @RequestBody ReviewDto reviewDto, @RequestParam Long enterpriseId) {
+        Enterprise enterprise = enterpriseService.getEnterpriseById(enterpriseId);
+        Review review = ReviewMapper.toEntity(reviewDto, enterprise);
+        Review createdReview = reviewService.createReview(review, enterpriseId);
         ReviewDto createdReviewDto = ReviewMapper.toDto(createdReview);
         return new ResponseEntity<>(createdReviewDto, HttpStatus.CREATED);
     }

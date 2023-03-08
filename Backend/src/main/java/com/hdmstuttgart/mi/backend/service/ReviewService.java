@@ -35,6 +35,15 @@ public class ReviewService {
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
         review.setEnterprise(enterprise);
+        appointment.setReviewed(true);
+        appointmentRepository.save(appointment);
+        return reviewRepository.save(review);
+    }
+
+    public Review createReview(Review review, Long enterpriseId) {
+        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
+        review.setEnterprise(enterprise);
         return reviewRepository.save(review);
     }
 

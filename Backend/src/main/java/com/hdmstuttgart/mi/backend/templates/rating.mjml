@@ -30,7 +30,7 @@
             <mj-column width="100%">
                 <mj-image src="http://i.epvpimg.com/91j3gab.png" alt="" align="center" width="80px" />
                 <mj-text color="#ffffff" font-weight="bold" align="center" font-size="16px" letter-spacing="1px" padding-top="30px">
-                    Leave a review about your last experiene
+                    Leave a review about your last experience
                 </mj-text>
                 <mj-text color="#3CBAAD" align="center" font-size="13px" padding-top="0" font-weight="bold" text-transform="uppercase" letter-spacing="1px" line-height="20px">
                 </mj-text>
