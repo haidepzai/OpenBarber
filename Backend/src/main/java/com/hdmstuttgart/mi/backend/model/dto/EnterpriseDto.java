@@ -6,7 +6,10 @@ import com.hdmstuttgart.mi.backend.model.Service;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import com.hdmstuttgart.mi.backend.service.ServiceService;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URL;
@@ -14,6 +17,9 @@ import java.util.List;
 import java.util.Set;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EnterpriseDto {
     private Long id;
     private String name;
