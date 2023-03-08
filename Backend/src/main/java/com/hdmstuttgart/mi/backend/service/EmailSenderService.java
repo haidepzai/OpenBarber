@@ -3,8 +3,10 @@ package com.hdmstuttgart.mi.backend.service;
 import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.Employee;
+import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
+import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import io.camassia.mjml.MJMLClient;
 import io.camassia.mjml.model.request.RenderRequest;
@@ -24,10 +26,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.Optional;
 
 /**
  * Description:
@@ -47,6 +47,9 @@ public class EmailSenderService {
 
     @Autowired
     EmployeeRepository employeeRepository;
+
+    @Autowired
+    EnterpriseRepository enterpriseRepository;
 
     private MJMLClient mjmlClient;
 
@@ -115,9 +118,12 @@ public class EmailSenderService {
         String customerName = appointment.getCustomerName();
         Employee employee = employeeRepository.findById(appointment.getEmployee().getId()).orElseThrow();
         String employeeName = employee.getName();
+        Enterprise enterprise = enterpriseRepository.findById(appointment.getEnterprise().getId()).orElseThrow();
+        String enterpriseName = enterprise.getName();
 
 
         String preparedText = mjmlTemplateTexts.get(templateName)
+                .replace("blank_enterpriseName", enterpriseName)
                 .replace("blank_username", customerName)
                 .replace("blank_stylist", employeeName)
                 .replace("blank_appointmentDate", appointmentDate);
