@@ -81,7 +81,7 @@ public class EnterpriseController {
             throw new UnauthorizedException("User is not authorized to perform this operation");
         }
 
-        Enterprise updatedEnterprise = enterpriseService.updateEnterprise(id, enterpriseMapper.toEntity(updatedEnterpriseDto));
+        Enterprise updatedEnterprise = enterpriseService.updateEnterprise(id, enterpriseMapper.toEntity(updatedEnterpriseDto), token);
         EnterpriseDto newEnterpriseDto = enterpriseMapper.toDto(updatedEnterprise);
         return new ResponseEntity<>(newEnterpriseDto, HttpStatus.OK);
     }
@@ -94,7 +94,7 @@ public class EnterpriseController {
         if (!enterprise.getEmail().equals(email)) {
             throw new UnauthorizedException("User is not authorized to perform this operation");
         }
-        Enterprise updatedEnterprise = enterpriseService.updateEnterprise(enterprise.getId(), enterpriseMapper.toEntity(enterpriseDto));
+        Enterprise updatedEnterprise = enterpriseService.updateEnterprise(enterprise.getId(), enterpriseMapper.toEntity(enterpriseDto), token);
         EnterpriseDto newEnterpriseDto = enterpriseMapper.toDto(updatedEnterprise);
         return new ResponseEntity<>(newEnterpriseDto, HttpStatus.OK);
     }
