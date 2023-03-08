@@ -9,7 +9,6 @@ import barberShops from '../../../mocks/shops';
 import Review from '../../../components/Review';
 import { CheckCircleRounded } from '@mui/icons-material';
 
-
 const ShopDetailView = ({ shop }) => {
   const mobile = useMediaQuery('(max-width: 800px)');
   const sidePadding = mobile ? '2vw' : '10vw';
@@ -45,21 +44,19 @@ const ShopDetailView = ({ shop }) => {
 
       {!isReviewed && <Review shop={shop} onReview={() => setIsReviewed(true)} />}
 
-      {isReviewed &&
+      {isReviewed && (
         <Stack alignItems="center" justifyContent="center" flexGrow="1" sx={{ borderBottom: 1, borderColor: 'divider', pb: 3 }}>
           <CheckCircleRounded sx={{ width: '5rem', height: '5rem', color: 'primary.main' }} />
           <Typography variant="p" fontSize="2rem" textAlign="center">
             Thank you for your review!
           </Typography>
         </Stack>
-      }
+      )}
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {reviews && reviews.length > 0 &&
-          reviews
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-            .map((review, i) => <ShopReview key={i} review={review} />)
-        }
+        {reviews &&
+          reviews.length > 0 &&
+          reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((review, i) => <ShopReview key={i} review={review} />)}
       </Box>
     </Box>
   );

@@ -204,7 +204,9 @@ const FilterResults = ({ filter, loc }) => {
 
                   <Divider />
 
-                  {openModal === shop.id && <ReservationDialog open={openModal === shop.id} handleClose={() => setOpenModal(undefined)} shop={shop} />}
+                  {openModal === shop.id && (
+                    <ReservationDialog open={openModal === shop.id} handleClose={() => setOpenModal(undefined)} shop={shop} />
+                  )}
                 </Box>
               ))}
           </>

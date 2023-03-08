@@ -90,7 +90,9 @@ const LandingPage = () => {
               .map((shop) => (
                 <Box key={shop.id}>
                   <MediaCard shop={shop} setOpenModal={() => setOpenModal(shop.id)} />
-                  {openModal === shop.id && <ReservationDialog open={openModal === shop.id} handleClose={() => setOpenModal(undefined)} shop={shop} />}
+                  {openModal === shop.id && (
+                    <ReservationDialog open={openModal === shop.id} handleClose={() => setOpenModal(undefined)} shop={shop} />
+                  )}
                 </Box>
               ))}
           </Stack>

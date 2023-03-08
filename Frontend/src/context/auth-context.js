@@ -53,7 +53,7 @@ export const AuthContextProvider = (props) => {
   useEffect(() => {
     const getRefreshToken = async () => {
       await refreshToken();
-    }
+    };
     const authenticate = async () => {
       await checkForJWTToken();
     };
