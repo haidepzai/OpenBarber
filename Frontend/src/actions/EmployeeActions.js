@@ -29,7 +29,7 @@ export const createEmployee = async (employee, enterpriseId) => {
   } catch (err) {
     throw new Error('Could not create employee');
   }
-}
+};
 
 export const updateStylist = async (id, employee) => {
   const config = {
@@ -44,4 +44,4 @@ export const updateStylist = async (id, employee) => {
   } catch (err) {
     throw new Error('Could not delete employee');
   }
-}
+};

@@ -29,7 +29,7 @@ export const createService = async (service, enterpriseId) => {
   } catch (err) {
     throw new Error('Could not delete service');
   }
-}
+};
 
 export const updateService = async (id, service) => {
   const config = {
@@ -44,4 +44,4 @@ export const updateService = async (id, service) => {
   } catch (err) {
     throw new Error('Could not delete service');
   }
-}
+};

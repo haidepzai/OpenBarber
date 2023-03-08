@@ -7,22 +7,22 @@ const barberShops = [
     logo: 'https://ericbarbier.de/wp-content/uploads/2021/09/Eric-Barbier-Friseur-Ausbildung-01.jpg',
     reviews: [
       {
-        author: "Hans",
-        comment: "War geil",
+        author: 'Hans',
+        comment: 'War geil',
         rating: 4,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
-        author: "Dieter",
-        comment: "War ok",
+        author: 'Dieter',
+        comment: 'War ok',
         rating: 2,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
-        author: "Peter",
-        comment: "Naja",
+        author: 'Peter',
+        comment: 'Naja',
         rating: 1,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
     ],
     geometry: {
@@ -73,8 +73,8 @@ const barberShops = [
     paymentMethods: ['ON_SITE_CASH', 'ON_SITE_CARD', 'PAYPAL', 'BANK_TRANSFER'],
     drinks: ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'],
     recommended: false,
-    openingTime: "8:00",
-    closingTime: "17:00"
+    openingTime: '8:00',
+    closingTime: '17:00',
   },
   {
     id: 2,
@@ -84,22 +84,22 @@ const barberShops = [
     logo: 'https://cdn.mdr.de/ratgeber/friseur-haare-schneiden-106_v-variantBig16x9_w-576_zc-915c23fa.jpg?version=27611',
     reviews: [
       {
-        author: "Hans",
-        comment: "War geil",
+        author: 'Hans',
+        comment: 'War geil',
         rating: 4,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
-        author: "Dieter",
-        comment: "War ok",
+        author: 'Dieter',
+        comment: 'War ok',
         rating: 2,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
-        author: "Peter",
-        comment: "Naja",
+        author: 'Peter',
+        comment: 'Naja',
         rating: 1,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
     ],
     geometry: {
@@ -150,8 +150,8 @@ const barberShops = [
     paymentMethods: ['ON_SITE_CASH', 'ON_SITE_CARD', 'PAYPAL', 'BANK_TRANSFER'],
     drinks: ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'],
     recommended: true,
-    openingTime: "9:00",
-    closingTime: "17:00"
+    openingTime: '9:00',
+    closingTime: '17:00',
   },
   {
     id: 3,
@@ -162,22 +162,22 @@ const barberShops = [
       'https://www.kopflausratgeber.de/fileadmin/_processed_/8/9/csm_2021_1_blog_teaser_Mit_Kopflaeusen_zum_Friseur_LICENER_767x512_0406d0757d.jpg',
     reviews: [
       {
-        author: "Hans",
-        comment: "War geil",
+        author: 'Hans',
+        comment: 'War geil',
         rating: 4,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
-        author: "Dieter",
-        comment: "War ok",
+        author: 'Dieter',
+        comment: 'War ok',
         rating: 2,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
-        author: "Peter",
-        comment: "Naja",
+        author: 'Peter',
+        comment: 'Naja',
         rating: 1,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
     ],
     geometry: {
@@ -228,8 +228,8 @@ const barberShops = [
     paymentMethods: ['ON_SITE_CASH', 'ON_SITE_CARD', 'PAYPAL', 'BANK_TRANSFER'],
     drinks: ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'],
     recommended: false,
-    openingTime: "8:00",
-    closingTime: "18:00"
+    openingTime: '8:00',
+    closingTime: '18:00',
   },
   {
     id: 4,
@@ -239,22 +239,22 @@ const barberShops = [
     logo: 'https://www.blog.tillhub.de/hubfs/friseur-tipps-guter-service-1.jpg',
     reviews: [
       {
-        author: "Hans",
-        comment: "War geil",
+        author: 'Hans',
+        comment: 'War geil',
         rating: 4,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
-        author: "Dieter",
-        comment: "War ok",
+        author: 'Dieter',
+        comment: 'War ok',
         rating: 2,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
-        author: "Peter",
-        comment: "Naja",
+        author: 'Peter',
+        comment: 'Naja',
         rating: 1,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
     ],
     geometry: {
@@ -305,8 +305,8 @@ const barberShops = [
     paymentMethods: ['ON_SITE_CASH', 'ON_SITE_CARD', 'PAYPAL', 'BANK_TRANSFER'],
     drinks: ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'],
     recommended: false,
-    openingTime: "8:00",
-    closingTime: "17:00"
+    openingTime: '8:00',
+    closingTime: '17:00',
   },
   {
     id: 5,
@@ -316,22 +316,22 @@ const barberShops = [
     logo: 'https://bbs-springe.de/wp-content/uploads/2013/08/ausbildungsberuf-friseur.jpg',
     reviews: [
       {
-        author: "Hans",
-        comment: "War geil",
+        author: 'Hans',
+        comment: 'War geil',
         rating: 4,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
-        author: "Dieter",
-        comment: "War ok",
+        author: 'Dieter',
+        comment: 'War ok',
         rating: 2,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
-        author: "Peter",
-        comment: "Naja",
+        author: 'Peter',
+        comment: 'Naja',
         rating: 1,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
     ],
     geometry: {
@@ -382,8 +382,8 @@ const barberShops = [
     paymentMethods: ['ON_SITE_CASH', 'ON_SITE_CARD', 'PAYPAL', 'BANK_TRANSFER'],
     drinks: ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'],
     recommended: true,
-    openingTime: "10:00",
-    closingTime: "19:00"
+    openingTime: '10:00',
+    closingTime: '19:00',
   },
 ];
 

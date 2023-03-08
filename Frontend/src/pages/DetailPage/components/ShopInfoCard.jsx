@@ -90,8 +90,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
               <AccessTimeIcon />
               <Typography variant="h6">Opening Hours:</Typography>
               <Typography variant="h6">
-                {shop.openingTime ? convertDateToTime(shop.openingTime) : 'N/A'} -{' '}
-                {shop.openingTime ? convertDateToTime(shop.closingTime) : 'N/A'}
+                {shop.openingTime ? convertDateToTime(shop.openingTime) : 'N/A'} - {shop.openingTime ? convertDateToTime(shop.closingTime) : 'N/A'}
               </Typography>
             </Stack>
 

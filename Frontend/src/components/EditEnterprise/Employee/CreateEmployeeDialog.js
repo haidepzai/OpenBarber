@@ -14,7 +14,7 @@ const initialState = {
   name: '',
   title: '',
   picture: null,
-  id: undefined
+  id: undefined,
 };
 
 const employeeReducer = (state, action) => {
@@ -88,7 +88,8 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
         updateEmployee(employee);
         await updateStylist(editedEmployee.id, employee);
         setEditedEmployee(undefined);
-      } else { // Add Employee
+      } else {
+        // Add Employee
         addEmployee(employee);
         await createEmployee(employee, authCtx.user.enterprise.id);
         dispatch({ type: 'RESET' });
@@ -98,7 +99,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
     if (!initialClick) {
       setInitialClick(true);
     }
-  }
+  };
 
   useEffect(() => {
     if (editingMode()) {
@@ -106,8 +107,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
       dispatch({ type: 'SET_TITLE', payload: editedEmployee.title });
       dispatch({ type: 'SET_ID', payload: editedEmployee.id });
     }
-  }, [])
-
+  }, []);
 
   return (
     <>
@@ -155,7 +155,13 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
               </Stack>
               {employee.picture && (
                 <Box sx={{ mt: '24px' }}>
-                  <img alt="employee" src={URL.createObjectURL(employee.picture)} width="100%" height="auto" style={{ maxHeight: '250px', objectFit: 'cover' }} />
+                  <img
+                    alt="employee"
+                    src={URL.createObjectURL(employee.picture)}
+                    width="100%"
+                    height="auto"
+                    style={{ maxHeight: '250px', objectFit: 'cover' }}
+                  />
                 </Box>
               )}
             </Stack>
@@ -166,10 +172,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
             Cancel
           </Button>
 
-          <Button
-            variant="contained"
-            onClick={handleClick}
-          >
+          <Button variant="contained" onClick={handleClick}>
             {editingMode() ? 'Save' : 'Add'}
           </Button>
         </DialogActions>

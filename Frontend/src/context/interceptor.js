@@ -83,6 +83,6 @@ const refreshToken = async () => {
   const response = await axios.post('/auth/refresh', { refreshToken });
   console.log(response);
   return response;
-}
+};
 
 export { makeRequest, setAccessToken, setRefreshToken, refreshToken };
