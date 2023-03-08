@@ -14,7 +14,7 @@ const steps = ['Services', 'Date', 'Booking'];
 
 const initialState = {
     enterpriseId: "",
-    services: [{ targetAudience: 'ALL', title: 'Waschen, Schneiden, Föhnen', durationInMin: '60', price: '30,00' },],
+    services: [],
     employee: { name: "Any" },
     employeeId: "",
     appointmentDateTime: new Date(),
