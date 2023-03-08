@@ -21,7 +21,7 @@ public class AppointmentDto {
     private boolean confirmed;
 
     private Long enterpriseId;
-    private Employee employee;
+    private Long employeeId;
     private List<Service> services;
 
     @Override
@@ -35,7 +35,7 @@ public class AppointmentDto {
                 ", appointmentDateTime=" + appointmentDateTime +
                 ", confirmed=" + confirmed +
                 ", enterpriseId=" + enterpriseId +
-                ", employee=" + employee +
+                ", employeeId=" + employeeId +
                 ", services=" + services +
                 '}';
     }

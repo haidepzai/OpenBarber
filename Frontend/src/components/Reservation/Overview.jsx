@@ -6,7 +6,14 @@ import {ArrowForwardIos} from "@mui/icons-material";
 import Avatar from "@mui/material/Avatar";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 
+const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+
 const Overview = ({ booked, data, handleStep }) => {
+
+    const calculateEndDate = (date, duration) => {
+        date.setMinutes(date.getMinutes() + duration);
+        return date.toLocaleString('de-DE', options);
+    }
 
     const totalDuration = () => {
         return data.services.map((service) => parseInt(service.durationInMin)).reduce((prev, next) => prev + next);
@@ -20,7 +27,7 @@ const Overview = ({ booked, data, handleStep }) => {
         <Box sx={{ borderRadius: "8px", border: "1px solid rgb(236,236,236)", marginBottom: "20px" }}>
             <Stack direction="row" alignItems="center" spacing={3} sx={{ borderTop: "1px solid rgb(236,236,236)", padding: " 16px 24px" }}>
                 <CalendarMonthIcon fontSize="large" />
-                <Typography sx={{ lineHeight: "unset" }}>{data.appointmentDateTime.locale('en').format('dddd[, ] DD.MM.YYYY[ at ]hh:mm[ o\' clock]')}</Typography>
+                <Typography sx={{ lineHeight: "unset" }}>{data.appointmentDateTime.toLocaleString('de-DE', options)}</Typography>
             </Stack>
             <Stack direction="row" alignItems={data.services.length > 1 ? "start" : "center"} sx={{ borderTop: "1px solid rgb(236,236,236)", padding: "16px 16px 16px 24px", '&:hover': { backgroundColor: !booked && "rgba(0, 0, 0, 0.1)", cursor: !booked && "pointer"} }} onClick={() => handleStep(0)}>
                 <ContentCutIcon fontSize="large" />
@@ -65,7 +72,7 @@ const Overview = ({ booked, data, handleStep }) => {
             </Stack>
             <Stack direction="row" alignItems="center" spacing={3} sx={{ borderTop: "1px solid rgb(236,236,236)", padding: "16px 24px"  }}>
                 <HourglassBottomIcon fontSize="large" />
-                <Typography sx={{ lineHeight: "unset" }}>Duration: {totalDuration()} Minutes (ends approx. at {data.appointmentDateTime.add(totalDuration(), 'minutes').format('hh:mm[ o\' clock]')})</Typography>
+                <Typography sx={{ lineHeight: "unset" }}>Duration: {totalDuration()} Minutes (ends approx. at {calculateEndDate(data.appointmentDateTime, totalDuration())})</Typography>
             </Stack>
         </Box>
     );
