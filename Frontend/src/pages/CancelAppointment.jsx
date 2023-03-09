@@ -1,27 +1,27 @@
-import { CheckCircleRounded } from '@mui/icons-material'
+import { CheckCircleRounded, ErrorOutlineRounded } from '@mui/icons-material'
 import { Box, CircularProgress, Stack, Typography } from '@mui/material'
 import React, { Fragment, useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom';
-import { confirmAppointment } from '../actions/AppointmentActions';
+import { cancelAppointment } from '../actions/AppointmentActions';
 
-const AppointmentConfirmation = () => {
+const CancelAppointment = () => {
     const { routeId } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
 
     const [isLoading, setIsLoading] = useState(true);
-    const [isConfirmed, setIsConfirmed] = useState(false);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
-        const confirmedAppointment = async () => {
+        const canceledAppointment = async () => {
             try {
-                await confirmAppointment(routeId, searchParams.get("confirmationCode"));
+                await cancelAppointment(routeId, searchParams.get("confirmationCode"));
             } catch (error) {
-                setIsConfirmed(true);
+                setError(true);
                 setIsLoading(false);
             }
             setIsLoading(false);
         }
-        confirmedAppointment().catch((error) => console.log(error));
+        canceledAppointment().catch((error) => console.log(error));
     }, []);
 
     return (
@@ -34,21 +34,20 @@ const AppointmentConfirmation = () => {
                     </Stack>
                 }
 
-
-                {!isLoading && !isConfirmed &&
+                {!isLoading && !error &&
                     <Fragment>
                         <CheckCircleRounded sx={{ width: '5rem', height: '5rem', color: 'primary.main' }} />
                         <Typography variant="p" fontSize="2rem" textAlign="center">
-                            Your appointment has been confirmed!
+                            Your appointment has been canceled!
                         </Typography>
                     </Fragment>
                 }
 
-                {!isLoading && isConfirmed &&
+                {!isLoading && error &&
                     <Fragment>
-                        <CheckCircleRounded sx={{ width: '5rem', height: '5rem', color: 'primary.main' }} />
+                        <ErrorOutlineRounded sx={{ width: '5rem', height: '5rem', color: 'primary.main' }} />
                         <Typography variant="p" fontSize="2rem" textAlign="center">
-                            Your appointment has already confirmed!
+                            No Appointment to cancel found!
                         </Typography>
                     </Fragment>
                 }
@@ -59,4 +58,4 @@ const AppointmentConfirmation = () => {
 
 }
 
-export default AppointmentConfirmation;
+export default CancelAppointment;

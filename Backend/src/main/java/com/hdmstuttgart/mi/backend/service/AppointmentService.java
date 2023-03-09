@@ -87,7 +87,7 @@ public class AppointmentService {
         if (appointment.getConfirmationCode().toString().equals(confirmationCode)) {
             appointment.setConfirmed(true);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Appointment found");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not allowed");
         }
 
         return appointmentRepository.save(appointment);
@@ -153,10 +153,14 @@ public class AppointmentService {
     }
 
 
-    public void deleteAppointment(long id) {
-        if (!appointmentRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment not found with id = " + id);
+    public void deleteAppointment(long id, String confirmationCode) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No appointment found with id = " + id));
+
+        if (!appointment.getConfirmationCode().toString().equals(confirmationCode)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not allowed to delete this appointment");
         }
+
         appointmentRepository.deleteById(id);
     }
 }

@@ -33,3 +33,16 @@ export const confirmAppointment = async (id, confirmationCode) => {
     throw new Error('Could not confirm appointment');
   }
 }
+
+export const cancelAppointment = async (id, confirmationCode) => {
+  const config = {
+    method: 'DELETE',
+    params: { confirmationCode: confirmationCode },
+  };
+  try {
+    const response = await axios.delete(`${appointmentUrl}${id}`, config);
+    return response;
+  } catch (err) {
+    throw new Error('Could not cancel appointment');
+  }
+}

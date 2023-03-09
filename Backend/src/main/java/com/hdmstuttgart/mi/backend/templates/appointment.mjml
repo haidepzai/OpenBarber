@@ -66,6 +66,14 @@
                         Confirm your appointment now!
                     </mj-button>
 
+                    <mj-text color="#212b35" font-weight="bold" font-size="18px">
+                        Want to cancel your appointment?
+                    </mj-text>
+
+                    <mj-button background-color="#3CBAAD" align="center" color="#ffffff" font-size="17px" font-weight="bold" href="blank_cancelUrl" width="300px">
+                        Cancel your appointment!
+                    </mj-button>
+
                 </mj-column>
             </mj-section>
 
