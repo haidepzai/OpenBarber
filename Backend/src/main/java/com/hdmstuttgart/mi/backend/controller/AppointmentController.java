@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Controller for appointments
@@ -36,6 +37,13 @@ public class AppointmentController {
         Appointment createdAppointment = appointmentService.createAppointment(appointment, enterpriseId);
         AppointmentDto createdAppointmentDto = appointmentMapper.appointmentToDto(createdAppointment);
         return new ResponseEntity<>(createdAppointmentDto, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/confirmation/{id}")
+    public ResponseEntity<AppointmentDto> confirmAppointment(@PathVariable long id, @RequestParam String confirmationCode) {
+        Appointment appointment = appointmentService.confirmAppointment(id, confirmationCode);
+        AppointmentDto appointmentDto = appointmentMapper.appointmentToDto(appointment);
+        return new ResponseEntity<>(appointmentDto, HttpStatus.ACCEPTED);
     }
 
     @GetMapping

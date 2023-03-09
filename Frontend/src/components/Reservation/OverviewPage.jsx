@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -19,6 +19,9 @@ const paymentMethods = {
 };
 
 const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error, setError, shopPaymentMethods }) => {
+
+  const overview = useMemo(() => <Overview booked={false} data={data} handleStep={handleStep} />, [])
+
   const handleChange = (event) => {
     dispatch({ type: 'set_personal_data', payload: { [event.target.name]: event.target.value } });
 
@@ -40,7 +43,7 @@ const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error
         Appointment Overview
       </Typography>
 
-      <Overview booked={false} data={data} handleStep={handleStep} />
+      {overview}
 
       <Typography variant="overline" display="block" gutterBottom>
         Your comments

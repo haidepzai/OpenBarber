@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Description:
@@ -120,13 +121,15 @@ public class EmailSenderService {
         String employeeName = employee.getName();
         Enterprise enterprise = enterpriseRepository.findById(appointment.getEnterprise().getId()).orElseThrow();
         String enterpriseName = enterprise.getName();
+        String confirmationCode = appointment.getConfirmationCode().toString();
 
 
         String preparedText = mjmlTemplateTexts.get(templateName)
                 .replace("blank_enterpriseName", enterpriseName)
                 .replace("blank_username", customerName)
                 .replace("blank_stylist", employeeName)
-                .replace("blank_appointmentDate", appointmentDate);
+                .replace("blank_appointmentDate", appointmentDate)
+                .replace("blank_confirmUrl", "http://localhost:3000/appointment/" + appointment.getId() + "?confirmationCode=" + confirmationCode);
         mjmlTemplateTexts.put(templateName, preparedText);
     }
 

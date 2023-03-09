@@ -1,5 +1,6 @@
 package com.hdmstuttgart.mi.backend.service;
 
+import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
@@ -8,17 +9,24 @@ import com.hdmstuttgart.mi.backend.repository.AppointmentRepository;
 import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
 public class AppointmentService {
+
+    private static final Logger log = LoggerFactory.getLogger(AppointmentService.class);
 
     private final AppointmentRepository appointmentRepository;
     private final EnterpriseRepository enterpriseRepository;
@@ -51,16 +59,40 @@ public class AppointmentService {
         appointment.setEnterprise(enterprise);
         appointment.setEmployee(employee);
         appointment.setServices(services);
+        appointment.setConfirmationCode(UUID.randomUUID());
+        appointmentRepository.save(appointment);
 
         try {
             emailSenderService.sendEmailWithTemplate(appointment, "appointment", appointment.getCustomerEmail());
         } catch (MessagingException | IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
+        return appointment;
+    }
 
+    public Appointment confirmAppointment(Long id, String confirmationCode) {
+        log.info(String.valueOf(id));
+        log.info(confirmationCode);
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No appointment found with id = " + id));
+
+        log.info("OK");
+
+        if (appointment.isConfirmed()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already confirmed your appointment");
+        }
+
+        log.info("OK2");
+
+        if (appointment.getConfirmationCode().toString().equals(confirmationCode)) {
+            appointment.setConfirmed(true);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Appointment found");
+        }
 
         return appointmentRepository.save(appointment);
     }
+
 
     public List<Appointment> getAppointmentsByEnterpriseId(Long enterpriseId) {
         if (!enterpriseRepository.existsById(enterpriseId)) {
