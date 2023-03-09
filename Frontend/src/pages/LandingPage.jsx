@@ -34,7 +34,7 @@ const LandingPage = () => {
             reject(err);
           });
       });
-    });
+    }, []);
 
     let shops = await Promise.all(promises);
 

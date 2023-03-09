@@ -47,6 +47,9 @@ public class Appointment {
 
     private boolean confirmed;
 
+    @Column(unique = true)
+    private UUID confirmationCode;
+
     @ElementCollection(targetClass = PaymentMethod.class)
     @CollectionTable(name = "appointment_payment_methods", joinColumns = @JoinColumn(name = "appointment_id"))
     @Enumerated(EnumType.STRING)

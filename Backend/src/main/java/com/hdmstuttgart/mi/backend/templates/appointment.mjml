@@ -62,8 +62,8 @@
                         blank_appointmentDate
                     </mj-text>
 
-                    <mj-button background-color="#3CBAAD" align="center" color="#ffffff" font-size="17px" font-weight="bold" href="https://google.com" width="300px">
-                        Visit OpenBarber
+                    <mj-button background-color="#3CBAAD" align="center" color="#ffffff" font-size="17px" font-weight="bold" href="blank_confirmUrl" width="300px">
+                        Confirm your appointment now!
                     </mj-button>
 
                 </mj-column>

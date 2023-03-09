@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -25,6 +26,7 @@ public class AppointmentDto {
     private String customerEmail;
     private LocalDateTime appointmentDateTime;
     private Set<PaymentMethod> paymentMethods;
+    private UUID confirmationCode;
 
     private boolean confirmed;
 

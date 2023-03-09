@@ -17,3 +17,19 @@ export const createAppointment = async (appointment, enterpriseId) => {
     throw new Error('Could not create appointment');
   }
 };
+
+export const confirmAppointment = async (id, confirmationCode) => {
+  const config = {
+    method: 'PUT',
+    params: { confirmationCode: confirmationCode },
+    headers: {
+      'Content-type': 'application/json',
+    },
+  };
+  try {
+    const response = await axios.put(`${appointmentUrl}confirmation/${id}`, {}, config);
+    return response;
+  } catch (err) {
+    throw new Error('Could not confirm appointment');
+  }
+}

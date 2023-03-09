@@ -15,6 +15,7 @@ import Datenschutz from './pages/Datenschutz';
 import SchedulerPage from './pages/SchedulerPage';
 import EditEnterprisePage from './pages/EditEnterprisePage';
 import { SignupContext } from './context/Signup.context';
+import AppointmentConfirmation from './pages/AppointmentConfirmation';
 
 function App() {
   const signUpCtx = useContext(SignupContext);
@@ -31,6 +32,7 @@ function App() {
           <Route path="privacy-policy" element={<Datenschutz />} />
           <Route path="scheduler" element={<SchedulerPage />} />
           <Route path="edit" element={<EditEnterprisePage />} />
+          <Route path="appointment/:routeId" element={<AppointmentConfirmation/>}/>
         </Routes>
         <Footer />
         {signUpCtx.loginVisible && (
