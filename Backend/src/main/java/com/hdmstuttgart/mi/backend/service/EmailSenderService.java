@@ -129,7 +129,9 @@ public class EmailSenderService {
                 .replace("blank_username", customerName)
                 .replace("blank_stylist", employeeName)
                 .replace("blank_appointmentDate", appointmentDate)
-                .replace("blank_confirmUrl", "http://localhost:3000/appointment/" + appointment.getId() + "?confirmationCode=" + confirmationCode);
+                .replace("blank_confirmUrl", "http://localhost:3000/appointment/" + appointment.getId() + "?confirmationCode=" + confirmationCode)
+                .replace("blank_cancelUrl", "http://localhost:3000/cancel-appointment/" + appointment.getId() + "?confirmationCode=" + confirmationCode);
+
         mjmlTemplateTexts.put(templateName, preparedText);
     }
 

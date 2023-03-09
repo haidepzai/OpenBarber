@@ -77,8 +77,8 @@ public class AppointmentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteAppointment(@PathVariable long id) {
-        appointmentService.deleteAppointment(id);
+    public ResponseEntity<String> deleteAppointment(@PathVariable long id, @RequestParam String confirmationCode) {
+        appointmentService.deleteAppointment(id, confirmationCode);
         return new ResponseEntity<>("Appointment deleted with id = " + id, HttpStatus.NO_CONTENT);
     }
 }
