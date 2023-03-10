@@ -30,7 +30,7 @@
             <mj-column width="100%">
                 <mj-image src="http://i.epvpimg.com/91j3gab.png" alt="" align="center" width="80px" />
                 <mj-text color="#ffffff" font-weight="bold" align="center" font-size="16px" letter-spacing="1px" padding-top="30px">
-                    Confirmation of your appointment
+                    Confirm your Appointment!
                 </mj-text>
                 <mj-text color="#3CBAAD" align="center" font-size="13px" padding-top="0" font-weight="bold" text-transform="uppercase" letter-spacing="1px" line-height="20px">
                 </mj-text>
@@ -50,7 +50,7 @@
                         Hello blank_username
                     </mj-text>
                     <mj-text color="#212b35" font-weight="bold" font-size="18px">
-                        Your appointment for blank_enterpriseName has been confirmed!
+                        Please confirm your appointment for blank_enterpriseName
                     </mj-text>
                     <mj-text color="#637381" font-size="16px">
                         Your stylist will be blank_stylist
