@@ -11,13 +11,13 @@ import AuthContext from '../context/auth-context';
 const Header = () => {
   const signUpCtx = useContext(SignupContext);
   const authCtx = useContext(AuthContext);
+  const navigate = useNavigate();
 
   function handleLogout() {
     authCtx.onLogout();
     authCtx.deleteJWTTokenFromStorage();
-  }
-
-  const navigate = useNavigate();
+    navigate('/');
+  }  
 
   return (
     <>
