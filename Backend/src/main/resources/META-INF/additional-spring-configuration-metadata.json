@@ -1,0 +1,24 @@
+{
+  "properties": [
+    {
+      "name": "mailCredentials.username",
+      "type": "java.lang.String",
+      "description": "Description for mailCredentials.username."
+    },
+    {
+      "name": "mailCredentials.password",
+      "type": "java.lang.String",
+      "description": "Description for mailCredentials.password."
+    },
+    {
+      "name": "mjmlSecrets.appId",
+      "type": "java.lang.String",
+      "description": "Description for mjmlSecrets.appId."
+    },
+    {
+      "name": "mjmlSecrets.appKey",
+      "type": "java.lang.String",
+      "description": "Description for mjmlSecrets.appKey."
+    }
+  ]
+}

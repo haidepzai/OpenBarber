@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * Description:
@@ -39,39 +38,49 @@ import java.util.UUID;
 @Service
 public class EmailSenderService {
     private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    @Autowired
-    private JavaMailSender mailSender;
 
     @Autowired
-    UserRepository userRepository;
+    private final JavaMailSender mailSender;
 
-    @Autowired
-    EmployeeRepository employeeRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    EnterpriseRepository enterpriseRepository;
+    private final EmployeeRepository employeeRepository;
+
+    private final EnterpriseRepository enterpriseRepository;
 
     private MJMLClient mjmlClient;
 
-    @Value("${mjmlSecrets.appId}")
-    String appId;
+    private final String appId;
 
-    @Value("${mailCredentials.username}")
-    String mailUsername;
+    private final String mailUsername;
 
-    @Value("${mjmlSecrets.appKey}")
-    String appKey;
+    private final String appKey;
 
-    HashMap<String, String> mjmlTemplateTexts = new HashMap<String, String>();
+    private final HashMap<String, String> mjmlTemplateTexts = new HashMap<>();
+
+    public EmailSenderService(JavaMailSender mailSender, UserRepository userRepository, EmployeeRepository employeeRepository,
+                              EnterpriseRepository enterpriseRepository, MJMLClient mjmlClient,
+                              @Value("${mjmlSecrets.appId}") String appId,
+                              @Value("${mailCredentials.username}") String mailUsername,
+                              @Value("${mjmlSecrets.appKey}") String appKey) {
+        this.mailSender = mailSender;
+        this.userRepository = userRepository;
+        this.employeeRepository = employeeRepository;
+        this.enterpriseRepository = enterpriseRepository;
+        this.mjmlClient = mjmlClient;
+        this.appId = appId;
+        this.mailUsername = mailUsername;
+        this.appKey = appKey;
+    }
 
     public void readMJMLTemplatesIntoMap() throws IOException {
         File folder = new File("src/main/java/com/hdmstuttgart/mi/backend/templates");
         File[] listOfFiles = folder.listFiles();
 
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                mjmlTemplateTexts.put(listOfFiles[i].getName().replaceAll(".mjml", ""), Files.readString(Path.of(listOfFiles[i].getAbsolutePath()), StandardCharsets.UTF_8));
+        assert listOfFiles != null;
+        for (File listOfFile : listOfFiles) {
+            if (listOfFile.isFile()) {
+                mjmlTemplateTexts.put(listOfFile.getName().replaceAll(".mjml", ""), Files.readString(Path.of(listOfFile.getAbsolutePath()), StandardCharsets.UTF_8));
             }
         }
     }
