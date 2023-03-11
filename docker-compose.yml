@@ -18,6 +18,12 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/openbarber
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=admin
+      - MJML_APP_ID=08e27ced-848a-4489-891c-e4ac7fa0c612
+      - MJML_APP_KEY=10729f98-dcef-4a99-92cd-6090a9497a90
+      - MAIL_USERNAME=openbarber.hdm@gmail.com
+      - MAIL_PASSWORD=omzprdygnvddylbk
+    env_file:
+      - ./Backend/src/main/resources/.env
   db:
     image: postgres:latest
     environment:
