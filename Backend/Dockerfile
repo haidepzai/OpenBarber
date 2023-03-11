@@ -16,5 +16,8 @@ RUN ./mvnw dependency:go-offline -B
 RUN ./mvnw package -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
+# Copy the jar file into the image
+COPY target/Backend.jar .
+
 # Start the server
-CMD ["java", "-jar", "target/demo-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "Backend.jar"]
