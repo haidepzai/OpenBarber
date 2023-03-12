@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Employee controller.
+ */
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
@@ -19,11 +22,25 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final EmployeeMapper employeeMapper;
 
+    /**
+     * Instantiates a new Employee controller.
+     *
+     * @param employeeService the employee service
+     * @param employeeMapper  the employee mapper
+     */
     public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper) {
         this.employeeService = employeeService;
         this.employeeMapper = employeeMapper;
     }
 
+    /**
+     * Create employee response entity.
+     *
+     * @param employeeDto  the employee dto
+     * @param enterpriseId the enterprise id
+     * @return the response entity
+     * @throws IOException the io exception
+     */
     @PostMapping
     public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto, @RequestParam Long enterpriseId) throws IOException {
         Employee employee = employeeMapper.toEntity(employeeDto);
@@ -32,6 +49,12 @@ public class EmployeeController {
         return new ResponseEntity<>(createdEmployeeDto, HttpStatus.CREATED);
     }
 
+    /**
+     * Gets employees by enterprise id.
+     *
+     * @param enterpriseId the enterprise id
+     * @return the employees by enterprise id
+     */
     @GetMapping
     public ResponseEntity<List<EmployeeDto>> getEmployeesByEnterpriseId(@RequestParam Long enterpriseId) {
         List<Employee> employees = employeeService.getEmployeesByEnterpriseId(enterpriseId);
@@ -41,6 +64,12 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeDtos, HttpStatus.OK);
     }
 
+    /**
+     * Gets employee by id.
+     *
+     * @param id the id
+     * @return the employee by id
+     */
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable long id) {
         Employee employee = employeeService.getEmployeeById(id);
@@ -48,6 +77,14 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeDto, HttpStatus.OK);
     }
 
+    /**
+     * Update employee response entity.
+     *
+     * @param id             the id
+     * @param newEmployeeDto the new employee dto
+     * @return the response entity
+     * @throws IOException the io exception
+     */
     @PutMapping("/{id}")
     public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable long id, @Valid @RequestBody EmployeeDto newEmployeeDto) throws IOException {
         Employee newEmployee = employeeMapper.toEntity(newEmployeeDto);
@@ -56,6 +93,13 @@ public class EmployeeController {
         return new ResponseEntity<>(updatedEmployeeDto, HttpStatus.OK);
     }
 
+    /**
+     * Delete employee response entity.
+     *
+     * @param id    the id
+     * @param token the token
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable long id, @RequestHeader("Authorization") String token) {
         employeeService.deleteEmployee(id);

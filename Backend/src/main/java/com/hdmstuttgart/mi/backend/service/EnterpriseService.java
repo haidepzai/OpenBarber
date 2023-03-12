@@ -21,6 +21,9 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The type Enterprise service.
+ */
 @Service
 @RequiredArgsConstructor
 public class EnterpriseService {
@@ -31,6 +34,13 @@ public class EnterpriseService {
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
 
+    /**
+     * Create enterprise enterprise.
+     *
+     * @param request the request
+     * @param token   the token
+     * @return the enterprise
+     */
     public Enterprise createEnterprise(Enterprise request, String token) {
         String username = jwtService.extractUsername(token.substring(7));
         User user = userRepository.findByEmail(username)
@@ -112,6 +122,11 @@ public class EnterpriseService {
         return userRepository.save(user).getEnterprise();
     }
 
+    /**
+     * Gets all enterprises.
+     *
+     * @return the all enterprises
+     */
     public List<Enterprise> getAllEnterprises() {
         List<Enterprise> enterprises = enterpriseRepository.findAll();
         if (enterprises.isEmpty()) {
@@ -120,16 +135,34 @@ public class EnterpriseService {
         return enterprises;
     }
 
+    /**
+     * Gets enterprise by id.
+     *
+     * @param id the id
+     * @return the enterprise by id
+     */
     public Enterprise getEnterpriseById(long id) {
         return enterpriseRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
     }
 
+    /**
+     * Gets enterprise by email.
+     *
+     * @param email the email
+     * @return the enterprise by email
+     */
     public Enterprise getEnterpriseByEmail(String email) {
         return enterpriseRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with email = " + email));
     }
 
+    /**
+     * Gets enterprise by user.
+     *
+     * @param token the token
+     * @return the enterprise by user
+     */
     public Enterprise getEnterpriseByUser(String token) {
         String username = jwtService.extractUsername(token.substring(7));
 
@@ -139,6 +172,14 @@ public class EnterpriseService {
         return user.getEnterprise();
     }
 
+    /**
+     * Update enterprise enterprise.
+     *
+     * @param id            the id
+     * @param newEnterprise the new enterprise
+     * @param token         the token
+     * @return the enterprise
+     */
     public Enterprise updateEnterprise(long id, Enterprise newEnterprise, String token) {
         String username = jwtService.extractUsername(token.substring(7));
         User user = userRepository.findByEmail(username)
@@ -222,6 +263,13 @@ public class EnterpriseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
     }
 
+    /**
+     * Patch enterprise enterprise.
+     *
+     * @param updatedEnterprise the updated enterprise
+     * @param token             the token
+     * @return the enterprise
+     */
     public Enterprise patchEnterprise(Enterprise updatedEnterprise, String token) {
         String username = jwtService.extractUsername(token.substring(7));
 
@@ -248,6 +296,11 @@ public class EnterpriseService {
         return enterpriseRepository.save(existingEnterprise);
     }
 
+    /**
+     * Delete enterprise.
+     *
+     * @param id the id
+     */
     public void deleteEnterprise(long id) {
         if (!enterpriseRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id);

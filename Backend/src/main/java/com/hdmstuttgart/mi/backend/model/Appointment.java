@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * The type Appointment.
+ */
 @Data
 @Entity
 @NoArgsConstructor
@@ -72,10 +75,20 @@ public class Appointment {
             inverseJoinColumns = @JoinColumn(name = "service_id"))
     private List<Service> services = new ArrayList<>();
 
+    /**
+     * Gets services.
+     *
+     * @return the services
+     */
     public List<Service> getServices() {
         return services;
     }
 
+    /**
+     * Sets services.
+     *
+     * @param services the services
+     */
     public void setServices(List<Service> services) {
         this.services = services;
     }

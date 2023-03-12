@@ -17,6 +17,9 @@ import javax.validation.constraints.NotNull;
 import java.sql.Blob;
 import java.util.Date;
 
+/**
+ * The type Review.
+ */
 @Data
 @Builder
 @NoArgsConstructor

@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * The type Jwt service.
+ */
 @Service
 public class JwtService {
 
@@ -23,20 +26,46 @@ public class JwtService {
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // 15 minutes in seconds
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 30 * 24 * 60 * 60; // 30 days in seconds
 
+    /**
+     * Extract username string.
+     *
+     * @param token the token
+     * @return the string
+     */
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
+    /**
+     * Extract claim t.
+     *
+     * @param <T>            the type parameter
+     * @param token          the token
+     * @param claimsResolver the claims resolver
+     * @return the t
+     */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
+    /**
+     * Generate access token string.
+     *
+     * @param userDetails the user details
+     * @return the string
+     */
     public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return generateToken(claims, userDetails, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
+    /**
+     * Generate refresh token string.
+     *
+     * @param userDetails the user details
+     * @return the string
+     */
     public String generateRefreshToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return generateToken(claims, userDetails, REFRESH_TOKEN_EXPIRATION_TIME);
@@ -53,11 +82,25 @@ public class JwtService {
                 .compact();
     }
 
+    /**
+     * Is access token valid boolean.
+     *
+     * @param token       the token
+     * @param userDetails the user details
+     * @return the boolean
+     */
     public boolean isAccessTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
+    /**
+     * Is refresh token valid boolean.
+     *
+     * @param token       the token
+     * @param userDetails the user details
+     * @return the boolean
+     */
     public boolean isRefreshTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
@@ -85,6 +128,13 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * Refresh access token string.
+     *
+     * @param refreshToken the refresh token
+     * @param userDetails  the user details
+     * @return the string
+     */
     public String refreshAccessToken(String refreshToken, UserDetails userDetails) {
         final Claims claims = extractAllClaims(refreshToken);
         if (!claims.getSubject().equals(userDetails.getUsername())) {

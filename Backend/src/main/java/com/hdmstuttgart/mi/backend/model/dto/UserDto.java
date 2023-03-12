@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * The type User dto.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * The type Enterprise controller.
+ */
 @RestController
 @RequestMapping("/api/enterprises")
 public class EnterpriseController {
@@ -24,6 +27,14 @@ public class EnterpriseController {
     private final JwtService jwtService;
     private final EnterpriseMapper enterpriseMapper;
 
+    /**
+     * Instantiates a new Enterprise controller.
+     *
+     * @param enterpriseService the enterprise service
+     * @param userService       the user service
+     * @param jwtService        the jwt service
+     * @param enterpriseMapper  the enterprise mapper
+     */
     public EnterpriseController(EnterpriseService enterpriseService, UserService userService, JwtService jwtService, EnterpriseMapper enterpriseMapper) {
         this.enterpriseService = enterpriseService;
         this.userService = userService;
@@ -31,6 +42,13 @@ public class EnterpriseController {
         this.enterpriseMapper = enterpriseMapper;
     }
 
+    /**
+     * Create enterprise response entity.
+     *
+     * @param enterpriseDto the enterprise dto
+     * @param token         the token
+     * @return the response entity
+     */
     @PostMapping
     public ResponseEntity<EnterpriseDto> createEnterprise(@Valid @RequestBody EnterpriseDto enterpriseDto, @RequestHeader("Authorization") String token) {
         Enterprise createdEnterprise = enterpriseService.createEnterprise(enterpriseMapper.toEntity(enterpriseDto), token);
@@ -38,6 +56,11 @@ public class EnterpriseController {
         return new ResponseEntity<>(createdEnterpriseDto, HttpStatus.CREATED);
     }
 
+    /**
+     * Gets all enterprises.
+     *
+     * @return the all enterprises
+     */
     @GetMapping
     public ResponseEntity<List<EnterpriseDto>> getAllEnterprises() {
         List<Enterprise> enterprises = enterpriseService.getAllEnterprises();
@@ -45,6 +68,12 @@ public class EnterpriseController {
         return new ResponseEntity<>(enterpriseDtos, HttpStatus.OK);
     }
 
+    /**
+     * Gets enterprise by user.
+     *
+     * @param token the token
+     * @return the enterprise by user
+     */
     @GetMapping("/user")
     public ResponseEntity<EnterpriseDto> getEnterpriseByUser(@RequestHeader("Authorization") String token) {
         Enterprise enterprise = enterpriseService.getEnterpriseByUser(token);
@@ -52,6 +81,12 @@ public class EnterpriseController {
         return new ResponseEntity<>(enterpriseDto, HttpStatus.OK);
     }
 
+    /**
+     * Gets enterprise by email.
+     *
+     * @param email the email
+     * @return the enterprise by email
+     */
     @GetMapping("/email")
     public ResponseEntity<EnterpriseDto> getEnterpriseByEmail(@RequestParam String email) {
         Enterprise enterprise = enterpriseService.getEnterpriseByEmail(email);
@@ -59,6 +94,12 @@ public class EnterpriseController {
         return new ResponseEntity<>(enterpriseDto, HttpStatus.OK);
     }
 
+    /**
+     * Gets enterprise by id.
+     *
+     * @param id the id
+     * @return the enterprise by id
+     */
     @GetMapping("/{id}")
     public ResponseEntity<EnterpriseDto> getEnterpriseById(@PathVariable long id) {
         Enterprise enterprise = enterpriseService.getEnterpriseById(id);
@@ -66,6 +107,14 @@ public class EnterpriseController {
         return new ResponseEntity<>(enterpriseDto, HttpStatus.OK);
     }
 
+    /**
+     * Update enterprise response entity.
+     *
+     * @param id                   the id
+     * @param updatedEnterpriseDto the updated enterprise dto
+     * @param token                the token
+     * @return the response entity
+     */
     @PutMapping("/{id}")
     public ResponseEntity<EnterpriseDto> updateEnterprise(
             @PathVariable long id,
@@ -86,6 +135,13 @@ public class EnterpriseController {
         return new ResponseEntity<>(newEnterpriseDto, HttpStatus.OK);
     }
 
+    /**
+     * Patch enterprise response entity.
+     *
+     * @param enterpriseDto the enterprise dto
+     * @param token         the token
+     * @return the response entity
+     */
     @PatchMapping("/user")
     public ResponseEntity<EnterpriseDto> patchEnterprise(@RequestBody EnterpriseDto enterpriseDto,
                                                       @RequestHeader("Authorization") String token) {
@@ -99,6 +155,13 @@ public class EnterpriseController {
         return new ResponseEntity<>(newEnterpriseDto, HttpStatus.OK);
     }
 
+    /**
+     * Delete enterprise response entity.
+     *
+     * @param id    the id
+     * @param token the token
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEnterprise(@PathVariable long id,
                                                    @RequestHeader("Authorization") String token) {

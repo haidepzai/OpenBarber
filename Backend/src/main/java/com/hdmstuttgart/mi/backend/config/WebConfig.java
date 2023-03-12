@@ -5,6 +5,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+/**
+ * The type Web config.
+ */
 //ENABLE CORS FOR THE WHOLE APPLICATION
 @Configuration
 @EnableWebMvc

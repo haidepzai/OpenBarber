@@ -10,6 +10,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * The type Review service.
+ */
 @Service
 public class ReviewService {
 
@@ -19,6 +22,15 @@ public class ReviewService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
+    /**
+     * Instantiates a new Review service.
+     *
+     * @param reviewRepository      the review repository
+     * @param enterpriseRepository  the enterprise repository
+     * @param appointmentRepository the appointment repository
+     * @param jwtService            the jwt service
+     * @param userRepository        the user repository
+     */
     public ReviewService(ReviewRepository reviewRepository, EnterpriseRepository enterpriseRepository, AppointmentRepository appointmentRepository, JwtService jwtService, UserRepository userRepository) {
         this.reviewRepository = reviewRepository;
         this.enterpriseRepository = enterpriseRepository;
@@ -27,6 +39,14 @@ public class ReviewService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Create review review.
+     *
+     * @param review       the review
+     * @param enterpriseId the enterprise id
+     * @param reviewUuid   the review uuid
+     * @return the review
+     */
     public Review createReview(Review review, Long enterpriseId, UUID reviewUuid) {
         Appointment appointment = appointmentRepository.findById(reviewUuid).orElseThrow();
         if (appointment.isReviewed()) {
@@ -40,6 +60,13 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
+    /**
+     * Create review review.
+     *
+     * @param review       the review
+     * @param enterpriseId the enterprise id
+     * @return the review
+     */
     public Review createReview(Review review, Long enterpriseId) {
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
@@ -47,6 +74,14 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
+    /**
+     * Create review review.
+     *
+     * @param review       the review
+     * @param enterpriseId the enterprise id
+     * @param token        the token
+     * @return the review
+     */
     public Review createReview(Review review, Long enterpriseId, String token) {
         String username = jwtService.extractUsername(token.substring(7));
 
@@ -59,6 +94,12 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
+    /**
+     * Gets reviews by enterprise id.
+     *
+     * @param enterpriseId the enterprise id
+     * @return the reviews by enterprise id
+     */
     public List<Review> getReviewsByEnterpriseId(Long enterpriseId) {
         if (!enterpriseRepository.existsById(enterpriseId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
@@ -71,11 +112,24 @@ public class ReviewService {
         return reviews;
     }
 
+    /**
+     * Gets review by id.
+     *
+     * @param id the id
+     * @return the review by id
+     */
     public Review getReviewById(long id) {
         return reviewRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id = " + id));
     }
 
+    /**
+     * Update review review.
+     *
+     * @param id        the id
+     * @param newReview the new review
+     * @return the review
+     */
     public Review updateReview(long id, Review newReview) {
         Review existingReview = getReviewById(id);
         existingReview.setAuthor(newReview.getAuthor());
@@ -84,6 +138,11 @@ public class ReviewService {
         return reviewRepository.save(existingReview);
     }
 
+    /**
+     * Delete review.
+     *
+     * @param id the id
+     */
     public void deleteReview(long id) {
         if (!reviewRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id = " + id);

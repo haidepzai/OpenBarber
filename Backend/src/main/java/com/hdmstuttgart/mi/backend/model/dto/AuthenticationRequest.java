@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * The type Authentication request.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -12,5 +15,8 @@ import lombok.NoArgsConstructor;
 public class AuthenticationRequest {
 
     private String email;
+    /**
+     * The Password.
+     */
     String password;
 }
