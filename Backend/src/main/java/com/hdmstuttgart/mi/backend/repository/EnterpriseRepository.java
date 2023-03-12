@@ -8,10 +8,19 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The interface Enterprise repository.
+ */
 @Repository
 public interface EnterpriseRepository extends JpaRepository<Enterprise, Long> {
     @Override
     List<Enterprise> findAll();
 
+    /**
+     * Find by email optional.
+     *
+     * @param email the email
+     * @return the optional
+     */
     Optional<Enterprise> findByEmail(String email);
 }

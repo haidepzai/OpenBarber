@@ -15,6 +15,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type User controller.
+ */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -22,11 +25,22 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
 
+    /**
+     * Instantiates a new User controller.
+     *
+     * @param userService the user service
+     * @param jwtService  the jwt service
+     */
     public UserController(UserService userService, JwtService jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
     }
 
+    /**
+     * Gets all users.
+     *
+     * @return the all users
+     */
     @GetMapping()
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<User> users = userService.getAllUsers();
@@ -36,6 +50,12 @@ public class UserController {
         return new ResponseEntity<>(userDtos, HttpStatus.OK);
     }
 
+    /**
+     * Gets user by id.
+     *
+     * @param id the id
+     * @return the user by id
+     */
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
@@ -43,6 +63,12 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
+    /**
+     * Gets user by token.
+     *
+     * @param token the token
+     * @return the user by token
+     */
     @GetMapping("/info")
     public ResponseEntity<UserDto> getUserByToken(@RequestHeader("Authorization") String token) {
         String email = jwtService.extractUsername(token.substring(7));
@@ -51,6 +77,12 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
+    /**
+     * Gets user by email.
+     *
+     * @param email the email
+     * @return the user by email
+     */
     @GetMapping("/email/{email}")
     public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
@@ -59,6 +91,12 @@ public class UserController {
     }
 
 
+    /**
+     * Create user response entity.
+     *
+     * @param userDto the user dto
+     * @return the response entity
+     */
     @PostMapping
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         User user = UserMapper.toUser(userDto);
@@ -67,6 +105,14 @@ public class UserController {
         return ResponseEntity.created(URI.create("/api/users/" + createdUser.getId())).body(createdUserDto);
     }
 
+    /**
+     * Update user response entity.
+     *
+     * @param id      the id
+     * @param userDto the user dto
+     * @param token   the token
+     * @return the response entity
+     */
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto, @RequestHeader("Authorization") String token) {
         // Get the email of the authenticated user from the JWT token
@@ -84,6 +130,13 @@ public class UserController {
         return ResponseEntity.ok(updatedUserDto);
     }
 
+    /**
+     * Delete user by id response entity.
+     *
+     * @param id      the id
+     * @param request the request
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable Long id, HttpServletRequest request) {
         // Get the email of the authenticated user from the JWT token

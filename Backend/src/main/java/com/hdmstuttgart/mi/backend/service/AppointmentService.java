@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * The type Appointment service.
+ */
 @org.springframework.stereotype.Service
 public class AppointmentService {
 
@@ -34,6 +37,15 @@ public class AppointmentService {
     private final ServiceRepository serviceRepository;
     private final EmailSenderService emailSenderService;
 
+    /**
+     * Instantiates a new Appointment service.
+     *
+     * @param appointmentRepository the appointment repository
+     * @param enterpriseRepository  the enterprise repository
+     * @param employeeRepository    the employee repository
+     * @param serviceRepository     the service repository
+     * @param emailSenderService    the email sender service
+     */
     public AppointmentService(AppointmentRepository appointmentRepository, EnterpriseRepository enterpriseRepository, EmployeeRepository employeeRepository, ServiceRepository serviceRepository, EmailSenderService emailSenderService) {
         this.appointmentRepository = appointmentRepository;
         this.enterpriseRepository = enterpriseRepository;
@@ -42,6 +54,13 @@ public class AppointmentService {
         this.emailSenderService = emailSenderService;
     }
 
+    /**
+     * Create appointment appointment.
+     *
+     * @param appointment  the appointment
+     * @param enterpriseId the enterprise id
+     * @return the appointment
+     */
     public Appointment createAppointment(Appointment appointment, long enterpriseId) {
         long employeeId = appointment.getEmployee().getId();
         List<Long> serviceIds = appointment.getServices()
@@ -70,6 +89,13 @@ public class AppointmentService {
         return appointment;
     }
 
+    /**
+     * Confirm appointment appointment.
+     *
+     * @param id               the id
+     * @param confirmationCode the confirmation code
+     * @return the appointment
+     */
     public Appointment confirmAppointment(Long id, String confirmationCode) {
         log.info(String.valueOf(id));
         log.info(confirmationCode);
@@ -94,6 +120,12 @@ public class AppointmentService {
     }
 
 
+    /**
+     * Gets appointments by enterprise id.
+     *
+     * @param enterpriseId the enterprise id
+     * @return the appointments by enterprise id
+     */
     public List<Appointment> getAppointmentsByEnterpriseId(Long enterpriseId) {
         if (!enterpriseRepository.existsById(enterpriseId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
@@ -106,11 +138,24 @@ public class AppointmentService {
         return appointments;
     }
 
+    /**
+     * Gets appointment by id.
+     *
+     * @param id the id
+     * @return the appointment by id
+     */
     public Appointment getAppointmentById(long id) {
         return appointmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Appointment not found with id = " + id));
     }
 
+    /**
+     * Update appointment appointment.
+     *
+     * @param id             the id
+     * @param newAppointment the new appointment
+     * @return the appointment
+     */
     public Appointment updateAppointment(long id, Appointment newAppointment) {
         return appointmentRepository.findById(id)
                 .map(appointment -> {
@@ -131,6 +176,13 @@ public class AppointmentService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment not found with id = " + id));
     }
 
+    /**
+     * Patch appointment appointment.
+     *
+     * @param id                 the id
+     * @param updatedAppointment the updated appointment
+     * @return the appointment
+     */
     public Appointment patchAppointment(long id, Appointment updatedAppointment) {
         Appointment existingAppointment = appointmentRepository.getById(id);
 
@@ -153,6 +205,12 @@ public class AppointmentService {
     }
 
 
+    /**
+     * Delete appointment.
+     *
+     * @param id               the id
+     * @param confirmationCode the confirmation code
+     */
     public void deleteAppointment(long id, String confirmationCode) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No appointment found with id = " + id));

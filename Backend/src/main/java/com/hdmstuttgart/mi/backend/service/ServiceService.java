@@ -12,6 +12,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Service service.
+ */
 @org.springframework.stereotype.Service
 public class ServiceService {
 
@@ -19,11 +22,24 @@ public class ServiceService {
     private final ServiceRepository serviceRepository;
     private final EnterpriseRepository enterpriseRepository;
 
+    /**
+     * Instantiates a new Service service.
+     *
+     * @param serviceRepository    the service repository
+     * @param enterpriseRepository the enterprise repository
+     */
     public ServiceService(ServiceRepository serviceRepository, EnterpriseRepository enterpriseRepository) {
         this.serviceRepository = serviceRepository;
         this.enterpriseRepository = enterpriseRepository;
     }
 
+    /**
+     * Create service service.
+     *
+     * @param service      the service
+     * @param enterpriseId the enterprise id
+     * @return the service
+     */
     public Service createService(Service service, Long enterpriseId) {
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
@@ -31,6 +47,12 @@ public class ServiceService {
         return serviceRepository.save(service);
     }
 
+    /**
+     * Gets services by enterprise id.
+     *
+     * @param enterpriseId the enterprise id
+     * @return the services by enterprise id
+     */
     public List<Service> getServicesByEnterpriseId(Long enterpriseId) {
         if (!enterpriseRepository.existsById(enterpriseId)) {
             log.warn("Enterprise not foundM");
@@ -40,11 +62,24 @@ public class ServiceService {
         return serviceRepository.findAllByEnterpriseId(enterpriseId);
     }
 
+    /**
+     * Gets service by id.
+     *
+     * @param id the id
+     * @return the service by id
+     */
     public Service getServiceById(long id) {
         return serviceRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found with id = " + id));
     }
 
+    /**
+     * Update service service.
+     *
+     * @param id         the id
+     * @param newService the new service
+     * @return the service
+     */
     public Service updateService(long id, Service newService) {
         return serviceRepository.findById(id)
                 .map(service -> {
@@ -58,6 +93,11 @@ public class ServiceService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found with id = " + id));
     }
 
+    /**
+     * Delete service.
+     *
+     * @param id the id
+     */
     public void deleteService(long id) {
         if (!serviceRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found with id = " + id);
@@ -65,6 +105,12 @@ public class ServiceService {
         serviceRepository.deleteById(id);
     }
 
+    /**
+     * Delete service from enterprise.
+     *
+     * @param id           the id
+     * @param enterpriseId the enterprise id
+     */
     public void deleteServiceFromEnterprise(long id, long enterpriseId) {
         if (!serviceRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found with id = " + id);

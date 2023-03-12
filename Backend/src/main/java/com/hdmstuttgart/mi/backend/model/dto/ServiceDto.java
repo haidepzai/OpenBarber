@@ -15,6 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+/**
+ * The type Service dto.
+ */
 @Data
 @Builder
 @NoArgsConstructor

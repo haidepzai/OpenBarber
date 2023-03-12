@@ -12,6 +12,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Blob;
 
+/**
+ * The type Employee.
+ */
 @Data
 @Builder
 @NoArgsConstructor

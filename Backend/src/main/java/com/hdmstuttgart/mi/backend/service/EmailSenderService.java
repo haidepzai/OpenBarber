@@ -58,6 +58,18 @@ public class EmailSenderService {
 
     private final HashMap<String, String> mjmlTemplateTexts = new HashMap<>();
 
+    /**
+     * Instantiates a new Email sender service.
+     *
+     * @param mailSender           the mail sender
+     * @param userRepository       the user repository
+     * @param employeeRepository   the employee repository
+     * @param enterpriseRepository the enterprise repository
+     * @param mjmlClient           the mjml client
+     * @param appId                the app id
+     * @param mailUsername         the mail username
+     * @param appKey               the app key
+     */
     public EmailSenderService(JavaMailSender mailSender, UserRepository userRepository, EmployeeRepository employeeRepository,
                               EnterpriseRepository enterpriseRepository, MJMLClient mjmlClient,
                               @Value("${mjmlSecrets.appId}") String appId,
@@ -73,6 +85,11 @@ public class EmailSenderService {
         this.appKey = appKey;
     }
 
+    /**
+     * Read mjml templates into map.
+     *
+     * @throws IOException the io exception
+     */
     public void readMJMLTemplatesIntoMap() throws IOException {
         File folder = new File("src/main/java/com/hdmstuttgart/mi/backend/templates");
         File[] listOfFiles = folder.listFiles();
@@ -85,6 +102,13 @@ public class EmailSenderService {
         }
     }
 
+    /**
+     * Insert data into template.
+     *
+     * @param templateName the template name
+     * @param emailAddress the email address
+     * @throws IOException the io exception
+     */
     public void insertDataIntoTemplate(String templateName, String emailAddress) throws IOException {
         readMJMLTemplatesIntoMap();
         User user = userRepository.findByEmail(emailAddress).orElseThrow();
@@ -93,6 +117,14 @@ public class EmailSenderService {
         mjmlTemplateTexts.put(templateName, preparedText);
     }
 
+    /**
+     * Send email with template.
+     *
+     * @param email        the email
+     * @param templateName the template name
+     * @throws MessagingException the messaging exception
+     * @throws IOException        the io exception
+     */
     public void sendEmailWithTemplate(String email, String templateName) throws MessagingException, IOException {
 
         //MJML API setup
@@ -122,6 +154,13 @@ public class EmailSenderService {
         log.debug("Mail sent successfully ... ");
     }
 
+    /**
+     * Insert data into template.
+     *
+     * @param templateName the template name
+     * @param appointment  the appointment
+     * @throws IOException the io exception
+     */
     public void insertDataIntoTemplate(String templateName, Appointment appointment) throws IOException {
         readMJMLTemplatesIntoMap();
         String appointmentDate = appointment.getAppointmentDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm"));
@@ -144,6 +183,15 @@ public class EmailSenderService {
         mjmlTemplateTexts.put(templateName, preparedText);
     }
 
+    /**
+     * Send email with template.
+     *
+     * @param appointment  the appointment
+     * @param templateName the template name
+     * @param email        the email
+     * @throws MessagingException the messaging exception
+     * @throws IOException        the io exception
+     */
     public void sendEmailWithTemplate(Appointment appointment, String templateName, String email) throws MessagingException, IOException {
 
                 //MJML API setup

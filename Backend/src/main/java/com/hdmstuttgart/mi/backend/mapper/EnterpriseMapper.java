@@ -14,9 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Enterprise mapper.
+ */
 @Component
 public class EnterpriseMapper {
 
+    /**
+     * To dto enterprise dto.
+     *
+     * @param enterprise the enterprise
+     * @return the enterprise dto
+     */
     public EnterpriseDto toDto(Enterprise enterprise) {
         EnterpriseDto dto = new EnterpriseDto();
         dto.setId(enterprise.getId());
@@ -58,6 +67,12 @@ public class EnterpriseMapper {
         return dto;
     }
 
+    /**
+     * To dtos list.
+     *
+     * @param enterprises the enterprises
+     * @return the list
+     */
     public List<EnterpriseDto> toDtos(List<Enterprise> enterprises) {
         List<EnterpriseDto> enterpriseDtos = new ArrayList<>();
         for (Enterprise enterprise : enterprises) {
@@ -66,6 +81,12 @@ public class EnterpriseMapper {
         return enterpriseDtos;
     }
 
+    /**
+     * To entity enterprise.
+     *
+     * @param dto the dto
+     * @return the enterprise
+     */
     public Enterprise toEntity(EnterpriseDto dto) {
         Enterprise enterprise = new Enterprise();
         enterprise.setId(dto.getId());

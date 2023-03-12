@@ -10,9 +10,18 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Review mapper.
+ */
 @Component
 public class ReviewMapper {
 
+    /**
+     * To dto review dto.
+     *
+     * @param review the review
+     * @return the review dto
+     */
     public static ReviewDto toDto(Review review) {
         return ReviewDto.builder()
                 .id(review.getId())
@@ -24,12 +33,25 @@ public class ReviewMapper {
                 .build();
     }
 
+    /**
+     * To dtos list.
+     *
+     * @param reviews the reviews
+     * @return the list
+     */
     public static List<ReviewDto> toDtos(List<Review> reviews) {
         return reviews.stream()
                 .map(ReviewMapper::toDto)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * To entity review.
+     *
+     * @param reviewDto  the review dto
+     * @param enterprise the enterprise
+     * @return the review
+     */
     public static Review toEntity(ReviewDto reviewDto, Enterprise enterprise) {
         return Review.builder()
                 .id(reviewDto.getId())

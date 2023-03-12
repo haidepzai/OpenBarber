@@ -25,11 +25,24 @@ public class AppointmentController {
     private final AppointmentMapper appointmentMapper;
     private static final Logger log = LoggerFactory.getLogger(AppointmentController.class);
 
+    /**
+     * Instantiates a new Appointment controller.
+     *
+     * @param appointmentService the appointment service
+     * @param appointmentMapper  the appointment mapper
+     */
     public AppointmentController(AppointmentService appointmentService, AppointmentMapper appointmentMapper) {
         this.appointmentService = appointmentService;
         this.appointmentMapper = appointmentMapper;
     }
 
+    /**
+     * Create appointment response entity.
+     *
+     * @param appointmentDto the appointment dto
+     * @param enterpriseId   the enterprise id
+     * @return the response entity
+     */
     @PostMapping
     public ResponseEntity<AppointmentDto> createAppointment(@Valid @RequestBody AppointmentDto appointmentDto, @RequestParam long enterpriseId) {
         log.info(appointmentDto.toString());
@@ -39,6 +52,13 @@ public class AppointmentController {
         return new ResponseEntity<>(createdAppointmentDto, HttpStatus.CREATED);
     }
 
+    /**
+     * Confirm appointment response entity.
+     *
+     * @param id               the id
+     * @param confirmationCode the confirmation code
+     * @return the response entity
+     */
     @PutMapping("/confirmation/{id}")
     public ResponseEntity<AppointmentDto> confirmAppointment(@PathVariable long id, @RequestParam String confirmationCode) {
         Appointment appointment = appointmentService.confirmAppointment(id, confirmationCode);
@@ -46,6 +66,12 @@ public class AppointmentController {
         return new ResponseEntity<>(appointmentDto, HttpStatus.ACCEPTED);
     }
 
+    /**
+     * Gets appointments by enterprise id.
+     *
+     * @param enterpriseId the enterprise id
+     * @return the appointments by enterprise id
+     */
     @GetMapping
     public ResponseEntity<List<AppointmentDto>> getAppointmentsByEnterpriseId(@RequestParam Long enterpriseId) {
         List<Appointment> appointments = appointmentService.getAppointmentsByEnterpriseId(enterpriseId);
@@ -53,6 +79,12 @@ public class AppointmentController {
         return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
     }
 
+    /**
+     * Gets appointment by id.
+     *
+     * @param id the id
+     * @return the appointment by id
+     */
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable long id) {
         Appointment appointment = appointmentService.getAppointmentById(id);
@@ -60,6 +92,13 @@ public class AppointmentController {
         return new ResponseEntity<>(appointmentDto, HttpStatus.OK);
     }
 
+    /**
+     * Update appointment response entity.
+     *
+     * @param id                the id
+     * @param newAppointmentDto the new appointment dto
+     * @return the response entity
+     */
     @PutMapping("/{id}")
     public ResponseEntity<AppointmentDto> updateAppointment(@PathVariable long id, @Valid @RequestBody AppointmentDto newAppointmentDto) {
         Appointment newAppointment = appointmentMapper.dtoToAppointment(newAppointmentDto);
@@ -68,6 +107,13 @@ public class AppointmentController {
         return new ResponseEntity<>(updatedAppointmentDto, HttpStatus.OK);
     }
 
+    /**
+     * Patch appointment response entity.
+     *
+     * @param id                the id
+     * @param newAppointmentDto the new appointment dto
+     * @return the response entity
+     */
     @PatchMapping("/{id}")
     public ResponseEntity<AppointmentDto> patchAppointment(@PathVariable long id, @RequestBody AppointmentDto newAppointmentDto) {
         Appointment newAppointment = appointmentMapper.dtoToAppointment(newAppointmentDto);
@@ -76,6 +122,13 @@ public class AppointmentController {
         return new ResponseEntity<>(updatedAppointmentDto, HttpStatus.OK);
     }
 
+    /**
+     * Delete appointment response entity.
+     *
+     * @param id               the id
+     * @param confirmationCode the confirmation code
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAppointment(@PathVariable long id, @RequestParam String confirmationCode) {
         appointmentService.deleteAppointment(id, confirmationCode);

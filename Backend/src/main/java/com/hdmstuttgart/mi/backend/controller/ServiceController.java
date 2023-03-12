@@ -16,6 +16,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Service controller.
+ */
 @RestController
 @RequestMapping("/api/services")
 public class ServiceController {
@@ -26,6 +29,15 @@ public class ServiceController {
     private final ServiceMapper serviceMapper;
     private final JwtService jwtService;
 
+    /**
+     * Instantiates a new Service controller.
+     *
+     * @param serviceService    the service service
+     * @param userService       the user service
+     * @param enterpriseService the enterprise service
+     * @param serviceMapper     the service mapper
+     * @param jwtService        the jwt service
+     */
     public ServiceController(ServiceService serviceService, UserService userService, EnterpriseService enterpriseService, ServiceMapper serviceMapper, JwtService jwtService) {
         this.serviceService = serviceService;
         this.userService = userService;
@@ -34,6 +46,14 @@ public class ServiceController {
         this.jwtService = jwtService;
     }
 
+    /**
+     * Create service response entity.
+     *
+     * @param serviceDto   the service dto
+     * @param enterpriseId the enterprise id
+     * @param token        the token
+     * @return the response entity
+     */
     @PostMapping
     public ResponseEntity<ServiceDto> createService(
             @Valid @RequestBody ServiceDto serviceDto,
@@ -58,6 +78,12 @@ public class ServiceController {
         return new ResponseEntity<>(createdServiceDto, HttpStatus.CREATED);
     }
 
+    /**
+     * Gets services by enterprise id.
+     *
+     * @param enterpriseId the enterprise id
+     * @return the services by enterprise id
+     */
     @GetMapping
     public ResponseEntity<List<ServiceDto>> getServicesByEnterpriseId(@RequestParam Long enterpriseId) {
         List<ServiceDto> serviceDtos = serviceService.getServicesByEnterpriseId(enterpriseId)
@@ -68,6 +94,12 @@ public class ServiceController {
         return new ResponseEntity<>(serviceDtos, HttpStatus.OK);
     }
 
+    /**
+     * Gets service by id.
+     *
+     * @param id the id
+     * @return the service by id
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ServiceDto> getServiceById(@PathVariable long id) {
         Service service = serviceService.getServiceById(id);
@@ -77,6 +109,13 @@ public class ServiceController {
         return new ResponseEntity<>(serviceDto, HttpStatus.OK);
     }
 
+    /**
+     * Update service response entity.
+     *
+     * @param id            the id
+     * @param newServiceDto the new service dto
+     * @return the response entity
+     */
     @PutMapping("/{id}")
     public ResponseEntity<ServiceDto> updateService(@PathVariable long id, @Valid @RequestBody ServiceDto newServiceDto) {
         // Convert the DTO to the entity
@@ -88,6 +127,13 @@ public class ServiceController {
         return new ResponseEntity<>(updatedServiceDto, HttpStatus.OK);
     }
 
+    /**
+     * Delete service response entity.
+     *
+     * @param id    the id
+     * @param token the token
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteService(@PathVariable long id, @RequestHeader("Authorization") String token) {
         serviceService.deleteService(id);

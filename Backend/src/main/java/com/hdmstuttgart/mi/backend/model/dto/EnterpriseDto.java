@@ -16,6 +16,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The type Enterprise dto.
+ */
 @Data
 @Builder
 @NoArgsConstructor

@@ -18,25 +18,57 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
+    /**
+     * Register response entity.
+     *
+     * @param request the request
+     * @return the response entity
+     */
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authenticationService.register(request));
     }
+
+    /**
+     * Authenticate response entity.
+     *
+     * @param request the request
+     * @return the response entity
+     */
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
+    /**
+     * Verify response entity.
+     *
+     * @param request the request
+     * @param token   the token
+     * @return the response entity
+     */
     @PostMapping("/verify")
     public ResponseEntity<AuthenticationResponse> verify(@RequestBody VerificationRequest request, @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(authenticationService.verify(request, token));
     }
 
+    /**
+     * Refresh response entity.
+     *
+     * @param request the request
+     * @return the response entity
+     */
     @PostMapping("/refresh")
     public ResponseEntity<AuthenticationResponse> refresh(@RequestBody RefreshTokenRequest request) {
         return ResponseEntity.ok(authenticationService.refresh(request));
     }
 
+    /**
+     * Handle not found exception error dto.
+     *
+     * @param ex the ex
+     * @return the error dto
+     */
     @ExceptionHandler(value = UserNotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public ErrorDto handleNotFoundException(UserNotFoundException ex) {

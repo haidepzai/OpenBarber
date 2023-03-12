@@ -20,6 +20,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Properties;
 
+/**
+ * The type Application config.
+ */
 @Configuration
 @RequiredArgsConstructor
 @ComponentScan(basePackages = "com.hdmstuttgart.mi.backend")
@@ -27,6 +30,11 @@ public class ApplicationConfig {
 
     private final UserRepository userRepository;
 
+    /**
+     * Java mail sender java mail sender.
+     *
+     * @return the java mail sender
+     */
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -45,6 +53,11 @@ public class ApplicationConfig {
         return mailSender;
     }
 
+    /**
+     * Mjml client mjml client.
+     *
+     * @return the mjml client
+     */
     @Bean
     public MJMLClient mjmlClient() {
         String appId = "08e27ced-848a-4489-891c-e4ac7fa0c612";
@@ -54,12 +67,22 @@ public class ApplicationConfig {
                 .withApplicationKey(mailUsername);
     }
 
+    /**
+     * User details service user details service.
+     *
+     * @return the user details service
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    /**
+     * Authentication provider authentication provider.
+     *
+     * @return the authentication provider
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -68,16 +91,33 @@ public class ApplicationConfig {
         return authProvider;
     }
 
+    /**
+     * Authentication manager authentication manager.
+     *
+     * @param config the config
+     * @return the authentication manager
+     * @throws Exception the exception
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * Password encoder password encoder.
+     *
+     * @return the password encoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Model mapper model mapper.
+     *
+     * @return the model mapper
+     */
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();

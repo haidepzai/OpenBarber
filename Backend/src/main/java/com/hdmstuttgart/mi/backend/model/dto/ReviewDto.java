@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * The type Review dto.
+ */
 @Data
 @Builder
 @NoArgsConstructor

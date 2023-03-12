@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import java.util.List;
 
+/**
+ * The type Register request.
+ */
 @Data
 @Builder
 @AllArgsConstructor

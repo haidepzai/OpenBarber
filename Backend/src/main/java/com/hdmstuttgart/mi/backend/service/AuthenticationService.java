@@ -23,6 +23,9 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * The type Authentication service.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -33,6 +36,12 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final EmailSenderService emailSenderService;
 
+    /**
+     * Register authentication response.
+     *
+     * @param request the request
+     * @return the authentication response
+     */
     public AuthenticationResponse register(RegisterRequest request) {
         if(userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException(request.getEmail());
@@ -63,6 +72,12 @@ public class AuthenticationService {
                 .build();
     }
 
+    /**
+     * Authenticate authentication response.
+     *
+     * @param request the request
+     * @return the authentication response
+     */
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -85,6 +100,13 @@ public class AuthenticationService {
                 .build();
     }
 
+    /**
+     * Verify authentication response.
+     *
+     * @param request the request
+     * @param token   the token
+     * @return the authentication response
+     */
     public AuthenticationResponse verify(VerificationRequest request, String token) {
         String username = jwtService.extractUsername(token.substring(7));
 
@@ -107,6 +129,12 @@ public class AuthenticationService {
                 .build();
     }
 
+    /**
+     * Refresh authentication response.
+     *
+     * @param request the request
+     * @return the authentication response
+     */
     public AuthenticationResponse refresh(RefreshTokenRequest request) {
         // Get the username from the refresh token
         String username = jwtService.extractUsername(request.getRefreshToken());
