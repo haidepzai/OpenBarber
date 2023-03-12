@@ -17,7 +17,7 @@ RUN ./mvnw package -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 # Copy the jar file into the image
-COPY target/Backend.jar .
+COPY target/Backend-0.0.1-SNAPSHOT.jar .
 
 # Start the server
-CMD ["java", "-jar", "Backend.jar"]
+CMD ["java", "-jar", "Backend-0.0.1-SNAPSHOT.jar"]
