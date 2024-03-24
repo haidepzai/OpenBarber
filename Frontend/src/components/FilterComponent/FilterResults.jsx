@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import TodayIcon from '@mui/icons-material/Today';
 import ReservationDialog from '../Reservation/ReservationDialog';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getEnterprises } from '../../actions/EnterpriseActions';
+import { getEnterprisesWithinRadius, getEnterprises } from '../../actions/EnterpriseActions';
 
 const ratingNames = {
   5: 'Excellent',
@@ -27,9 +27,11 @@ const ratingNames = {
   0: 'Bad',
 };
 
-const FilterResults = ({ filter, loc }) => {
+const FilterResults = ({ filter }) => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const locationName = location.state?.loc ?? 'near your location';
 
   const [shops, setShops] = useState([]);
   const [sortValue, setSortValue] = useState((location.state && location.state.sortValue) || 'Suggested');
@@ -91,9 +93,14 @@ const FilterResults = ({ filter, loc }) => {
   };
 
   const loadData = useCallback(async () => {
-    const shops = await getEnterprises();
-    setShops(shops);
-  }, []);
+    if (location.state.lat !== undefined && location.state.lng !== undefined) {
+      const shops = await getEnterprisesWithinRadius(location.state?.lat, location.state?.lng);
+      setShops(shops);
+    } else {
+      const shops = await getEnterprises();
+      setShops(shops);
+    }
+  }, [location.state]);
 
   const rating = (shop) => {
     const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
@@ -107,14 +114,14 @@ const FilterResults = ({ filter, loc }) => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   return (
     <Fragment>
       <Box sx={{ flex: '4 1 0' }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: '100%', m: '20px 0' }}>
           <Typography variant="body1">
-            {shops.length} Barber Shops available in {loc ?? sortValue}
+            {shops.length} Barber Shops available in {locationName}
           </Typography>
           <FormControl>
             <InputLabel id="sort">Sort</InputLabel>

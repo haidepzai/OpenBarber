@@ -33,22 +33,19 @@ function Search({ dateAndTime, setDateAndTime }) {
   const handleSubmit = async () => {
     if (location !== '') {
       const loc = location.formatted_address;
-      console.log(location.formatted_address);
-      const response = await getGeocoordinates(location.formatted_address);
+      const response = await getGeocoordinates(loc);
       const lat = response.results[0].geometry.location.lat;
       const lng = response.results[0].geometry.location.lng;
-      console.log('Lat: ' + lat);
-      console.log('Lng: ' + lng);
 
       /*navigate({
         pathname: '/filter',
         search: `?location=${loc}`,
       });*/
 
-      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc: loc } });
+      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc: loc, lat: lat, lng: lng } });
     } else {
       const loc = getCurrentLocation();
-      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc: loc } });
+      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc: loc, lat: loc?.coords.latitude, lng: loc?.coords.longitude } });
     }
   };
 

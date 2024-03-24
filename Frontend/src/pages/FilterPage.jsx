@@ -11,7 +11,9 @@ const FilterPage = () => {
 
   const [filter, setFilter] = useState({
     dateAndTime: location.state && location.state.dateAndTime ? dayjs(location.state.dateAndTime) : dayjs(),
-    location: '',
+    location: location.state?.loc ||'',
+    addressLatitude: location.state?.lat,
+    addressLongitude: location.state?.lng,
     priceCategory: (location.state && location.state.priceCategory) || [],
     targetAudience: [],
     employeeCount: [0, 20],
@@ -37,7 +39,7 @@ const FilterPage = () => {
       </Box>
       <Stack direction="row" spacing={4} sx={{ maxWidth: '1500px', margin: '0 auto', padding: '0px 50px' }}>
         <Filter filter={filter} setFilter={setFilter} />
-        <FilterResults filter={filter} loc={location.state?.loc} />
+        <FilterResults filter={filter} />
       </Stack>
     </>
   );
