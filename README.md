@@ -34,7 +34,7 @@ You may need to build an artifact.
 
 - Open the Backend project with IntelliJ and create an artifact with Maven
 
-# Create Artifact wiht Maven
+# Create Artifact with Maven
 1. Open Maven Panel: On the right side of the IntelliJ IDEA interface, there's a vertical tab labeled "Maven". Click on it to open the Maven Projects panel.
 
 2. Lifecycle: In the Maven Projects panel, you'll see your project's hierarchy. Expand your project's root and locate the "Lifecycle" section.
