@@ -49,7 +49,7 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
 
   // Object Destructuring : pull out certain properties from object
   const { isValid: emailIsValid } = emailState; //Alias Assignment emailIsValid
-  const { isValid: passwordIsValid } = passwordState; //Allias Assignment not Value Assignment!!
+  const { isValid: passwordIsValid } = passwordState; //Alias Assignment not Value Assignment!!
 
   const saveUser = async () => {
     try {

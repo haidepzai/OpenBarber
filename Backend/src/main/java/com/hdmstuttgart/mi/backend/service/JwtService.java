@@ -1,11 +1,10 @@
 package com.hdmstuttgart.mi.backend.service;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "28482B4D6251655468576D5A7134743777217A24432646294A404E635266556A"; //TODO move to .env
+    @Value("${SECRET_KEY:28482B4D6251655468576D5A7134743777217A24432646294A404E635266556A}")
+    private static String SECRET_KEY;
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // 15 minutes in seconds
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 30 * 24 * 60 * 60; // 30 days in seconds
 
