@@ -10,6 +10,23 @@ export const getEnterprises = async () => {
   }
 };
 
+export const getEnterprisesWithinRadius = async (lat, lng) => {
+  try {
+    const radius = 5;
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/enterprises/within-radius`, {
+      params: {
+        lat: lat,
+        lng: lng,
+        radius: radius
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Could not fetch enterprises:', error);
+    throw new Error('Could not fetch enterprises');
+  }
+};
+
 export const getShop = async (id) => {
   try {
     const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/enterprises/` + id);
