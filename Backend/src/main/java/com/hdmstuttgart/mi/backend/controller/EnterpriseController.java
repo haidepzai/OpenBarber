@@ -68,6 +68,13 @@ public class EnterpriseController {
         return new ResponseEntity<>(enterpriseDtos, HttpStatus.OK);
     }
 
+    @GetMapping("/within-radius")
+    public ResponseEntity<List<EnterpriseDto>> getObjectsWithinRadius(@RequestParam double lat, @RequestParam double lng, @RequestParam double radius) {
+        List<Enterprise> enterprises = enterpriseService.getEnterprisesWithinRadius(lat, lng, radius);
+        List<EnterpriseDto> enterpriseDtos = enterpriseMapper.toDtos(enterprises);
+        return new ResponseEntity<>(enterpriseDtos, HttpStatus.OK);
+    }
+
     /**
      * Gets enterprise by user.
      *
