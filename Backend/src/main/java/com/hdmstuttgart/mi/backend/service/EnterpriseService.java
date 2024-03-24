@@ -136,6 +136,19 @@ public class EnterpriseService {
     }
 
     /**
+     * Gets all enterprises.
+     *
+     * @return the all enterprises
+     */
+    public List<Enterprise> getEnterprisesWithinRadius(double lat, double lng, double radius) {
+        List<Enterprise> enterprises = enterpriseRepository.findWithinRadius(lat, lng, radius);
+        if (enterprises.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No enterprises found");
+        }
+        return enterprises;
+    }
+
+    /**
      * Gets enterprise by id.
      *
      * @param id the id
