@@ -6,6 +6,7 @@ import ReservationDialog from '../../components/Reservation/ReservationDialog';
 import PhotoGallery from '../../components/Gallery/PhotoGallery';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { convertDateToTime } from '../../shared/ConvertTime';
+import { useTranslation } from 'react-i18next';
 
 const TabPanel = ({ children, value, index, ...props }) => (value === index ? <Box {...props}>{children}</Box> : null);
 
@@ -15,6 +16,8 @@ const ShopInfoCard = ({ shop, mobile }) => {
 
   const [reviews, setReviews] = React.useState([]);
   const [services, setServices] = React.useState([]);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     axios
@@ -71,23 +74,23 @@ const ShopInfoCard = ({ shop, mobile }) => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Rating readOnly precision={0.5} value={rating()} sx={{ color: 'primary.main' }} size="small" />
               <Typography fontSize={14} variant="span" color="grey.600">
-                {reviews.length} Review(s)
+                {reviews.length} {t('REVIEWS')}
               </Typography>
             </Box>
           </Box>
 
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={tab} onChange={(_, v) => setTab(v)} variant="fullWidth">
-              <Tab label="General" />
-              <Tab label="Services" />
-              <Tab label="Contact" />
+              <Tab label={t('GENERAL')} />
+              <Tab label={t('SERVICES')} />
+              <Tab label={t('CONTACT')} />
             </Tabs>
           </Box>
 
           <TabPanel value={tab} index={0} sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
             <Stack direction="row" alignItems="center" spacing={1}>
               <AccessTimeIcon />
-              <Typography variant="h6">Opening Hours:</Typography>
+              <Typography variant="h6">{t('OPENING_HOURS')}:</Typography>
               <Typography variant="h6">
                 {shop.openingTime ? convertDateToTime(shop.openingTime) : 'N/A'} - {shop.openingTime ? convertDateToTime(shop.closingTime) : 'N/A'}
               </Typography>
@@ -95,12 +98,12 @@ const ShopInfoCard = ({ shop, mobile }) => {
 
             <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h7" mb={1} sx={{ fontWeight: 600, color: 'grey.1000' }}>
-                ABOUT
+                {t('ABOUT').toUpperCase()}
               </Typography>
               <Typography variant="body1">{shop.description}</Typography>
             </Box>
             <Button variant="contained" color="primary" onClick={() => setOpenReservationDialog(true)}>
-              Book Now
+              {t('BOOK_NOW')}
             </Button>
           </TabPanel>
 
@@ -135,28 +138,28 @@ const ShopInfoCard = ({ shop, mobile }) => {
           <TabPanel value={tab} index={2} sx={{ display: 'grid', gap: 2 }}>
             <Grid container columns={4} spacing={2}>
               <Grid item xs={1}>
-                <Typography variant="body1">Adresse:</Typography>
+                <Typography variant="body1">{t('ADDRESS')}:</Typography>
               </Grid>
               <Grid item xs={1}>
                 <Typography variant="body1">{shop.address}</Typography>
               </Grid>
               <Grid item xs={2} />
               <Grid item xs={1}>
-                <Typography variant="body1">Phone Number:</Typography>
+                <Typography variant="body1">{t('PHONE_NUMBER')}:</Typography>
               </Grid>
               <Grid item xs={1}>
                 <Typography variant="body1">{shop.phoneNumber}</Typography>
               </Grid>
               <Grid item xs={2} />
               <Grid item xs={1}>
-                <Typography variant="body1">E-Mail:</Typography>
+                <Typography variant="body1">{t('EMAIL')}:</Typography>
               </Grid>
               <Grid item xs={1}>
                 <Typography variant="body1">{shop.email}</Typography>
               </Grid>
               <Grid item xs={2} />
               <Grid item xs={1}>
-                <Typography variant="body1">Webseite:</Typography>
+                <Typography variant="body1">{t('WEBSITE')}:</Typography>
               </Grid>
               <Grid item xs={1}>
                 <Typography variant="body1">{shop.website}</Typography>

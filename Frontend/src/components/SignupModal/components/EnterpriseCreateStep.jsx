@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { SignupContext } from '../../../context/Signup.context';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { createEnterprise } from '../../../actions/EnterpriseActions';
+import { useTranslation } from 'react-i18next';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
@@ -22,6 +23,8 @@ const PropInput = (props) => {
 
 const EnterpriseCreateStep = () => {
   const { setActiveStep, setCompletedSteps, close, data, setData } = useContext(SignupContext);
+
+  const { t } = useTranslation();
 
   const [errors, setErrors] = React.useState({
     enterpriseName: false,
@@ -108,11 +111,11 @@ const EnterpriseCreateStep = () => {
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, maxWidth: '800px' }}>
         <Stack gap={4}>
-          <Typography variant="h6">Setup your Enterprise</Typography>
+          <Typography variant="h6">{t('ENTERPRISE_SETUP')}</Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr 1fr', gap: 2 }}>
             <PropInput
               input={{
-                label: 'Enterprise Name',
+                label: t('ENTERPRISE_NAME'),
                 vr: 'enterpriseName',
                 onBlur: onBlur,
                 error: errors.enterpriseName,
@@ -122,7 +125,7 @@ const EnterpriseCreateStep = () => {
 
             <PropInput
               input={{
-                label: 'Enterprise Owner',
+                label: t('ENTERPRISE_OWNER'),
                 vr: 'enterpriseOwner',
                 onBlur: onBlur,
                 error: errors.enterpriseOwner,
@@ -134,7 +137,7 @@ const EnterpriseCreateStep = () => {
               required
               variant="outlined"
               onChange={() => setData((d) => ({ ...d, enterpriseStreet: null }))}
-              label="Address"
+              label={t('ADDRESS')}
               value={data.enterpriseStreet ? data.enterpriseStreet.formatted_address : undefined}
               name="enterpriseStreet"
               error={errors.enterpriseStreet}
@@ -147,7 +150,7 @@ const EnterpriseCreateStep = () => {
 
             <PropInput
               input={{
-                label: 'Phone number',
+                label: t('PHONE_NUMBER'),
                 vr: 'enterprisePhoneNumber',
                 onBlur: onBlur,
                 error: errors.enterprisePhoneNumber,
@@ -240,14 +243,14 @@ const EnterpriseCreateStep = () => {
 
       <Stack direction="row" justifyContent="space-between" marginTop="auto" width="100%" gap={2}>
         <Button variant="outlined" onClick={close} tabIndex={-1}>
-          Cancel
+        {t('CANCEL')}
         </Button>
         {/* <Button variant="outlined" onClick={() => setActiveStep(0)}>
           Back
         </Button> */}
         <Box flexGrow={1} />
         <Button type="submit" disabled={!(data.enterpriseName && data.enterpriseOwner && data.enterpriseStreet)} variant="contained">
-          Continue
+        {t('CONTINUE')}
         </Button>
       </Stack>
     </Stack>

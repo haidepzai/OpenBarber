@@ -2,6 +2,7 @@ import { Box, TextField, Typography, Stack, Button } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { SignupContext } from '../../../context/Signup.context';
 import AuthContext from '../../../context/auth-context';
+import { useTranslation } from 'react-i18next';
 
 const EmailVerificationStep = () => {
   const {
@@ -15,6 +16,8 @@ const EmailVerificationStep = () => {
   const authCtx = useContext(AuthContext);
 
   const [error, setError] = useState(false);
+
+  const { t } = useTranslation();
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -51,10 +54,10 @@ const EmailVerificationStep = () => {
   return (
     <Stack component="form" height="100%" justifyContent="center" alignItems="center" gap={4} pt={16} onSubmit={onSubmit}>
       <Typography variant="h4" fontWeight="bold">
-        Verify your email
+        {t('VERIFY_MAIL')}
       </Typography>
       <Typography variant="body1" color="textSecondary">
-        We sent a verification code to:&nbsp;
+        {t('VERIFICATION_SENT')}&nbsp;
         <Box component="span" fontWeight="bold">
           {email}
         </Box>
@@ -81,7 +84,7 @@ const EmailVerificationStep = () => {
 
       <Stack direction="row" justifyContent="space-between" marginTop="auto" width="100%" gap={2}>
         <Button variant="outlined" onClick={close} tabIndex={-1}>
-          Cancel
+          {t('CANCEL')}
         </Button>
         {/* <Button variant="outlined" onClick={() => setActiveStep(1)}>
           Back
@@ -92,7 +95,7 @@ const EmailVerificationStep = () => {
           disabled={!verificationCode || verificationCode.length !== 6 || completedSteps.slice(0, 2).some((e) => !e)}
           variant="contained"
         >
-          Continue
+          {t('CONTINUE')}
         </Button>
       </Stack>
     </Stack>

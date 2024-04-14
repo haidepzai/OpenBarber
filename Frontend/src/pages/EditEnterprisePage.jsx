@@ -20,6 +20,7 @@ import AuthContext from '../context/auth-context.js';
 import { getShopByEmail } from '../actions/EnterpriseActions.js';
 import { getUserById } from '../actions/UserActions.js';
 import EditPersonalInfo from '../components/EditEnterprise/EditPersonalInfo.jsx';
+import { useTranslation } from 'react-i18next';
 
 const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', 'PAYPAL'];
 const drinkOptions = ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'];
@@ -29,6 +30,8 @@ const EditEnterprisePage = () => {
   const [enterprise, setEnterprise] = useState({});
 
   const authCtx = useContext(AuthContext);
+
+  const { t } = useTranslation();
 
   const enterpriseUrl = `${process.env.REACT_APP_BACKEND_URL}/enterprises/`;
 
@@ -85,12 +88,12 @@ const EditEnterprisePage = () => {
             body: imageFormData
         })*/
 
-    handleSnackbarOpen('Enterprise Changes saved!');
+    handleSnackbarOpen(t('ENTERPRISE_CHANGES_SAVED'));
   };
 
   const resetEnterprise = async () => {
     await loadEnterprise();
-    handleSnackbarOpen('Enterprise Data reset!');
+    handleSnackbarOpen(t('ENTERPRISE_DATA_RESET'));
   };
 
   // CLIENT-ONLY METHODS
@@ -199,10 +202,10 @@ const EditEnterprisePage = () => {
           )}
           <Box sx={{ width: '60%', margin: '10px auto' }}>
             <Typography variant="h1" sx={{ fontSize: '22px', fontWeight: '500', color: 'rgba(0, 0, 0, 1)', m: '40px 0 10px 24px' }}>
-              Profile
+              {t('PROFILE')}
             </Typography>
             <Typography variant="h2" sx={{ fontSize: '16px', fontWeight: '500', color: 'rgba(0, 0, 0, 0.45)', m: '0 0 20px 24px' }}>
-              Update the profile of your Shop here.
+              {t('EDIT_ENTERPRISE_TITLE')}
             </Typography>
             <Paper elevation={2}>
               <Stack
@@ -226,11 +229,11 @@ const EditEnterprisePage = () => {
                 }}
               >
                 <Stack direction="row">
-                  <Typography variant="body1">Name</Typography>
+                  <Typography variant="body1">{t('NAME')}</Typography>
                   <TextField
                     InputLabelProps={{ shrink: false }}
                     name="name"
-                    placeholder="Name of the Enterprise"
+                    placeholder={t('NAME_ENTERPRISE')}
                     value={enterprise.name === null ? '' : enterprise.name}
                     onChange={handleEnterpriseChange}
                     fullWidth
@@ -238,11 +241,11 @@ const EditEnterprisePage = () => {
                 </Stack>
 
                 <Stack direction="row">
-                  <Typography variant="body1">Address</Typography>
+                  <Typography variant="body1">{t('ADDRESS')}</Typography>
                   <TextField
                     InputLabelProps={{ shrink: false }}
                     name="address"
-                    placeholder="e.g. Stuttgart"
+                    placeholder={t('ADDRESS_EXAMPLE')}
                     value={enterprise.address === null ? '' : enterprise.address}
                     onChange={handleEnterpriseChange}
                     fullWidth
@@ -250,11 +253,11 @@ const EditEnterprisePage = () => {
                 </Stack>
 
                 <Stack direction="row">
-                  <Typography variant="body1">Phone Number</Typography>
+                  <Typography variant="body1">{t('PHONE_NUMBER')}</Typography>
                   <TextField
                     InputLabelProps={{ shrink: false }}
                     name="phoneNumber"
-                    placeholder="e.g. 0157 12345678"
+                    placeholder={t('PHONE_NUMBER_EXAMPLE')}
                     value={enterprise.phoneNumber === null ? '' : enterprise.phoneNumber}
                     onChange={handleEnterpriseChange}
                     fullWidth
@@ -263,11 +266,11 @@ const EditEnterprisePage = () => {
                 </Stack>
 
                 <Stack direction="row">
-                  <Typography variant="body1">Website</Typography>
+                  <Typography variant="body1">{t('WEBSITE')}</Typography>
                   <TextField
                     InputLabelProps={{ shrink: false }}
                     name="website"
-                    placeholder="e.g. http://www.my-company.de"
+                    placeholder={t('WEBSITE_EXAMPLE')}
                     value={enterprise.website === null ? '' : enterprise.website}
                     onChange={handleEnterpriseChange}
                     fullWidth
@@ -275,11 +278,11 @@ const EditEnterprisePage = () => {
                 </Stack>
 
                 <Stack direction="row">
-                  <Typography variant="body1">E-Mail Address</Typography>
+                  <Typography variant="body1">{t('EMAIL_ADDRESS')}</Typography>
                   <TextField
                     InputLabelProps={{ shrink: false }}
                     name="email"
-                    placeholder="e.g. my-company@support.de"
+                    placeholder={t('EMAIL_ADDRESS_EXAMPLE')}
                     value={enterprise.email === null ? '' : enterprise.email}
                     onChange={handleEnterpriseChange}
                     fullWidth
@@ -288,7 +291,7 @@ const EditEnterprisePage = () => {
 
                 <Stack direction="row">
                   <Stack direction="column" spacing={1}>
-                    <Typography variant="body1">Opening Time</Typography>
+                    <Typography variant="body1">{t('OPENING_TIME')}</Typography>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <TimePicker
                         name="open"
@@ -307,7 +310,7 @@ const EditEnterprisePage = () => {
                     </LocalizationProvider>
                   </Stack>
                   <Stack direction="column" spacing={1}>
-                    <Typography variant="body1">Closing Time</Typography>
+                    <Typography variant="body1">{t('CLOSING_TIME')}</Typography>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <TimePicker
                         name="close"
@@ -328,7 +331,7 @@ const EditEnterprisePage = () => {
                 </Stack>
 
                 <Stack direction="row">
-                  <Typography variant="body1">Price Category</Typography>
+                  <Typography variant="body1">{t('PRICE_CATEGORY')}</Typography>
                   <ToggleButtonGroup
                     name="priceCategory"
                     value={enterprise.priceCategory === null ? '' : enterprise.priceCategory}
@@ -355,7 +358,7 @@ const EditEnterprisePage = () => {
                 </Stack>
 
                 <Stack direction="row">
-                  <Typography variant="body1">Payment Method</Typography>
+                  <Typography variant="body1">{t('PAYMENT_METHOD')}</Typography>
                   <FormGroup>
                     {paymentMethodOptions.map((method) => (
                       <FormControlLabel
@@ -379,7 +382,7 @@ const EditEnterprisePage = () => {
                 </Stack>
 
                 <Stack direction="row">
-                  <Typography variant="body1">Drinks</Typography>
+                  <Typography variant="body1">{t('DRINKS')}</Typography>
                   <FormGroup>
                     {drinkOptions.map((drink) => (
                       <FormControlLabel
@@ -428,11 +431,11 @@ const EditEnterprisePage = () => {
               <Box sx={{ padding: '0 48px' }}>
                 <Stack direction="row">
                   <Typography variant="body1" sx={{ flex: '1', fontWeight: '500' }}>
-                    Pictures
+                    {t('PICTURES')}
                   </Typography>
                   <Box sx={{ flex: '1' }}>
                     <Button variant="contained" component="label" endIcon={<CollectionsIcon />}>
-                      Upload Pictures
+                      {t('UPLOAD_PICTURES')}
                       <input type="file" hidden multiple accept="image/png, image/jpeg" onChange={handlePicturesUpload} />
                     </Button>
                   </Box>
@@ -501,10 +504,10 @@ const EditEnterprisePage = () => {
 
               <Stack direction="row" alignContent="center" justifyContent="space-between" sx={{ p: '0 24px 24px 24px' }} spacing={4}>
                 <Button variant="outlined" onClick={resetEnterprise}>
-                  Reset
+                  {t('RESET')}
                 </Button>
                 <Button variant="contained" onClick={saveEnterprise}>
-                  Save Changes
+                  {t('SAVE_CHANGES')}
                 </Button>
               </Stack>
             </Paper>

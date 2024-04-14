@@ -5,10 +5,13 @@ import ContentCutIcon from '@mui/icons-material/ContentCut';
 import { ArrowForwardIos } from '@mui/icons-material';
 import Avatar from '@mui/material/Avatar';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
+import { useTranslation } from 'react-i18next';
 
 const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
 const Overview = ({ booked, data, handleStep }) => {
+  const { t } = useTranslation();
+
   const calculateEndDate = (date, duration) => {
     date.setMinutes(date.getMinutes() + duration);
     return date.toLocaleString('de-DE', options);
@@ -104,7 +107,8 @@ const Overview = ({ booked, data, handleStep }) => {
       <Stack direction="row" alignItems="center" spacing={3} sx={{ borderTop: '1px solid rgb(236,236,236)', padding: '16px 24px' }}>
         <HourglassBottomIcon fontSize="large" />
         <Typography sx={{ lineHeight: 'unset' }}>
-          Duration: {totalDuration()} Minutes (ends approx. at {calculateEndDate(data.appointmentDateTime, totalDuration())})
+          {t('DURATION')}: {totalDuration()} {t('MINUTES')} (
+          {t('ENDS_APROX', { time: `${calculateEndDate(data.appointmentDateTime, totalDuration())}` })})
         </Typography>
       </Stack>
     </Box>

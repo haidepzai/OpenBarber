@@ -25,7 +25,7 @@ const Review = ({ shop, onReview }) => {
       onReview(true);
     } catch (error) {
       console.log(error.message);
-      setErrorMessage("Please login to review");
+      setErrorMessage('Please login to review');
     }
   };
 
@@ -52,12 +52,12 @@ const Review = ({ shop, onReview }) => {
 
       <Box textAlign="center" sx={{ borderBottom: 1, borderColor: 'divider', pb: 3 }}>
         <Typography variant="h6" textAlign="center">
-          Rate {shop.name}
+          {t('RATE', { shop: `${shop.name}` })}
         </Typography>
 
         <TextField
           id="outlined-multiline-static"
-          label="Your comment"
+          label={t('YOUR_COMMENT')}
           name="comment"
           value={comment}
           onChange={handleCommentChange}
@@ -70,7 +70,7 @@ const Review = ({ shop, onReview }) => {
 
         <Box sx={{ display: 'flex', gap: 4, pb: 3, mb: 5, width: '50%', margin: 'auto' }}>
           <TextField
-            label="Your Name"
+            label={t('YOUR_NAME')}
             name="name"
             value={name}
             onChange={handleNameChange}
@@ -89,7 +89,7 @@ const Review = ({ shop, onReview }) => {
             sx={{ mb: 3, mt: 3 }}
           />
           <Button variant="contained" color="primary" onClick={handleClick} disabled={!nameIsValid || name.length === 0 || name.length === undefined}>
-            Send Review
+            {t('SEND_REVIEW').toUpperCase()}
           </Button>
         </Box>
       </Box>

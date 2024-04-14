@@ -7,9 +7,12 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { footerTheme } from '../themes/footerTheme';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import '../css/Footer.css';
 
 function Footer() {
+  const { t } = useTranslation();
+
   return (
     <ThemeProvider theme={footerTheme}>
       <Stack direction="row" justifyContent="space-between" sx={{ backgroundColor: '#6D5344', p: '36px 48px', mt: '96px' }}>
@@ -22,28 +25,28 @@ function Footer() {
           </Stack>
           <Stack direction="row" gap={3}>
             <Link to="#" className="link">
-              Impressum
+              {t('IMPRINT')}
             </Link>
             <Link to="/privacy-policy" className="link">
-              Datenschutz
+              {t('DATA_PRIVACY')}
             </Link>
             <Link to="#" className="link">
-              Nutzungsbedingungen
+              {t('TERMS_OF_USE')}
             </Link>
             <Link to="#" className="link">
-              Kontakt
+              {t('CONTACT')}
             </Link>
             <Link to="#" className="link">
               FAQs
             </Link>
           </Stack>
           <Typography variant="p" sx={{ color: '#BCA7AF' }}>
-            Copyright © 2022 OpenBarber, Nobelstraße 10, 70569 Stuttgart, Alle Rechte vorbehalten.
+            Copyright © {new Date().getFullYear()} OpenBarber, Nobelstraße 10, 70569 Stuttgart, {t('ALL_RIGHTS_RESERVED')}
           </Typography>
         </Stack>
         <Stack direction="column" gap={3}>
           <Button variant="contained" color="white" sx={{ color: '#6D5344' }}>
-            Für Unternehmen
+            {t('FOR_ENTERPRISES')}
           </Button>
           <Stack direction="row" gap={1}>
             <IconButton aria-label="delete" color="lol">

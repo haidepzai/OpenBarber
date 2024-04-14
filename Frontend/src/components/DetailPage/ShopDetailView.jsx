@@ -1,26 +1,22 @@
 import React, { useEffect, useState } from 'react';
-
 import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
-
+import { CheckCircleRounded } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import ShopInfoCard from './ShopInfoCard';
 import ShopReview from './ShopReview';
 import axios from 'axios';
-import barberShops from '../../mocks/shops';
 import Review from '../../components/Review';
-import { CheckCircleRounded } from '@mui/icons-material';
 
 const ShopDetailView = ({ shop }) => {
   const mobile = useMediaQuery('(max-width: 800px)');
   const sidePadding = mobile ? '2vw' : '10vw';
 
   const [reviews, setReviews] = useState([]);
-  const [mockReviews, setMockReviews] = useState([]);
-
   const [isReviewed, setIsReviewed] = useState(false);
 
+  const { t } = useTranslation();
+
   useEffect(() => {
-    const fakeReviews = Object.values(barberShops)[0].reviews;
-    setMockReviews(fakeReviews);
     axios
       .get('http://localhost:8080/api/reviews?enterpriseId=' + shop.id)
       .then((res) => {
@@ -29,7 +25,7 @@ const ShopDetailView = ({ shop }) => {
       .catch((err) => {
         console.error('review request failed', err);
       });
-  }, []);
+  }, [shop.id]);
 
   return (
     <Box
@@ -48,7 +44,7 @@ const ShopDetailView = ({ shop }) => {
         <Stack alignItems="center" justifyContent="center" flexGrow="1" sx={{ borderBottom: 1, borderColor: 'divider', pb: 3 }}>
           <CheckCircleRounded sx={{ width: '5rem', height: '5rem', color: 'primary.main' }} />
           <Typography variant="p" fontSize="2rem" textAlign="center">
-            Thank you for your review!
+            {t('THANK_YOU_REVIEW')}
           </Typography>
         </Stack>
       )}

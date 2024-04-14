@@ -9,6 +9,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { createEmployee, updateStylist } from '../../../actions/EmployeeActions';
 import AuthContext from '../../../context/auth-context';
+import { useTranslation } from 'react-i18next';
 
 const initialState = {
   name: '',
@@ -36,6 +37,8 @@ const employeeReducer = (state, action) => {
 
 const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee, uniqueEmployees, addEmployee, updateEmployee }) => {
   const editingMode = () => editedEmployee && setEditedEmployee && updateEmployee && !addEmployee;
+
+  const { t } = useTranslation();
 
   const [initialClick, setInitialClick] = useState(false);
   const [errors, setErrors] = useState(initialState);
@@ -117,9 +120,9 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
           <Stack direction="column" spacing={4}>
             <TextField
               type="text"
-              label="Name"
+              label={t('NAME')}
               name="name"
-              placeholder="Name of Employee"
+              placeholder={t('NAME_EMPLOYEE')}
               value={employee.name}
               onChange={handleChange}
               fullWidth
@@ -130,9 +133,9 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
 
             <TextField
               type="text"
-              label="Title"
+              label={t('TITLE')}
               name="title"
-              placeholder="Title of Employee"
+              placeholder={t('TITLE_EMPLOYEE')}
               value={employee.title}
               onChange={handleChange}
               fullWidth
@@ -144,12 +147,12 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
             <Stack direction="column" spacing={4} alignItems="center">
               <Stack direction="row" justifyContent={employee.picture ? 'space-between' : 'center'} sx={{ width: '100%' }}>
                 <Button variant="contained" component="label" endIcon={<PhotoCamera />}>
-                  Upload Picture
+                  {t('UPLOAD_PICTURE')}
                   <input type="file" hidden accept="image/png, image/jpeg" onChange={handlePictureUpload} />
                 </Button>
                 {employee.picture && (
                   <Button variant="outlined" endIcon={<DeleteOutlineIcon />} onClick={handlePictureDelete}>
-                    Delete
+                    {t('DELETE')}
                   </Button>
                 )}
               </Stack>
@@ -169,11 +172,11 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between', m: '8px 24px 24px 24px', p: '0' }}>
           <Button variant="outlined" onClick={handleClose} autoFocus>
-            Cancel
+            {t('CANCEL')}
           </Button>
 
           <Button variant="contained" onClick={handleClick}>
-            {editingMode() ? 'Save' : 'Add'}
+            {editingMode() ? t('SAVE') : t('ADD')}
           </Button>
         </DialogActions>
       </Dialog>

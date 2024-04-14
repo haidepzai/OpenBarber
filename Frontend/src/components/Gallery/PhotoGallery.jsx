@@ -10,6 +10,7 @@ import locationImage from '../../assets/location.jpg';
 import tipsImage from '../../assets/tips.jpg';
 import { Typography, Box } from '@mui/material';
 import PhotoSwiper from './PhotoSwiper';
+import { useTranslation } from 'react-i18next';
 
 const backupImages = [
   { name: 'Best Ratings', src: ratingsImage },
@@ -20,14 +21,11 @@ const backupImages = [
   { name: 'Our personal tips', src: tipsImage },
   { name: 'Best Ratings', src: ratingsImage },
   { name: 'Cheapest Prices', src: priceImage },
-  { name: 'Near you', src: locationImage },
-  { name: 'With Beard Trimming', src: beardImage },
-  { name: 'Most Ratings', src: mostImage },
-  { name: 'Our personal tips', src: tipsImage },
 ];
 
 const PhotoGallery = ({ pictures }) => {
   const [openPhotoswiper, setOpenPhotoswiper] = useState(false);
+  const { t } = useTranslation();
 
   const getPictureArray = () => {
     if (pictures && pictures.length > 0) {
@@ -40,7 +38,7 @@ const PhotoGallery = ({ pictures }) => {
   return (
     <Box>
       <Typography variant="h6" sx={{ paddingLeft: '10px' }}>
-        {backupImages.length} Photos
+        {backupImages.length} {t('PHOTOS')}
       </Typography>
       <ImageList sx={{ width: '100%', height: '344px', borderRadius: '5px', boxShadow: 4 }} cols={4} rowHeight={170} variant="quilted">
         {getPictureArray().map((image, index) => (

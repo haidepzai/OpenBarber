@@ -6,6 +6,7 @@ import OpenBarberLogo from '../../assets/logo_openbarber.svg';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
 import { SignupContext } from '../../context/Signup.context';
+import { useTranslation } from 'react-i18next';
 
 // Reducer um mehrere States zu handeln
 // Komplexere Update State Logik
@@ -63,6 +64,7 @@ const LoginModal = ({ gotoSignup }) => {
   const { isValid: passwordIsValid } = passwordState; //Allias Assignment not Value Assignment!!
 
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const portalElement = document.getElementById('overlays');
 
@@ -186,7 +188,7 @@ const LoginModal = ({ gotoSignup }) => {
             >
               <Stack direction="row" alignItems="center" gap={2} mb={8}>
                 <Button variant="outlined" size="medium" onClick={() => signUpCtx.setLoginVisible(false)} startIcon={<ArrowBackRounded />}>
-                  Back
+                  {t('BACK')}
                 </Button>
                 <div style={{ flexGrow: 1 }}></div>
                 <Typography variant="h6" fontFamily="Roboto" fontWeight="500">
@@ -195,7 +197,7 @@ const LoginModal = ({ gotoSignup }) => {
                 <img src={OpenBarberLogo} alt="logo" style={{ width: '8%' }} />
               </Stack>
               <Typography variant="h5" fontFamily="Roboto" fontWeight="500">
-                Login to manage your barber shops!
+                {t('LOGIN_TITLE')}
               </Typography>
               <Stack gap={2} mt={8} mb="auto">
                 <TextField
@@ -219,15 +221,15 @@ const LoginModal = ({ gotoSignup }) => {
                 />
                 <Stack direction="row" alignItems="center">
                   <Checkbox />
-                  <Typography>Keep me logged in</Typography>
+                  <Typography>{t('KEEP_LOGGED_IN')}</Typography>
                 </Stack>
               </Stack>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
                 <Button variant="outlined" size="large" sx={{ flexGrow: 1 }} onClick={handleSignUp}>
-                  Sign Up Instead
+                  {t('SIGNUP_INSTEAD')}
                 </Button>
                 <Button type="submit" variant="contained" size="large" sx={{ flexGrow: 4 }} disabled={!formIsValid}>
-                  Login
+                  {t('LOGIN')}
                 </Button>
               </Box>
             </Box>

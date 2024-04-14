@@ -8,13 +8,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
-import mockStylists from '../../mocks/stylists';
+import { useTranslation } from 'react-i18next';
 import { DateTimePicker } from '@mui/x-date-pickers';
 
 const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
 const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmployees }) => {
   const [expanded, setExpanded] = useState(false);
+
+  const { t } = useTranslation();
 
   const handlePick = (employee) => {
     pickStylist(employee);
@@ -24,10 +26,10 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
   return (
     <Box sx={{ padding: '20px', overflowY: 'auto' }}>
       <Typography variant="h6" sx={{ marginBottom: '20px' }}>
-        Choose your Stylist & Appointment
+        {t('RESERVATION_TITLE')}
       </Typography>
       <Typography variant="overline" display="block" gutterBottom>
-        Choose your Stylist
+        {t('CHOOSE_STYLIST')}
       </Typography>
       <Accordion sx={{ marginBottom: '20px' }} expanded={expanded}>
         <Box sx={{ position: 'relative' }} onClick={() => setExpanded(!expanded)}>
@@ -52,12 +54,12 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
       </Accordion>
 
       <Typography variant="overline" display="block" gutterBottom sx={{ marginBottom: '20px' }}>
-        Choose your date
+        {t('CHOOSE_DATE')}
       </Typography>
 
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimePicker
-          label="Choose your date"
+          label={t('CHOOSE_DATE')}
           displayStaticWrapperAs="desktop"
           openTo="day"
           value={pickedDate}
@@ -70,7 +72,7 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
 
       {pickedDate && (
         <Box sx={{ width: '100%', border: '1px solid rgb(236,236,236)', padding: '10px 20px', boxSizing: 'border-box', marginTop: '20px' }}>
-          <Typography sx={{ fontSize: '14px' }}>Appointment for {pickedDate.toLocaleString('de-DE', options)}</Typography>
+          <Typography sx={{ fontSize: '14px' }}>{t('APPOINTMENT_ON', { date: `${pickedDate.toLocaleString('de-DE', options)}` })} </Typography>
         </Box>
       )}
     </Box>

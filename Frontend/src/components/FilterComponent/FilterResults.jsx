@@ -12,6 +12,7 @@ import TodayIcon from '@mui/icons-material/Today';
 import ReservationDialog from '../Reservation/ReservationDialog';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getEnterprisesWithinRadius, getEnterprises } from '../../actions/EnterpriseActions';
+import { useTranslation } from 'react-i18next';
 
 const ratingNames = {
   5: 'Excellent',
@@ -30,6 +31,8 @@ const ratingNames = {
 const FilterResults = ({ filter }) => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
 
   const locationName = location.state?.loc ?? 'near your location';
 
@@ -83,7 +86,7 @@ const FilterResults = ({ filter }) => {
         } else {
           return 1;
         }
-      case 'Best Rating':
+      case 'Best Ratings':
         return rating(shopB) - rating(shopA);
       case 'Most Ratings':
         return shopB.reviews.length - shopA.reviews.length;
@@ -121,15 +124,15 @@ const FilterResults = ({ filter }) => {
       <Box sx={{ flex: '4 1 0' }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: '100%', m: '20px 0' }}>
           <Typography variant="body1">
-            {shops.length} Barber Shops available in {locationName}
+            {shops.length} {t('SHOPS_AVAILABLE_IN')} {locationName}
           </Typography>
           <FormControl>
             <InputLabel id="sort">Sort</InputLabel>
             <Select labelId="sort" id="sort" value={sortValue} label="Sort" onChange={handleChange} sx={{ width: '200px' }}>
-              <MenuItem value="Suggested">Suggested</MenuItem>
-              <MenuItem value="Best Rating">Best Rating</MenuItem>
-              <MenuItem value="Most Ratings">Most Ratings</MenuItem>
-              <MenuItem value="Distance">Distance</MenuItem>
+              <MenuItem value="Suggested">{t('SUGGESTED')}</MenuItem>
+              <MenuItem value="Best Ratings">{t('BEST_RATINGS')}</MenuItem>
+              <MenuItem value="Most Ratings">{t('MOST_RATINGS')}</MenuItem>
+              <MenuItem value="Distance">{t('DISTANCE')}</MenuItem>
             </Select>
           </FormControl>
         </Stack>
@@ -167,7 +170,9 @@ const FilterResults = ({ filter }) => {
                         <Typography variant="span" sx={{ fontWeight: 'bold' }}>
                           {ratingNames[rating(shop)]}
                         </Typography>
-                        <Typography variant="span">({shop.reviews.length} Review(s))</Typography>
+                        <Typography variant="span">
+                          ({shop.reviews.length} {t('REVIEWS')})
+                        </Typography>
                       </Stack>
                       <Typography variant="body1" sx={{ fontSize: '18px', fontWeight: 'bold', letterSpacing: '3px' }}>
                         <Typography
@@ -204,7 +209,7 @@ const FilterResults = ({ filter }) => {
                         endIcon={<TodayIcon />}
                         sx={{ maxWidth: 'fit-content', '& > span': { marginLeft: '14px' } }}
                       >
-                        Book Now
+                        {t('BOOK_NOW')}
                       </Button>
                     </Stack>
                   </Stack>
@@ -222,9 +227,5 @@ const FilterResults = ({ filter }) => {
     </Fragment>
   );
 };
-
-{
-  /*fullWidth*/
-}
 
 export default FilterResults;

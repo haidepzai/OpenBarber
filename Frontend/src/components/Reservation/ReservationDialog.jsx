@@ -10,6 +10,7 @@ import OverviewPage from './OverviewPage';
 import SuccessScreen from './SuccessScreen';
 import { createAppointment } from '../../actions/AppointmentActions';
 import AuthContext from '../../context/auth-context';
+import { useTranslation } from 'react-i18next';
 
 const steps = ['Services', 'Date', 'Booking'];
 
@@ -63,6 +64,8 @@ function ReservationDialog({ open, handleClose, shop }) {
   const [activeStep, setActiveStep] = useState(0);
   const [showSuccessScreen, setShowSuccessScreen] = useState(false);
 
+  const { t } = useTranslation();
+
   const authCtx = useContext(AuthContext);
 
   useEffect(() => {
@@ -86,17 +89,17 @@ function ReservationDialog({ open, handleClose, shop }) {
     if (activeStep === 0 && !validate(0)) {
       setError({
         ...error,
-        0: 'Choose a service!',
+        0: t('CHOOSE_SERVICE'),
       });
     } else if (activeStep === 1 && !validate(1)) {
       setError({
         ...error,
-        1: 'Pick a date!',
+        1: t('PICK_DATE'),
       });
     } else if (activeStep === 2 && !validate(2)) {
       setError({
         ...error,
-        2: 'Check your information!',
+        2: t('CHECK_INFORMATION'),
       });
     } else {
       if (activeStep === 2) {
@@ -127,7 +130,7 @@ function ReservationDialog({ open, handleClose, shop }) {
       setShowSuccessScreen(true);
       console.log(res);
     } catch (error) {
-      console.log("Could not book");
+      console.log('Could not book');
     }
     authCtx.setIsLoading(false);
   };
@@ -261,7 +264,7 @@ function ReservationDialog({ open, handleClose, shop }) {
             }}
           >
             <Button variant="outlined" type="button" onClick={handleClose}>
-              Close
+              {t('CLOSE')}
             </Button>
             {error[activeStep] && (
               <Typography
@@ -272,7 +275,7 @@ function ReservationDialog({ open, handleClose, shop }) {
               </Typography>
             )}
             <Button variant={error[activeStep] ? 'outlined' : 'contained'} type="button" onClick={handleNext}>
-              {activeStep === 2 ? 'Book Now' : 'Next'}
+              {activeStep === 2 ? `${t('BOOK_NOW')}` : `${t('NEXT')}`}
             </Button>
           </Box>
         </Box>

@@ -7,8 +7,11 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Box, CardActionArea, Rating } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function MediaCard({ shop, setOpenModal }) {
+  const { t } = useTranslation();
+
   const handleClick = (event) => {
     event.stopPropagation();
     event.preventDefault();
@@ -39,7 +42,7 @@ export default function MediaCard({ shop, setOpenModal }) {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Rating readOnly precision={0.5} value={rating()} sx={{ color: 'primary.main' }} size="small" />
               <Typography variant="span" style={{ fontWeight: 600 }} color="grey.400">
-                {shop.reviews.length} Review(s)
+                {shop.reviews.length} {t('REVIEWS')}
               </Typography>
             </Box>
 
@@ -61,7 +64,7 @@ export default function MediaCard({ shop, setOpenModal }) {
           <CardActions sx={{ p: '0 16px 16px 16px' }}>
             {/*onClick={() => setOpenReservationDialog(true)}*/}
             <Button variant="contained" color="primary" onClick={handleClick}>
-              Book Now
+              {t('BOOK_NOW')}
             </Button>
           </CardActions>
         </CardActionArea>
