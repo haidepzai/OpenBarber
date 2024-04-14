@@ -15,21 +15,23 @@ import priceImage from '../assets/price.jpg';
 import locationImage from '../assets/location.jpg';
 import tipsImage from '../assets/tips.jpg';
 import luxuryImage from '../assets/luxury.jpg';
-
+import { useTranslation } from 'react-i18next';
 import { Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function MySwiper(props) {
   const navigate = useNavigate();
 
+  const { t } = useTranslation();
+
   const criteria = [
-    { name: 'Best Ratings', src: ratingsImage, value: { sortValue: 'Best Rating' } },
-    { name: 'Our personal tips', src: tipsImage, value: { sortValue: 'Suggested' } },
-    { name: 'Cheapest Prices', src: priceImage, value: { priceCategory: [1] } },
-    { name: 'Most Ratings', src: mostImage, value: { sortValue: 'Most Ratings' } },
-    { name: 'Luxurious Services', src: luxuryImage, value: { priceCategory: [3] } },
-    { name: 'Near you', src: locationImage },
-    { name: 'With Beard Trimming', src: beardImage },
+    { name: t('BEST_RATINGS'), src: ratingsImage, value: { sortValue: 'Best Rating' } },
+    { name: t('OUR_PERSONAL_TIPS'), src: tipsImage, value: { sortValue: 'Suggested' } },
+    { name: t('CHEAPEST_PRICE'), src: priceImage, value: { priceCategory: [1] } },
+    { name: t('MOST_RATINGS'), src: mostImage, value: { sortValue: 'Most Ratings' } },
+    { name: t('LUXURIOUS_SERVICES'), src: luxuryImage, value: { priceCategory: [3] } },
+    { name: t('NEAR_YOU'), src: locationImage },
+    { name: t('BEARD_TRIMMING'), src: beardImage },
   ];
 
   /*  const handleClick = () => {

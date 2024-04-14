@@ -2,6 +2,7 @@ import React, { Fragment, useContext, useReducer, useState } from 'react';
 import { Stack, TextField, Typography, Button, CircularProgress } from '@mui/material';
 import { SignupContext } from '../../../context/Signup.context';
 import AuthContext from '../../../context/auth-context';
+import { useTranslation } from 'react-i18next';
 
 const emailRegex =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -63,6 +64,8 @@ const SignUpStep = () => {
   const authCtx = useContext(AuthContext);
 
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  const { t } = useTranslation();
 
   const validEmail = () => emailRegex.test(state.enteredEmail);
   const validPassword = () => state.enteredPassword.length >= 8;
@@ -132,13 +135,13 @@ const SignUpStep = () => {
         <Stack component="form" onSubmit={onSubmit} height="100%">
           <Stack gap={2} mt={8} mb="auto" width="max(500px, 50%)">
             <Typography variant="h4" fontWeight="bold">
-              Sign Up
+              {t('SIGN_UP')}
             </Typography>
             <Typography variant="body1" color="textSecondary" marginBottom={4}>
-              Please enter your company E-mail and create a password to sign up.
+              {t('SIGN_UP_TITLE')}
             </Typography>
             <TextField
-              label="Company Email"
+              label={t('COMPANY_MAIL')}
               required
               value={state.enteredEmail}
               error={!state.emailIsValid || state.emailAlreadyInUse}
@@ -147,7 +150,7 @@ const SignUpStep = () => {
               onBlur={() => onBlur('email')}
             />
             <TextField
-              label="Password"
+              label={t('PASSWORD')}
               required
               type="password"
               value={state.enteredPassword}
@@ -157,7 +160,7 @@ const SignUpStep = () => {
               onBlur={() => onBlur('password')}
             />
             <TextField
-              label="Confirm Password"
+              label={t('CONFIRM_PASSWORD')}
               required
               type="password"
               value={state.enteredConfirmPassWord}
@@ -169,7 +172,7 @@ const SignUpStep = () => {
           </Stack>
           <Stack direction="row" justifyContent="space-between" marginTop="auto">
             <Button variant="outlined" onClick={() => signUpContext.close()} tabIndex={-1}>
-              Cancel
+              {t('CANCEL')}
             </Button>
             <Button
               type="submit"
@@ -180,7 +183,7 @@ const SignUpStep = () => {
               }
               variant="contained"
             >
-              Continue
+              {t('CONTINUE')}
             </Button>
           </Stack>
         </Stack>

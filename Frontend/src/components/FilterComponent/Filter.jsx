@@ -12,11 +12,13 @@ import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { useTranslation } from 'react-i18next';
 
 const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', 'PAYPAL'];
 const drinkOptions = ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'];
 
 const Filter = ({ filter, setFilter }) => {
+  const { t } = useTranslation();
   /*const updateFilter = (topic, property) => {
     setFilter({
       ...filter,
@@ -85,7 +87,7 @@ const Filter = ({ filter, setFilter }) => {
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', mb: '15px' }}>
           <PointOfSaleIcon />
-          Price Range
+          {t('PRICE_RANGE')}
         </FormLabel>
         <ToggleButtonGroup
           value={filter.priceCategory}
@@ -107,20 +109,20 @@ const Filter = ({ filter, setFilter }) => {
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
           <Face2Icon />
-          Target Audience
+          {t('TARGET_AUDIENCE')}
         </FormLabel>
         <ToggleButtonGroup value={filter.targetAudience} onChange={updateTargetAudience} aria-label="target audience selection">
           <ToggleButton value="ALL" aria-label="other">
-            ALL
+            {t('ALL')}
           </ToggleButton>
           <ToggleButton value="MEN" aria-label="men">
-            Men
+            {t('MEN')}
           </ToggleButton>
           <ToggleButton value="WOMEN" aria-label="women">
-            Women
+            {t('WOMEN')}
           </ToggleButton>
           <ToggleButton value="KIDS" aria-label="kids">
-            kids
+            {t('KIDS')}
           </ToggleButton>
         </ToggleButtonGroup>
       </FormControl>
@@ -128,7 +130,7 @@ const Filter = ({ filter, setFilter }) => {
       <FormControl component="fieldset" variant="standard" fullWidth>
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
           <GroupsIcon />
-          Number of Hairdressers
+          {t('HAIRDRESSERS_NUMBER')}
         </FormLabel>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={4} sx={{ p: '0 12px' }}>
           <Slider
@@ -155,17 +157,17 @@ const Filter = ({ filter, setFilter }) => {
       <FormControl component="fieldset" variant="standard" fullWidth>
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
           <QueryBuilderIcon />
-          Opening Hours
+          {t('OPENING_HOURS')}
         </FormLabel>
         <Stack direction="column" spacing={2}>
           <Stack direction="row" sx={{ '& > p': { flex: '1' } }} gap={2}>
-            <Typography variant="body1">Opening Time</Typography>
-            <Typography variant="body1">Closing Time</Typography>
+            <Typography variant="body1">{t('OPENING_TIME')}</Typography>
+            <Typography variant="body1">{t('CLOSING_TIME')}</Typography>
           </Stack>
           <Stack direction="row" sx={{ '& > *': { flex: '1' } }} gap={2}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
-                name="open"
+                name='open'
                 label={!filter.openingTime && 'Open'}
                 value={filter.openingTime}
                 onChange={updateOpeningHour}
@@ -174,7 +176,7 @@ const Filter = ({ filter, setFilter }) => {
             </LocalizationProvider>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
-                name="close"
+                name='close'
                 label={!filter.closingTime && 'Close'}
                 value={filter.closingTime}
                 onChange={updateClosingHour}
@@ -192,7 +194,7 @@ const Filter = ({ filter, setFilter }) => {
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black' }}>
           <PaymentIcon />
-          Payment Method
+          {t('PAYMENT_METHOD')}
         </FormLabel>
         <FormGroup sx={{ padding: '6px 0 0 3px' }}>
           {paymentMethodOptions.map((method) => (
@@ -214,7 +216,7 @@ const Filter = ({ filter, setFilter }) => {
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black' }}>
           <CoffeeIcon />
-          Drinks
+          {t('DRINKS')}
         </FormLabel>
         <FormGroup sx={{ padding: '6px 0 0 3px' }}>
           {drinkOptions.map((drink) => (

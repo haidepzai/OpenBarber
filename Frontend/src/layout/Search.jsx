@@ -11,11 +11,13 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { getCurrentLocation, getGeocoordinates } from '../actions/GoogleMapsActions';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
 function Search({ dateAndTime, setDateAndTime }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   /*const [dateValue, setDateValue] = useState(dayjs());*/
   const [location, setLocation] = useState('');
@@ -159,7 +161,7 @@ function Search({ dateAndTime, setDateAndTime }) {
         sx={{ p: '10.875px 50px', borderRadius: '100px', ml: '16px' }}
         onClick={handleSubmit}
       >
-        Let's go!
+        {t('LETS_GO').toUpperCase()}
       </Button>
     </Stack>
   );

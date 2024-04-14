@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { InputAdornment, Stack, TextField } from '@mui/material';
 import React, { useEffect, useState, useCallback } from 'react';
 import EuroIcon from '@mui/icons-material/Euro';
+import { useTranslation } from 'react-i18next';
 
 const targetAudienceOptions = ['ALL', 'MEN', 'WOMEN', 'CHILDREN'];
 
@@ -19,6 +20,8 @@ const initialState = {
 
 const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, uniqueServices, addService, updateService }) => {
   const editingMode = () => editedService && setEditedService && updateService && !addService;
+
+  const { t } = useTranslation();
 
   const [initialClick, setInitialClick] = useState(false);
 
@@ -60,23 +63,23 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
     let priceError = '';
     const uniqueCombination = `${service.title + service.targetAudience}`;
     if (service.targetAudience === '') {
-      targetAudienceError = 'Choose an option!';
+      targetAudienceError = t('CHOOSE_OPTION');
     }
     if (service.title === '') {
-      titleError = 'Choose a title!';
+      titleError = t('CHOOSE_TITLE');
     }
     if (uniqueServices.includes(uniqueCombination)) {
-      titleError = 'A Service with this title for this target audience already exists!';
+      titleError = t('UNIQUE_ERROR');
     }
     if (service.durationInMin === '') {
-      durationInMinError = 'Choose a duration (can be 0)!';
+      durationInMinError = t('CHOOSE_DURATION');
     } else if (service.durationInMin > 600) {
-      durationInMinError = "Duration can't be over 600 minutes long!";
+      durationInMinError = t('DURATION_ERROR');
     }
     if (service.price === '') {
-      priceError = 'Choose a price (can be 0)!';
+      priceError = t('CHOOSE_PRICE');
     } else if (service.price > 10000) {
-      priceError = "Price can't be over 100.000 Euros!";
+      priceError = t('PRICE_ERROR');
     }
     setErrors({
       targetAudience: targetAudienceError,
@@ -122,7 +125,7 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
               type="text"
               label="Title"
               name="title"
-              placeholder="z.B. Trockenhaarschnitt"
+              placeholder={t('SERVICE_PLACEHOLDER')}
               value={service.title}
               onChange={handleChange}
               fullWidth
@@ -132,7 +135,7 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
 
             <TextField
               type="number"
-              label="Duration"
+              label={t('DURATION')}
               name="durationInMin"
               value={service.durationInMin}
               onChange={handleChange}
@@ -146,7 +149,7 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
 
             <TextField
               type="number"
-              label="Price"
+              label={t('PRICE')}
               name="price"
               value={service.price}
               onChange={handleChange}
@@ -165,7 +168,7 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between', m: '8px 24px 24px 24px', p: '0' }}>
           <Button variant="outlined" onClick={handleClose} autoFocus>
-            Cancel
+            {t('CANCEL')}
           </Button>
           <Button
             variant="contained"
@@ -187,7 +190,7 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
               }
             }}
           >
-            {editingMode() ? 'Save' : 'Add'}
+            {editingMode() ? t('SAVE') : t('ADD')}
           </Button>
         </DialogActions>
       </Dialog>

@@ -49,10 +49,10 @@ const Header = () => {
           <Grid item xs={4}>
             <Stack direction="row" alignItems="center" spacing={8}>
               <Button type="text" size="large" sx={{ '&:hover': { backgroundColor: '#fff' } }} onClick={() => navigate('/scheduler')}>
-                {t('Manage_Appointment')}
+                {t('MANAGE_APPOINTMENT')}
               </Button>
               <Button type="text" size="large" sx={{ '&:hover': { backgroundColor: '#fff' } }} onClick={() => navigate('/edit')}>
-                {t('Edit_Profile')}
+                {t('EDIT_PROFILE')}
               </Button>
             </Stack>
           </Grid>
@@ -62,17 +62,17 @@ const Header = () => {
           <Stack direction="row" justifyContent="flex-end" alignItems="flex-start" spacing={1}>
             {!authCtx.isLoggedIn && (
               <Button variant="contained" color="secondary" onClick={() => signUpCtx.setSignupVisible(true)}>
-                {t('Sign_Up')}
+                {t('SIGN_UP')}
               </Button>
             )}
             {!authCtx.isLoggedIn && (
               <Button variant="contained" color="secondary" onClick={() => signUpCtx.setLoginVisible(true)}>
-                {t('Login')}
+                {t('LOGIN')}
               </Button>
             )}
             {authCtx.isLoggedIn && (
               <Button variant="contained" color="secondary" onClick={handleLogout}>
-                {t('Logout')}
+                {t('LOGOUT')}
               </Button>
             )}
             <IconButton onClick={() => changeLanguage('de')}>

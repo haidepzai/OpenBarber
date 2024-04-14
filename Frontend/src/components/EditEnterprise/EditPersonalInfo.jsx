@@ -2,6 +2,7 @@ import { Button, Divider, Paper, Stack, TextField, Typography } from '@mui/mater
 import React, { Fragment, useContext, useReducer, useState } from 'react';
 import AuthContext from '../../context/auth-context';
 import { updateUser } from '../../actions/UserActions';
+import { useTranslation } from 'react-i18next';
 
 const emailReducer = (state, action) => {
   if (action.type === 'USER_INPUT') {
@@ -34,6 +35,7 @@ const passwordReducer = (state, action) => {
 };
 
 const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
+  const { t } = useTranslation();
   const authCtx = useContext(AuthContext);
 
   const [formIsValid, setFormIsValid] = useState(false);
@@ -54,15 +56,15 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
   const saveUser = async () => {
     try {
       await updateUser(authCtx.userId, authCtx.user);
-      onOpenSnackBar('User Changes saved!');
+      onOpenSnackBar(t('USER_CHANGES_SAVED'));
     } catch (error) {
-      onOpenSnackBar('User could not be saved');
+      onOpenSnackBar(t('COULD_NOT_SAVE_USER'));
     }
   };
 
   const resetUser = async () => {
     await onLoadingUser();
-    onOpenSnackBar('User Data reset!');
+    onOpenSnackBar(t('USER_DATA_RESET'));
   };
 
   const handleUserChange = (event) => {
@@ -100,10 +102,10 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
   return (
     <Fragment>
       <Typography variant="h1" sx={{ fontSize: '22px', fontWeight: '500', color: 'rgba(0, 0, 0, 1)', m: '40px 0 10px 24px' }}>
-        Personal Info
+        {t('PERSONAL_INFO')}
       </Typography>
       <Typography variant="h2" sx={{ fontSize: '16px', fontWeight: '500', color: 'rgba(0, 0, 0, 0.45)', m: '0 0 20px 24px' }}>
-        Update your personal information and account credentials here.
+        {t('PERSONAL_INFO_TITLE')}
       </Typography>
       <Paper elevation={2}>
         <Stack
@@ -127,11 +129,11 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
           }}
         >
           <Stack direction="row">
-            <Typography variant="body1">Name</Typography>
+            <Typography variant="body1">{t('NAME')}</Typography>
             <TextField
               InputLabelProps={{ shrink: false }}
               name="name"
-              placeholder="Name"
+              placeholder={t('NAME')}
               value={authCtx.user.name === null ? '' : authCtx.user.name}
               onChange={handleUserChange}
               fullWidth
@@ -139,12 +141,12 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
           </Stack>
 
           <Stack direction="row">
-            <Typography variant="body1">E-Mail Address</Typography>
+            <Typography variant="body1">{t('EMAIL_ADDRESS')}</Typography>
             <TextField
               type="email"
               InputLabelProps={{ shrink: false }}
               name="email"
-              placeholder="E-Mail Address"
+              placeholder={t('EMAIL_ADDRESS')}
               value={authCtx.user.email === null ? '' : authCtx.user.email}
               error={!emailIsValid}
               helperText={!emailIsValid && 'Please enter a correct email'}
@@ -155,14 +157,14 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
           </Stack>
 
           <Stack direction="row">
-            <Typography variant="body1">Password</Typography>
+            <Typography variant="body1">{t('PASSWORD')}</Typography>
             <TextField
               type="password"
               InputLabelProps={{ shrink: false }}
               name="password"
-              placeholder="Password"
+              placeholder={t('PASSWORD')}
               error={!passwordIsValid}
-              helperText={!passwordIsValid && 'Please enter a password'}
+              helperText={!passwordIsValid && t('PLEASE_ENTER_PASSWORD')}
               onChange={handleUserChange}
               onBlur={validatePasswordHandler}
               fullWidth
@@ -174,10 +176,10 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
 
         <Stack direction="row" aligncontent="center" justifyContent="space-between" sx={{ p: '0 24px 24px 24px' }} spacing={4}>
           <Button variant="outlined" onClick={resetUser}>
-            Reset
+            {t('RESET')}
           </Button>
           <Button variant="contained" onClick={saveUser} disabled={!formIsValid}>
-            Save Changes
+            {t('SAVE_CHANGES')}
           </Button>
         </Stack>
       </Paper>

@@ -9,6 +9,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Overview from './Overview';
+import { useTranslation } from 'react-i18next';
 require('dayjs/locale/de');
 
 const paymentMethods = {
@@ -19,8 +20,9 @@ const paymentMethods = {
 };
 
 const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error, setError, shopPaymentMethods }) => {
+  const { t } = useTranslation();
 
-  const overview = useMemo(() => <Overview booked={false} data={data} handleStep={handleStep} />, [])
+  const overview = useMemo(() => <Overview booked={false} data={data} handleStep={handleStep} />, []);
 
   const handleChange = (event) => {
     dispatch({ type: 'set_personal_data', payload: { [event.target.name]: event.target.value } });
@@ -36,77 +38,77 @@ const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error
   return (
     <Box sx={{ padding: '20px', overflow: 'auto' }}>
       <Typography variant="h6" sx={{ marginBottom: '20px' }}>
-        Your Contact Details And Reminder
+        {t('DETAILS_AND_REMINDER')}
       </Typography>
 
       <Typography variant="overline" display="block" gutterBottom>
-        Appointment Overview
+        {t('APPOINTMENT_OVERVIEW')}
       </Typography>
 
       {overview}
 
       <Typography variant="overline" display="block" gutterBottom>
-        Your comments
+        {t('YOUR_COMMENTS')}
       </Typography>
       <TextField id="outlined-multiline-static" multiline fullWidth rows={3} defaultValue="" />
       <Typography variant="overline" display="block" gutterBottom sx={{ margin: '20px 0 15px 0' }}>
-        Contact Details
+        {t('CONTACT_DETAILS')}
       </Typography>
       <Stack direction="column">
         <FormControl sx={{ width: '259.5px', paddingBottom: '25px' }}>
           <InputLabel id="demo-simple-select-label">Form of Address</InputLabel>
           <Select value={data.personalData.formOfAddress} label="Form of Address" name="formOfAddress" onChange={handleChange}>
-            <MenuItem value="Mr.">Mr.</MenuItem>
-            <MenuItem value="Mrs.">Mrs.</MenuItem>
-            <MenuItem value="None">No Selection</MenuItem>
+            <MenuItem value="Mr.">{t('MR')}</MenuItem>
+            <MenuItem value="Mrs.">{t('MRS')}</MenuItem>
+            <MenuItem value="None">{t('NO_SELECTION')}</MenuItem>
           </Select>
         </FormControl>
         <Stack direction="row" spacing={3}>
           <TextField
-            label="First Name"
+            label={t('FIRST_NAME')}
             name="firstName"
             value={data.personalData.firstName}
             onChange={handleChange}
             fullWidth
             error={showErrors && !data.personalData.firstName}
-            helperText={showErrors && !data.personalData.firstName && "Can't be empty!"}
+            helperText={showErrors && !data.personalData.firstName && t('CANT_BE_EMPTY')}
             sx={{ paddingBottom: showErrors && !data.personalData.firstName ? '5px' : '28px' }}
           />
           <TextField
-            label="Last Name"
+            label={t('LAST_NAME')}
             name="lastName"
             value={data.personalData.lastName}
             onChange={handleChange}
             fullWidth
             error={showErrors && !data.personalData.lastName}
-            helperText={showErrors && !data.personalData.lastName && "Can't be empty!"}
+            helperText={showErrors && !data.personalData.lastName && t('CANT_BE_EMPTY')}
             sx={{ paddingBottom: showErrors && !data.personalData.lastName ? '5px' : '28px' }}
           />
         </Stack>
         <TextField
-          label="E-Mail Address"
+          label={t('EMAIL_ADDRESS')}
           name="email"
           value={data.personalData.email}
           onChange={handleChange}
           fullWidth
           error={showErrors && !data.personalData.email}
-          helperText={showErrors && !data.personalData.email && "Can't be empty!"}
+          helperText={showErrors && !data.personalData.email && t('CANT_BE_EMPTY')}
           sx={{ paddingBottom: showErrors && !data.personalData.email ? '5px' : '28px' }}
         />
         <TextField
-          label="Phone Number"
+          label={t('PHONE_NUMBER')}
           name="phoneNumber"
           value={data.personalData.phoneNumber}
           onChange={handleChange}
           fullWidth
           error={showErrors && !data.personalData.phoneNumber}
-          helperText={showErrors && !data.personalData.phoneNumber && "Can't be empty!"}
+          helperText={showErrors && !data.personalData.phoneNumber && t('CANT_BE_EMPTY')}
           sx={{ paddingBottom: showErrors && !data.personalData.phoneNumber ? '5px' : '28px' }}
         />
       </Stack>
 
       <Typography variant="overline" display="block" gutterBottom sx={{ marginTop: '20px' }}>
-        Payment Method
+        {t('PAYMENT_METHOD')}
       </Typography>
       <FormControl>
         <RadioGroup

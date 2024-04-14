@@ -3,15 +3,18 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useTranslation } from 'react-i18next';
 
 const ServicePage = ({ pickedServices, pickService, removeService, name, shopServices }) => {
+  const { t } = useTranslation();
+
   return (
     <Box sx={{ padding: '20px', overflow: 'auto' }}>
       <Typography variant="h6" sx={{ marginBottom: '20px' }}>
         {name || 'Friseur XY Stuttgart'}
       </Typography>
       <Typography variant="overline" display="block" gutterBottom>
-        Choose your services
+        {t('CHOOSE_SERVICE')}
       </Typography>
       {[...new Set(shopServices.map((obj) => obj.targetAudience))].map((targetAudience) => (
         <Accordion sx={{ marginBottom: '20px' }} key={targetAudience}>
@@ -48,11 +51,11 @@ const ServicePage = ({ pickedServices, pickService, removeService, name, shopSer
                   <Typography sx={{ lineHeight: 'unset' }}>{service.price} &#8364;</Typography>
                   {pickedServices.some((pickedService) => pickedService === service) ? (
                     <Button type="button" sx={{ width: '105px', fontSize: '12px' }} variant="contained" onClick={() => removeService(service)}>
-                      Selected
+                      {t('SELECTED')}
                     </Button>
                   ) : (
                     <Button type="button" sx={{ width: '105px', fontSize: '12px' }} variant="outlined" onClick={() => pickService(service)}>
-                      Select
+                      {t('SELECT')}
                     </Button>
                   )}
                 </Stack>

@@ -2,8 +2,11 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useTranslation } from 'react-i18next';
 
 const DeleteEmployeesDialog = ({ open, setOpen, numSelected, setSelected, deleteEmployees }) => {
+  const { t } = useTranslation();
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -11,9 +14,9 @@ const DeleteEmployeesDialog = ({ open, setOpen, numSelected, setSelected, delete
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
       {numSelected >= 2 ? (
-        <DialogTitle id="alert-dialog-title">Are you sure that you want to delete {numSelected} employees?</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{t('DELETE_EMPLOYEES', {numSelected: numSelected})}</DialogTitle>
       ) : (
-        <DialogTitle id="alert-dialog-title">Are you sure that you want to delete 1 employee?</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{t('DELETE_EMPLOYEE')}</DialogTitle>
       )}
 
       <DialogActions>
@@ -24,10 +27,10 @@ const DeleteEmployeesDialog = ({ open, setOpen, numSelected, setSelected, delete
             setSelected([]);
           }}
         >
-          Delete
+          {t('DELETE')}
         </Button>
         <Button onClick={handleClose} autoFocus>
-          Cancel
+        {t('CANCEL')}
         </Button>
       </DialogActions>
     </Dialog>
