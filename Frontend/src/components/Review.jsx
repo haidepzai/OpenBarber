@@ -1,7 +1,8 @@
 import React, { Fragment, useState } from 'react';
 
 import { Box, Button, Rating, TextField, Typography } from '@mui/material';
-import { createReview, createReviewAuth } from '../actions/ReviewActions';
+import { createReviewAuth } from '../actions/ReviewActions';
+import { useTranslation } from 'react-i18next';
 
 const Review = ({ shop, onReview }) => {
   const [value, setValue] = useState(1);
@@ -10,6 +11,7 @@ const Review = ({ shop, onReview }) => {
   const [comment, setComment] = useState('');
 
   const [errorMessage, setErrorMessage] = useState('');
+  const { t } = useTranslation();
 
   const handleClick = async () => {
     const reviewRequest = {
