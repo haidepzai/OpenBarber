@@ -6,15 +6,15 @@ Kunden können nach Friseuren in bestimmten Städten suchen und bei Bedarf einen
 Die Friseure werden über Reservierungen informiert.
 Zudem können Friseure kontaktiert, bewertet und favorisiert werden.
 
-OpenBarber offers a solution for hairdressers to manage reservations. Moreover, guests can make online reservations, contact and rate hairdressers. 
+OpenBarber offers a solution for hairdressers to manage reservations. Moreover, guests can make online reservations, contact and rate hairdressers.
 
-Used technologies 
+Used technologies
 - React
 - Java Spring
 - PostgreSQL
 - Docker
 
-OpenBarber is a reservation management system for hairdressers. 
+OpenBarber is a reservation management system for hairdressers.
 Customers can search for hairdressers in specific cities and reserve an appointment if needed.
 The hairdressers are informed about reservations.
 Furthermore, you can contact barbers, rate them and save them as favorites!
@@ -43,3 +43,9 @@ You may need to build an artifact.
 
 4. Find the JAR: After the build completes, the JAR file will be located in the target directory within your project's root directory.
 
+## Impressions
+
+![alt text](./Photos/1.png)
+![alt text](./Photos/2.png)
+![alt text](./Photos/3.png)
+![alt text](./Photos/4.png)
