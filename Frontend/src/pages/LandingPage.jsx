@@ -76,7 +76,7 @@ const LandingPage = () => {
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: '36px', p: '0 15px' }}>
           <Typography variant="h5">{t('LANDING_PAGE_DESCRIPTION')}</Typography>
           <Button variant="text" onClick={() => navigate('/filter')} sx={{ fontSize: '15px' }}>
-            Show All
+            {t('SHOW_ALL')}
           </Button>
         </Stack>
         <Divider orientation="horizontal" sx={{ m: '12px 0', borderColor: 'rgba(0, 0, 0, 0.24)' }} />
