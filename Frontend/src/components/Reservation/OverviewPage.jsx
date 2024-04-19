@@ -12,17 +12,17 @@ import Overview from './Overview';
 import { useTranslation } from 'react-i18next';
 require('dayjs/locale/de');
 
-const paymentMethods = {
-  ON_SITE_CASH: 'On Site (Cash)',
-  ON_SITE_CARD: 'On Site (Card)',
-  BANK_TRANSFER: 'Bank transfer',
-  PAYPAL: 'PayPal',
-};
-
 const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error, setError, shopPaymentMethods }) => {
   const { t } = useTranslation();
 
   const overview = useMemo(() => <Overview booked={false} data={data} handleStep={handleStep} />, []);
+
+  const paymentMethods = {
+    ON_SITE_CASH: t('ON_SITE_CASH'),
+    ON_SITE_CARD: t('ON_SITE_CARD'),
+    BANK_TRANSFER: t('BANK_TRANSFER'),
+    PAYPAL: t('PAYPAL'),
+  };
 
   const handleChange = (event) => {
     dispatch({ type: 'set_personal_data', payload: { [event.target.name]: event.target.value } });

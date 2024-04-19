@@ -370,11 +370,7 @@ const EditEnterprisePage = () => {
                             onChange={(event) => handleEnterpriseArrayChange(event, method)}
                           />
                         }
-                        label={method
-                          .replace('ON_SITE_CASH', 'On Site (Cash)')
-                          .replace('ON_SITE_CARD', 'On Site (Card)')
-                          .replace('BANK_TRANSFER', 'Bank Transfer')
-                          .replace('PAYPAL', 'Paypal')}
+                        label={t(method)}
                         sx={{ '& .MuiTypography-root': { textTransform: 'capitalize' } }}
                       />
                     ))}
@@ -391,7 +387,7 @@ const EditEnterprisePage = () => {
                         control={
                           <Checkbox checked={enterprise.drinks.includes(drink)} onChange={(event) => handleEnterpriseArrayChange(event, drink)} />
                         }
-                        label={drink.replace('_', ' ').toLowerCase()}
+                        label={t(drink)}
                         sx={{ '& .MuiTypography-root': { textTransform: 'capitalize' } }}
                       />
                     ))}

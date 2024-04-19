@@ -184,10 +184,6 @@ const Filter = ({ filter, setFilter }) => {
               />
             </LocalizationProvider>
           </Stack>
-          <Stack direction="row" sx={{ '& > p': { flex: '1' } }} gap={2}>
-            <Typography variant="body1">(Or Earlier)</Typography>
-            <Typography variant="body1">(Or Later)</Typography>
-          </Stack>
         </Stack>
       </FormControl>
 
@@ -202,11 +198,7 @@ const Filter = ({ filter, setFilter }) => {
               name="paymentMethods"
               key={method}
               control={<Checkbox checked={filter.paymentMethods.includes(method)} onChange={(event) => updateFilterArray(event, method)} />}
-              label={method
-                .replace('ON_SITE_CASH', 'On Site (Cash)')
-                .replace('ON_SITE_CARD', 'On Site (Card)')
-                .replace('BANK_TRANSFER', 'Bank Transfer')
-                .replace('PAYPAL', 'Paypal')}
+              label={t(method)}
               sx={{ '& .MuiTypography-root': { textTransform: 'capitalize' } }}
             />
           ))}
@@ -224,7 +216,7 @@ const Filter = ({ filter, setFilter }) => {
               name="drinks"
               key={drink}
               control={<Checkbox checked={filter.drinks.includes(drink)} onChange={(event) => updateFilterArray(event, drink)} />}
-              label={drink.replace('_', ' ').toLowerCase()}
+              label={t(drink)}
               sx={{ '& .MuiTypography-root': { textTransform: 'capitalize' } }}
             />
           ))}
