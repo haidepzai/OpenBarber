@@ -133,7 +133,7 @@ function Search({ dateAndTime, setDateAndTime }) {
       </Box>
 
       <TextField
-        label="Location"
+        label={t('LOCATION')}
         onChange={(e) => setLocation(e.target.value)}
         variant="filled"
         size="small"

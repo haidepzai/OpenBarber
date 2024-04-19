@@ -128,7 +128,7 @@ const FilterResults = ({ filter }) => {
           </Typography>
           <FormControl>
             <InputLabel id="sort">Sort</InputLabel>
-            <Select labelId="sort" id="sort" value={sortValue} label="Sort" onChange={handleChange} sx={{ width: '200px' }}>
+            <Select labelId="sort" id="sort" value={sortValue} label={t('SHOPS_AVAILABLE_IN')} onChange={handleChange} sx={{ width: '200px' }}>
               <MenuItem value="Suggested">{t('SUGGESTED')}</MenuItem>
               <MenuItem value="Best Ratings">{t('BEST_RATINGS')}</MenuItem>
               <MenuItem value="Most Ratings">{t('MOST_RATINGS')}</MenuItem>

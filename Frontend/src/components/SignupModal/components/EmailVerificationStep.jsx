@@ -65,7 +65,7 @@ const EmailVerificationStep = () => {
 
       <TextField
         value={verificationCode}
-        label="Verification Code"
+        label={t('VERIFICATION_CODE')}
         variant="outlined"
         error={error}
         helperText={error ? 'Please enter a valid code (6 digits)' : ''}

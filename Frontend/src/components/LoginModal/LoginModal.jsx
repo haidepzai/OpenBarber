@@ -201,21 +201,21 @@ const LoginModal = ({ gotoSignup }) => {
               </Typography>
               <Stack gap={2} mt={8} mb="auto">
                 <TextField
-                  label="Company Email"
+                  label={t('COMPANY_EMAIL')}
                   required
                   ref={emailInputRef}
                   error={!emailIsValid || !loginIsFound}
-                  helperText={(!emailIsValid && 'Please enter a correct email') || (!loginIsFound && 'No E-Mail found or password incorrect')}
+                  helperText={(!emailIsValid && t('PLEASE_ENTER_MAIL')) || (!loginIsFound && t('NO_MAIL_OR_PASSWORD'))}
                   onChange={emailChangeHandler}
                   onBlur={validateEmailHandler}
                 />
                 <TextField
                   ref={passwordInputRef}
-                  label="Password"
+                  label={t('PASSWORD')}
                   required
                   type="password"
                   error={!passwordIsValid}
-                  helperText={!passwordIsValid && 'Please enter a password'}
+                  helperText={!passwordIsValid && t('PLEASE_ENTER_PASSWORD')}
                   onChange={passwordChangeHandler}
                   onBlur={validatePasswordHandler}
                 />
