@@ -83,7 +83,7 @@ const Header = () => {
               <img src={britishFlag} alt="EN" style={{ width: '24px', height: '24px' }} />
             </IconButton>
             <IconButton onClick={() => changeLanguage('ja')}>
-              <img src={japaneseFlag} alt="EN" style={{ width: '24px', height: '24px' }} />
+              <img src={japaneseFlag} alt="JA" style={{ width: '24px', height: '24px' }} />
             </IconButton>
           </Stack>
         </Grid>
