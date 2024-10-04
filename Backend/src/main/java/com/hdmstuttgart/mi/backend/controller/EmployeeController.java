@@ -4,6 +4,8 @@ import com.hdmstuttgart.mi.backend.mapper.EmployeeMapper;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.dto.EmployeeDto;
 import com.hdmstuttgart.mi.backend.service.EmployeeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 /**
  * The type Employee controller.
  */
+@Api(value = "Employee Controller", description = "Operations related to Employee", tags = "Employee")
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
@@ -41,6 +44,7 @@ public class EmployeeController {
      * @return the response entity
      * @throws IOException the io exception
      */
+    @ApiOperation(value = "Create Employee", notes = "Creates a new employee for the given enterprise ID")
     @PostMapping
     public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto, @RequestParam Long enterpriseId) throws IOException {
         Employee employee = employeeMapper.toEntity(employeeDto);
@@ -55,6 +59,7 @@ public class EmployeeController {
      * @param enterpriseId the enterprise id
      * @return the employees by enterprise id
      */
+    @ApiOperation(value = "Get Employees by Enterprise ID", notes = "Fetches all employees for the given enterprise ID")
     @GetMapping
     public ResponseEntity<List<EmployeeDto>> getEmployeesByEnterpriseId(@RequestParam Long enterpriseId) {
         List<Employee> employees = employeeService.getEmployeesByEnterpriseId(enterpriseId);
@@ -70,6 +75,7 @@ public class EmployeeController {
      * @param id the id
      * @return the employee by id
      */
+    @ApiOperation(value = "Get Employee by ID", notes = "Fetches an employee by its ID")
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable long id) {
         Employee employee = employeeService.getEmployeeById(id);
@@ -85,6 +91,7 @@ public class EmployeeController {
      * @return the response entity
      * @throws IOException the io exception
      */
+    @ApiOperation(value = "Update Employee", notes = "Updates an existing employee by its ID")
     @PutMapping("/{id}")
     public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable long id, @Valid @RequestBody EmployeeDto newEmployeeDto) throws IOException {
         Employee newEmployee = employeeMapper.toEntity(newEmployeeDto);
@@ -100,6 +107,7 @@ public class EmployeeController {
      * @param token the token
      * @return the response entity
      */
+    @ApiOperation(value = "Delete Employee", notes = "Deletes an employee by its ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable long id, @RequestHeader("Authorization") String token) {
         employeeService.deleteEmployee(id);

@@ -5,6 +5,8 @@ import com.hdmstuttgart.mi.backend.mapper.AppointmentMapper;
 import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.dto.AppointmentDto;
 import com.hdmstuttgart.mi.backend.service.AppointmentService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.UUID;
 /**
  * Controller for appointments
  */
+@Api(value = "Appointment Controller", description = "Operations related to Appointments", tags = "Appointment")
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentController {
@@ -43,6 +46,7 @@ public class AppointmentController {
      * @param enterpriseId   the enterprise id
      * @return the response entity
      */
+    @ApiOperation(value = "Create Appointment", notes = "Creates a new appointment for the given enterprise ID")
     @PostMapping
     public ResponseEntity<AppointmentDto> createAppointment(@Valid @RequestBody AppointmentDto appointmentDto, @RequestParam long enterpriseId) {
         log.info(appointmentDto.toString());
@@ -59,6 +63,7 @@ public class AppointmentController {
      * @param confirmationCode the confirmation code
      * @return the response entity
      */
+    @ApiOperation(value = "Confirm Appointment", notes = "Confirms an appointment by its ID and confirmation code")
     @PutMapping("/confirmation/{id}")
     public ResponseEntity<AppointmentDto> confirmAppointment(@PathVariable long id, @RequestParam String confirmationCode) {
         Appointment appointment = appointmentService.confirmAppointment(id, confirmationCode);
@@ -72,6 +77,7 @@ public class AppointmentController {
      * @param enterpriseId the enterprise id
      * @return the appointments by enterprise id
      */
+    @ApiOperation(value = "Get Appointments by Enterprise ID", notes = "Fetches all appointments for the given enterprise ID")
     @GetMapping
     public ResponseEntity<List<AppointmentDto>> getAppointmentsByEnterpriseId(@RequestParam Long enterpriseId) {
         List<Appointment> appointments = appointmentService.getAppointmentsByEnterpriseId(enterpriseId);
@@ -85,6 +91,7 @@ public class AppointmentController {
      * @param id the id
      * @return the appointment by id
      */
+    @ApiOperation(value = "Get Appointment by ID", notes = "Fetches an appointment by its ID")
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable long id) {
         Appointment appointment = appointmentService.getAppointmentById(id);
@@ -99,6 +106,7 @@ public class AppointmentController {
      * @param newAppointmentDto the new appointment dto
      * @return the response entity
      */
+    @ApiOperation(value = "Get Appointment by ID", notes = "Fetches an appointment by its ID")
     @PutMapping("/{id}")
     public ResponseEntity<AppointmentDto> updateAppointment(@PathVariable long id, @Valid @RequestBody AppointmentDto newAppointmentDto) {
         Appointment newAppointment = appointmentMapper.dtoToAppointment(newAppointmentDto);
@@ -114,6 +122,7 @@ public class AppointmentController {
      * @param newAppointmentDto the new appointment dto
      * @return the response entity
      */
+    @ApiOperation(value = "Patch Appointment", notes = "Partially updates an existing appointment by its ID")
     @PatchMapping("/{id}")
     public ResponseEntity<AppointmentDto> patchAppointment(@PathVariable long id, @RequestBody AppointmentDto newAppointmentDto) {
         Appointment newAppointment = appointmentMapper.dtoToAppointment(newAppointmentDto);
@@ -129,6 +138,7 @@ public class AppointmentController {
      * @param confirmationCode the confirmation code
      * @return the response entity
      */
+    @ApiOperation(value = "Delete Appointment", notes = "Deletes an appointment by its ID and confirmation code")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAppointment(@PathVariable long id, @RequestParam String confirmationCode) {
         appointmentService.deleteAppointment(id, confirmationCode);

@@ -5,6 +5,8 @@ import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.UserDto;
 import com.hdmstuttgart.mi.backend.service.JwtService;
 import com.hdmstuttgart.mi.backend.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 /**
  * The type User controller.
  */
+@Api(value = "User Controller", description = "Operations related to User", tags = "User")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -41,6 +44,7 @@ public class UserController {
      *
      * @return the all users
      */
+    @ApiOperation(value = "Get All Users", notes = "Retrieves a list of all users")
     @GetMapping()
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<User> users = userService.getAllUsers();
@@ -56,6 +60,7 @@ public class UserController {
      * @param id the id
      * @return the user by id
      */
+    @ApiOperation(value = "Get User by ID", notes = "Retrieves a specific user by their ID")
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
@@ -69,6 +74,7 @@ public class UserController {
      * @param token the token
      * @return the user by token
      */
+    @ApiOperation(value = "Get User by Token", notes = "Retrieves a user using their authorization token")
     @GetMapping("/info")
     public ResponseEntity<UserDto> getUserByToken(@RequestHeader("Authorization") String token) {
         String email = jwtService.extractUsername(token.substring(7));
@@ -83,6 +89,7 @@ public class UserController {
      * @param email the email
      * @return the user by email
      */
+    @ApiOperation(value = "Get User by Email", notes = "Retrieves a user by their email address")
     @GetMapping("/email/{email}")
     public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
@@ -97,6 +104,7 @@ public class UserController {
      * @param userDto the user dto
      * @return the response entity
      */
+    @ApiOperation(value = "Create User", notes = "Creates a new user with the provided details")
     @PostMapping
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         User user = UserMapper.toUser(userDto);
@@ -113,6 +121,7 @@ public class UserController {
      * @param token   the token
      * @return the response entity
      */
+    @ApiOperation(value = "Update User", notes = "Updates a user's information if authenticated")
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto, @RequestHeader("Authorization") String token) {
         // Get the email of the authenticated user from the JWT token
@@ -137,6 +146,7 @@ public class UserController {
      * @param request the request
      * @return the response entity
      */
+    @ApiOperation(value = "Delete User by ID", notes = "Deletes a user by their ID if authenticated")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable Long id, HttpServletRequest request) {
         // Get the email of the authenticated user from the JWT token

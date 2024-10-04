@@ -8,6 +8,8 @@ import com.hdmstuttgart.mi.backend.model.dto.EnterpriseDto;
 import com.hdmstuttgart.mi.backend.service.EnterpriseService;
 import com.hdmstuttgart.mi.backend.service.JwtService;
 import com.hdmstuttgart.mi.backend.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.List;
 /**
  * The type Enterprise controller.
  */
+@Api(value = "Enterprise Controller", description = "Operations related to Enterprise", tags = "Enterprise")
 @RestController
 @RequestMapping("/api/enterprises")
 public class EnterpriseController {
@@ -49,6 +52,7 @@ public class EnterpriseController {
      * @param token         the token
      * @return the response entity
      */
+    @ApiOperation(value = "Create Enterprise", notes = "Creates a new enterprise for the provided details")
     @PostMapping
     public ResponseEntity<EnterpriseDto> createEnterprise(@Valid @RequestBody EnterpriseDto enterpriseDto, @RequestHeader("Authorization") String token) {
         Enterprise createdEnterprise = enterpriseService.createEnterprise(enterpriseMapper.toEntity(enterpriseDto), token);
@@ -61,6 +65,7 @@ public class EnterpriseController {
      *
      * @return the all enterprises
      */
+    @ApiOperation(value = "Get All Enterprises", notes = "Retrieves a list of all enterprises")
     @GetMapping
     public ResponseEntity<List<EnterpriseDto>> getAllEnterprises() {
         List<Enterprise> enterprises = enterpriseService.getAllEnterprises();
@@ -68,6 +73,7 @@ public class EnterpriseController {
         return new ResponseEntity<>(enterpriseDtos, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get Enterprises within Radius", notes = "Retrieves enterprises within the given radius from a geographical point")
     @GetMapping("/within-radius")
     public ResponseEntity<List<EnterpriseDto>> getObjectsWithinRadius(@RequestParam double lat, @RequestParam double lng, @RequestParam double radius) {
         List<Enterprise> enterprises = enterpriseService.getEnterprisesWithinRadius(lat, lng, radius);
@@ -81,6 +87,7 @@ public class EnterpriseController {
      * @param token the token
      * @return the enterprise by user
      */
+    @ApiOperation(value = "Get Enterprise by User", notes = "Retrieves the enterprise associated with the user")
     @GetMapping("/user")
     public ResponseEntity<EnterpriseDto> getEnterpriseByUser(@RequestHeader("Authorization") String token) {
         Enterprise enterprise = enterpriseService.getEnterpriseByUser(token);
@@ -94,6 +101,7 @@ public class EnterpriseController {
      * @param email the email
      * @return the enterprise by email
      */
+    @ApiOperation(value = "Get Enterprise by Email", notes = "Retrieves the enterprise based on the provided email")
     @GetMapping("/email")
     public ResponseEntity<EnterpriseDto> getEnterpriseByEmail(@RequestParam String email) {
         Enterprise enterprise = enterpriseService.getEnterpriseByEmail(email);
@@ -107,6 +115,7 @@ public class EnterpriseController {
      * @param id the id
      * @return the enterprise by id
      */
+    @ApiOperation(value = "Get Enterprise by ID", notes = "Retrieves the enterprise by its ID")
     @GetMapping("/{id}")
     public ResponseEntity<EnterpriseDto> getEnterpriseById(@PathVariable long id) {
         Enterprise enterprise = enterpriseService.getEnterpriseById(id);
@@ -122,6 +131,7 @@ public class EnterpriseController {
      * @param token                the token
      * @return the response entity
      */
+    @ApiOperation(value = "Update Enterprise", notes = "Updates the enterprise with the provided ID")
     @PutMapping("/{id}")
     public ResponseEntity<EnterpriseDto> updateEnterprise(
             @PathVariable long id,
@@ -149,6 +159,7 @@ public class EnterpriseController {
      * @param token         the token
      * @return the response entity
      */
+    @ApiOperation(value = "Patch Enterprise", notes = "Partially updates the enterprise associated with the user")
     @PatchMapping("/user")
     public ResponseEntity<EnterpriseDto> patchEnterprise(@RequestBody EnterpriseDto enterpriseDto,
                                                       @RequestHeader("Authorization") String token) {
@@ -169,6 +180,7 @@ public class EnterpriseController {
      * @param token the token
      * @return the response entity
      */
+    @ApiOperation(value = "Delete Enterprise", notes = "Deletes the enterprise by its ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEnterprise(@PathVariable long id,
                                                    @RequestHeader("Authorization") String token) {

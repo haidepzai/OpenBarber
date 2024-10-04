@@ -9,6 +9,8 @@ import com.hdmstuttgart.mi.backend.service.EnterpriseService;
 import com.hdmstuttgart.mi.backend.service.JwtService;
 import com.hdmstuttgart.mi.backend.service.ServiceService;
 import com.hdmstuttgart.mi.backend.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 /**
  * The type Service controller.
  */
+@Api(value = "Service Controller", description = "Operations related to Service", tags = "Service")
 @RestController
 @RequestMapping("/api/services")
 public class ServiceController {
@@ -54,6 +57,7 @@ public class ServiceController {
      * @param token        the token
      * @return the response entity
      */
+    @ApiOperation(value = "Create Service", notes = "Creates a new service for the given enterprise ID")
     @PostMapping
     public ResponseEntity<ServiceDto> createService(
             @Valid @RequestBody ServiceDto serviceDto,
@@ -84,6 +88,7 @@ public class ServiceController {
      * @param enterpriseId the enterprise id
      * @return the services by enterprise id
      */
+    @ApiOperation(value = "Get Services by Enterprise ID", notes = "Retrieves all services for a specific enterprise")
     @GetMapping
     public ResponseEntity<List<ServiceDto>> getServicesByEnterpriseId(@RequestParam Long enterpriseId) {
         List<ServiceDto> serviceDtos = serviceService.getServicesByEnterpriseId(enterpriseId)
@@ -100,6 +105,7 @@ public class ServiceController {
      * @param id the id
      * @return the service by id
      */
+    @ApiOperation(value = "Get Service by ID", notes = "Retrieves a specific service by its ID")
     @GetMapping("/{id}")
     public ResponseEntity<ServiceDto> getServiceById(@PathVariable long id) {
         Service service = serviceService.getServiceById(id);
@@ -116,6 +122,7 @@ public class ServiceController {
      * @param newServiceDto the new service dto
      * @return the response entity
      */
+    @ApiOperation(value = "Update Service", notes = "Updates an existing service by its ID")
     @PutMapping("/{id}")
     public ResponseEntity<ServiceDto> updateService(@PathVariable long id, @Valid @RequestBody ServiceDto newServiceDto) {
         // Convert the DTO to the entity
@@ -134,6 +141,7 @@ public class ServiceController {
      * @param token the token
      * @return the response entity
      */
+    @ApiOperation(value = "Delete Service", notes = "Deletes a service by its ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteService(@PathVariable long id, @RequestHeader("Authorization") String token) {
         serviceService.deleteService(id);

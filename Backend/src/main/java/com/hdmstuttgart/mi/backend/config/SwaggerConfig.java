@@ -33,14 +33,13 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
-                .apiInfo(apiInfo())
-                .pathMapping("/api");
+                .apiInfo(apiInfo());
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Your Application Name")
-                .description("API Documentation for Your Application")
+                .title("OpenBarber")
+                .description("API Documentation for OpenBarber")
                 .version("1.0")
                 .build();
     }

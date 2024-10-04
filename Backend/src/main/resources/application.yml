@@ -37,5 +37,10 @@ spring:
             enable: true
             required: true
 
+  data:
+    rest:
+      base-path: /api
+
 #  hateoas:
 #    use-hal-as-default-json-media-type: false
+
