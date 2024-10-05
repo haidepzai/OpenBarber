@@ -26,7 +26,7 @@ const ShopReview = ({ review }) => {
           <Typography variant="span" sx={{ fontWeight: 600 }}>
             {review.author}
           </Typography>
-          &nbsp;{t('WROTE')}.toLowerCase():
+          &nbsp;{t('WROTE')}:
         </Typography>
 
         <Typography variant="body1">{review.comment}</Typography>
