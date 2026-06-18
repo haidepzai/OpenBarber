@@ -5,6 +5,7 @@ import ErrorPage from './pages/ErrorPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
+import ErrorBoundary from './components/ErrorBoundary';
 import { useContext } from 'react';
 import LoginModal from './components/LoginModal/LoginModal';
 import { ThemeProvider } from '@mui/material/styles';
@@ -22,35 +23,37 @@ function App() {
   const signUpCtx = useContext(SignupContext);
 
   return (
-    <ThemeProvider theme={basicTheme}>
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="*" element={<ErrorPage />} />
-          <Route path="/" element={<LandingPage />} />
-          <Route path="shops/:routeId" element={<DetailPage />} />
-          <Route path="filter" element={<FilterPage />} />
-          <Route path="privacy-policy" element={<Datenschutz />} />
-          <Route path="scheduler" element={<SchedulerPage />} />
-          <Route path="edit" element={<EditEnterprisePage />} />
-          <Route path="appointment/:routeId" element={<AppointmentConfirmation/>}/>
-          <Route path="cancel-appointment/:routeId" element={<CancelAppointment/>}/>
-        </Routes>
-        <Footer />
-        {signUpCtx.loginVisible && (
-          <LoginModal
-            gotoSignup={(state) => {
-              signUpCtx.setSignupState(state);
-              signUpCtx.setActiveStep(state.activeStep);
-              signUpCtx.setCompletedSteps(state.completedSteps);
-              signUpCtx.setLoginVisible(false);
-              signUpCtx.setSignupVisible(true);
-            }}
-          />
-        )}
-        {signUpCtx.signupVisible && <SignupModal />}
-      </BrowserRouter>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider theme={basicTheme}>
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route path="*" element={<ErrorPage />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="shops/:routeId" element={<DetailPage />} />
+            <Route path="filter" element={<FilterPage />} />
+            <Route path="privacy-policy" element={<Datenschutz />} />
+            <Route path="scheduler" element={<SchedulerPage />} />
+            <Route path="edit" element={<EditEnterprisePage />} />
+            <Route path="appointment/:routeId" element={<AppointmentConfirmation/>}/>
+            <Route path="cancel-appointment/:routeId" element={<CancelAppointment/>}/>
+          </Routes>
+          <Footer />
+          {signUpCtx.loginVisible && (
+            <LoginModal
+              gotoSignup={(state) => {
+                signUpCtx.setSignupState(state);
+                signUpCtx.setActiveStep(state.activeStep);
+                signUpCtx.setCompletedSteps(state.completedSteps);
+                signUpCtx.setLoginVisible(false);
+                signUpCtx.setSignupVisible(true);
+              }}
+            />
+          )}
+          {signUpCtx.signupVisible && <SignupModal />}
+        </BrowserRouter>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

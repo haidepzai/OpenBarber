@@ -17,14 +17,15 @@ const ShopDetailView = ({ shop }) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    axios
-      .get('http://localhost:8080/api/reviews?enterpriseId=' + shop.id)
-      .then((res) => {
+    const loadReviews = async () => {
+      try {
+        const res = await axios.get('http://localhost:8080/api/reviews?enterpriseId=' + shop.id);
         setReviews(res.data);
-      })
-      .catch((err) => {
-        console.error('review request failed', err);
-      });
+      } catch (error) {
+        setReviews([]);
+      }
+    };
+    loadReviews();
   }, [shop.id]);
 
   return (
