@@ -135,12 +135,12 @@ public class AppointmentController {
      * Delete appointment response entity.
      *
      * @param id               the id
-     * @param confirmationCode the confirmation code
+     * @param confirmationCode the confirmation code (optional, for customer deletion)
      * @return the response entity
      */
-    @ApiOperation(value = "Delete Appointment", notes = "Deletes an appointment by its ID and confirmation code")
+    @ApiOperation(value = "Delete Appointment", notes = "Deletes an appointment by its ID. Confirmation code is optional for internal use.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteAppointment(@PathVariable long id, @RequestParam String confirmationCode) {
+    public ResponseEntity<String> deleteAppointment(@PathVariable long id, @RequestParam(required = false) String confirmationCode) {
         appointmentService.deleteAppointment(id, confirmationCode);
         return new ResponseEntity<>("Appointment deleted with id = " + id, HttpStatus.NO_CONTENT);
     }

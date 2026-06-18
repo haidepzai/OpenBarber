@@ -32,6 +32,12 @@ export const reviewsAPI = {
   create: (enterpriseId, data) => apiClient.post(API_ENDPOINTS.REVIEWS_CREATE(enterpriseId), data),
 };
 
+// Enterprises API
+export const enterprisesAPI = {
+  getByUser: () => apiClient.get(API_ENDPOINTS.ENTERPRISES_BY_USER, { headers: getAuthHeader() }),
+  getById: (id) => apiClient.get(API_ENDPOINTS.ENTERPRISE_DETAIL(id), { headers: getAuthHeader() }),
+};
+
 // Services API
 export const servicesAPI = {
   getByEnterprise: (enterpriseId) => apiClient.get(API_ENDPOINTS.SERVICES(enterpriseId)),
@@ -42,10 +48,10 @@ export const servicesAPI = {
 
 // Appointments API
 export const appointmentsAPI = {
-  getByEnterprise: (enterpriseId) => apiClient.get(API_ENDPOINTS.APPOINTMENTS(enterpriseId)),
-  cancel: (id, code) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CANCEL(id, code)),
-  confirm: (id, code) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CONFIRM(id, code)),
-  create: (enterpriseId, data) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CREATE(enterpriseId), data),
+  getByEnterprise: (enterpriseId) => apiClient.get(API_ENDPOINTS.APPOINTMENTS(enterpriseId), { headers: getAuthHeader() }),
+  cancel: (id, code) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CANCEL(id, code), {}, { headers: getAuthHeader() }),
+  confirm: (id, code) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CONFIRM(id, code), {}, { headers: getAuthHeader() }),
+  create: (enterpriseId, data) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CREATE(enterpriseId), data, { headers: getAuthHeader() }),
   update: (id, data) => apiClient.put(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), data, { headers: getAuthHeader() }),
   patch: (id, data) => apiClient.patch(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), data, { headers: getAuthHeader() }),
   delete: (id) => apiClient.delete(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), { headers: getAuthHeader() }),

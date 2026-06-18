@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -74,7 +75,9 @@ public class AppointmentService {
                 .map(id -> serviceRepository.findById(id)
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found service with id = " + id)))
                 .collect(Collectors.toList());
-        //TODO validate appointments don't collide with each other (query time betweeen startTime and statTime + duration for all booked services)
+
+        checkTimeCollision(employeeId, appointment.getAppointmentDateTime(), services);
+
         appointment.setEnterprise(enterprise);
         appointment.setEmployee(employee);
         appointment.setServices(services);
@@ -87,6 +90,37 @@ public class AppointmentService {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
         return appointment;
+    }
+
+    /**
+     * Check if the employee has any time collision with existing appointments.
+     *
+     * @param employeeId the employee id
+     * @param startTime the appointment start time
+     * @param services the services booked (to calculate total duration)
+     * @throws ResponseStatusException if a time collision is detected
+     */
+    private void checkTimeCollision(Long employeeId, LocalDateTime startTime, List<Service> services) {
+        int totalDurationMin = services.stream()
+                .mapToInt(Service::getDurationInMin)
+                .sum();
+        LocalDateTime endTime = startTime.plusMinutes(totalDurationMin);
+
+        List<Appointment> confirmedAppointments = appointmentRepository.findByEmployeeIdAndConfirmedTrue(employeeId);
+
+        for (Appointment existing : confirmedAppointments) {
+            int existingDurationMin = existing.getServices().stream()
+                    .mapToInt(Service::getDurationInMin)
+                    .sum();
+            LocalDateTime existingEndTime = existing.getAppointmentDateTime().plusMinutes(existingDurationMin);
+
+            if (startTime.isBefore(existingEndTime) && endTime.isAfter(existing.getAppointmentDateTime())) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        "Employee has overlapping appointments. The selected time slot is not available."
+                );
+            }
+        }
     }
 
     /**
@@ -146,7 +180,7 @@ public class AppointmentService {
      */
     public Appointment getAppointmentById(long id) {
         return appointmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Appointment not found with id = " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment not found with id = " + id));
     }
 
     /**
@@ -209,14 +243,16 @@ public class AppointmentService {
      * Delete appointment.
      *
      * @param id               the id
-     * @param confirmationCode the confirmation code
+     * @param confirmationCode the confirmation code (optional, for customer deletion)
      */
     public void deleteAppointment(long id, String confirmationCode) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No appointment found with id = " + id));
 
-        if (!appointment.getConfirmationCode().toString().equals(confirmationCode)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not allowed to delete this appointment");
+        if (confirmationCode != null && !confirmationCode.isEmpty()) {
+            if (!appointment.getConfirmationCode().toString().equals(confirmationCode)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not allowed to delete this appointment");
+            }
         }
 
         appointmentRepository.deleteById(id);

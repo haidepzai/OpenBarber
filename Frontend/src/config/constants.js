@@ -21,11 +21,11 @@ const API_ENDPOINTS = {
   USER_INFO: `${BASE_URL}/users/info/`,
 
   // Enterprises
-  ENTERPRISES: `${BASE_URL}/enterprises`,
-  ENTERPRISES_BY_EMAIL: `${BASE_URL}/enterprises/email`,
-  ENTERPRISES_BY_USER: `${BASE_URL}/enterprises/user`,
-  ENTERPRISES_RADIUS: `${BASE_URL}/enterprises/within-radius`,
-  ENTERPRISE_DETAIL: (id) => `${BASE_URL}/enterprises/${id}`,
+  ENTERPRISES: `${BASE_URL}/api/enterprises`,
+  ENTERPRISES_BY_EMAIL: `${BASE_URL}/api/enterprises/email`,
+  ENTERPRISES_BY_USER: `${BASE_URL}/api/enterprises/user`,
+  ENTERPRISES_RADIUS: `${BASE_URL}/api/enterprises/within-radius`,
+  ENTERPRISE_DETAIL: (id) => `${BASE_URL}/api/enterprises/${id}`,
   ENTERPRISES_CREATE: `${BASE_URL}/api/enterprises`,
 
   // Appointments
@@ -48,10 +48,10 @@ const API_ENDPOINTS = {
   // Employees
   EMPLOYEES: `${BASE_URL}/api/employees`,
   EMPLOYEES_BY_ENTERPRISE: (enterpriseId) => `${BASE_URL}/api/employees?enterpriseId=${enterpriseId}`,
-  EMPLOYEE_BY_ID: (id) => `${BASE_URL}/employees/${id}`,
-  EMPLOYEE_CREATE: `${BASE_URL}/employees`,
-  EMPLOYEE_UPDATE: (id) => `${BASE_URL}/employees/${id}`,
-  EMPLOYEE_DELETE: (id) => `${BASE_URL}/employees/${id}`,
+  EMPLOYEE_BY_ID: (id) => `${BASE_URL}/api/employees/${id}`,
+  EMPLOYEE_CREATE: `${BASE_URL}/api/employees`,
+  EMPLOYEE_UPDATE: (id) => `${BASE_URL}/api/employees/${id}`,
+  EMPLOYEE_DELETE: (id) => `${BASE_URL}/api/employees/${id}`,
 };
 
 // Timeouts (in milliseconds)

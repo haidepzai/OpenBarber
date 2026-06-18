@@ -31,4 +31,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      * @return the optional
      */
     Optional<Appointment> findById(UUID id);
+
+    /**
+     * Find all confirmed appointments for an employee.
+     *
+     * @param employeeId the employee id
+     * @return list of confirmed appointments
+     */
+    List<Appointment> findByEmployeeIdAndConfirmedTrue(Long employeeId);
 }

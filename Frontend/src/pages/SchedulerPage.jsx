@@ -20,10 +20,8 @@ import {
 import { useEffect, useState } from 'react';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { FormGroup } from '@mui/material';
-import axios from 'axios';
-import { API_ENDPOINTS } from '../config/constants.js';
-import { appointmentsAPI } from '../api/apiClient.js';
+import { FormGroup, Snackbar, Alert } from '@mui/material';
+import { appointmentsAPI, employeesAPI, servicesAPI, enterprisesAPI } from '../api/apiClient.js';
 import EmployeeSelect from '../components/Scheduler/EmployeeSelect';
 import TimeTableCell from '../components/Scheduler/TimeTableCell';
 import DayScaleCell from '../components/Scheduler/DayScaleCell';
@@ -50,6 +48,19 @@ const SchedulerPage = () => {
   const [currentViewName, setCurrentViewName] = useState('Week');
   const [currentEmployee, setCurrentEmployee] = useState('');
   const [groupingMode, setGroupingMode] = useState(true);
+  const [snackMessage, setSnackMessage] = useState('');
+  const [snackSeverity, setSnackSeverity] = useState('success');
+  const [snackOpen, setSnackOpen] = useState(false);
+
+  const showSnack = (message, severity = 'error') => {
+    setSnackMessage(message);
+    setSnackSeverity(severity);
+    setSnackOpen(true);
+  };
+
+  const handleSnackClose = () => {
+    setSnackOpen(false);
+  };
 
   const filterAppointments = (appointments) => appointments.filter((appointment) => !currentEmployee || appointment.employee === currentEmployee);
 
@@ -80,25 +91,58 @@ const SchedulerPage = () => {
           title: added.title ? added.title : allServices.find((service) => service.id === added.services[0]).title,
         };
         data = [...data, newAppointment];
-        (async () => {
-          await appointmentsAPI.create(enterprise.id, newAppointment);
-        })();
+
+        appointmentsAPI
+          .create(enterprise.id, newAppointment)
+          .then(() => {
+            showSnack('Appointment created successfully', 'success');
+          })
+          .catch((err) => {
+            const errorMsg = err.response?.data?.message || 'Failed to create appointment';
+            showSnack(errorMsg, 'error');
+            setData((prevData) => prevData.filter((apt) => apt.id !== newAppointment.id));
+          });
       }
       if (changed) {
         const changedId = Number(Object.keys(changed)[0]);
         if (Object.keys(Object.values(changed)[0]).includes('customer')) {
           const newAppointment = changed[changedId];
           data = data.map((appointment) => (appointment.id === changedId ? newAppointment : appointment));
-          appointmentsAPI.update(changedId, newAppointment).catch((err) => console.log(err));
+          appointmentsAPI
+            .update(changedId, newAppointment)
+            .then(() => {
+              showSnack('Appointment updated successfully', 'success');
+            })
+            .catch((err) => {
+              const errorMsg = err.response?.data?.message || 'Failed to update appointment';
+              showSnack(errorMsg, 'error');
+            });
         } else {
           const newProps = changed[changedId];
           data = data.map((appointment) => (appointment.id === changedId ? { ...appointment, ...newProps } : appointment));
-          appointmentsAPI.patch(changedId, newProps).catch((err) => console.log(err));
+          appointmentsAPI
+            .patch(changedId, newProps)
+            .then(() => {
+              showSnack('Appointment updated successfully', 'success');
+            })
+            .catch((err) => {
+              const errorMsg = err.response?.data?.message || 'Failed to update appointment';
+              showSnack(errorMsg, 'error');
+            });
         }
       }
       if (deleted !== undefined) {
         data = data.filter((appointment) => appointment.id !== deleted);
-        appointmentsAPI.delete(deleted).catch((err) => console.log(err));
+        appointmentsAPI
+          .delete(deleted)
+          .then(() => {
+            showSnack('Appointment deleted successfully', 'success');
+          })
+          .catch((err) => {
+            const errorMsg = err.response?.data?.message || 'Failed to delete appointment';
+            showSnack(errorMsg, 'error');
+            setData((prevData) => [...prevData, prevState.find((apt) => apt.id === deleted)]);
+          });
       }
       return data;
     });
@@ -106,49 +150,48 @@ const SchedulerPage = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const tokenConfig = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-      };
+      try {
+        const enterpriseRes = await enterprisesAPI.getByUser();
+        const enterpriseData = enterpriseRes.data;
+        setEnterprise(enterpriseData);
 
-      let res = await axios.get(API_ENDPOINTS.ENTERPRISES_BY_USER, tokenConfig);
-      let enterprise = res.data;
-      setEnterprise(enterprise);
+        const [appointmentsRes, servicesRes, employeesRes] = await Promise.all([
+          appointmentsAPI.getByEnterprise(enterpriseData.id),
+          servicesAPI.getByEnterprise(enterpriseData.id),
+          employeesAPI.getByEnterprise(enterpriseData.id),
+        ]);
 
-      let appointments = [];
-      res = await axios.get(API_ENDPOINTS.APPOINTMENTS(enterprise.id), tokenConfig);
-      if (res.status === 200) appointments = res.data;
+        const appointments = appointmentsRes.data || [];
+        const services = servicesRes.data || [];
+        const employees = employeesRes.data || [];
 
-      let services = [];
-      res = await axios.get(API_ENDPOINTS.SERVICES(enterprise.id), tokenConfig);
-      if (res.status === 200) services = res.data;
+        const maped_appointments = appointments.map((appointment) => ({
+          ...appointment,
+          title: appointment.customerName,
+        }));
+        setData(maped_appointments);
+        setAllServices(services);
+        setAllEmployees(employees);
 
-      let employees = [];
-      res = await axios.get(API_ENDPOINTS.EMPLOYEES_BY_ENTERPRISE(enterprise.id), tokenConfig);
-      if (res.status === 200) employees = res.data;
-
-      const maped_appointments = appointments.map((appointment) => ({
-        ...appointment,
-        title: appointment.customerName,
-      }));
-      setData(maped_appointments);
-      setAllServices(services);
-      setAllEmployees(employees);
-
-      setResources([
-        {
-          ...initialResources[0],
-          instances: getEmployeeInstances(employees),
-        },
-        {
-          ...initialResources[1],
-          instances: getServiceInstances(services),
-        },
-      ]);
+        setResources([
+          {
+            ...initialResources[0],
+            instances: getEmployeeInstances(employees),
+          },
+          {
+            ...initialResources[1],
+            instances: getServiceInstances(services),
+          },
+        ]);
+      } catch (error) {
+        const errorMsg = error.response?.data?.message || 'Failed to load scheduler data';
+        showSnack(errorMsg, 'error');
+        console.error('Error loading scheduler data:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-    loadData().then(() => setLoading(false));
+    loadData();
   }, []);
 
   return (
@@ -210,6 +253,11 @@ const SchedulerPage = () => {
           </Scheduler>
         </Paper>
       )}
+      <Snackbar open={snackOpen} autoHideDuration={6000} onClose={handleSnackClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+        <Alert onClose={handleSnackClose} severity={snackSeverity} sx={{ width: '100%' }}>
+          {snackMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
