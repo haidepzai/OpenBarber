@@ -11,12 +11,17 @@ mjmlSecrets:
 
 spring:
 
+  sql:
+    init:
+      mode: always
+
   datasource:
     url: jdbc:postgresql://localhost:5432/openbarber
     username: postgres
     password: admin
 
   jpa:
+    defer-datasource-initialization: true
     show-sql: true  # Log each SQL query
     hibernate:
       ddl-auto: update  # DDL auto (schema change strategy)
@@ -43,4 +48,3 @@ spring:
 
 #  hateoas:
 #    use-hal-as-default-json-media-type: false
-

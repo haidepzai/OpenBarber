@@ -23,6 +23,10 @@ Furthermore, you can contact barbers, rate them and save them as favorites!
 
 Run `docker-compose -f docker-compose.yml up`
 
+Backend now includes automatic seed data (`Backend/src/main/resources/data.sql`) for local development.
+It creates sample barbershops, users, services, appointments and reviews on startup if they do not exist yet.
+Seed login password: `OpenBarber123!`
+
 If you get error ` /bin/sh: ./mvnw: /bin/sh^M: bad interpreter: No such file or directory `,
 open `mvnw` with an editor such as vim or vi.
 - `vim mvnw`
