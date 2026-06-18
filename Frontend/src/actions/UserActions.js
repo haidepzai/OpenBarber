@@ -1,10 +1,9 @@
-import axios from 'axios';
-import { makeRequest } from '../context/interceptor';
+import { usersAPI } from '../api/apiClient';
 
 export const getUserById = async (id) => {
   try {
-    const userResponse = await makeRequest(`${process.env.REACT_APP_BACKEND_URL}/users/${id}`);
-    return userResponse;
+    const userResponse = await usersAPI.getById(id);
+    return userResponse.data;
   } catch (err) {
     throw new Error('Could not get user');
   }
@@ -12,12 +11,7 @@ export const getUserById = async (id) => {
 
 export const updateUser = async (id, user) => {
   try {
-    const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/users/${id}`, JSON.stringify(user), {
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      },
-    });
+    const response = await usersAPI.update(id, user);
     return response;
   } catch (err) {
     throw new Error('Could not update user');
@@ -26,8 +20,8 @@ export const updateUser = async (id, user) => {
 
 export const getUserByToken = async () => {
   try {
-    const response = await makeRequest(`${process.env.REACT_APP_BACKEND_URL}/users/info/`);
-    return response;
+    const response = await usersAPI.getInfo();
+    return response.data;
   } catch (err) {
     throw new Error('Could not find user');
   }

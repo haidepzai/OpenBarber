@@ -31,6 +31,8 @@ import CircleIcon from '@mui/icons-material/Circle';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../config/constants.js';
+import { appointmentsAPI } from '../api/apiClient.js';
 
 /*
  *  Doppelklick auf Zelle --> Add
@@ -342,43 +344,27 @@ const SchedulerPage = () => {
         data = [...data, newAppointment];
 
         (async () => {
-          const customConfig = {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-          };
-
-          await axios.post('http://localhost:8080/api/appointments?enterpriseId=' + enterprise.id, newAppointment, customConfig);
+          await appointmentsAPI.create(enterprise.id, newAppointment);
         })();
       }
       // changed = { [key: string]: any }
       // key = appointment ID
       if (changed) {
         const changedId = Number(Object.keys(changed)[0]);
-        const changedUrl = `http://localhost:8080/api/appointments/${changedId}`;
         // falls User das "customer"-Objekt ändert
         if (Object.keys(Object.values(changed)[0]).includes('customer')) {
           // REPLACE
           const newAppointment = changed[changedId];
           data = data.map((appointment) => (appointment.id === changedId ? newAppointment : appointment));
-          axios
-            .put(changedUrl, JSON.stringify(newAppointment), {
-              headers: {
-                'Content-type': 'application/json',
-              },
-            })
+          appointmentsAPI
+            .update(changedId, newAppointment)
             .catch((err) => console.log(err));
         } else {
           // UPDATE
           const newProps = changed[changedId];
           data = data.map((appointment) => (appointment.id === changedId ? { ...appointment, ...newProps } : appointment));
-          axios
-            .patch(changedUrl, JSON.stringify(newProps), {
-              headers: {
-                'Content-type': 'application/json',
-              },
-            })
+          appointmentsAPI
+            .patch(changedId, newProps)
             .catch((err) => console.log(err));
         }
       }
@@ -386,7 +372,7 @@ const SchedulerPage = () => {
       // "!== undefined" da undefined ja auch 0 sein kann
       if (deleted !== undefined) {
         data = data.filter((appointment) => appointment.id !== deleted);
-        axios.delete(`http://localhost:8080/api/appointments/${deleted}`).catch((err) => console.log(err));
+        appointmentsAPI.delete(deleted).catch((err) => console.log(err));
       }
       return data;
     });
@@ -401,20 +387,20 @@ const SchedulerPage = () => {
         },
       };
 
-      let res = await axios.get('http://localhost:8080/api/enterprises/user', tokenConfig);
+      let res = await axios.get(API_ENDPOINTS.ENTERPRISES_BY_USER, tokenConfig);
       let enterprise = res.data;
       setEnterprise(enterprise);
 
       let appointments = [];
-      res = await axios.get('http://localhost:8080/api/appointments?enterpriseId=' + enterprise.id, tokenConfig);
+      res = await axios.get(API_ENDPOINTS.APPOINTMENTS(enterprise.id), tokenConfig);
       if (res.status === 200) appointments = res.data;
 
       let services = [];
-      res = await axios.get('http://localhost:8080/api/services?enterpriseId=' + enterprise.id, tokenConfig);
+      res = await axios.get(API_ENDPOINTS.SERVICES(enterprise.id), tokenConfig);
       if (res.status === 200) services = res.data;
 
       let employees = [];
-      res = await axios.get('http://localhost:8080/api/employees?enterpriseId=' + enterprise.id, tokenConfig);
+      res = await axios.get(API_ENDPOINTS.EMPLOYEES_BY_ENTERPRISE(enterprise.id), tokenConfig);
       if (res.status === 200) employees = res.data;
 
       console.log({ enterprise, appointments, services, employees });

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
 import { CheckCircleRounded } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import { reviewsAPI } from '../../api/apiClient';
 import ShopInfoCard from './ShopInfoCard';
 import ShopReview from './ShopReview';
-import axios from 'axios';
 import Review from '../../components/Review';
 
 const ShopDetailView = ({ shop }) => {
@@ -19,7 +19,7 @@ const ShopDetailView = ({ shop }) => {
   useEffect(() => {
     const loadReviews = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/reviews?enterpriseId=' + shop.id);
+        const res = await reviewsAPI.getByEnterprise(shop.id);
         setReviews(res.data);
       } catch (error) {
         setReviews([]);

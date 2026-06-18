@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { getUserByToken } from '../actions/UserActions';
-import { refreshToken } from './interceptor';
+import { API_ENDPOINTS } from '../config/constants';
 
 //Default Werte des Context (werden unten im Provider dann gesetzt)
 const AuthContext = React.createContext({
@@ -65,7 +65,7 @@ export const AuthContextProvider = (props) => {
   };
 
   const loginHandler = async (authRequest, customConfig) => {
-    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/authenticate`, authRequest, customConfig);
+    const response = await axios.post(API_ENDPOINTS.AUTH_LOGIN, authRequest, customConfig);
     let resObj = response.data;
     localStorage.setItem('accessToken', resObj.token);
     localStorage.setItem('refreshToken', resObj.refreshToken);
@@ -80,7 +80,7 @@ export const AuthContextProvider = (props) => {
 
   const signUpHandler = async (registerRequest, customConfig) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/register`, registerRequest, customConfig);
+      const response = await axios.post(API_ENDPOINTS.AUTH_REGISTER, registerRequest, customConfig);
       localStorage.setItem('accessToken', response.data.token);
       localStorage.setItem('refreshToken', response.data.refreshToken);
       return response;
@@ -90,7 +90,7 @@ export const AuthContextProvider = (props) => {
   };
 
   const verifyHandler = async (verifyRequest, customConfig) => {
-    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/verify`, verifyRequest, customConfig);
+    const response = await axios.post(API_ENDPOINTS.AUTH_VERIFY, verifyRequest, customConfig);
     setUserId(response.data.userId);
     setIsLoggedIn(true);
     return response;

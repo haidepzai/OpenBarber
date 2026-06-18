@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { API_ENDPOINTS } from '../config/constants';
 
 export const getEnterprises = async () => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/enterprises`);
+    const response = await fetch(API_ENDPOINTS.ENTERPRISES);
     const responseData = await response.json();
     return responseData;
   } catch (error) {
@@ -13,12 +14,12 @@ export const getEnterprises = async () => {
 export const getEnterprisesWithinRadius = async (lat, lng) => {
   try {
     const radius = 5;
-    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/enterprises/within-radius`, {
+    const response = await axios.get(API_ENDPOINTS.ENTERPRISES_RADIUS, {
       params: {
-        lat: lat,
-        lng: lng,
-        radius: radius
-      }
+        lat,
+        lng,
+        radius,
+      },
     });
     return response.data;
   } catch (error) {
@@ -28,8 +29,7 @@ export const getEnterprisesWithinRadius = async (lat, lng) => {
 
 export const getShop = async (id) => {
   try {
-    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/enterprises/` + id);
-
+    const response = await axios.get(API_ENDPOINTS.ENTERPRISE_DETAIL(id));
     return response.data;
   } catch (error) {
     throw new Error('Could not fetch enterprises');
@@ -39,10 +39,10 @@ export const getShop = async (id) => {
 export const getShopByEmail = async (email) => {
   const config = {
     method: 'GET',
-    params: { email: email },
+    params: { email },
   };
   try {
-    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/enterprises/email`, config);
+    const response = await axios.get(API_ENDPOINTS.ENTERPRISES_BY_EMAIL, config);
     return response.data;
   } catch (error) {
     throw new Error('Could not fetch enterprises');
@@ -57,8 +57,7 @@ export const getShopByUser = async () => {
     },
   };
   try {
-    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/enterprises/user`, config);
-
+    const response = await axios.get(API_ENDPOINTS.ENTERPRISES_BY_USER, config);
     return response.data;
   } catch (error) {
     throw new Error('Could not fetch enterprises');
@@ -67,7 +66,7 @@ export const getShopByUser = async () => {
 
 export const createEnterprise = async (createEnterpriseReq, customConfig) => {
   try {
-    const res = await axios.post('http://localhost:8080/api/enterprises', createEnterpriseReq, customConfig);
+    const res = await axios.post(API_ENDPOINTS.ENTERPRISES_CREATE, createEnterpriseReq, customConfig);
     return res;
   } catch (error) {
     throw new Error('Could not create Enterprise');

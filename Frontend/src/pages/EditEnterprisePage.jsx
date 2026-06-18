@@ -21,6 +21,7 @@ import { getShopByEmail } from '../actions/EnterpriseActions.js';
 import { getUserById } from '../actions/UserActions.js';
 import EditPersonalInfo from '../components/EditEnterprise/EditPersonalInfo.jsx';
 import { useTranslation } from 'react-i18next';
+import { API_ENDPOINTS } from '../config/constants.js';
 
 const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', 'PAYPAL'];
 const drinkOptions = ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'];
@@ -32,8 +33,6 @@ const EditEnterprisePage = () => {
   const authCtx = useContext(AuthContext);
 
   const { t } = useTranslation();
-
-  const enterpriseUrl = `${process.env.REACT_APP_BACKEND_URL}/enterprises/`;
 
   // PERSISTENCE METHODS
 
@@ -55,7 +54,7 @@ const EditEnterprisePage = () => {
 
   const saveEnterprise = async () => {
     console.log(enterprise);
-    await fetch(`${enterpriseUrl}${enterprise.id}`, {
+    await fetch(API_ENDPOINTS.ENTERPRISE_DETAIL(enterprise.id), {
       method: 'PUT',
       body: JSON.stringify(enterprise),
       headers: {
