@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import { Box, Divider, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import AuthContext from '../context/auth-context.js';
@@ -6,18 +6,25 @@ import { getShopByEmail } from '../actions/EnterpriseActions.js';
 import { getUserById } from '../actions/UserActions.js';
 import EditPersonalInfo from '../components/EditEnterprise/EditPersonalInfo.jsx';
 import { useTranslation } from 'react-i18next';
-import { API_ENDPOINTS } from '../config/constants.js';
 import PersonalInfoForm from '../components/EditEnterprise/PersonalInfoForm';
 import PictureUpload from '../components/EditEnterprise/PictureUpload';
 import FormActions from '../components/EditEnterprise/FormActions';
 import SnackbarManager from '../components/EditEnterprise/SnackbarManager';
 import ServiceTable from '../components/EditEnterprise/Service/ServiceTable.tsx';
 import EmployeeTable from '../components/EditEnterprise/Employee/EmployeeTable.tsx';
+import { saveEnterpriseData } from '../components/EditEnterprise/utils.js';
 
 const EditEnterprisePage = () => {
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saveCooldown, setSaveCooldown] = useState(false);
   const [enterprise, setEnterprise] = useState({});
-  const [snackPack, setSnackPack] = useState([]);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
+  const saveCooldownTimerRef = useRef(null);
 
   const authCtx = useContext(AuthContext);
   const { t } = useTranslation();
@@ -42,15 +49,25 @@ const EditEnterprisePage = () => {
   }, []);
 
   const saveEnterprise = async () => {
-    await fetch(API_ENDPOINTS.ENTERPRISE_DETAIL(enterprise.id), {
-      method: 'PUT',
-      body: JSON.stringify(enterprise),
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      },
-    });
-    handleSnackbarOpen(t('ENTERPRISE_CHANGES_SAVED'));
+    if (saving) {
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const savedEnterprise = await saveEnterpriseData(enterprise);
+      if (savedEnterprise) {
+        setEnterprise(savedEnterprise);
+        handleSnackbarOpen('Save successful', 'success');
+        setSaveCooldown(true);
+      } else {
+        handleSnackbarOpen('Could not save changes', 'error');
+      }
+    } catch (error) {
+      handleSnackbarOpen('Could not save changes', 'error');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const resetEnterprise = async () => {
@@ -105,9 +122,38 @@ const EditEnterprisePage = () => {
     });
   };
 
-  const handleSnackbarOpen = (message) => {
-    setSnackPack((prev) => [...prev, { message, key: new Date().getTime() }]);
+  const handleSnackbarOpen = (message, severity = 'success') => {
+    setSnackbar({
+      open: true,
+      message,
+      severity,
+    });
   };
+
+  const handleSnackbarClose = () => {
+    setSnackbar((prev) => ({
+      ...prev,
+      open: false,
+    }));
+  };
+
+  useEffect(() => {
+    if (!saveCooldown) {
+      return undefined;
+    }
+
+    saveCooldownTimerRef.current = window.setTimeout(() => {
+      setSaveCooldown(false);
+      saveCooldownTimerRef.current = null;
+    }, 5000);
+
+    return () => {
+      if (saveCooldownTimerRef.current) {
+        window.clearTimeout(saveCooldownTimerRef.current);
+        saveCooldownTimerRef.current = null;
+      }
+    };
+  }, [saveCooldown]);
 
   return (
     <>
@@ -164,13 +210,13 @@ const EditEnterprisePage = () => {
 
               <Divider orientation="horizontal" sx={{ m: '24px 0' }} />
 
-              <FormActions onReset={resetEnterprise} onSave={saveEnterprise} />
+              <FormActions onReset={resetEnterprise} onSave={saveEnterprise} saving={saving} disabled={saveCooldown} />
             </Paper>
 
             <EditPersonalInfo onLoadingUser={loadUser} onOpenSnackBar={handleSnackbarOpen} />
           </Box>
 
-          <SnackbarManager snackPack={snackPack} />
+          <SnackbarManager open={snackbar.open} message={snackbar.message} severity={snackbar.severity} onClose={handleSnackbarClose} />
         </>
       )}
     </>

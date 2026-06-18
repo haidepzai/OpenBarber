@@ -244,6 +244,7 @@ public class EnterpriseService {
                         List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
                         for (com.hdmstuttgart.mi.backend.model.Service serviceRequest : newEnterprise.getServices()) {
                             com.hdmstuttgart.mi.backend.model.Service service = new com.hdmstuttgart.mi.backend.model.Service();
+                            service.setId(serviceRequest.getId());
                             service.setTitle(serviceRequest.getTitle());
                             service.setPrice(serviceRequest.getPrice());
                             service.setTargetAudience(serviceRequest.getTargetAudience());
