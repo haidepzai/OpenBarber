@@ -53,16 +53,65 @@ const SchedulerPage = () => {
   const [snackOpen, setSnackOpen] = useState(false);
 
   const getTotalDuration = (services = []) => services.reduce((total, service) => total + Number(service?.durationInMin || 0), 0);
+  const normalizeId = (value) => (value === null || value === undefined || value === '' ? '' : String(value));
+  const resolveServiceId = (serviceValue) => {
+    if (serviceValue === null || serviceValue === undefined || serviceValue === '') {
+      return null;
+    }
+
+    if (typeof serviceValue === 'object') {
+      return serviceValue.id ?? serviceValue.value ?? serviceValue.serviceId ?? null;
+    }
+
+    const stringValue = String(serviceValue);
+    const asId = allServices.find((service) => normalizeId(service.id) === stringValue);
+    if (asId) {
+      return asId.id;
+    }
+
+    const asTitle = allServices.find((service) => normalizeId(service.title) === stringValue);
+    return asTitle ? asTitle.id : stringValue;
+  };
+
+  const normalizeServiceSelection = (services) => {
+    if (!services) {
+      return [];
+    }
+
+    const serviceList = Array.isArray(services) ? services : [services];
+    return serviceList.map(resolveServiceId).filter((serviceId) => serviceId !== null && serviceId !== '');
+  };
+  const parseDateTime = (value) => {
+    if (!value) {
+      return new Date();
+    }
+
+    if (value instanceof Date) {
+      return value;
+    }
+
+    if (Array.isArray(value)) {
+      const [year, month, day, hour = 0, minute = 0, second = 0, nano = 0] = value;
+      return new Date(year, month - 1, day, hour, minute, second, Math.floor(nano / 1000000));
+    }
+
+    if (typeof value === 'number') {
+      return new Date(value);
+    }
+
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+  };
 
   const mapAppointmentToScheduler = (appointment) => {
-    const startDate = appointment.appointmentDateTime ? new Date(appointment.appointmentDateTime) : new Date();
+    const startDate = parseDateTime(appointment.appointmentDateTime);
     const totalDuration = getTotalDuration(appointment.services);
     const endDate = new Date(startDate.getTime() + totalDuration * 60000);
 
     return {
       ...appointment,
-      employee: appointment.employeeId,
-      services: appointment.services || [],
+      employee: appointment.employeeId ?? appointment.employee?.id ?? '',
+      services: normalizeServiceSelection(appointment.services),
       startDate,
       endDate,
       title: appointment.customerName || 'Appointment',
@@ -79,9 +128,9 @@ const SchedulerPage = () => {
     customerName: [appointment.customer?.firstName, appointment.customer?.lastName].filter(Boolean).join(' ').trim(),
     customerPhoneNumber: appointment.customer?.phoneNumber || '',
     customerEmail: appointment.customer?.email || '',
-    appointmentDateTime: appointment.startDate instanceof Date ? appointment.startDate.toISOString() : new Date(appointment.startDate).toISOString(),
-    employee: { id: appointment.employee },
-    services: (appointment.services || []).map((serviceId) => ({ id: serviceId })),
+    appointmentDateTime: parseDateTime(appointment.startDate).toISOString(),
+    employeeId: appointment.employee?.id ?? appointment.employee ?? appointment.employeeId ?? '',
+    services: normalizeServiceSelection(appointment.services).map((serviceId) => ({ id: serviceId })),
     paymentMethods: appointment.paymentMethods || [],
     confirmed: appointment.confirmed || false,
   });
@@ -96,22 +145,69 @@ const SchedulerPage = () => {
     setSnackOpen(false);
   };
 
-  const filterAppointments = (appointments) => appointments.filter((appointment) => !currentEmployee || appointment.employee === currentEmployee);
+  const loadSchedulerData = async (showLoadingState = false) => {
+    if (showLoadingState) {
+      setLoading(true);
+    }
+
+    try {
+      const enterpriseRes = await enterprisesAPI.getByUser();
+      const enterpriseData = enterpriseRes.data;
+      setEnterprise(enterpriseData);
+
+      const [appointmentsRes, servicesRes, employeesRes] = await Promise.all([
+        appointmentsAPI.getByEnterprise(enterpriseData.id),
+        servicesAPI.getByEnterprise(enterpriseData.id),
+        employeesAPI.getByEnterprise(enterpriseData.id),
+      ]);
+
+      const appointments = appointmentsRes.data || [];
+      const services = servicesRes.data || [];
+      const employees = employeesRes.data || [];
+
+      setData(appointments.map(mapAppointmentToScheduler));
+      setAllServices(services);
+      setAllEmployees(employees);
+
+      setResources([
+        {
+          ...initialResources[0],
+          instances: getEmployeeInstances(employees),
+        },
+        {
+          ...initialResources[1],
+          instances: getServiceInstances(services),
+        },
+      ]);
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to load scheduler data';
+      showSnack(errorMsg, 'error');
+      console.error('Error loading scheduler data:', error);
+    } finally {
+      if (showLoadingState) {
+        setLoading(false);
+      }
+    }
+  };
+
+  const filterAppointments = (appointments) =>
+    appointments.filter((appointment) => !currentEmployee || normalizeId(appointment.employee) === normalizeId(currentEmployee));
 
   const changeCurrentEmployee = (newCurrentEmployee) => {
+    const normalizedEmployeeId = normalizeId(newCurrentEmployee);
     const newResources = resources.map((resource) => {
       if (resource.fieldName === 'employee') {
         return {
           ...resource,
-          instances: newCurrentEmployee
-            ? [getEmployeeInstances(allEmployees).find((e) => e.id === newCurrentEmployee)]
+          instances: normalizedEmployeeId
+            ? [getEmployeeInstances(allEmployees).find((e) => normalizeId(e.id) === normalizedEmployeeId)]
             : getEmployeeInstances(allEmployees),
         };
       } else {
         return resource;
       }
     });
-    setCurrentEmployee(newCurrentEmployee);
+    setCurrentEmployee(normalizedEmployeeId);
     setResources(newResources);
   };
 
@@ -119,9 +215,11 @@ const SchedulerPage = () => {
     setData((prevState) => {
       let data = prevState;
       if (added) {
+        const selectedServiceIds = normalizeServiceSelection(added.services ?? added.service ?? added.serviceId);
         const schedulerAppointment = {
           ...added,
-          title: added.title ? added.title : allServices.find((service) => service.id === added.services?.[0])?.title || 'Appointment',
+          services: selectedServiceIds,
+          title: added.title ? added.title : allServices.find((service) => normalizeId(service.id) === normalizeId(selectedServiceIds[0]))?.title || 'Appointment',
           customer: added.customer || {
             firstName: '',
             lastName: '',
@@ -193,45 +291,28 @@ const SchedulerPage = () => {
   };
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const enterpriseRes = await enterprisesAPI.getByUser();
-        const enterpriseData = enterpriseRes.data;
-        setEnterprise(enterpriseData);
+    loadSchedulerData(true);
+  }, []);
 
-        const [appointmentsRes, servicesRes, employeesRes] = await Promise.all([
-          appointmentsAPI.getByEnterprise(enterpriseData.id),
-          servicesAPI.getByEnterprise(enterpriseData.id),
-          employeesAPI.getByEnterprise(enterpriseData.id),
-        ]);
-
-        const appointments = appointmentsRes.data || [];
-        const services = servicesRes.data || [];
-        const employees = employeesRes.data || [];
-
-        setData(appointments.map(mapAppointmentToScheduler));
-        setAllServices(services);
-        setAllEmployees(employees);
-
-        setResources([
-          {
-            ...initialResources[0],
-            instances: getEmployeeInstances(employees),
-          },
-          {
-            ...initialResources[1],
-            instances: getServiceInstances(services),
-          },
-        ]);
-      } catch (error) {
-        const errorMsg = error.response?.data?.message || 'Failed to load scheduler data';
-        showSnack(errorMsg, 'error');
-        console.error('Error loading scheduler data:', error);
-      } finally {
-        setLoading(false);
+  useEffect(() => {
+    const refreshOnFocus = () => {
+      if (!document.hidden) {
+        loadSchedulerData(false);
       }
     };
-    loadData();
+
+    const refreshTimer = window.setInterval(() => {
+      loadSchedulerData(false);
+    }, 15000);
+
+    window.addEventListener('focus', refreshOnFocus);
+    document.addEventListener('visibilitychange', refreshOnFocus);
+
+    return () => {
+      window.clearInterval(refreshTimer);
+      window.removeEventListener('focus', refreshOnFocus);
+      document.removeEventListener('visibilitychange', refreshOnFocus);
+    };
   }, []);
 
   return (

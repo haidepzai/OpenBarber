@@ -36,6 +36,7 @@ const FilterResults = ({ filter }) => {
 
   const locationName = location.state?.loc ?? 'near your location';
 
+  const [isLoading, setIsLoading] = useState(true);
   const [shops, setShops] = useState([]);
   const [sortValue, setSortValue] = useState((location.state && location.state.sortValue) || 'Suggested');
   const [openModal, setOpenModal] = useState();
@@ -96,12 +97,15 @@ const FilterResults = ({ filter }) => {
   };
 
   const loadData = useCallback(async () => {
-    if (location.state.lat !== undefined && location.state.lng !== undefined) {
-      const shops = await getEnterprisesWithinRadius(location.state?.lat, location.state?.lng);
-      setShops(shops);
-    } else {
-      const shops = await getEnterprises();
-      setShops(shops);
+    setIsLoading(true);
+    try {
+      const hasCoordinates = location.state?.lat != null && location.state?.lng != null;
+      const shops = hasCoordinates ? await getEnterprisesWithinRadius(location.state.lat, location.state.lng) : await getEnterprises();
+      setShops(Array.isArray(shops) ? shops : []);
+    } catch (error) {
+      setShops([]);
+    } finally {
+      setIsLoading(false);
     }
   }, [location.state]);
 
@@ -136,12 +140,17 @@ const FilterResults = ({ filter }) => {
             </Select>
           </FormControl>
         </Stack>
-        {(shops.length === 0 || shops === undefined) && (
+        {isLoading && (
           <Stack alignItems="center" justifyContent="center" flexGrow="1">
             <CircularProgress />
           </Stack>
         )}
-        {shops.length !== 0 && (
+        {!isLoading && shops.length === 0 && (
+          <Stack alignItems="center" justifyContent="center" sx={{ py: 6 }}>
+            <Typography variant="body1">No barbers found</Typography>
+          </Stack>
+        )}
+        {!isLoading && shops.length !== 0 && (
           <>
             {shops
               .filter(filterFunction)

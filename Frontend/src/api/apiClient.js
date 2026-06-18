@@ -8,11 +8,27 @@ const createApiClient = () => {
 
   client.interceptors.response.use(
     (response) => response,
-    (error) => {
-      if (error.response?.status === 401) {
-        localStorage.removeItem('accessToken');
-        window.location.href = '/';
+    async (error) => {
+      const originalRequest = error.config;
+
+      if (error.response?.status === 401 && originalRequest && !originalRequest._retry && originalRequest.url !== API_ENDPOINTS.AUTH_REFRESH) {
+        originalRequest._retry = true;
+
+        try {
+          const accessToken = await refreshAccessToken();
+          originalRequest.headers = {
+            ...(originalRequest.headers || {}),
+            Authorization: `Bearer ${accessToken}`,
+          };
+          return client(originalRequest);
+        } catch (refreshError) {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          window.location.replace('/');
+          return Promise.reject(refreshError);
+        }
       }
+
       return Promise.reject(error);
     }
   );
@@ -21,10 +37,33 @@ const createApiClient = () => {
 };
 
 const apiClient = createApiClient();
+let refreshInFlight = null;
 
 const getAuthHeader = () => ({
   Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
 });
+
+const refreshAccessToken = async () => {
+  if (!refreshInFlight) {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      throw new Error('Missing refresh token');
+    }
+
+    refreshInFlight = axios
+      .post(API_ENDPOINTS.AUTH_REFRESH, { refreshToken })
+      .then((response) => {
+        localStorage.setItem('accessToken', response.data.token);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
+        return response.data.token;
+      })
+      .finally(() => {
+        refreshInFlight = null;
+      });
+  }
+
+  return refreshInFlight;
+};
 
 // Reviews API
 export const reviewsAPI = {

@@ -1,11 +1,15 @@
 package com.hdmstuttgart.mi.backend.mapper;
 
 import com.hdmstuttgart.mi.backend.model.Appointment;
+import com.hdmstuttgart.mi.backend.model.Employee;
+import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.Service;
 import com.hdmstuttgart.mi.backend.model.dto.AppointmentDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +38,14 @@ public class AppointmentMapper {
      * @return the appointment dto
      */
     public AppointmentDto appointmentToDto(Appointment appointment) {
-        return modelMapper.map(appointment, AppointmentDto.class);
+        AppointmentDto dto = modelMapper.map(appointment, AppointmentDto.class);
+        if (appointment.getEmployee() != null) {
+            dto.setEmployeeId(appointment.getEmployee().getId());
+        }
+        if (appointment.getEnterprise() != null) {
+            dto.setEnterpriseId(appointment.getEnterprise().getId());
+        }
+        return dto;
     }
 
     /**
@@ -56,6 +67,30 @@ public class AppointmentMapper {
      * @return the appointment
      */
     public Appointment dtoToAppointment(AppointmentDto appointmentDTO) {
-        return modelMapper.map(appointmentDTO, Appointment.class);
+        Appointment appointment = modelMapper.map(appointmentDTO, Appointment.class);
+
+        if (appointmentDTO.getEmployeeId() != null) {
+            Employee employee = new Employee();
+            employee.setId(appointmentDTO.getEmployeeId());
+            appointment.setEmployee(employee);
+        }
+
+        if (appointmentDTO.getEnterpriseId() != null) {
+            Enterprise enterprise = new Enterprise();
+            enterprise.setId(appointmentDTO.getEnterpriseId());
+            appointment.setEnterprise(enterprise);
+        }
+
+        if (appointmentDTO.getServices() != null) {
+            List<Service> services = new ArrayList<>();
+            for (Service serviceDto : appointmentDTO.getServices()) {
+                Service service = new Service();
+                service.setId(serviceDto.getId());
+                services.add(service);
+            }
+            appointment.setServices(services);
+        }
+
+        return appointment;
     }
 }

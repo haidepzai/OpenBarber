@@ -63,18 +63,18 @@ public class AppointmentService {
      * @return the appointment
      */
     public Appointment createAppointment(Appointment appointment, long enterpriseId) {
+        if (appointment.getEmployee() == null || appointment.getEmployee().getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Employee is mandatory");
+        }
         long employeeId = appointment.getEmployee().getId();
-        List<Long> serviceIds = appointment.getServices()
-                .stream().map(Service::getId)
-                .collect(Collectors.toList());
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found enterprise with id = " + enterpriseId));
+        List<Service> services = resolveServices(appointment.getServices(), enterprise);
+        if (services.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one service is mandatory");
+        }
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found employee with id = " + employeeId));
-        List<Service> services = serviceIds.stream()
-                .map(id -> serviceRepository.findById(id)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found service with id = " + id)))
-                .collect(Collectors.toList());
 
         checkTimeCollision(employeeId, appointment.getAppointmentDateTime(), services);
 
@@ -82,12 +82,12 @@ public class AppointmentService {
         appointment.setEmployee(employee);
         appointment.setServices(services);
         appointment.setConfirmationCode(UUID.randomUUID());
-        appointmentRepository.save(appointment);
+        appointment = appointmentRepository.save(appointment);
 
         try {
             emailSenderService.sendEmailWithTemplate(appointment, "appointment", appointment.getCustomerEmail());
         } catch (MessagingException | IOException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+            log.error("Failed to send appointment confirmation email for appointment {}", appointment.getId(), e);
         }
         return appointment;
     }
@@ -195,7 +195,7 @@ public class AppointmentService {
                 .map(appointment -> {
                     appointment.setEnterprise(newAppointment.getEnterprise());
                     appointment.setEmployee(newAppointment.getEmployee());
-                    appointment.setServices(newAppointment.getServices());
+                    appointment.setServices(resolveServices(newAppointment.getServices(), newAppointment.getEnterprise()));
                     appointment.setCustomerName(newAppointment.getCustomerName());
                     appointment.setCustomerPhoneNumber(newAppointment.getCustomerPhoneNumber());
                     appointment.setCustomerEmail(newAppointment.getCustomerEmail());
@@ -236,6 +236,34 @@ public class AppointmentService {
         }
 
         return appointmentRepository.save(existingAppointment);
+    }
+
+    private List<Service> resolveServices(List<Service> requestedServices, Enterprise enterprise) {
+        if (requestedServices == null || requestedServices.isEmpty()) {
+            return List.of();
+        }
+
+        List<Service> enterpriseServices = enterprise != null && enterprise.getServices() != null
+                ? enterprise.getServices()
+                : List.of();
+
+        return requestedServices.stream()
+                .map(requestedService -> {
+                    if (requestedService.getId() != null) {
+                        return serviceRepository.findById(requestedService.getId())
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found service with id = " + requestedService.getId()));
+                    }
+
+                    if (requestedService.getTitle() != null) {
+                        return enterpriseServices.stream()
+                                .filter(service -> requestedService.getTitle().equals(service.getTitle()))
+                                .findFirst()
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found service with title = " + requestedService.getTitle()));
+                    }
+
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Service must have an id or title");
+                })
+                .collect(Collectors.toList());
     }
 
 
