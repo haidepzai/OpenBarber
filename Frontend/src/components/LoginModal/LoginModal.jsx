@@ -200,7 +200,7 @@ const LoginModal = ({ gotoSignup }) => {
               </Typography>
               <Stack gap={2} mt={8} mb="auto">
                 <TextField
-                  label={t('COMPANY_EMAIL')}
+                  label={t('EMAIL_ADDRESS')}
                   required
                   ref={emailInputRef}
                   error={!emailIsValid || !loginIsFound}
