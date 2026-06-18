@@ -14,8 +14,7 @@ const emailReducer = (state, action) => {
   if (action.type === 'USER_INPUT') {
     let isValid = false;
 
-    let regEmail =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const regEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (regEmail.test(action.val)) {
       isValid = true;
     } else {

@@ -1,11 +1,10 @@
-import React, { Fragment, useContext, useReducer, useState } from 'react';
+import React, { Fragment, useContext, useReducer } from 'react';
 import { Stack, TextField, Typography, Button, CircularProgress } from '@mui/material';
 import { SignupContext } from '../../../context/Signup.context';
 import AuthContext from '../../../context/auth-context';
 import { useTranslation } from 'react-i18next';
 
-const emailRegex =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const initialState = {
   enteredEmail: '',

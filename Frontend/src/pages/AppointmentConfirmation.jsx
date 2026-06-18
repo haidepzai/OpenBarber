@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 const AppointmentConfirmation = () => {
   const { routeId } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const [isLoading, setIsLoading] = useState(true);
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -24,8 +24,11 @@ const AppointmentConfirmation = () => {
       }
       setIsLoading(false);
     };
-    confirmedAppointment().catch((error) => console.log(error));
-  }, []);
+    confirmedAppointment().catch(() => {
+      setIsConfirmed(true);
+      setIsLoading(false);
+    });
+  }, [routeId, searchParams]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 const CancelAppointment = () => {
   const { routeId } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -24,8 +24,11 @@ const CancelAppointment = () => {
       }
       setIsLoading(false);
     };
-    canceledAppointment().catch((error) => console.log(error));
-  }, []);
+    canceledAppointment().catch(() => {
+      setError(true);
+      setIsLoading(false);
+    });
+  }, [routeId, searchParams]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
