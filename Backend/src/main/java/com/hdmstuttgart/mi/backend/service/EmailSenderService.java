@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -91,13 +93,31 @@ public class EmailSenderService {
      * @throws IOException the io exception
      */
     public void readMJMLTemplatesIntoMap() throws IOException {
-        File folder = new File("src/main/java/com/hdmstuttgart/mi/backend/templates");
-        File[] listOfFiles = folder.listFiles();
+        mjmlTemplateTexts.clear();
 
-        assert listOfFiles != null;
-        for (File listOfFile : listOfFiles) {
-            if (listOfFile.isFile()) {
-                mjmlTemplateTexts.put(listOfFile.getName().replaceAll(".mjml", ""), Files.readString(Path.of(listOfFile.getAbsolutePath()), StandardCharsets.UTF_8));
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources("classpath:/templates/*.mjml");
+
+        for (Resource resource : resources) {
+            if (resource.isReadable()) {
+                String fileName = resource.getFilename();
+                if (fileName != null) {
+                    String templateName = fileName.replace(".mjml", "");
+                    mjmlTemplateTexts.put(templateName, new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
+                }
+            }
+        }
+
+        if (mjmlTemplateTexts.isEmpty()) {
+            File folder = new File("src/main/java/com/hdmstuttgart/mi/backend/templates");
+            File[] listOfFiles = folder.listFiles();
+            if (listOfFiles == null) {
+                throw new IOException("No MJML templates found on the classpath or in src/main/java/com/hdmstuttgart/mi/backend/templates");
+            }
+            for (File listOfFile : listOfFiles) {
+                if (listOfFile.isFile()) {
+                    mjmlTemplateTexts.put(listOfFile.getName().replaceAll(".mjml", ""), Files.readString(Path.of(listOfFile.getAbsolutePath()), StandardCharsets.UTF_8));
+                }
             }
         }
     }
@@ -112,7 +132,11 @@ public class EmailSenderService {
     public void insertDataIntoTemplate(String templateName, String emailAddress) throws IOException {
         readMJMLTemplatesIntoMap();
         User user = userRepository.findByEmail(emailAddress).orElseThrow();
-        String preparedText = mjmlTemplateTexts.get(templateName).replace("blank_verificationCode", user.getConfirmationCode())
+        String template = mjmlTemplateTexts.get(templateName);
+        if (template == null) {
+            throw new IOException("MJML template not found: " + templateName);
+        }
+        String preparedText = template.replace("blank_verificationCode", user.getConfirmationCode())
                 .replace("blank_ratingURL", "http://localhost:3000/rating/" + user.getConfirmationCode());
         mjmlTemplateTexts.put(templateName, preparedText);
     }
@@ -171,8 +195,11 @@ public class EmailSenderService {
         String enterpriseName = enterprise.getName();
         String confirmationCode = appointment.getConfirmationCode().toString();
 
-
-        String preparedText = mjmlTemplateTexts.get(templateName)
+        String template = mjmlTemplateTexts.get(templateName);
+        if (template == null) {
+            throw new IOException("MJML template not found: " + templateName);
+        }
+        String preparedText = template
                 .replace("blank_enterpriseName", enterpriseName)
                 .replace("blank_username", customerName)
                 .replace("blank_stylist", employeeName)

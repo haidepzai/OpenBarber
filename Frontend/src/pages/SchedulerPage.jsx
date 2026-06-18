@@ -52,6 +52,40 @@ const SchedulerPage = () => {
   const [snackSeverity, setSnackSeverity] = useState('success');
   const [snackOpen, setSnackOpen] = useState(false);
 
+  const getTotalDuration = (services = []) => services.reduce((total, service) => total + Number(service?.durationInMin || 0), 0);
+
+  const mapAppointmentToScheduler = (appointment) => {
+    const startDate = appointment.appointmentDateTime ? new Date(appointment.appointmentDateTime) : new Date();
+    const totalDuration = getTotalDuration(appointment.services);
+    const endDate = new Date(startDate.getTime() + totalDuration * 60000);
+
+    return {
+      ...appointment,
+      employee: appointment.employeeId,
+      services: appointment.services || [],
+      startDate,
+      endDate,
+      title: appointment.customerName || 'Appointment',
+      customer: {
+        firstName: appointment.customerName || '',
+        lastName: '',
+        phoneNumber: appointment.customerPhoneNumber || '',
+        email: appointment.customerEmail || '',
+      },
+    };
+  };
+
+  const mapSchedulerToAppointment = (appointment) => ({
+    customerName: [appointment.customer?.firstName, appointment.customer?.lastName].filter(Boolean).join(' ').trim(),
+    customerPhoneNumber: appointment.customer?.phoneNumber || '',
+    customerEmail: appointment.customer?.email || '',
+    appointmentDateTime: appointment.startDate instanceof Date ? appointment.startDate.toISOString() : new Date(appointment.startDate).toISOString(),
+    employee: { id: appointment.employee },
+    services: (appointment.services || []).map((serviceId) => ({ id: serviceId })),
+    paymentMethods: appointment.paymentMethods || [],
+    confirmed: appointment.confirmed || false,
+  });
+
   const showSnack = (message, severity = 'error') => {
     setSnackMessage(message);
     setSnackSeverity(severity);
@@ -85,12 +119,18 @@ const SchedulerPage = () => {
     setData((prevState) => {
       let data = prevState;
       if (added) {
-        delete added.allDay;
-        const newAppointment = {
+        const schedulerAppointment = {
           ...added,
-          title: added.title ? added.title : allServices.find((service) => service.id === added.services[0]).title,
+          title: added.title ? added.title : allServices.find((service) => service.id === added.services?.[0])?.title || 'Appointment',
+          customer: added.customer || {
+            firstName: '',
+            lastName: '',
+            phoneNumber: '',
+            email: '',
+          },
         };
-        data = [...data, newAppointment];
+        const newAppointment = mapSchedulerToAppointment(schedulerAppointment);
+        data = [...data, schedulerAppointment];
 
         appointmentsAPI
           .create(enterprise.id, newAppointment)
@@ -106,8 +146,9 @@ const SchedulerPage = () => {
       if (changed) {
         const changedId = Number(Object.keys(changed)[0]);
         if (Object.keys(Object.values(changed)[0]).includes('customer')) {
-          const newAppointment = changed[changedId];
-          data = data.map((appointment) => (appointment.id === changedId ? newAppointment : appointment));
+          const schedulerAppointment = changed[changedId];
+          const newAppointment = mapSchedulerToAppointment(schedulerAppointment);
+          data = data.map((appointment) => (appointment.id === changedId ? schedulerAppointment : appointment));
           appointmentsAPI
             .update(changedId, newAppointment)
             .then(() => {
@@ -119,9 +160,12 @@ const SchedulerPage = () => {
             });
         } else {
           const newProps = changed[changedId];
-          data = data.map((appointment) => (appointment.id === changedId ? { ...appointment, ...newProps } : appointment));
+          const schedulerAppointment = data.find((appointment) => appointment.id === changedId);
+          const updatedSchedulerAppointment = schedulerAppointment ? { ...schedulerAppointment, ...newProps } : newProps;
+          const newAppointment = mapSchedulerToAppointment(updatedSchedulerAppointment);
+          data = data.map((appointment) => (appointment.id === changedId ? updatedSchedulerAppointment : appointment));
           appointmentsAPI
-            .patch(changedId, newProps)
+            .patch(changedId, newAppointment)
             .then(() => {
               showSnack('Appointment updated successfully', 'success');
             })
@@ -165,11 +209,7 @@ const SchedulerPage = () => {
         const services = servicesRes.data || [];
         const employees = employeesRes.data || [];
 
-        const maped_appointments = appointments.map((appointment) => ({
-          ...appointment,
-          title: appointment.customerName,
-        }));
-        setData(maped_appointments);
+        setData(appointments.map(mapAppointmentToScheduler));
         setAllServices(services);
         setAllEmployees(employees);
 

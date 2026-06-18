@@ -1,0 +1,74 @@
+<mjml>
+  <mj-head>
+    <mj-title>OpenBarber</mj-title>
+    <mj-preview>OpenBarber</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-all>
+      <mj-text font-weight="400" font-size="16px" color="#000000" line-height="24px" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-text>
+    </mj-attributes>
+    <mj-style inline="inline">
+      .body-section {
+      -webkit-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
+      -moz-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
+      box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
+      }
+    </mj-style>
+    <mj-style inline="inline">
+      .text-link {
+      color: #5e6ebf
+      }
+    </mj-style>
+    <mj-style inline="inline">
+      .footer-link {
+      color: #888888
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#E7E7E7" width="600px">
+    <mj-section full-width="full-width" background-color="#3B2D24" padding-bottom="0">
+      <mj-column width="100%">
+        <mj-image src="http://i.epvpimg.com/91j3gab.png" alt="" align="center" width="80px" />
+        <mj-text color="#ffffff" font-weight="bold" align="center" font-size="16px" letter-spacing="1px" padding-top="30px">
+          Confirm your Appointment!
+        </mj-text>
+        <mj-text color="#3CBAAD" align="center" font-size="13px" padding-top="0" font-weight="bold" text-transform="uppercase" letter-spacing="1px" line-height="20px">
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section full-width="full-width" background-color="#3B2D24" padding-bottom="0">
+      <mj-column width="100%" background-color="#FFF">
+        <mj-text>&nbsp</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-wrapper padding-top="0" padding-bottom="0" css-class="body-section">
+      <mj-section background-color="#ffffff" padding-left="15px" padding-right="15px">
+        <mj-column width="100%">
+          <mj-text color="#212b35" font-weight="bold" font-size="20px">
+            Hello blank_username
+          </mj-text>
+          <mj-text color="#212b35" font-weight="bold" font-size="18px">
+            Please confirm your appointment for blank_enterpriseName
+          </mj-text>
+          <mj-text color="#637381" font-size="16px">
+            Your stylist will be blank_stylist
+          </mj-text>
+          <mj-text color="#637381" font-size="16px">
+            Save the date!
+          </mj-text>
+          <mj-text color="#212b35" font-weight="bold" font-size="18px">
+            blank_appointmentDate
+          </mj-text>
+          <mj-button background-color="#3CBAAD" align="center" color="#ffffff" font-size="17px" font-weight="bold" href="blank_confirmUrl" width="300px">
+            Confirm your appointment now!
+          </mj-button>
+          <mj-text color="#212b35" font-weight="bold" font-size="18px">
+            Want to cancel your appointment?
+          </mj-text>
+          <mj-button background-color="#3CBAAD" align="center" color="#ffffff" font-size="17px" font-weight="bold" href="blank_cancelUrl" width="300px">
+            Cancel your appointment!
+          </mj-button>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+  </mj-body>
+</mjml>

@@ -3,22 +3,22 @@
  * All magic strings, URLs, timeouts, and constants go here.
  */
 
-const BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080';
+const BASE_URL = (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080').replace(/\/api\/?$/, '').replace(/\/$/, '');
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API || '';
 const GOOGLE_GEOCODE_URL = process.env.REACT_APP_GOOGLE_GEOCODE || '';
 
 // API Endpoints
 const API_ENDPOINTS = {
   // Auth
-  AUTH_LOGIN: `${BASE_URL}/auth/authenticate`,
-  AUTH_REGISTER: `${BASE_URL}/auth/register`,
-  AUTH_VERIFY: `${BASE_URL}/auth/verify`,
-  AUTH_REFRESH: `${BASE_URL}/auth/refresh`,
+  AUTH_LOGIN: `${BASE_URL}/api/auth/authenticate`,
+  AUTH_REGISTER: `${BASE_URL}/api/auth/register`,
+  AUTH_VERIFY: `${BASE_URL}/api/auth/verify`,
+  AUTH_REFRESH: `${BASE_URL}/api/auth/refresh`,
 
   // Users
-  USER_GET: (id) => `${BASE_URL}/users/${id}`,
-  USER_UPDATE: (id) => `${BASE_URL}/users/${id}`,
-  USER_INFO: `${BASE_URL}/users/info/`,
+  USER_GET: (id) => `${BASE_URL}/api/users/${id}`,
+  USER_UPDATE: (id) => `${BASE_URL}/api/users/${id}`,
+  USER_INFO: `${BASE_URL}/api/users/info/`,
 
   // Enterprises
   ENTERPRISES: `${BASE_URL}/api/enterprises`,

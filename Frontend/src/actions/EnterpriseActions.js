@@ -3,9 +3,8 @@ import { API_ENDPOINTS } from '../config/constants';
 
 export const getEnterprises = async () => {
   try {
-    const response = await fetch(API_ENDPOINTS.ENTERPRISES);
-    const responseData = await response.json();
-    return responseData;
+    const response = await axios.get(API_ENDPOINTS.ENTERPRISES);
+    return response.data;
   } catch (error) {
     throw new Error('Could not fetch enterprises');
   }

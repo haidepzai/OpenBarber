@@ -109,8 +109,10 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
       dispatch({ type: 'SET_NAME', payload: editedEmployee.name });
       dispatch({ type: 'SET_TITLE', payload: editedEmployee.title });
       dispatch({ type: 'SET_ID', payload: editedEmployee.id });
+    } else if (!open) {
+      dispatch({ type: 'RESET' });
     }
-  }, [editedEmployee.id, editedEmployee.name, editedEmployee.title, editingMode]);
+  }, [open, editedEmployee?.id, editedEmployee?.name, editedEmployee?.title, editingMode]);
 
   return (
     <>

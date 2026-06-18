@@ -24,25 +24,23 @@ const LandingPage = () => {
   const { t } = useTranslation();
 
   const loadData = useCallback(async () => {
-    const shopsData = await getEnterprises();
-    const promises = shopsData.map((shop) => {
-      return new Promise((resolve, reject) => {
-        reviewsAPI
-          .getByEnterprise(shop.id)
-          .then((res) => {
-            shop.reviews = res.data;
-            resolve(shop);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-    }, []);
+    try {
+      const shopsData = await getEnterprises();
+      const normalizedShops = Array.isArray(shopsData) ? shopsData : [];
 
-    let shops = await Promise.all(promises);
+      const shopsWithReviews = await Promise.all(
+        normalizedShops.map(async (shop) => {
+          const res = await reviewsAPI.getByEnterprise(shop.id);
+          return { ...shop, reviews: res.data };
+        })
+      );
 
-    setIsLoading(false);
-    setShops(shops);
+      setShops(shopsWithReviews);
+    } catch (error) {
+      setShops([]);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const rating = (shop) => {
