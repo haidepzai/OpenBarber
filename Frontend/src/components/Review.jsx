@@ -24,7 +24,6 @@ const Review = ({ shop, onReview }) => {
       await createReviewAuth(reviewRequest, shop.id);
       onReview(true);
     } catch (error) {
-      console.log(error.message);
       setErrorMessage('Please login to review');
     }
   };

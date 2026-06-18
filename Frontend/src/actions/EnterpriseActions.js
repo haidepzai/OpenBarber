@@ -22,7 +22,6 @@ export const getEnterprisesWithinRadius = async (lat, lng) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Could not fetch enterprises:', error);
     throw new Error('Could not fetch enterprises');
   }
 };

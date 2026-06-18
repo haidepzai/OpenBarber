@@ -110,7 +110,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
       dispatch({ type: 'SET_TITLE', payload: editedEmployee.title });
       dispatch({ type: 'SET_ID', payload: editedEmployee.id });
     }
-  }, []);
+  }, [editedEmployee.id, editedEmployee.name, editedEmployee.title, editingMode]);
 
   return (
     <>

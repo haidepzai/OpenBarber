@@ -125,7 +125,7 @@ const StyledWeekViewDayScaleCell = styled(WeekView.DayScaleCell)(({ theme }) => 
 }));
 
 const TimeTableCell = (props) => {
-  const { startDate, today } = props;
+  const { startDate } = props;
   const date = new Date(startDate);
 
   if (date.getDate() === new Date().getDate()) {
@@ -138,9 +138,9 @@ const TimeTableCell = (props) => {
 };
 
 const DayScaleCell = (props) => {
-  const { startDate, today } = props;
+  const { startDate } = props;
 
-  if (today) {
+  if (startDate.getDate() === new Date().getDate()) {
     return <StyledWeekViewDayScaleCell {...props} className={classes.today} />;
   }
   /*if (startDate.getDay() === 0 || startDate.getDay() === 6) {
@@ -219,25 +219,7 @@ const appointmentTooltipContentComponent = ({ children, appointmentData, appoint
   );
 };
 
-const draftAppointmentComponent = ({ children, style, ...restProps }) => (
-  <DragDropProvider.DraftAppointment
-    {...restProps}
-    style={{
-      ...style,
-      backgroundColor: '#6D5344',
-      transform: 'scale(1.1)',
-    }}
-  >
-    {children}
-  </DragDropProvider.DraftAppointment>
-);
-
-/* TODO: Abschicken blockieren wenn firstName leer ist ODER keine Services & kein Titel gesetzt ist, sonst Error */
 const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
-  useEffect(() => {
-    console.log(appointmentData);
-  }, [appointmentData]);
-
   const onCustomFieldChange = (field, nextValue) => {
     onFieldChange({
       ...appointmentData,
@@ -353,18 +335,13 @@ const SchedulerPage = () => {
       // added = { [key: string]: any }
       if (added) {
         delete added.allDay;
-        const newId = prevState.length > 0 ? prevState[prevState.length - 1].id + 1 : 0;
         const newAppointment = {
-          // id: newId,
           ...added,
           title: added.title ? added.title : allServices.find((service) => service.id === added.services[0]).title,
         };
-        console.log({ data, newAppointment });
         data = [...data, newAppointment];
-        console.log({ data, newAppointment });
 
         (async () => {
-          // form data config
           const customConfig = {
             headers: {
               'Content-Type': 'application/json',
@@ -372,8 +349,7 @@ const SchedulerPage = () => {
             },
           };
 
-          const res = await axios.post('http://localhost:8080/api/appointments?enterpriseId=' + enterprise.id, newAppointment, customConfig);
-          console.log(res);
+          await axios.post('http://localhost:8080/api/appointments?enterpriseId=' + enterprise.id, newAppointment, customConfig);
         })();
       }
       // changed = { [key: string]: any }

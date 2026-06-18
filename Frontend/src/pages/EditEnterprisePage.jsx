@@ -77,10 +77,6 @@ const EditEnterprisePage = () => {
       });
     });
 
-    for (var [key, value] of imageFormData.entries()) {
-      console.log(key, value);
-    }
-
     // TODO: send to backend + USER IMAGE UPLOAD...
 
     /*await fetch(enterpriseUrl, {
@@ -182,7 +178,7 @@ const EditEnterprisePage = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   return (
     <>
@@ -454,7 +450,7 @@ const EditEnterprisePage = () => {
                           />
                           <ImageListItemBar
                             sx={{
-                              background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' + 'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+                              background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
                             }}
                             /*title="Delete"*/
                             position="top"

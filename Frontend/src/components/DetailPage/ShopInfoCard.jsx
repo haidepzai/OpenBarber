@@ -25,18 +25,18 @@ const ShopInfoCard = ({ shop, mobile }) => {
       .then((res) => {
         setReviews(res.data);
       })
-      .catch((err) => {
-        console.error('review request failed', err);
+      .catch(() => {
+        setReviews([]);
       });
     axios
       .get('http://localhost:8080/api/services?enterpriseId=' + shop.id)
       .then((res) => {
         setServices(res.data);
       })
-      .catch((err) => {
-        console.error('review request failed', err);
+      .catch(() => {
+        setServices([]);
       });
-  }, []);
+  }, [shop.id]);
 
   const rating = () => {
     const sum = reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);

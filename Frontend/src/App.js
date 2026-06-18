@@ -40,7 +40,6 @@ function App() {
         {signUpCtx.loginVisible && (
           <LoginModal
             gotoSignup={(state) => {
-              console.log(state);
               signUpCtx.setSignupState(state);
               signUpCtx.setActiveStep(state.activeStep);
               signUpCtx.setCompletedSteps(state.completedSteps);

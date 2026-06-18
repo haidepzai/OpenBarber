@@ -15,7 +15,7 @@ require('dayjs/locale/de');
 const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error, setError, shopPaymentMethods }) => {
   const { t } = useTranslation();
 
-  const overview = useMemo(() => <Overview booked={false} data={data} handleStep={handleStep} />, []);
+  const overview = useMemo(() => <Overview booked={false} data={data} handleStep={handleStep} />, [data, handleStep]);
 
   const paymentMethods = {
     ON_SITE_CASH: t('ON_SITE_CASH'),

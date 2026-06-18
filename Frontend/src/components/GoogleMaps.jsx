@@ -8,10 +8,10 @@ const GoogleMaps = ({ lat = 48.783333, lng = 9.183333, height = '100%', width = 
 
   const center = useMemo(
     () => ({
-      lat: lat,
-      lng: lng,
+      lat,
+      lng,
     }),
-    []
+    [lat, lng]
   );
 
   return (

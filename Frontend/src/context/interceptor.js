@@ -79,9 +79,8 @@ const makeRequest = async (url, method = 'get', data = null) => {
 };
 
 const refreshToken = async () => {
-  const refreshToken = getRefreshToken();
-  const response = await axios.post('/auth/refresh', { refreshToken });
-  console.log(response);
+  const token = getRefreshToken();
+  const response = await axios.post('/auth/refresh', { refreshToken: token });
   return response;
 };
 

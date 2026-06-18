@@ -51,9 +51,6 @@ export const AuthContextProvider = (props) => {
 
   // wird immer zuerst aufgerufen, als aller erstes
   useEffect(() => {
-    const getRefreshToken = async () => {
-      await refreshToken();
-    };
     const authenticate = async () => {
       await checkForJWTToken();
     };
