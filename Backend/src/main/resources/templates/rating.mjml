@@ -36,9 +36,6 @@
       </mj-column>
     </mj-section>
     <mj-section full-width="full-width" background-color="#3B2D24" padding-bottom="0">
-      <mj-column width="100%" background-color="#FFF">
-        <mj-text>&nbsp</mj-text>
-      </mj-column>
     </mj-section>
     <mj-wrapper padding-top="0" padding-bottom="0" css-class="body-section">
       <mj-section background-color="#ffffff" padding-left="15px" padding-right="15px">
