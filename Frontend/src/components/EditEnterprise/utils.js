@@ -1,5 +1,6 @@
 import apiClient from '../../api/apiClient';
 import {API_ENDPOINTS} from '../../config/constants.js';
+import { getAccessToken } from '../../context/tokenStorage';
 
 const mapServiceForSave = (service) => ({
     id: service.id,
@@ -47,7 +48,7 @@ export const saveEnterpriseData = async (enterprise) => {
         const response = await apiClient.put(API_ENDPOINTS.ENTERPRISE_DETAIL(enterprise.id), payload, {
             headers: {
                 'Content-type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                Authorization: `Bearer ${getAccessToken()}`,
             },
         });
         if (response.status < 200 || response.status >= 300) throw new Error('Failed to save enterprise');

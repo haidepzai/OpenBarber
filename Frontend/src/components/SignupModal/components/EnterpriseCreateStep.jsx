@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { SignupContext } from '../../../context/Signup.context';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { createEnterprise } from '../../../actions/EnterpriseActions';
+import { getAccessToken } from '../../../context/tokenStorage';
 import { useTranslation } from 'react-i18next';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
@@ -73,7 +74,7 @@ const EnterpriseCreateStep = () => {
     const customConfig = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     };
 

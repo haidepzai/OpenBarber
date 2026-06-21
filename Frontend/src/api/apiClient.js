@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_ENDPOINTS, TIMEOUTS } from '../config/constants';
+import { clearTokens, getAccessToken, getRefreshToken, setAccessToken, setRefreshToken } from '../context/tokenStorage';
 
 const createApiClient = () => {
   const client = axios.create({
@@ -22,8 +23,7 @@ const createApiClient = () => {
           };
           return client(originalRequest);
         } catch (refreshError) {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
+          clearTokens();
           window.location.replace('/');
           return Promise.reject(refreshError);
         }
@@ -40,12 +40,12 @@ const apiClient = createApiClient();
 let refreshInFlight = null;
 
 const getAuthHeader = () => ({
-  Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+  Authorization: `Bearer ${getAccessToken()}`,
 });
 
 const refreshAccessToken = async () => {
   if (!refreshInFlight) {
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = getRefreshToken();
     if (!refreshToken) {
       throw new Error('Missing refresh token');
     }
@@ -53,8 +53,8 @@ const refreshAccessToken = async () => {
     refreshInFlight = axios
       .post(API_ENDPOINTS.AUTH_REFRESH, { refreshToken })
       .then((response) => {
-        localStorage.setItem('accessToken', response.data.token);
-        localStorage.setItem('refreshToken', response.data.refreshToken);
+        setAccessToken(response.data.token);
+        setRefreshToken(response.data.refreshToken);
         return response.data.token;
       })
       .finally(() => {

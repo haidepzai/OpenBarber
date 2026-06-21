@@ -21,8 +21,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${SECRET_KEY:28482B4D6251655468576D5A7134743777217A24432646294A404E635266556A}")
-    private static String SECRET_KEY = "28482B4D6251655468576D5A7134743777217A24432646294A404E635266556A";
+    @Value("${SECRET_KEY}")
+    private String SECRET_KEY;
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // 15 minutes in seconds
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 30 * 24 * 60 * 60; // 30 days in seconds
 

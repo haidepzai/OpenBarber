@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { getUserByToken } from '../actions/UserActions';
 import { API_ENDPOINTS } from '../config/constants';
+import { clearTokens, getRefreshToken, hasSession, setAccessToken, setRefreshToken } from './tokenStorage';
 
 //Default Werte des Context (werden unten im Provider dann gesetzt)
 const AuthContext = React.createContext({
@@ -29,24 +30,30 @@ export const AuthContextProvider = (props) => {
   const [user, setUser] = useState({});
 
   const deleteJWTTokenFromStorage = () => {
-    let token = localStorage.getItem('accessToken');
-    if (token) {
-      localStorage.removeItem('accessToken');
-    }
+    clearTokens();
   };
 
   const checkForJWTToken = async () => {
-    let token = localStorage.getItem('accessToken');
-    let refreshToken = localStorage.getItem('refreshToken');
-    if (token && refreshToken) {
+    if (!hasSession()) {
+      setIsLoggedIn(false);
+      return false;
+    }
+    try {
+      // Use refresh token to restore access token into memory after page reload
+      const refreshToken = getRefreshToken();
+      const response = await axios.post(API_ENDPOINTS.AUTH_REFRESH, { refreshToken });
+      setAccessToken(response.data.token);
+      setRefreshToken(response.data.refreshToken);
       const user = await getUserByToken();
       setUserId(user.id);
       setEmail(user.email);
       setIsLoggedIn(true);
       return true;
+    } catch {
+      clearTokens();
+      setIsLoggedIn(false);
+      return false;
     }
-    setIsLoggedIn(false);
-    return false;
   };
 
   // wird immer zuerst aufgerufen, als aller erstes
@@ -59,16 +66,15 @@ export const AuthContextProvider = (props) => {
   }, []);
 
   const logoutHandler = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    clearTokens();
     setIsLoggedIn(false);
   };
 
   const loginHandler = async (authRequest, customConfig) => {
     const response = await axios.post(API_ENDPOINTS.AUTH_LOGIN, authRequest, customConfig);
-    let resObj = response.data;
-    localStorage.setItem('accessToken', resObj.token);
-    localStorage.setItem('refreshToken', resObj.refreshToken);
+    const resObj = response.data;
+    setAccessToken(resObj.token);
+    setRefreshToken(resObj.refreshToken);
 
     setUserId(resObj.userId);
     if (resObj.verified) {
@@ -81,8 +87,8 @@ export const AuthContextProvider = (props) => {
   const signUpHandler = async (registerRequest, customConfig) => {
     try {
       const response = await axios.post(API_ENDPOINTS.AUTH_REGISTER, registerRequest, customConfig);
-      localStorage.setItem('accessToken', response.data.token);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
+      setAccessToken(response.data.token);
+      setRefreshToken(response.data.refreshToken);
       return response;
     } catch (error) {
       throw new Error(error);

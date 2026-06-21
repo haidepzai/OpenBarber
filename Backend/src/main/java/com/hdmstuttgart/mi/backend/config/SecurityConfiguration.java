@@ -3,7 +3,9 @@ package com.hdmstuttgart.mi.backend.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,42 +15,53 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-/**
- * The type Security configuration.
- */
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final RateLimitFilter rateLimitFilter;
 
-    /**
-     * Security filter chain security filter chain.
-     *
-     * @param http the http
-     * @return the security filter chain
-     * @throws Exception the exception
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors().and()
-                .csrf().disable()
-                .authorizeHttpRequests()
-                .antMatchers("/api/**/**")
-                .permitAll()
-                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .cors().and()
+            .csrf().disable()
+            .authorizeHttpRequests()
+            // Public auth endpoints
+            .antMatchers("/api/auth/**").permitAll()
+            // Swagger
+            .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
+            // Public read: enterprises, services, reviews
+            .antMatchers(HttpMethod.GET, "/api/enterprises", "/api/enterprises/{id}", "/api/enterprises/within-radius", "/api/enterprises/email").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/reviews").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/services").permitAll()
+            // Operator-only: manage own enterprise
+            .antMatchers(HttpMethod.POST, "/api/enterprises").hasAuthority("OPERATOR")
+            .antMatchers(HttpMethod.PUT, "/api/enterprises/**").hasAuthority("OPERATOR")
+            .antMatchers(HttpMethod.PATCH, "/api/enterprises/**").hasAuthority("OPERATOR")
+            .antMatchers(HttpMethod.DELETE, "/api/enterprises/**").hasAuthority("OPERATOR")
+            .antMatchers("/api/employees/**").hasAuthority("OPERATOR")
+            .antMatchers(HttpMethod.POST, "/api/services").hasAuthority("OPERATOR")
+            .antMatchers(HttpMethod.PUT, "/api/services/**").hasAuthority("OPERATOR")
+            .antMatchers(HttpMethod.DELETE, "/api/services/**").hasAuthority("OPERATOR")
+            // Appointments: operators manage, verified users can create/read
+            .antMatchers("/api/appointments/**").hasAnyAuthority("OPERATOR", "VERIFIED")
+            // User info: authenticated only
+            .antMatchers("/api/enterprises/user").authenticated()
+            .antMatchers("/api/users/**").authenticated()
+            // Catch-all: require authentication
+            .anyRequest().authenticated()
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -56,7 +69,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("http://localhost:3000");
+        configuration.addAllowedOriginPattern(System.getenv().getOrDefault("ALLOWED_ORIGIN", "http://localhost:3000"));
         configuration.addAllowedOriginPattern("http://127.0.0.1:3000");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");

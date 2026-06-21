@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react';
 import { SignupContext } from '../../../context/Signup.context';
 import AuthContext from '../../../context/auth-context';
 import { useTranslation } from 'react-i18next';
+import { getAccessToken } from '../../../context/tokenStorage';
 
 const EmailVerificationStep = () => {
   const {
@@ -32,7 +33,7 @@ const EmailVerificationStep = () => {
     const customConfig = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     };
     try {

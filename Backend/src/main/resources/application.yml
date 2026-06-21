@@ -16,15 +16,15 @@ spring:
       mode: always
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/openbarber
-    username: postgres
-    password: admin
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/openbarber}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
   jpa:
     defer-datasource-initialization: true
-    show-sql: true  # Log each SQL query
+    show-sql: false
     hibernate:
-      ddl-auto: update  # DDL auto (schema change strategy)
+      ddl-auto: ${DDL_AUTO:update}
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect

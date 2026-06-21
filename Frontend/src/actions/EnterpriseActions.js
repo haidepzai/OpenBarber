@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_ENDPOINTS } from '../config/constants';
+import { getAccessToken } from '../context/tokenStorage';
 
 export const getEnterprises = async () => {
   try {
@@ -52,7 +53,7 @@ export const getShopByUser = async () => {
   const config = {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      Authorization: `Bearer ${getAccessToken()}`,
     },
   };
   try {
