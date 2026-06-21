@@ -92,7 +92,7 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
 
   useEffect(() => {
     validate();
-  }, [service]);
+  }, [service, validate]);
 
   return (
     <>

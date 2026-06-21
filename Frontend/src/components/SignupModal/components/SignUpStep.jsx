@@ -1,11 +1,10 @@
-import React, { Fragment, useContext, useReducer, useState } from 'react';
+import React, { Fragment, useContext, useReducer } from 'react';
 import { Stack, TextField, Typography, Button, CircularProgress } from '@mui/material';
 import { SignupContext } from '../../../context/Signup.context';
 import AuthContext from '../../../context/auth-context';
 import { useTranslation } from 'react-i18next';
 
-const emailRegex =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const initialState = {
   enteredEmail: '',
@@ -68,7 +67,7 @@ const SignUpStep = () => {
   const { t } = useTranslation();
 
   const validEmail = () => emailRegex.test(state.enteredEmail);
-  const validPassword = () => state.enteredPassword.length >= 8;
+  const validPassword = () => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,128}$/.test(state.enteredPassword);
   const validConfirmPassword = () => state.enteredPassword === state.enteredConfirmPassWord;
 
   function onBlur(type) {
@@ -155,7 +154,7 @@ const SignUpStep = () => {
               type="password"
               value={state.enteredPassword}
               error={!state.passwordIsValid}
-              helperText={!state.passwordIsValid && 'Password must be at least 8 characters long'}
+              helperText={!state.passwordIsValid && 'Password must contain upper, lower, number, special char and be 8+ chars'}
               onChange={(e) => dispatch({ type: 'SET_ENTERED_PASSWORD', payload: e.target.value })}
               onBlur={() => onBlur('password')}
             />
@@ -178,7 +177,8 @@ const SignUpStep = () => {
               type="submit"
               disabled={
                 !(state.enteredEmail && state.enteredPassword && state.enteredConfirmPassWord) ||
-                state.enteredPassword.length < 8 ||
+                !validEmail() ||
+                !validPassword() ||
                 !state.passwordsMatch
               }
               variant="contained"

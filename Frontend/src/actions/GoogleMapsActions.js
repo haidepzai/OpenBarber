@@ -1,35 +1,34 @@
 // Get geocoordinates
 export const getGeocoordinates = async (place) => {
-  try {
-    const response = await fetch(`${process.env.REACT_APP_GOOGLE_GEOCODE}/json?address=${place}&key=${process.env.REACT_APP_GOOGLE_API}`);
-    console.log(`${process.env.REACT_APP_GOOGLE_GEOCODE}`);
-    if (!response.ok) {
-      throw new Error('Something went wrong');
-    }
-
-    const data = await response.json();
-    const lat = data.results[0].geometry.location.lat;
-    const lng = data.results[0].geometry.location.lng;
-    return data;
-  } catch (e) {
-    console.log(e);
+  const response = await fetch(
+    `${process.env.REACT_APP_GOOGLE_GEOCODE}/json?address=${encodeURIComponent(place)}&key=${process.env.REACT_APP_GOOGLE_API}`
+  );
+  if (!response.ok) {
+    throw new Error('Could not fetch geocoordinates');
   }
+
+  const data = await response.json();
+  if (!data.results?.length) {
+    throw new Error('No geocoordinates found for place');
+  }
+  return data;
 };
 
-export const getCurrentLocation = () => {
-  if (navigator.permissions && navigator.permissions.query) {
-    navigator.permissions.query({ name: 'geolocation' }).then((status) => {
-      if (status.state === 'granted' || status.state === 'prompt') {
-        navigator.geolocation.getCurrentPosition((position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-
-          console.log('lat: ' + lat, ' lng: ' + lng);
-          return position;
-        });
-      }
-    });
-  } else {
-    console.log(undefined);
+export const getCurrentLocation = async () => {
+  if (!navigator.geolocation) {
+    throw new Error('Geolocation is not supported');
   }
+
+  if (navigator.permissions && navigator.permissions.query) {
+    const status = await navigator.permissions.query({ name: 'geolocation' });
+    if (status.state !== 'granted' && status.state !== 'prompt') {
+      throw new Error('Geolocation permission denied');
+    }
+  }
+
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, (error) => {
+      reject(new Error(error.message || 'Could not get current location'));
+    });
+  });
 };

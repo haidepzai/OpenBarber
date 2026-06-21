@@ -9,6 +9,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,10 +82,11 @@ public class AppointmentController {
      */
     @ApiOperation(value = "Get Appointments by Enterprise ID", notes = "Fetches all appointments for the given enterprise ID")
     @GetMapping
-    public ResponseEntity<List<AppointmentDto>> getAppointmentsByEnterpriseId(@RequestParam Long enterpriseId) {
-        List<Appointment> appointments = appointmentService.getAppointmentsByEnterpriseId(enterpriseId);
-        List<AppointmentDto> appointmentDtos = appointmentMapper.appointmentToDtos(appointments);
-        return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
+    public ResponseEntity<Page<AppointmentDto>> getAppointmentsByEnterpriseId(
+            @RequestParam Long enterpriseId,
+            @PageableDefault(size = 500) Pageable pageable) {
+        Page<Appointment> page = appointmentService.getAppointmentsByEnterpriseId(enterpriseId, pageable);
+        return ResponseEntity.ok(page.map(appointmentMapper::appointmentToDto));
     }
 
     /**
@@ -135,12 +139,12 @@ public class AppointmentController {
      * Delete appointment response entity.
      *
      * @param id               the id
-     * @param confirmationCode the confirmation code
+     * @param confirmationCode the confirmation code (optional, for customer deletion)
      * @return the response entity
      */
-    @ApiOperation(value = "Delete Appointment", notes = "Deletes an appointment by its ID and confirmation code")
+    @ApiOperation(value = "Delete Appointment", notes = "Deletes an appointment by its ID. Confirmation code is optional for internal use.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteAppointment(@PathVariable long id, @RequestParam String confirmationCode) {
+    public ResponseEntity<String> deleteAppointment(@PathVariable long id, @RequestParam(required = false) String confirmationCode) {
         appointmentService.deleteAppointment(id, confirmationCode);
         return new ResponseEntity<>("Appointment deleted with id = " + id, HttpStatus.NO_CONTENT);
     }

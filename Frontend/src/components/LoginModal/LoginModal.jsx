@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
 import { SignupContext } from '../../context/Signup.context';
 import { useTranslation } from 'react-i18next';
+import ForgotPasswordModal from './ForgotPasswordModal';
 
 // Reducer um mehrere States zu handeln
 // Komplexere Update State Logik
@@ -14,8 +15,7 @@ const emailReducer = (state, action) => {
   if (action.type === 'USER_INPUT') {
     let isValid = false;
 
-    let regEmail =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const regEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (regEmail.test(action.val)) {
       isValid = true;
     } else {
@@ -43,6 +43,7 @@ const passwordReducer = (state, action) => {
 const LoginModal = ({ gotoSignup }) => {
   const [formIsValid, setFormIsValid] = useState(false);
   const [loginIsFound, setLoginIsFound] = useState(true);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const [emailState, dispatchEmail] = useReducer(emailReducer, {
     value: '',
@@ -157,6 +158,9 @@ const LoginModal = ({ gotoSignup }) => {
 
   return (
     <Fragment>
+      {showForgotPassword && (
+        <ForgotPasswordModal onBack={() => setShowForgotPassword(false)} />
+      )}
       {ReactDOM.createPortal(
         <form onSubmit={submitHandler}>
           <Box
@@ -201,7 +205,7 @@ const LoginModal = ({ gotoSignup }) => {
               </Typography>
               <Stack gap={2} mt={8} mb="auto">
                 <TextField
-                  label={t('COMPANY_EMAIL')}
+                  label={t('EMAIL_ADDRESS')}
                   required
                   ref={emailInputRef}
                   error={!emailIsValid || !loginIsFound}
@@ -223,6 +227,14 @@ const LoginModal = ({ gotoSignup }) => {
                   <Checkbox />
                   <Typography>{t('KEEP_LOGGED_IN')}</Typography>
                 </Stack>
+                <Button
+                  variant="text"
+                  size="small"
+                  sx={{ alignSelf: 'flex-start', textTransform: 'none', p: 0, color: 'text.secondary' }}
+                  onClick={() => setShowForgotPassword(true)}
+                >
+                  {t('FORGOT_PASSWORD')}
+                </Button>
               </Stack>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
                 <Button variant="outlined" size="large" sx={{ flexGrow: 1 }} onClick={handleSignUp}>

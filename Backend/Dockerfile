@@ -1,23 +1,22 @@
-# Use Java as the base image
-FROM openjdk:latest
+# Stage 1: Build
+FROM eclipse-temurin:17-jdk AS build
 
-# Create a working directory
 WORKDIR /app
 
-# Copy the project files into the image
-COPY . .
+COPY .mvn/ .mvn/
+COPY mvnw pom.xml ./
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 
-# Build all the dependencies in preparation to go offline.
-# This is a separate step so the dependencies will be cached unless
-# the pom.xml file has changed.
-RUN ./mvnw dependency:go-offline -B
-
-# Build the Spring Boot project
+COPY src ./src
 RUN ./mvnw package -DskipTests
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
-# Copy the jar file into the image
-COPY target/Backend-0.0.1-SNAPSHOT.jar .
+# Stage 2: Run
+FROM eclipse-temurin:17-jre
 
-# Start the server
-CMD ["java", "-jar", "Backend-0.0.1-SNAPSHOT.jar"]
+WORKDIR /app
+
+COPY --from=build /app/target/Backend-0.0.1-SNAPSHOT-exec.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

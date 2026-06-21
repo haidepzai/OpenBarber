@@ -1,8 +1,11 @@
-import { Box, TextField, Typography, Stack, Button } from '@mui/material';
+import { Box, TextField, Typography, Stack, Button, Alert } from '@mui/material';
 import React, { useContext, useState } from 'react';
+import axios from 'axios';
 import { SignupContext } from '../../../context/Signup.context';
 import AuthContext from '../../../context/auth-context';
 import { useTranslation } from 'react-i18next';
+import { getAccessToken } from '../../../context/tokenStorage';
+import { API_ENDPOINTS } from '../../../config/constants';
 
 const EmailVerificationStep = () => {
   const {
@@ -16,6 +19,9 @@ const EmailVerificationStep = () => {
   const authCtx = useContext(AuthContext);
 
   const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [resendSuccess, setResendSuccess] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
   const { t } = useTranslation();
 
@@ -23,21 +29,18 @@ const EmailVerificationStep = () => {
     e.preventDefault();
     if (!verificationCode || verificationCode.length !== 6) {
       setError(true);
+      return;
     }
 
-    const verifyRequest = {
-      confirmationCode: verificationCode,
-    };
-
+    const verifyRequest = { confirmationCode: verificationCode };
     const customConfig = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     };
     try {
       await authCtx.verifyHandler(verifyRequest, customConfig);
-
       setActiveStep(3);
       setCompletedSteps((cs) => {
         const res = [...cs];
@@ -45,9 +48,40 @@ const EmailVerificationStep = () => {
         res[3] = true;
         return res;
       });
-    } catch (error) {
+    } catch (err) {
       setError(true);
-      console.error(error);
+      const status = err?.response?.status;
+      if (status === 410) {
+        setErrorMsg(t('VERIFICATION_CODE_EXPIRED'));
+      } else if (status === 429) {
+        setErrorMsg(t('VERIFICATION_TOO_MANY_ATTEMPTS'));
+      } else {
+        setErrorMsg(t('VERIFICATION_CODE_INVALID'));
+      }
+    }
+  }
+
+  async function onResend() {
+    setResendLoading(true);
+    setResendSuccess(false);
+    setError(false);
+    setErrorMsg('');
+    try {
+      await axios.post(
+        API_ENDPOINTS.AUTH_RESEND_VERIFICATION,
+        {},
+        { headers: { Authorization: `Bearer ${getAccessToken()}` } }
+      );
+      setResendSuccess(true);
+    } catch (err) {
+      const status = err?.response?.status;
+      if (status === 429) {
+        setErrorMsg(t('RATE_LIMIT_EXCEEDED'));
+      } else {
+        setErrorMsg(t('RESEND_FAILED'));
+      }
+    } finally {
+      setResendLoading(false);
     }
   }
 
@@ -62,16 +96,23 @@ const EmailVerificationStep = () => {
           {email}
         </Box>
       </Typography>
+      <Typography variant="caption" color="textSecondary">
+        {t('VERIFICATION_CODE_EXPIRES_IN')}
+      </Typography>
+
+      {resendSuccess && <Alert severity="success">{t('VERIFICATION_RESENT')}</Alert>}
+      {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
       <TextField
         value={verificationCode}
         label={t('VERIFICATION_CODE')}
         variant="outlined"
         error={error}
-        helperText={error ? 'Please enter a valid code (6 digits)' : ''}
         autoComplete="off"
         onInput={(e) => {
           setData((d) => ({ ...d, verificationCode: e.target.value }));
+          setError(false);
+          setErrorMsg('');
         }}
         onBlur={() => {
           if (!verificationCode || verificationCode.length !== 6) {
@@ -82,13 +123,14 @@ const EmailVerificationStep = () => {
         }}
       />
 
+      <Button variant="text" size="small" onClick={onResend} disabled={resendLoading}>
+        {t('RESEND_VERIFICATION_CODE')}
+      </Button>
+
       <Stack direction="row" justifyContent="space-between" marginTop="auto" width="100%" gap={2}>
         <Button variant="outlined" onClick={close} tabIndex={-1}>
           {t('CANCEL')}
         </Button>
-        {/* <Button variant="outlined" onClick={() => setActiveStep(1)}>
-          Back
-        </Button> */}
         <Box flexGrow={1} />
         <Button
           type="submit"

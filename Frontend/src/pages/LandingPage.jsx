@@ -4,12 +4,12 @@ import MediaCard from '../components/CardComponent/MediaCard';
 import Search from '../layout/Search';
 import { Box, Typography } from '@mui/material';
 import MySwiper from '../layout/MySwiper';
-import axios from 'axios';
 import dayjs from 'dayjs';
 import ReservationDialog from '../components/Reservation/ReservationDialog';
 import { useNavigate } from 'react-router-dom';
 import { getEnterprises } from '../actions/EnterpriseActions';
 import { useTranslation } from 'react-i18next';
+import { reviewsAPI } from '../api/apiClient';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -24,25 +24,23 @@ const LandingPage = () => {
   const { t } = useTranslation();
 
   const loadData = useCallback(async () => {
-    const shopsData = await getEnterprises();
-    const promises = shopsData.map((shop) => {
-      return new Promise((resolve, reject) => {
-        axios
-          .get('http://localhost:8080/api/reviews?enterpriseId=' + shop.id)
-          .then((res) => {
-            shop.reviews = res.data;
-            resolve(shop);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-    }, []);
+    try {
+      const shopsData = await getEnterprises(0, 6);
+      const normalizedShops = Array.isArray(shopsData?.content) ? shopsData.content : [];
 
-    let shops = await Promise.all(promises);
+      const shopsWithReviews = await Promise.all(
+        normalizedShops.map(async (shop) => {
+          const res = await reviewsAPI.getByEnterprise(shop.id);
+          return { ...shop, reviews: res.data?.content ?? res.data ?? [] };
+        })
+      );
 
-    setIsLoading(false);
-    setShops(shops);
+      setShops(shopsWithReviews);
+    } catch (error) {
+      setShops([]);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const rating = (shop) => {
@@ -53,7 +51,7 @@ const LandingPage = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   return (
     <>

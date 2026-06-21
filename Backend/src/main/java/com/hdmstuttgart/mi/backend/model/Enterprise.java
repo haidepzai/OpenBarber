@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.net.URL;
@@ -79,14 +80,18 @@ public class Enterprise {
     private List<byte[]> pictures;
 
     @OneToMany(cascade=CascadeType.ALL, mappedBy = "enterprise")
+    @BatchSize(size = 50)
     private List<Service> services;
 
     @OneToMany(cascade=CascadeType.ALL, mappedBy = "enterprise")
+    @BatchSize(size = 50)
     private List<Employee> employees;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "enterprise")
+    @BatchSize(size = 50)
     private List<Appointment> appointments;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "enterprise")
+    @BatchSize(size = 50)
     private List<Review> reviews;
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -56,6 +57,7 @@ public class Appointment {
     @ElementCollection(targetClass = PaymentMethod.class)
     @CollectionTable(name = "appointment_payment_methods", joinColumns = @JoinColumn(name = "appointment_id"))
     @Enumerated(EnumType.STRING)
+    @BatchSize(size = 50)
     private Set<PaymentMethod> paymentMethods;
 
     @ManyToOne
@@ -73,6 +75,7 @@ public class Appointment {
             name = "appointment_service",
             joinColumns = @JoinColumn(name = "appointment_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id"))
+    @BatchSize(size = 50)
     private List<Service> services = new ArrayList<>();
 
     /**

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Box, Button, Rating, Tabs, Tab, Typography, Grid, Stack } from '@mui/material';
 import GoogleMaps from '../../components/GoogleMaps';
 import ReservationDialog from '../../components/Reservation/ReservationDialog';
@@ -7,6 +6,7 @@ import PhotoGallery from '../../components/Gallery/PhotoGallery';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { convertDateToTime } from '../../shared/ConvertTime';
 import { useTranslation } from 'react-i18next';
+import { reviewsAPI, servicesAPI } from '../../api/apiClient';
 
 const TabPanel = ({ children, value, index, ...props }) => (value === index ? <Box {...props}>{children}</Box> : null);
 
@@ -20,23 +20,21 @@ const ShopInfoCard = ({ shop, mobile }) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    axios
-      .get('http://localhost:8080/api/reviews?enterpriseId=' + shop.id)
-      .then((res) => {
-        setReviews(res.data);
-      })
-      .catch((err) => {
-        console.error('review request failed', err);
-      });
-    axios
-      .get('http://localhost:8080/api/services?enterpriseId=' + shop.id)
-      .then((res) => {
-        setServices(res.data);
-      })
-      .catch((err) => {
-        console.error('review request failed', err);
-      });
-  }, []);
+    const loadData = async () => {
+      try {
+        const [reviewsRes, servicesRes] = await Promise.all([
+          reviewsAPI.getByEnterprise(shop.id),
+          servicesAPI.getByEnterprise(shop.id),
+        ]);
+        setReviews(reviewsRes.data);
+        setServices(servicesRes.data);
+      } catch (error) {
+        setReviews([]);
+        setServices([]);
+      }
+    };
+    loadData();
+  }, [shop.id]);
 
   const rating = () => {
     const sum = reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);

@@ -5,18 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * The type Authentication request.
- */
+import javax.validation.constraints.*;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationRequest {
-
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
     private String email;
-    /**
-     * The Password.
-     */
-    String password;
+
+    @NotBlank(message = "Password is required")
+    private String password;
 }

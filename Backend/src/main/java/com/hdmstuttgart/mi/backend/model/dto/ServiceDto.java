@@ -24,6 +24,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class ServiceDto {
 
+    private Long id;
     private double price;
     private String title;
     private String description;

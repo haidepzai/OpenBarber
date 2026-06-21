@@ -29,7 +29,9 @@ public class ServiceMapper {
      * @return the service dto
      */
     public ServiceDto toDto(Service service) {
-        return modelMapper.map(service, ServiceDto.class);
+        ServiceDto dto = modelMapper.map(service, ServiceDto.class);
+        dto.setId(service.getId());
+        return dto;
     }
 
     /**
@@ -39,6 +41,8 @@ public class ServiceMapper {
      * @return the service
      */
     public Service toEntity(ServiceDto serviceDto) {
-        return modelMapper.map(serviceDto, Service.class);
+        Service service = modelMapper.map(serviceDto, Service.class);
+        service.setId(serviceDto.getId());
+        return service;
     }
 }

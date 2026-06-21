@@ -4,6 +4,8 @@ import com.hdmstuttgart.mi.backend.exception.UnauthorizedException;
 import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
 import com.hdmstuttgart.mi.backend.model.*;
 import com.hdmstuttgart.mi.backend.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -100,16 +102,11 @@ public class ReviewService {
      * @param enterpriseId the enterprise id
      * @return the reviews by enterprise id
      */
-    public List<Review> getReviewsByEnterpriseId(Long enterpriseId) {
+    public Page<Review> getReviewsByEnterpriseId(Long enterpriseId, Pageable pageable) {
         if (!enterpriseRepository.existsById(enterpriseId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
         }
-
-        List<Review> reviews = reviewRepository.findAllByEnterpriseId(enterpriseId);
-//        if (reviews.isEmpty()) {
-//            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No reviews found for enterprise with id = " + enterpriseId);
-//        }
-        return reviews;
+        return reviewRepository.findAllByEnterpriseId(enterpriseId, pageable);
     }
 
     /**

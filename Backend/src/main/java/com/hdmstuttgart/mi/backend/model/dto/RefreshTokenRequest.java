@@ -5,31 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * The type Refresh token request.
- */
+import javax.validation.constraints.NotBlank;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RefreshTokenRequest {
+    @NotBlank(message = "Refresh token is required")
     private String refreshToken;
-
-    /**
-     * Gets refresh token.
-     *
-     * @return the refresh token
-     */
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    /**
-     * Sets refresh token.
-     *
-     * @param refreshToken the refresh token
-     */
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }

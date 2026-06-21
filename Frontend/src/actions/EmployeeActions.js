@@ -1,14 +1,8 @@
-import axios from 'axios';
-
-const employeeUrl = `${process.env.REACT_APP_BACKEND_URL}/employees/`;
+import { employeesAPI } from '../api/apiClient';
 
 export const deleteEmployeeById = async (id) => {
   try {
-    const response = await axios.delete(`${employeeUrl}${id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      },
-    });
+    const response = await employeesAPI.delete(id);
     return response;
   } catch (err) {
     throw new Error('Could not delete employee');
@@ -16,15 +10,8 @@ export const deleteEmployeeById = async (id) => {
 };
 
 export const createEmployee = async (employee, enterpriseId) => {
-  const config = {
-    method: 'POST',
-    params: { enterpriseId: enterpriseId },
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-    },
-  };
   try {
-    const response = await axios.post(employeeUrl, employee, config);
+    const response = await employeesAPI.create(employee, enterpriseId);
     return response;
   } catch (err) {
     throw new Error('Could not create employee');
@@ -32,16 +19,10 @@ export const createEmployee = async (employee, enterpriseId) => {
 };
 
 export const updateStylist = async (id, employee) => {
-  const config = {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-    },
-  };
   try {
-    const response = await axios.put(`${employeeUrl}${id}`, employee, config);
+    const response = await employeesAPI.update(id, employee);
     return response;
   } catch (err) {
-    throw new Error('Could not delete employee');
+    throw new Error('Could not update employee');
   }
 };

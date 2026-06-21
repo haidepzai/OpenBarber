@@ -119,18 +119,15 @@ function ReservationDialog({ open, handleClose, shop }) {
       customerEmail: data.personalData.email,
       appointmentDateTime: isoDateTime,
       enterpriseId: shop.id,
-      employee: data.employee,
-      employeeId: data.employee.id,
-      services: data.services,
+      employeeId: data.employee?.id ?? data.employeeId,
+      services: data.services.map((service) => ({ id: service.id })),
       paymentMethod: data.paymentMethod,
     };
-    console.log(requestObject);
     try {
-      let res = await createAppointment(requestObject, shop.id);
+      const res = await createAppointment(requestObject, shop.id);
       setShowSuccessScreen(true);
-      console.log(res);
     } catch (error) {
-      console.log('Could not book');
+      console.error('Could not book', error);
     }
     authCtx.setIsLoading(false);
   };

@@ -46,8 +46,15 @@ function Search({ dateAndTime, setDateAndTime }) {
 
       navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc: loc, lat: lat, lng: lng } });
     } else {
-      const loc = getCurrentLocation();
-      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc: loc, lat: loc?.coords.latitude, lng: loc?.coords.longitude } });
+      const position = await getCurrentLocation();
+      navigate('/filter', {
+        state: {
+          dateAndTime: dateAndTime.toISOString(),
+          loc: `${position.coords.latitude},${position.coords.longitude}`,
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        },
+      });
     }
   };
 

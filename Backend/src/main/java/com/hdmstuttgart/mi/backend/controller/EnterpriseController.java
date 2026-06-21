@@ -10,6 +10,9 @@ import com.hdmstuttgart.mi.backend.service.JwtService;
 import com.hdmstuttgart.mi.backend.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,20 +68,20 @@ public class EnterpriseController {
      *
      * @return the all enterprises
      */
-    @ApiOperation(value = "Get All Enterprises", notes = "Retrieves a list of all enterprises")
+    @ApiOperation(value = "Get All Enterprises", notes = "Retrieves a paginated list of all enterprises")
     @GetMapping
-    public ResponseEntity<List<EnterpriseDto>> getAllEnterprises() {
-        List<Enterprise> enterprises = enterpriseService.getAllEnterprises();
-        List<EnterpriseDto> enterpriseDtos = enterpriseMapper.toDtos(enterprises);
-        return new ResponseEntity<>(enterpriseDtos, HttpStatus.OK);
+    public ResponseEntity<Page<EnterpriseDto>> getAllEnterprises(@PageableDefault(size = 12) Pageable pageable) {
+        Page<Enterprise> page = enterpriseService.getAllEnterprises(pageable);
+        return ResponseEntity.ok(page.map(enterpriseMapper::toDto));
     }
 
     @ApiOperation(value = "Get Enterprises within Radius", notes = "Retrieves enterprises within the given radius from a geographical point")
     @GetMapping("/within-radius")
-    public ResponseEntity<List<EnterpriseDto>> getObjectsWithinRadius(@RequestParam double lat, @RequestParam double lng, @RequestParam double radius) {
-        List<Enterprise> enterprises = enterpriseService.getEnterprisesWithinRadius(lat, lng, radius);
-        List<EnterpriseDto> enterpriseDtos = enterpriseMapper.toDtos(enterprises);
-        return new ResponseEntity<>(enterpriseDtos, HttpStatus.OK);
+    public ResponseEntity<Page<EnterpriseDto>> getObjectsWithinRadius(
+            @RequestParam double lat, @RequestParam double lng, @RequestParam double radius,
+            @PageableDefault(size = 12) Pageable pageable) {
+        Page<Enterprise> page = enterpriseService.getEnterprisesWithinRadius(lat, lng, radius, pageable);
+        return ResponseEntity.ok(page.map(enterpriseMapper::toDto));
     }
 
     /**

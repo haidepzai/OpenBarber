@@ -34,3 +34,5 @@ src/main/resources/.env
 
 ### VS Code ###
 .vscode/
+
+.env

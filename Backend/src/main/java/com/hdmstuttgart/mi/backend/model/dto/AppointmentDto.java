@@ -4,6 +4,7 @@ import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.Service;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class AppointmentDto {
     private String customerName;
     private String customerPhoneNumber;
     private String customerEmail;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDateTime appointmentDateTime;
     private Set<PaymentMethod> paymentMethods;
     private UUID confirmationCode;

@@ -11,6 +11,8 @@ import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -62,31 +65,64 @@ public class AppointmentService {
      * @return the appointment
      */
     public Appointment createAppointment(Appointment appointment, long enterpriseId) {
+        if (appointment.getEmployee() == null || appointment.getEmployee().getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Employee is mandatory");
+        }
         long employeeId = appointment.getEmployee().getId();
-        List<Long> serviceIds = appointment.getServices()
-                .stream().map(Service::getId)
-                .collect(Collectors.toList());
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found enterprise with id = " + enterpriseId));
+        List<Service> services = resolveServices(appointment.getServices(), enterprise);
+        if (services.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one service is mandatory");
+        }
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found employee with id = " + employeeId));
-        List<Service> services = serviceIds.stream()
-                .map(id -> serviceRepository.findById(id)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found service with id = " + id)))
-                .collect(Collectors.toList());
-        //TODO validate appointments don't collide with each other (query time betweeen startTime and statTime + duration for all booked services)
+
+        checkTimeCollision(employeeId, appointment.getAppointmentDateTime(), services);
+
         appointment.setEnterprise(enterprise);
         appointment.setEmployee(employee);
         appointment.setServices(services);
         appointment.setConfirmationCode(UUID.randomUUID());
-        appointmentRepository.save(appointment);
+        appointment = appointmentRepository.save(appointment);
 
         try {
             emailSenderService.sendEmailWithTemplate(appointment, "appointment", appointment.getCustomerEmail());
         } catch (MessagingException | IOException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+            log.error("Failed to send appointment confirmation email for appointment {}", appointment.getId(), e);
         }
         return appointment;
+    }
+
+    /**
+     * Check if the employee has any time collision with existing appointments.
+     *
+     * @param employeeId the employee id
+     * @param startTime the appointment start time
+     * @param services the services booked (to calculate total duration)
+     * @throws ResponseStatusException if a time collision is detected
+     */
+    private void checkTimeCollision(Long employeeId, LocalDateTime startTime, List<Service> services) {
+        int totalDurationMin = services.stream()
+                .mapToInt(Service::getDurationInMin)
+                .sum();
+        LocalDateTime endTime = startTime.plusMinutes(totalDurationMin);
+
+        List<Appointment> confirmedAppointments = appointmentRepository.findByEmployeeIdAndConfirmedTrue(employeeId);
+
+        for (Appointment existing : confirmedAppointments) {
+            int existingDurationMin = existing.getServices().stream()
+                    .mapToInt(Service::getDurationInMin)
+                    .sum();
+            LocalDateTime existingEndTime = existing.getAppointmentDateTime().plusMinutes(existingDurationMin);
+
+            if (startTime.isBefore(existingEndTime) && endTime.isAfter(existing.getAppointmentDateTime())) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        "Employee has overlapping appointments. The selected time slot is not available."
+                );
+            }
+        }
     }
 
     /**
@@ -126,16 +162,11 @@ public class AppointmentService {
      * @param enterpriseId the enterprise id
      * @return the appointments by enterprise id
      */
-    public List<Appointment> getAppointmentsByEnterpriseId(Long enterpriseId) {
+    public Page<Appointment> getAppointmentsByEnterpriseId(Long enterpriseId, Pageable pageable) {
         if (!enterpriseRepository.existsById(enterpriseId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
         }
-
-        List<Appointment> appointments = appointmentRepository.findAllByEnterpriseId(enterpriseId);
-        if (appointments.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No appointments found for enterprise with id = " + enterpriseId);
-        }
-        return appointments;
+        return appointmentRepository.findAllByEnterpriseId(enterpriseId, pageable);
     }
 
     /**
@@ -146,7 +177,7 @@ public class AppointmentService {
      */
     public Appointment getAppointmentById(long id) {
         return appointmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Appointment not found with id = " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment not found with id = " + id));
     }
 
     /**
@@ -161,7 +192,7 @@ public class AppointmentService {
                 .map(appointment -> {
                     appointment.setEnterprise(newAppointment.getEnterprise());
                     appointment.setEmployee(newAppointment.getEmployee());
-                    appointment.setServices(newAppointment.getServices());
+                    appointment.setServices(resolveServices(newAppointment.getServices(), newAppointment.getEnterprise()));
                     appointment.setCustomerName(newAppointment.getCustomerName());
                     appointment.setCustomerPhoneNumber(newAppointment.getCustomerPhoneNumber());
                     appointment.setCustomerEmail(newAppointment.getCustomerEmail());
@@ -204,19 +235,49 @@ public class AppointmentService {
         return appointmentRepository.save(existingAppointment);
     }
 
+    private List<Service> resolveServices(List<Service> requestedServices, Enterprise enterprise) {
+        if (requestedServices == null || requestedServices.isEmpty()) {
+            return List.of();
+        }
+
+        List<Service> enterpriseServices = enterprise != null && enterprise.getServices() != null
+                ? enterprise.getServices()
+                : List.of();
+
+        return requestedServices.stream()
+                .map(requestedService -> {
+                    if (requestedService.getId() != null) {
+                        return serviceRepository.findById(requestedService.getId())
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found service with id = " + requestedService.getId()));
+                    }
+
+                    if (requestedService.getTitle() != null) {
+                        return enterpriseServices.stream()
+                                .filter(service -> requestedService.getTitle().equals(service.getTitle()))
+                                .findFirst()
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found service with title = " + requestedService.getTitle()));
+                    }
+
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Service must have an id or title");
+                })
+                .collect(Collectors.toList());
+    }
+
 
     /**
      * Delete appointment.
      *
      * @param id               the id
-     * @param confirmationCode the confirmation code
+     * @param confirmationCode the confirmation code (optional, for customer deletion)
      */
     public void deleteAppointment(long id, String confirmationCode) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No appointment found with id = " + id));
 
-        if (!appointment.getConfirmationCode().toString().equals(confirmationCode)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not allowed to delete this appointment");
+        if (confirmationCode != null && !confirmationCode.isEmpty()) {
+            if (!appointment.getConfirmationCode().toString().equals(confirmationCode)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not allowed to delete this appointment");
+            }
         }
 
         appointmentRepository.deleteById(id);
