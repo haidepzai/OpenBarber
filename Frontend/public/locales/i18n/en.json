@@ -163,5 +163,17 @@
   "WROTE": "Wrote",
   "YOUR_COMMENT": "Your comment",
   "YOUR_COMMENTS": "Your comments",
-  "YOUR_NAME": "Your name"
+  "YOUR_NAME": "Your name",
+  "FORGOT_PASSWORD": "Forgot password?",
+  "FORGOT_PASSWORD_TITLE": "Reset your password",
+  "FORGOT_PASSWORD_DESC": "Enter your email address and we will send you a reset link.",
+  "FORGOT_PASSWORD_SENT": "Email sent! Please check your inbox.",
+  "FORGOT_PASSWORD_SEND": "Send reset link",
+  "RESET_PASSWORD_TITLE": "Set new password",
+  "RESET_PASSWORD_NEW": "New password",
+  "RESET_PASSWORD_CONFIRM": "Confirm password",
+  "RESET_PASSWORD_SUCCESS": "Password changed successfully! You can now log in.",
+  "RESET_PASSWORD_MISMATCH": "Passwords do not match",
+  "RESET_PASSWORD_INVALID": "Invalid or expired link",
+  "RESET_PASSWORD_SUBMIT": "Save password"
 }

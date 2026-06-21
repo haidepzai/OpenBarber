@@ -163,5 +163,17 @@
   "WROTE": "書いた",
   "YOUR_COMMENT": "あなたのコメント",
   "YOUR_COMMENTS": "あなたのコメント",
-  "YOUR_NAME": "あなたの名前"
+  "YOUR_NAME": "あなたの名前",
+  "FORGOT_PASSWORD": "パスワードをお忘れですか？",
+  "FORGOT_PASSWORD_TITLE": "パスワードをリセット",
+  "FORGOT_PASSWORD_DESC": "メールアドレスを入力してください。リセットリンクをお送りします。",
+  "FORGOT_PASSWORD_SENT": "メールを送信しました！受信トレイを確認してください。",
+  "FORGOT_PASSWORD_SEND": "リンクを送信",
+  "RESET_PASSWORD_TITLE": "新しいパスワードを設定",
+  "RESET_PASSWORD_NEW": "新しいパスワード",
+  "RESET_PASSWORD_CONFIRM": "パスワードを確認",
+  "RESET_PASSWORD_SUCCESS": "パスワードが正常に変更されました！",
+  "RESET_PASSWORD_MISMATCH": "パスワードが一致しません",
+  "RESET_PASSWORD_INVALID": "無効または期限切れのリンク",
+  "RESET_PASSWORD_SUBMIT": "パスワードを保存"
 }

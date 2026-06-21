@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
 import { SignupContext } from '../../context/Signup.context';
 import { useTranslation } from 'react-i18next';
+import ForgotPasswordModal from './ForgotPasswordModal';
 
 // Reducer um mehrere States zu handeln
 // Komplexere Update State Logik
@@ -42,6 +43,7 @@ const passwordReducer = (state, action) => {
 const LoginModal = ({ gotoSignup }) => {
   const [formIsValid, setFormIsValid] = useState(false);
   const [loginIsFound, setLoginIsFound] = useState(true);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const [emailState, dispatchEmail] = useReducer(emailReducer, {
     value: '',
@@ -156,6 +158,9 @@ const LoginModal = ({ gotoSignup }) => {
 
   return (
     <Fragment>
+      {showForgotPassword && (
+        <ForgotPasswordModal onBack={() => setShowForgotPassword(false)} />
+      )}
       {ReactDOM.createPortal(
         <form onSubmit={submitHandler}>
           <Box
@@ -222,6 +227,14 @@ const LoginModal = ({ gotoSignup }) => {
                   <Checkbox />
                   <Typography>{t('KEEP_LOGGED_IN')}</Typography>
                 </Stack>
+                <Button
+                  variant="text"
+                  size="small"
+                  sx={{ alignSelf: 'flex-start', textTransform: 'none', p: 0, color: 'text.secondary' }}
+                  onClick={() => setShowForgotPassword(true)}
+                >
+                  {t('FORGOT_PASSWORD')}
+                </Button>
               </Stack>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
                 <Button variant="outlined" size="large" sx={{ flexGrow: 1 }} onClick={handleSignUp}>

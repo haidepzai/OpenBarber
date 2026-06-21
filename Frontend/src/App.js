@@ -18,6 +18,7 @@ import EditEnterprisePage from './pages/EditEnterprisePage';
 import { SignupContext } from './context/Signup.context';
 import AppointmentConfirmation from './pages/AppointmentConfirmation';
 import CancelAppointment from './pages/CancelAppointment';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 function App() {
   const signUpCtx = useContext(SignupContext);
@@ -37,6 +38,7 @@ function App() {
             <Route path="edit" element={<EditEnterprisePage />} />
             <Route path="appointment/:routeId" element={<AppointmentConfirmation/>}/>
             <Route path="cancel-appointment/:routeId" element={<CancelAppointment/>}/>
+            <Route path="reset-password" element={<ResetPasswordPage/>}/>
           </Routes>
           <Footer />
           {signUpCtx.loginVisible && (

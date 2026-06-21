@@ -1,6 +1,9 @@
 .env:
   prefix: ""
 
+app:
+  frontend-url: ${APP_FRONTEND_URL:http://localhost:3000}
+
 mailCredentials:
   username: ${MAIL_USERNAME}
   password: ${MAIL_PASSWORD}

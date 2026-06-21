@@ -58,6 +58,8 @@ public class EmailSenderService {
 
     private final String appKey;
 
+    private final String frontendUrl;
+
     private final HashMap<String, String> mjmlTemplateTexts = new HashMap<>();
 
     /**
@@ -76,7 +78,8 @@ public class EmailSenderService {
                               EnterpriseRepository enterpriseRepository, MJMLClient mjmlClient,
                               @Value("${mjmlSecrets.appId}") String appId,
                               @Value("${mailCredentials.username}") String mailUsername,
-                              @Value("${mjmlSecrets.appKey}") String appKey) {
+                              @Value("${mjmlSecrets.appKey}") String appKey,
+                              @Value("${app.frontend-url}") String frontendUrl) {
         this.mailSender = mailSender;
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
@@ -85,6 +88,7 @@ public class EmailSenderService {
         this.appId = appId;
         this.mailUsername = mailUsername;
         this.appKey = appKey;
+        this.frontendUrl = frontendUrl;
     }
 
     /**
@@ -137,7 +141,7 @@ public class EmailSenderService {
             throw new IOException("MJML template not found: " + templateName);
         }
         String preparedText = template.replace("blank_verificationCode", user.getConfirmationCode())
-                .replace("blank_ratingURL", "http://localhost:3000/rating/" + user.getConfirmationCode());
+                .replace("blank_ratingURL", frontendUrl + "/rating/" + user.getConfirmationCode());
         mjmlTemplateTexts.put(templateName, preparedText);
     }
 
@@ -204,8 +208,8 @@ public class EmailSenderService {
                 .replace("blank_username", customerName)
                 .replace("blank_stylist", employeeName)
                 .replace("blank_appointmentDate", appointmentDate)
-                .replace("blank_confirmUrl", "http://localhost:3000/appointment/" + appointment.getId() + "?confirmationCode=" + confirmationCode)
-                .replace("blank_cancelUrl", "http://localhost:3000/cancel-appointment/" + appointment.getId() + "?confirmationCode=" + confirmationCode);
+                .replace("blank_confirmUrl", frontendUrl + "/appointment/" + appointment.getId() + "?confirmationCode=" + confirmationCode)
+                .replace("blank_cancelUrl", frontendUrl + "/cancel-appointment/" + appointment.getId() + "?confirmationCode=" + confirmationCode);
 
         mjmlTemplateTexts.put(templateName, preparedText);
     }
@@ -246,5 +250,32 @@ public class EmailSenderService {
 
         mailSender.send(mimeMessage);
         log.debug("Mail sent successfully ... ");
+    }
+
+    public void sendPasswordResetEmail(String email, String token) throws MessagingException, IOException {
+        readMJMLTemplatesIntoMap();
+        String resetUrl = frontendUrl + "/reset-password?token=" + token;
+        String template = mjmlTemplateTexts.get("password-reset");
+        if (template == null) {
+            throw new IOException("MJML template not found: password-reset");
+        }
+        String preparedText = template.replace("blank_resetUrl", resetUrl);
+
+        this.mjmlClient = MJMLClient.newDefaultClient()
+                .withApplicationID(appId)
+                .withApplicationKey(appKey);
+
+        RenderRequest request = new RenderRequest(preparedText);
+        RenderResponse response = mjmlClient.render(request);
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        helper.setText(response.getHTML(), true);
+        helper.setTo(email);
+        helper.setSubject("OpenBarber - Passwort zurücksetzen");
+        helper.setFrom(mailUsername);
+
+        mailSender.send(mimeMessage);
+        log.debug("Password reset email sent to {}", email);
     }
 }

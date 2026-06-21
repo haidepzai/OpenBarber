@@ -14,6 +14,8 @@ const API_ENDPOINTS = {
   AUTH_REGISTER: `${BASE_URL}/api/auth/register`,
   AUTH_VERIFY: `${BASE_URL}/api/auth/verify`,
   AUTH_REFRESH: `${BASE_URL}/api/auth/refresh`,
+  AUTH_FORGOT_PASSWORD: `${BASE_URL}/api/auth/forgot-password`,
+  AUTH_RESET_PASSWORD: `${BASE_URL}/api/auth/reset-password`,
 
   // Users
   USER_GET: (id) => `${BASE_URL}/api/users/${id}`,

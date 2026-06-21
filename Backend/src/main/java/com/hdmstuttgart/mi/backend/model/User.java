@@ -42,6 +42,10 @@ public class User implements UserDetails {
 
     private String confirmationCode;
 
+    private String passwordResetToken;
+
+    private Date passwordResetTokenExpiry;
+
     private String name;
 
     @CreationTimestamp

@@ -21,6 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -161,5 +163,34 @@ public class AuthenticationService {
                .token(accessToken)
                .refreshToken(refreshToken)
                .build();
+    }
+
+    public void forgotPassword(ForgotPasswordRequest request) {
+        // Silently succeed even if email not found — prevents user enumeration
+        userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+            String token = UUID.randomUUID().toString();
+            user.setPasswordResetToken(token);
+            user.setPasswordResetTokenExpiry(Date.from(Instant.now().plusSeconds(3600))); // 1 hour
+            userRepository.save(user);
+            try {
+                emailSenderService.sendPasswordResetEmail(user.getEmail(), token);
+            } catch (Exception e) {
+                log.error("Failed to send password reset email to {}: {}", user.getEmail(), e.getMessage());
+            }
+        });
+    }
+
+    public void resetPassword(ResetPasswordRequest request) {
+        User user = userRepository.findByPasswordResetToken(request.getToken())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid or expired reset token"));
+
+        if (user.getPasswordResetTokenExpiry() == null || user.getPasswordResetTokenExpiry().before(new Date())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reset token has expired");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setPasswordResetToken(null);
+        user.setPasswordResetTokenExpiry(null);
+        userRepository.save(user);
     }
 }

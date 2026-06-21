@@ -44,6 +44,20 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.refresh(request));
     }
 
+    @ApiOperation(value = "Forgot Password", notes = "Sends a password reset email")
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authenticationService.forgotPassword(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation(value = "Reset Password", notes = "Resets the user's password using a valid token")
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authenticationService.resetPassword(request);
+        return ResponseEntity.ok().build();
+    }
+
     @ApiOperation(value = "Handle User Not Found", notes = "Handles the UserNotFoundException and returns an error DTO")
     @ExceptionHandler(value = UserNotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
