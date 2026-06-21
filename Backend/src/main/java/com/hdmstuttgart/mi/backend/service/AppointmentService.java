@@ -11,6 +11,8 @@ import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -160,16 +162,11 @@ public class AppointmentService {
      * @param enterpriseId the enterprise id
      * @return the appointments by enterprise id
      */
-    public List<Appointment> getAppointmentsByEnterpriseId(Long enterpriseId) {
+    public Page<Appointment> getAppointmentsByEnterpriseId(Long enterpriseId, Pageable pageable) {
         if (!enterpriseRepository.existsById(enterpriseId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
         }
-
-        List<Appointment> appointments = appointmentRepository.findAllByEnterpriseId(enterpriseId);
-        if (appointments.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No appointments found for enterprise with id = " + enterpriseId);
-        }
-        return appointments;
+        return appointmentRepository.findAllByEnterpriseId(enterpriseId, pageable);
     }
 
     /**

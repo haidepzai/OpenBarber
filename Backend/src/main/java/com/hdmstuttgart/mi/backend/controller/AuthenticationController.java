@@ -58,6 +58,13 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
+    @ApiOperation(value = "Resend Verification Code", notes = "Issues a new verification code and sends it via email")
+    @PostMapping("/resend-verification")
+    public ResponseEntity<Void> resendVerification(@RequestHeader("Authorization") String token) {
+        authenticationService.resendVerification(token);
+        return ResponseEntity.ok().build();
+    }
+
     @ApiOperation(value = "Handle User Not Found", notes = "Handles the UserNotFoundException and returns an error DTO")
     @ExceptionHandler(value = UserNotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)

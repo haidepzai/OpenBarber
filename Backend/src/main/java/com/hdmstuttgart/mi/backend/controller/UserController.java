@@ -7,6 +7,9 @@ import com.hdmstuttgart.mi.backend.service.JwtService;
 import com.hdmstuttgart.mi.backend.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,14 +47,11 @@ public class UserController {
      *
      * @return the all users
      */
-    @ApiOperation(value = "Get All Users", notes = "Retrieves a list of all users")
+    @ApiOperation(value = "Get All Users", notes = "Retrieves a paginated list of all users")
     @GetMapping()
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        List<UserDto> userDtos = users.stream()
-                .map(UserMapper::toDto)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(userDtos, HttpStatus.OK);
+    public ResponseEntity<Page<UserDto>> getAllUsers(@PageableDefault(size = 20) Pageable pageable) {
+        Page<User> page = userService.getAllUsers(pageable);
+        return ResponseEntity.ok(page.map(UserMapper::toDto));
     }
 
     /**

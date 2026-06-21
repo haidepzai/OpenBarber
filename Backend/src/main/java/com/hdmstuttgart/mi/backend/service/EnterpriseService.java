@@ -13,6 +13,8 @@ import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -127,25 +129,12 @@ public class EnterpriseService {
      *
      * @return the all enterprises
      */
-    public List<Enterprise> getAllEnterprises() {
-        List<Enterprise> enterprises = enterpriseRepository.findAll();
-        if (enterprises.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No enterprises found");
-        }
-        return enterprises;
+    public Page<Enterprise> getAllEnterprises(Pageable pageable) {
+        return enterpriseRepository.findAll(pageable);
     }
 
-    /**
-     * Gets all enterprises.
-     *
-     * @return the all enterprises
-     */
-    public List<Enterprise> getEnterprisesWithinRadius(double lat, double lng, double radius) {
-        List<Enterprise> enterprises = enterpriseRepository.findWithinRadius(lat, lng, radius);
-        if (enterprises.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No enterprises found");
-        }
-        return enterprises;
+    public Page<Enterprise> getEnterprisesWithinRadius(double lat, double lng, double radius, Pageable pageable) {
+        return enterpriseRepository.findWithinRadius(lat, lng, radius, pageable);
     }
 
     /**

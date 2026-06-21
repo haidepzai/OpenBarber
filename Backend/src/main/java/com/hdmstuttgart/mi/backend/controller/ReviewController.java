@@ -9,6 +9,9 @@ import com.hdmstuttgart.mi.backend.service.EnterpriseService;
 import com.hdmstuttgart.mi.backend.service.ReviewService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -102,12 +105,13 @@ public class ReviewController {
      * @param enterpriseId the enterprise id
      * @return the reviews by enterprise id
      */
-    @ApiOperation(value = "Get Reviews by Enterprise ID", notes = "Retrieves all reviews for a specific enterprise by its ID")
+    @ApiOperation(value = "Get Reviews by Enterprise ID", notes = "Retrieves paginated reviews for a specific enterprise by its ID")
     @GetMapping
-    public ResponseEntity<List<ReviewDto>> getReviewsByEnterpriseId(@RequestParam Long enterpriseId) {
-        List<Review> reviews = reviewService.getReviewsByEnterpriseId(enterpriseId);
-        List<ReviewDto> reviewDtos = ReviewMapper.toDtos(reviews);
-        return new ResponseEntity<>(reviewDtos, HttpStatus.OK);
+    public ResponseEntity<Page<ReviewDto>> getReviewsByEnterpriseId(
+            @RequestParam Long enterpriseId,
+            @PageableDefault(size = 10) Pageable pageable) {
+        Page<Review> page = reviewService.getReviewsByEnterpriseId(enterpriseId, pageable);
+        return ResponseEntity.ok(page.map(ReviewMapper::toDto));
     }
 
     /**

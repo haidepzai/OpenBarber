@@ -25,13 +25,13 @@ const LandingPage = () => {
 
   const loadData = useCallback(async () => {
     try {
-      const shopsData = await getEnterprises();
-      const normalizedShops = Array.isArray(shopsData) ? shopsData : [];
+      const shopsData = await getEnterprises(0, 6);
+      const normalizedShops = Array.isArray(shopsData?.content) ? shopsData.content : [];
 
       const shopsWithReviews = await Promise.all(
         normalizedShops.map(async (shop) => {
           const res = await reviewsAPI.getByEnterprise(shop.id);
-          return { ...shop, reviews: res.data };
+          return { ...shop, reviews: res.data?.content ?? res.data ?? [] };
         })
       );
 

@@ -1,5 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { Box, Button, CircularProgress, Divider, Rating, Stack, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Divider, Pagination, Rating, Stack, Typography } from '@mui/material';
 /*import shops from '../../mocks/shops';*/
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -40,6 +40,8 @@ const FilterResults = ({ filter }) => {
   const [shops, setShops] = useState([]);
   const [sortValue, setSortValue] = useState((location.state && location.state.sortValue) || 'Suggested');
   const [openModal, setOpenModal] = useState();
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -100,14 +102,17 @@ const FilterResults = ({ filter }) => {
     setIsLoading(true);
     try {
       const hasCoordinates = location.state?.lat != null && location.state?.lng != null;
-      const shops = hasCoordinates ? await getEnterprisesWithinRadius(location.state.lat, location.state.lng) : await getEnterprises();
-      setShops(Array.isArray(shops) ? shops : []);
+      const data = hasCoordinates
+        ? await getEnterprisesWithinRadius(location.state.lat, location.state.lng, page - 1)
+        : await getEnterprises(page - 1);
+      setShops(Array.isArray(data?.content) ? data.content : []);
+      setTotalPages(data?.totalPages ?? 1);
     } catch (error) {
       setShops([]);
     } finally {
       setIsLoading(false);
     }
-  }, [location.state]);
+  }, [location.state, page]);
 
   const rating = (shop) => {
     const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
@@ -230,6 +235,16 @@ const FilterResults = ({ filter }) => {
                   )}
                 </Box>
               ))}
+            {totalPages > 1 && (
+              <Stack alignItems="center" sx={{ mt: 3, mb: 2 }}>
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={(_, value) => setPage(value)}
+                  color="primary"
+                />
+              </Stack>
+            )}
           </>
         )}
       </Box>

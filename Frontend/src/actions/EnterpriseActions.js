@@ -2,24 +2,20 @@ import axios from 'axios';
 import { API_ENDPOINTS } from '../config/constants';
 import { getAccessToken } from '../context/tokenStorage';
 
-export const getEnterprises = async () => {
+export const getEnterprises = async (page = 0, size = 12) => {
   try {
-    const response = await axios.get(API_ENDPOINTS.ENTERPRISES);
+    const response = await axios.get(API_ENDPOINTS.ENTERPRISES, { params: { page, size } });
     return response.data;
   } catch (error) {
     throw new Error('Could not fetch enterprises');
   }
 };
 
-export const getEnterprisesWithinRadius = async (lat, lng) => {
+export const getEnterprisesWithinRadius = async (lat, lng, page = 0, size = 12) => {
   try {
     const radius = 5;
     const response = await axios.get(API_ENDPOINTS.ENTERPRISES_RADIUS, {
-      params: {
-        lat,
-        lng,
-        radius,
-      },
+      params: { lat, lng, radius, page, size },
     });
     return response.data;
   } catch (error) {

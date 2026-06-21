@@ -54,7 +54,9 @@ public class AuthenticationService {
 //                .lastname(request.getLastname())
 //                .name(request.getName())
                 .email(request.getEmail())
-                .confirmationCode(UUID.randomUUID().toString().substring(0,6).toUpperCase())
+                .confirmationCode(UUID.randomUUID().toString().substring(0, 6).toUpperCase())
+                .confirmationCodeExpiry(Date.from(Instant.now().plusSeconds(15 * 60)))
+                .verificationAttempts(0)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(UserRole.UNVERIFIED)
                 .build();
@@ -119,11 +121,22 @@ public class AuthenticationService {
             log.error("Email already verified!");
             throw new ResponseStatusException(HttpStatus.CONFLICT, "E-Mail already verified");
         }
+        if (user.getConfirmationCodeExpiry() == null || user.getConfirmationCodeExpiry().before(new Date())) {
+            throw new ResponseStatusException(HttpStatus.GONE, "Verification code expired. Please request a new one.");
+        }
+        if (user.getVerificationAttempts() >= 5) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many failed attempts. Please request a new verification code.");
+        }
         if (!request.getConfirmationCode().equals(user.getConfirmationCode())) {
-            log.error("wrong confirmation code!");
+            user.setVerificationAttempts(user.getVerificationAttempts() + 1);
+            userRepository.save(user);
+            log.error("wrong confirmation code! attempt {}", user.getVerificationAttempts());
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Wrong confirmation code");
         }
         user.setRole(UserRole.VERIFIED);
+        user.setConfirmationCode(null);
+        user.setConfirmationCodeExpiry(null);
+        user.setVerificationAttempts(0);
         userRepository.save(user);
 
         return AuthenticationResponse.builder()
@@ -192,5 +205,26 @@ public class AuthenticationService {
         user.setPasswordResetToken(null);
         user.setPasswordResetTokenExpiry(null);
         userRepository.save(user);
+    }
+
+    public void resendVerification(String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        if (user.getRole() != UserRole.UNVERIFIED) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "E-Mail already verified");
+        }
+
+        user.setConfirmationCode(UUID.randomUUID().toString().substring(0, 6).toUpperCase());
+        user.setConfirmationCodeExpiry(Date.from(Instant.now().plusSeconds(15 * 60)));
+        user.setVerificationAttempts(0);
+        userRepository.save(user);
+
+        try {
+            emailSenderService.sendEmailWithTemplate(user.getEmail(), "verification");
+        } catch (MessagingException | IOException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to send verification email");
+        }
     }
 }

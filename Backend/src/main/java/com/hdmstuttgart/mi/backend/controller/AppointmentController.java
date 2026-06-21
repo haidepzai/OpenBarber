@@ -9,6 +9,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,10 +82,11 @@ public class AppointmentController {
      */
     @ApiOperation(value = "Get Appointments by Enterprise ID", notes = "Fetches all appointments for the given enterprise ID")
     @GetMapping
-    public ResponseEntity<List<AppointmentDto>> getAppointmentsByEnterpriseId(@RequestParam Long enterpriseId) {
-        List<Appointment> appointments = appointmentService.getAppointmentsByEnterpriseId(enterpriseId);
-        List<AppointmentDto> appointmentDtos = appointmentMapper.appointmentToDtos(appointments);
-        return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
+    public ResponseEntity<Page<AppointmentDto>> getAppointmentsByEnterpriseId(
+            @RequestParam Long enterpriseId,
+            @PageableDefault(size = 500) Pageable pageable) {
+        Page<Appointment> page = appointmentService.getAppointmentsByEnterpriseId(enterpriseId, pageable);
+        return ResponseEntity.ok(page.map(appointmentMapper::appointmentToDto));
     }
 
     /**
