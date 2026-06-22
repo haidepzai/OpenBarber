@@ -70,11 +70,11 @@ export const AuthContextProvider = (props) => {
     setIsLoggedIn(false);
   };
 
-  const loginHandler = async (authRequest, customConfig) => {
+  const loginHandler = async (authRequest, customConfig, rememberMe = false) => {
     const response = await axios.post(API_ENDPOINTS.AUTH_LOGIN, authRequest, customConfig);
     const resObj = response.data;
     setAccessToken(resObj.token);
-    setRefreshToken(resObj.refreshToken);
+    setRefreshToken(resObj.refreshToken, rememberMe);
 
     setUserId(resObj.userId);
     if (resObj.verified) {

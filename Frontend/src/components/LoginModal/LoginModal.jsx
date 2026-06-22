@@ -59,6 +59,7 @@ const LoginModal = ({ gotoSignup }) => {
 
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
+  const [rememberMe, setRememberMe] = useState(false);
 
   // Object Destructuring : pull out certain properties from object
   const { isValid: emailIsValid } = emailState; //Alias Assignment emailIsValid
@@ -129,7 +130,7 @@ const LoginModal = ({ gotoSignup }) => {
         },
       };
       try {
-        const res = await authCtx.onLogin(authRequest, customConfig);
+        const res = await authCtx.onLogin(authRequest, customConfig, rememberMe);
         // Redirect to signup if not verified or has no enterprise
         const { verified, hasEnterprise } = res.data;
         if (!hasEnterprise || !verified) {
@@ -224,7 +225,7 @@ const LoginModal = ({ gotoSignup }) => {
                   onBlur={validatePasswordHandler}
                 />
                 <Stack direction="row" alignItems="center">
-                  <Checkbox />
+                  <Checkbox checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
                   <Typography>{t('KEEP_LOGGED_IN')}</Typography>
                 </Stack>
                 <Button

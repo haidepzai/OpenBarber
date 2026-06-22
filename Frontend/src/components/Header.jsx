@@ -1,28 +1,21 @@
 import React from 'react';
 import '../css/components/Header.css';
 import image from '../assets/logo_openbarber.svg';
-import { Stack, Button, Typography, IconButton } from '@mui/material';
+import { Stack, Button, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { Link, useNavigate } from 'react-router-dom';
 import { SignupContext } from '../context/Signup.context';
 import { useContext } from 'react';
 import AuthContext from '../context/auth-context';
 import { useTranslation } from 'react-i18next';
-
-import germanyFlag from '../assets/germany-flag.png';
-import britishFlag from '../assets/british-flag.png';
-import japaneseFlag from '../assets/japan-flag.png';
+import LanguagePicker from './LanguagePicker/LanguagePicker';
 
 const Header = () => {
   const signUpCtx = useContext(SignupContext);
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const { t, i18n } = useTranslation();
-
-  function changeLanguage(lang) {
-    i18n.changeLanguage(lang);
-  }
+  const { t } = useTranslation();
 
   function handleLogout() {
     authCtx.onLogout();
@@ -76,15 +69,7 @@ const Header = () => {
                 {t('LOGOUT')}
               </Button>
             )}
-            <IconButton onClick={() => changeLanguage('de')}>
-              <img src={germanyFlag} alt="DE" style={{ width: '24px', height: '24px' }} />
-            </IconButton>
-            <IconButton onClick={() => changeLanguage('en')}>
-              <img src={britishFlag} alt="EN" style={{ width: '24px', height: '24px' }} />
-            </IconButton>
-            <IconButton onClick={() => changeLanguage('ja')}>
-              <img src={japaneseFlag} alt="JA" style={{ width: '24px', height: '24px' }} />
-            </IconButton>
+            <LanguagePicker />
           </Stack>
         </Grid>
       </Grid>
