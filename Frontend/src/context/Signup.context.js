@@ -20,6 +20,7 @@ export const SignupProvider = ({ children }) => {
     enterpriseOwner: '',
     enterprisePhoneNumber: '',
     enterpriseStreet: null,
+    enterpriseStreetText: '',
   });
   const [signupVisible, setSignupVisible] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);

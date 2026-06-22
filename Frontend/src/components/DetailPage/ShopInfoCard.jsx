@@ -26,7 +26,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
           reviewsAPI.getByEnterprise(shop.id),
           servicesAPI.getByEnterprise(shop.id),
         ]);
-        setReviews(reviewsRes.data);
+        setReviews(reviewsRes.data?.content ?? []);
         setServices(servicesRes.data);
       } catch (error) {
         setReviews([]);

@@ -7,6 +7,7 @@ import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
+import com.hdmstuttgart.mi.backend.model.enums.UserRole;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
@@ -121,6 +122,9 @@ public class EnterpriseService {
             .employees(employees)
             .build();
         user.setEnterprise(enterprise);
+        if (user.getRole() == UserRole.VERIFIED) {
+            user.setRole(UserRole.OPERATOR);
+        }
         return userRepository.save(user).getEnterprise();
     }
 

@@ -87,11 +87,11 @@ WHERE e.email = 'west@openbarber.dev'
 );
 
 -- Password for all seed users: OpenBarber123!
-INSERT INTO users (email, password, confirmation_code, name, created_at, enterprise_id, role)
+INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, created_at, enterprise_id, role)
 SELECT
     'owner.downtown@openbarber.dev',
     '$2b$10$FrxP.kQ6pd7TVusm.CPQ6.f47lhdfViPRgDOCZlmHIUUNCoTYA4Ly',
-    'ABC123',
+    NULL, NULL, 0,
     'Ali Demir',
     NOW(),
     e.id,
@@ -102,11 +102,11 @@ WHERE e.email = 'downtown@openbarber.dev'
     SELECT 1 FROM users u WHERE u.email = 'owner.downtown@openbarber.dev'
 );
 
-INSERT INTO users (email, password, confirmation_code, name, created_at, enterprise_id, role)
+INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, created_at, enterprise_id, role)
 SELECT
     'owner.west@openbarber.dev',
     '$2b$10$FrxP.kQ6pd7TVusm.CPQ6.f47lhdfViPRgDOCZlmHIUUNCoTYA4Ly',
-    'DEF456',
+    NULL, NULL, 0,
     'Mehmet Kaya',
     NOW(),
     e.id,
@@ -117,11 +117,11 @@ WHERE e.email = 'west@openbarber.dev'
     SELECT 1 FROM users u WHERE u.email = 'owner.west@openbarber.dev'
 );
 
-INSERT INTO users (email, password, confirmation_code, name, created_at, role)
+INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, created_at, role)
 SELECT
     'customer1@openbarber.dev',
     '$2b$10$FrxP.kQ6pd7TVusm.CPQ6.f47lhdfViPRgDOCZlmHIUUNCoTYA4Ly',
-    'GHI789',
+    NULL, NULL, 0,
     'Max Mustermann',
     NOW(),
     'VERIFIED'
@@ -129,11 +129,11 @@ WHERE NOT EXISTS (
     SELECT 1 FROM users u WHERE u.email = 'customer1@openbarber.dev'
 );
 
-INSERT INTO users (email, password, confirmation_code, name, created_at, role)
+INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, created_at, role)
 SELECT
     'customer2@openbarber.dev',
     '$2b$10$FrxP.kQ6pd7TVusm.CPQ6.f47lhdfViPRgDOCZlmHIUUNCoTYA4Ly',
-    'JKL012',
+    NULL, NULL, 0,
     'Erika Musterfrau',
     NOW(),
     'VERIFIED'

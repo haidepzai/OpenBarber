@@ -98,7 +98,7 @@ export const appointmentsAPI = {
 
 // Users API
 export const usersAPI = {
-  getById: (id) => apiClient.get(API_ENDPOINTS.USER_GET(id)),
+  getById: (id) => apiClient.get(API_ENDPOINTS.USER_GET(id), { headers: getAuthHeader() }),
   update: (id, data) => apiClient.put(API_ENDPOINTS.USER_UPDATE(id), data, { headers: getAuthHeader() }),
   getInfo: () => apiClient.get(API_ENDPOINTS.USER_INFO, { headers: getAuthHeader() }),
 };

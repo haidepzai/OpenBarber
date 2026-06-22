@@ -161,13 +161,18 @@ const SchedulerPage = () => {
         employeesAPI.getByEnterprise(enterpriseData.id),
       ]);
 
-      const appointments = appointmentsRes.data || [];
+      const appointments = appointmentsRes.data?.content ?? appointmentsRes.data ?? [];
       const services = servicesRes.data || [];
       const employees = employeesRes.data || [];
 
       setData(appointments.map(mapAppointmentToScheduler));
       setAllServices(services);
       setAllEmployees(employees);
+
+      const hasEmployees = employees.length > 0;
+      if (!hasEmployees) {
+        setGroupingMode(false);
+      }
 
       setResources([
         {
@@ -329,7 +334,7 @@ const SchedulerPage = () => {
                   <FormGroup>
                     <FormControlLabel
                       sx={{ whiteSpace: 'nowrap' }}
-                      control={<Switch checked={groupingMode} onChange={(event) => setGroupingMode(event.target.checked)} />}
+                      control={<Switch checked={groupingMode} onChange={(event) => setGroupingMode(event.target.checked)} disabled={allEmployees.length === 0} />}
                       label="Group by Hairdresser"
                     />
                   </FormGroup>

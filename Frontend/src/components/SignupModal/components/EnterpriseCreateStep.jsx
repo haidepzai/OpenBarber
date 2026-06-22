@@ -37,7 +37,7 @@ const EnterpriseCreateStep = () => {
   const { ref: acRef } = usePlacesWidget({
     apiKey: GOOGLE_API_KEY,
     onPlaceSelected: (place) => {
-      setData((d) => ({ ...d, enterpriseStreet: place }));
+      setData((d) => ({ ...d, enterpriseStreet: place, enterpriseStreetText: place.formatted_address }));
     },
     options: {
       types: ['address'],
@@ -60,13 +60,14 @@ const EnterpriseCreateStep = () => {
     //   }
     //   return formData;
     // }
+    const hasPlace = data.enterpriseStreet && data.enterpriseStreet.geometry;
     const createEnterpriseReq = {
       email: data.email,
       name: data.enterpriseName,
       owner: data.enterpriseOwner,
-      address: data.enterpriseStreet.formatted_address,
-      addressLongitude: Number(data.enterpriseStreet.geometry.location.lng()),
-      addressLatitude: Number(data.enterpriseStreet.geometry.location.lat()),
+      address: hasPlace ? data.enterpriseStreet.formatted_address : data.enterpriseStreetText,
+      addressLongitude: hasPlace ? Number(data.enterpriseStreet.geometry.location.lng()) : 0,
+      addressLatitude: hasPlace ? Number(data.enterpriseStreet.geometry.location.lat()) : 0,
       phoneNumber: data.enterprisePhoneNumber,
     };
 
@@ -137,9 +138,9 @@ const EnterpriseCreateStep = () => {
             <TextField
               required
               variant="outlined"
-              onChange={() => setData((d) => ({ ...d, enterpriseStreet: null }))}
+              onChange={(e) => setData((d) => ({ ...d, enterpriseStreet: null, enterpriseStreetText: e.target.value }))}
               label={t('ADDRESS')}
-              value={data.enterpriseStreet ? data.enterpriseStreet.formatted_address : undefined}
+              value={data.enterpriseStreetText || ''}
               name="enterpriseStreet"
               error={errors.enterpriseStreet}
               onBlur={onBlur}
@@ -250,7 +251,7 @@ const EnterpriseCreateStep = () => {
           Back
         </Button> */}
         <Box flexGrow={1} />
-        <Button type="submit" disabled={!(data.enterpriseName && data.enterpriseOwner && data.enterpriseStreet)} variant="contained">
+        <Button type="submit" disabled={!(data.enterpriseName && data.enterpriseOwner && (data.enterpriseStreet || data.enterpriseStreetText) && data.enterprisePhoneNumber)} variant="contained">
         {t('CONTINUE')}
         </Button>
       </Stack>

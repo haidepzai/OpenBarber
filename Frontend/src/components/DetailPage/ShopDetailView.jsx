@@ -20,7 +20,7 @@ const ShopDetailView = ({ shop }) => {
     const loadReviews = async () => {
       try {
         const res = await reviewsAPI.getByEnterprise(shop.id);
-        setReviews(res.data);
+        setReviews(res.data?.content ?? []);
       } catch (error) {
         setReviews([]);
       }

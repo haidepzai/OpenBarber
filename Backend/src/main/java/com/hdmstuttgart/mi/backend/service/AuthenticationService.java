@@ -133,7 +133,8 @@ public class AuthenticationService {
             log.error("wrong confirmation code! attempt {}", user.getVerificationAttempts());
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Wrong confirmation code");
         }
-        user.setRole(UserRole.VERIFIED);
+        UserRole newRole = (user.getEnterprise() != null) ? UserRole.OPERATOR : UserRole.VERIFIED;
+        user.setRole(newRole);
         user.setConfirmationCode(null);
         user.setConfirmationCodeExpiry(null);
         user.setVerificationAttempts(0);
