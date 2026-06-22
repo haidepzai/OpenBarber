@@ -3,10 +3,8 @@ package com.hdmstuttgart.mi.backend.mapper;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.dto.EnterpriseDto;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +20,14 @@ public class EnterpriseMapper {
         dto.setAddressLongitude(enterprise.getAddressLongitude());
         dto.setAddressLatitude(enterprise.getAddressLatitude());
         dto.setEmail(enterprise.getEmail());
+        if (enterprise.getLogo() != null) {
+            dto.setLogo(Base64.getEncoder().encodeToString(enterprise.getLogo()));
+        }
+        if (enterprise.getPictures() != null) {
+            dto.setPictures(enterprise.getPictures().stream()
+                    .map(bytes -> Base64.getEncoder().encodeToString(bytes))
+                    .collect(Collectors.toList()));
+        }
         dto.setPhoneNumber(enterprise.getPhoneNumber());
         dto.setOpeningTime(enterprise.getOpeningTime());
         dto.setClosingTime(enterprise.getClosingTime());
@@ -33,6 +39,32 @@ public class EnterpriseMapper {
         dto.setDrinks(enterprise.getDrinks());
         dto.setServices(enterprise.getServices());
         dto.setEmployees(enterprise.getEmployees());
+        dto.setReviews(enterprise.getReviews());
+        return dto;
+    }
+
+    /** Lightweight DTO for list views — excludes pictures binary data, but includes logo for card display. */
+    public EnterpriseDto toSummaryDto(Enterprise enterprise) {
+        EnterpriseDto dto = new EnterpriseDto();
+        dto.setId(enterprise.getId());
+        dto.setName(enterprise.getName());
+        dto.setOwner(enterprise.getOwner());
+        dto.setAddress(enterprise.getAddress());
+        dto.setAddressLongitude(enterprise.getAddressLongitude());
+        dto.setAddressLatitude(enterprise.getAddressLatitude());
+        dto.setEmail(enterprise.getEmail());
+        if (enterprise.getLogo() != null) {
+            dto.setLogo(Base64.getEncoder().encodeToString(enterprise.getLogo()));
+        }
+        dto.setPhoneNumber(enterprise.getPhoneNumber());
+        dto.setOpeningTime(enterprise.getOpeningTime());
+        dto.setClosingTime(enterprise.getClosingTime());
+        dto.setWebsite(enterprise.getWebsite());
+        dto.setRecommended(enterprise.isRecommended());
+        dto.setApproved(enterprise.isApproved());
+        dto.setPriceCategory(enterprise.getPriceCategory());
+        dto.setPaymentMethods(enterprise.getPaymentMethods());
+        dto.setDrinks(enterprise.getDrinks());
         dto.setReviews(enterprise.getReviews());
         return dto;
     }
@@ -60,35 +92,9 @@ public class EnterpriseMapper {
         enterprise.setPriceCategory(dto.getPriceCategory());
         enterprise.setPaymentMethods(dto.getPaymentMethods());
         enterprise.setDrinks(dto.getDrinks());
-        
-        if (dto.getLogo() != null) {
-            enterprise.setLogo(convertMultipartFileToBytes(dto.getLogo()));
-        }
-        
-        if (dto.getPictures() != null) {
-            enterprise.setPictures(convertMultipartFilesToBytesList(dto.getPictures()));
-        }
-        
         enterprise.setServices(dto.getServices());
         enterprise.setEmployees(dto.getEmployees());
         return enterprise;
     }
 
-    private byte[] convertMultipartFileToBytes(MultipartFile file) {
-        if (file == null) {
-            return null;
-        }
-        try {
-            return file.getBytes();
-        } catch (IOException e) {
-            throw new RuntimeException("Error converting multipart file to bytes", e);
-        }
-    }
-
-    private List<byte[]> convertMultipartFilesToBytesList(List<MultipartFile> files) {
-        if (files == null) {
-            return null;
-        }
-        return files.stream().map(this::convertMultipartFileToBytes).collect(Collectors.toList());
-    }
 }

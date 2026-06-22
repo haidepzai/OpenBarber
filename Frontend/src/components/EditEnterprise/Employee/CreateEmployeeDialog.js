@@ -60,7 +60,14 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
   };
 
   const handlePictureUpload = (event) => {
-    dispatch({ type: 'SET_PICTURE', payload: event.target.files[0] });
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result.split(',')[1];
+      dispatch({ type: 'SET_PICTURE', payload: base64 });
+    };
+    reader.readAsDataURL(file);
   };
 
   const handlePictureDelete = () => {
@@ -162,7 +169,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
                 <Box sx={{ mt: '24px' }}>
                   <img
                     alt="employee"
-                    src={URL.createObjectURL(employee.picture)}
+                   src={`data:image/jpeg;base64,${employee.picture}`}
                     width="100%"
                     height="auto"
                     style={{ maxHeight: '250px', objectFit: 'cover' }}

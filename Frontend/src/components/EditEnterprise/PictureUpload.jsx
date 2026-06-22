@@ -26,7 +26,7 @@ const PictureUpload = ({ enterprise, handleLogoUpload, handlePicturesUpload, han
           <Box sx={{ mt: '24px' }}>
             <img
               alt="enterprise logo"
-              src={URL.createObjectURL(enterprise.logo)}
+              src={`data:image/jpeg;base64,${enterprise.logo}`}
               width="100%"
               height="auto"
               style={{ maxHeight: '250px', objectFit: 'cover' }}
@@ -52,11 +52,11 @@ const PictureUpload = ({ enterprise, handleLogoUpload, handlePicturesUpload, han
         {enterprise.pictures && enterprise.pictures.length > 0 && (
           <Box sx={{ mt: '24px' }}>
             <ImageList sx={{ width: '100%', height: '444px', borderRadius: '5px', boxShadow: 4 }} cols={4} rowHeight={220} variant="quilted">
-              {enterprise.pictures.map((picture) => (
-                <ImageListItem key={picture.name}>
+              {enterprise.pictures.map((picture, index) => (
+                <ImageListItem key={index}>
                   <img
-                    src={URL.createObjectURL(picture)}
-                    alt={picture.name}
+                    src={`data:image/jpeg;base64,${picture}`}
+                    alt={`picture-${index}`}
                     loading="lazy"
                     style={{ objectFit: 'cover', objectPosition: 'center', display: 'block' }}
                   />
@@ -67,7 +67,7 @@ const PictureUpload = ({ enterprise, handleLogoUpload, handlePicturesUpload, han
                     position="top"
                     actionPosition="left"
                     actionIcon={
-                      <IconButton sx={{ color: 'white' }} onClick={() => handleDeletePicture(picture.name)}>
+                      <IconButton sx={{ color: 'white' }} onClick={() => handleDeletePicture(index)}>
                         <DeleteOutlineIcon color="white" />
                       </IconButton>
                     }

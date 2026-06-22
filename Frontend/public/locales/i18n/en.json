@@ -183,5 +183,9 @@
   "RESET_PASSWORD_SUCCESS": "Password changed successfully! You can now log in.",
   "RESET_PASSWORD_MISMATCH": "Passwords do not match",
   "RESET_PASSWORD_INVALID": "Invalid or expired link",
-  "RESET_PASSWORD_SUBMIT": "Save password"
+  "RESET_PASSWORD_SUBMIT": "Save password",
+  "LOGO_UPLOADED": "Logo uploaded successfully",
+  "PICTURES_UPLOADED": "Pictures uploaded successfully",
+  "PICTURE_DELETED": "Picture deleted",
+  "UPLOAD_FAILED": "Upload failed"
 }

@@ -31,7 +31,7 @@ export default function MediaCard({ shop, setOpenModal }) {
           <CardMedia
             component="img"
             height="140"
-            image={shop.logo ? URL.createObjectURL(shop.logo) : process.env.REACT_APP_BACKUP_IMAGE}
+            image={shop.logo ? `data:image/jpeg;base64,${shop.logo}` : process.env.REACT_APP_BACKUP_IMAGE}
             alt="Barber"
             sx={{ flexShrink: 0 }}
           />

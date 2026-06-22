@@ -15,6 +15,9 @@ import '../../css/components/SwiperPhoto.css';
 import { Lazy, Pagination, Navigation } from 'swiper';
 import { Box, IconButton } from '@mui/material';
 const PhotoSwiper = ({ images, onClose }) => {
+  const getImageSrc = (image) => (typeof image === 'string' ? `data:image/jpeg;base64,${image}` : image.src);
+  const getImageKey = (image, index) => (typeof image === 'string' ? index : image.name);
+
   return (
     <Box
       sx={{
@@ -42,11 +45,11 @@ const PhotoSwiper = ({ images, onClose }) => {
         <IconButton onClick={onClose} sx={{ position: 'absolute', top: '25px', right: '25px', zIndex: '1', color: 'white.main' }}>
           <CloseIcon sx={{ fontSize: '40px' }} />
         </IconButton>
-        {images.map((image) => (
-          <SwiperSlide key={image.name}>
+        {images.map((image, index) => (
+          <SwiperSlide key={getImageKey(image, index)}>
             <img
               alt="uploaded review"
-              data-src={image.src}
+              data-src={getImageSrc(image)}
               style={{ objectFit: 'cover', filter: 'brightness(0.7) contrast(1.2)', borderRadius: '10px' }}
               className="gallery-img swiper-lazy"
             />

@@ -182,5 +182,9 @@
   "RESET_PASSWORD_SUCCESS": "Passwort erfolgreich geändert! Du kannst dich jetzt anmelden.",
   "RESET_PASSWORD_MISMATCH": "Passwörter stimmen nicht überein",
   "RESET_PASSWORD_INVALID": "Ungültiger oder abgelaufener Link",
-  "RESET_PASSWORD_SUBMIT": "Passwort speichern"
+  "RESET_PASSWORD_SUBMIT": "Passwort speichern",
+  "LOGO_UPLOADED": "Logo erfolgreich hochgeladen",
+  "PICTURES_UPLOADED": "Fotos erfolgreich hochgeladen",
+  "PICTURE_DELETED": "Foto gelöscht",
+  "UPLOAD_FAILED": "Upload fehlgeschlagen"
 }

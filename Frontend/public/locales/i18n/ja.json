@@ -183,5 +183,9 @@
   "RESET_PASSWORD_SUCCESS": "パスワードが正常に変更されました！",
   "RESET_PASSWORD_MISMATCH": "パスワードが一致しません",
   "RESET_PASSWORD_INVALID": "無効または期限切れのリンク",
-  "RESET_PASSWORD_SUBMIT": "パスワードを保存"
+  "RESET_PASSWORD_SUBMIT": "パスワードを保存",
+  "LOGO_UPLOADED": "ロゴのアップロードが完了しました",
+  "PICTURES_UPLOADED": "写真のアップロードが完了しました",
+  "PICTURE_DELETED": "写真が削除されました",
+  "UPLOAD_FAILED": "アップロードに失敗しました"
 }

@@ -41,6 +41,7 @@ public class SecurityConfiguration {
             .antMatchers(HttpMethod.GET, "/api/services").permitAll()
             // Operator-only: manage own enterprise (UNVERIFIED/VERIFIED can create once during signup)
             .antMatchers(HttpMethod.POST, "/api/enterprises").hasAnyAuthority("OPERATOR", "VERIFIED", "UNVERIFIED")
+            .antMatchers(HttpMethod.POST, "/api/enterprises/*/**").hasAuthority("OPERATOR")
             .antMatchers(HttpMethod.PUT, "/api/enterprises/**").hasAuthority("OPERATOR")
             .antMatchers(HttpMethod.PATCH, "/api/enterprises/**").hasAuthority("OPERATOR")
             .antMatchers(HttpMethod.DELETE, "/api/enterprises/**").hasAuthority("OPERATOR")

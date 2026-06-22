@@ -31,11 +31,8 @@ public class Employee {
 
     private String title;
 
-    @Lob
+    @Column(columnDefinition = "bytea")
     private byte[] picture;
-
-    /*@Lob
-    private Blob picture;*/
 
     @ManyToOne
     @JsonIgnore

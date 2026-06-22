@@ -83,7 +83,7 @@ const Overview = ({ booked, data, handleStep }) => {
         onClick={() => handleStep(1)}
       >
         <Stack direction="row" alignItems="center" spacing={3}>
-          <Avatar alt="Alexandra" src={data.employee.picture} sx={{ width: 35, height: 35 }} />
+          <Avatar alt="Alexandra" src={data.employee.picture ? `data:image/jpeg;base64,${data.employee.picture}` : undefined} sx={{ width: 35, height: 35 }} />
           <Box>
             <Typography sx={{ lineHeight: 'unset' }}>{data.employee.name}</Typography>
             <Typography

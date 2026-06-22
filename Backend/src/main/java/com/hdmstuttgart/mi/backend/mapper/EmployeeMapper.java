@@ -2,25 +2,15 @@ package com.hdmstuttgart.mi.backend.mapper;
 
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.dto.EmployeeDto;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
+import java.util.Base64;
 
 /**
  * The type Employee mapper.
  */
 @Component
 public class EmployeeMapper {
-
-   private final ModelMapper modelMapper;
-
-    /**
-     * Instantiates a new Employee mapper.
-     *
-     * @param modelMapper the model mapper
-     */
-    public EmployeeMapper(ModelMapper modelMapper) {
-       this.modelMapper = modelMapper;
-   }
 
     /**
      * To dto employee dto.
@@ -29,8 +19,18 @@ public class EmployeeMapper {
      * @return the employee dto
      */
     public EmployeeDto toDto(Employee employee) {
-       return modelMapper.map(employee, EmployeeDto.class);
-   }
+        EmployeeDto dto = new EmployeeDto();
+        dto.setId(employee.getId());
+        dto.setName(employee.getName());
+        dto.setTitle(employee.getTitle());
+        if (employee.getPicture() != null) {
+            dto.setPicture(Base64.getEncoder().encodeToString(employee.getPicture()));
+        }
+        if (employee.getEnterprise() != null) {
+            dto.setEnterpriseId(employee.getEnterprise().getId());
+        }
+        return dto;
+    }
 
     /**
      * To entity employee.
@@ -39,6 +39,13 @@ public class EmployeeMapper {
      * @return the employee
      */
     public Employee toEntity(EmployeeDto employeeDto) {
-       return modelMapper.map(employeeDto, Employee.class);
-   }
+        Employee employee = new Employee();
+        employee.setId(employeeDto.getId());
+        employee.setName(employeeDto.getName());
+        employee.setTitle(employeeDto.getTitle());
+        if (employeeDto.getPicture() != null && !employeeDto.getPicture().isEmpty()) {
+            employee.setPicture(Base64.getDecoder().decode(employeeDto.getPicture()));
+        }
+        return employee;
+    }
 }

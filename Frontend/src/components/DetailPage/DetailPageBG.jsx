@@ -7,11 +7,7 @@ const DetailPageBG = ({ img }) => {
     <Box
       sx={{
         backgroundSize: 'cover',
-        backgroundImage: `url(${
-          img
-            ? URL.createObjectURL(img)
-            : 'https://www.americanexpress.com/de-de/amexcited/media/cache/default/cms/2021/12/Barbershops-Stuttgart-Herrenhaus-2.jpg'
-        })`,
+        backgroundImage: `url(${img ? `data:image/jpeg;base64,${img}` : 'https://www.americanexpress.com/de-de/amexcited/media/cache/default/cms/2021/12/Barbershops-Stuttgart-Herrenhaus-2.jpg'})`,
         backgroundPosition: 'center',
 
         width: '100%',

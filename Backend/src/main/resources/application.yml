@@ -13,6 +13,10 @@ mjmlSecrets:
   appKey: ${MJML_APP_KEY}
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 50MB
 
   sql:
     init:

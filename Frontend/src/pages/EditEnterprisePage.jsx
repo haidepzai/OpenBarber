@@ -12,6 +12,7 @@ import FormActions from '../components/EditEnterprise/FormActions';
 import SnackbarManager from '../components/EditEnterprise/SnackbarManager';
 import ServiceTable from '../components/EditEnterprise/Service/ServiceTable.tsx';
 import EmployeeTable from '../components/EditEnterprise/Employee/EmployeeTable.tsx';
+import { enterprisesAPI } from '../api/apiClient';
 import { saveEnterpriseData } from '../components/EditEnterprise/utils.js';
 
 const EditEnterprisePage = () => {
@@ -100,26 +101,38 @@ const EditEnterprisePage = () => {
     }
   };
 
-  const handleLogoUpload = (event) => {
-    setEnterprise({
-      ...enterprise,
-      logo: event.target.files[0],
-    });
+  const handleLogoUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      const res = await enterprisesAPI.uploadLogo(enterprise.id, file);
+      setEnterprise((prev) => ({ ...prev, logo: res.data.logo }));
+      handleSnackbarOpen(t('LOGO_UPLOADED'));
+    } catch (err) {
+      handleSnackbarOpen(t('UPLOAD_FAILED'), 'error');
+    }
   };
 
-  const handlePicturesUpload = (event) => {
-    setEnterprise({
-      ...enterprise,
-      pictures: Array.from(event.target.files),
-    });
+  const handlePicturesUpload = async (event) => {
+    const files = Array.from(event.target.files);
+    if (!files.length) return;
+    try {
+      const res = await enterprisesAPI.uploadPictures(enterprise.id, files);
+      setEnterprise((prev) => ({ ...prev, pictures: res.data.pictures }));
+      handleSnackbarOpen(t('PICTURES_UPLOADED'));
+    } catch (err) {
+      handleSnackbarOpen(t('UPLOAD_FAILED'), 'error');
+    }
   };
 
-  const handleDeletePicture = (deletedName) => {
-    const newPictures = enterprise.pictures.filter((picture) => picture.name !== deletedName);
-    setEnterprise({
-      ...enterprise,
-      pictures: newPictures,
-    });
+  const handleDeletePicture = async (index) => {
+    try {
+      const res = await enterprisesAPI.deletePicture(enterprise.id, index);
+      setEnterprise((prev) => ({ ...prev, pictures: res.data.pictures }));
+      handleSnackbarOpen(t('PICTURE_DELETED'));
+    } catch (err) {
+      handleSnackbarOpen(t('UPLOAD_FAILED'), 'error');
+    }
   };
 
   const handleSnackbarOpen = (message, severity = 'success') => {
@@ -163,7 +176,7 @@ const EditEnterprisePage = () => {
             <Box
               sx={{
                 backgroundSize: 'cover',
-                backgroundImage: `url(${URL.createObjectURL(enterprise.logo)})`,
+                backgroundImage: `url(${enterprise.logo ? `data:image/jpeg;base64,${enterprise.logo}` : process.env.REACT_APP_BACKUP_IMAGE})`,
                 backgroundPosition: 'center center',
                 width: '100%',
                 height: '40vh',

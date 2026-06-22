@@ -75,6 +75,22 @@ export const reviewsAPI = {
 export const enterprisesAPI = {
   getByUser: () => apiClient.get(API_ENDPOINTS.ENTERPRISES_BY_USER, { headers: getAuthHeader() }),
   getById: (id) => apiClient.get(API_ENDPOINTS.ENTERPRISE_DETAIL(id), { headers: getAuthHeader() }),
+  uploadLogo: (id, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.post(API_ENDPOINTS.ENTERPRISE_LOGO(id), formData, {
+      headers: { ...getAuthHeader(), 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  deleteLogo: (id) => apiClient.delete(API_ENDPOINTS.ENTERPRISE_LOGO(id), { headers: getAuthHeader() }),
+  uploadPictures: (id, files) => {
+    const formData = new FormData();
+    files.forEach((file) => formData.append('files', file));
+    return apiClient.post(API_ENDPOINTS.ENTERPRISE_PICTURES(id), formData, {
+      headers: { ...getAuthHeader(), 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  deletePicture: (id, index) => apiClient.delete(API_ENDPOINTS.ENTERPRISE_PICTURE_DELETE(id, index), { headers: getAuthHeader() }),
 };
 
 // Services API

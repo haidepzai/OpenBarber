@@ -18,8 +18,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -308,6 +310,67 @@ public class EnterpriseService {
      *
      * @param id the id
      */
+    public Enterprise uploadLogo(Long id, MultipartFile file, String token) {
+        Enterprise enterprise = enterpriseRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
+        authorizeEnterpriseAccess(enterprise, token);
+        try {
+            enterprise.setLogo(file.getBytes());
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to process image");
+        }
+        return enterpriseRepository.save(enterprise);
+    }
+
+    public Enterprise deleteLogo(Long id, String token) {
+        Enterprise enterprise = enterpriseRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
+        authorizeEnterpriseAccess(enterprise, token);
+        enterprise.setLogo(null);
+        return enterpriseRepository.save(enterprise);
+    }
+
+    public Enterprise uploadPictures(Long id, List<MultipartFile> files, String token) {
+        Enterprise enterprise = enterpriseRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
+        authorizeEnterpriseAccess(enterprise, token);
+        List<byte[]> pictures = new ArrayList<>();
+        if (enterprise.getPictures() != null) {
+            pictures.addAll(enterprise.getPictures());
+        }
+        for (MultipartFile file : files) {
+            try {
+                pictures.add(file.getBytes());
+            } catch (IOException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to process image");
+            }
+        }
+        enterprise.setPictures(pictures);
+        return enterpriseRepository.save(enterprise);
+    }
+
+    public Enterprise deletePicture(Long id, int index, String token) {
+        Enterprise enterprise = enterpriseRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
+        authorizeEnterpriseAccess(enterprise, token);
+        List<byte[]> pictures = enterprise.getPictures() == null ? new ArrayList<>() : new ArrayList<>(enterprise.getPictures());
+        if (index < 0 || index >= pictures.size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid picture index");
+        }
+        pictures.remove(index);
+        enterprise.setPictures(pictures);
+        return enterpriseRepository.save(enterprise);
+    }
+
+    private void authorizeEnterpriseAccess(Enterprise enterprise, String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+        if (user.getEnterprise() == null || !user.getEnterprise().getId().equals(enterprise.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized");
+        }
+    }
+
     public void deleteEnterprise(long id) {
         if (!enterpriseRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id);

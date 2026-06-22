@@ -29,6 +29,9 @@ const API_ENDPOINTS = {
   ENTERPRISES_BY_USER: `${BASE_URL}/api/enterprises/user`,
   ENTERPRISES_RADIUS: `${BASE_URL}/api/enterprises/within-radius`,
   ENTERPRISE_DETAIL: (id) => `${BASE_URL}/api/enterprises/${id}`,
+  ENTERPRISE_LOGO: (id) => `${BASE_URL}/api/enterprises/${id}/logo`,
+  ENTERPRISE_PICTURES: (id) => `${BASE_URL}/api/enterprises/${id}/pictures`,
+  ENTERPRISE_PICTURE_DELETE: (id, index) => `${BASE_URL}/api/enterprises/${id}/pictures/${index}`,
   ENTERPRISES_CREATE: `${BASE_URL}/api/enterprises`,
 
   // Appointments

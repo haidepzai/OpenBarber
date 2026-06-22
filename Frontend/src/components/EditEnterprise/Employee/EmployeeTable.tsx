@@ -366,7 +366,7 @@ export default function EmployeeTable(props: EmployeeTableProps) {
                       <TableCell align="right">
                         {employee.picture && (
                           <img
-                            src={URL.createObjectURL(employee.picture)}
+                            src={`data:image/jpeg;base64,${employee.picture}`}
                             alt="employee"
                             height="60px"
                             width="60px"

@@ -27,32 +27,23 @@ const PhotoGallery = ({ pictures }) => {
   const [openPhotoswiper, setOpenPhotoswiper] = useState(false);
   const { t } = useTranslation();
 
-  const getPictureArray = () => {
-    if (pictures && pictures.length > 0) {
-      return pictures;
-    } else {
-      return backupImages;
-    }
-  };
+  const galleryImages = pictures && pictures.length > 0 ? pictures : backupImages;
+  const getImageSrc = (image) => (typeof image === 'string' ? `data:image/jpeg;base64,${image}` : image.src);
+  const getImageAlt = (image, index) => (typeof image === 'string' ? `shop-picture-${index}` : image.name);
 
   return (
     <Box>
       <Typography variant="h6" sx={{ paddingLeft: '10px' }}>
-        {backupImages.length} {t('PHOTOS')}
+        {galleryImages.length} {t('PHOTOS')}
       </Typography>
       <ImageList sx={{ width: '100%', height: '344px', borderRadius: '5px', boxShadow: 4 }} cols={4} rowHeight={170} variant="quilted">
-        {getPictureArray().map((image, index) => (
+        {galleryImages.map((image, index) => (
           <ImageListItem key={index} onClick={() => setOpenPhotoswiper(true)} sx={{ '&:hover': { cursor: 'pointer' } }}>
-            <img
-              src={`${image.src}?w=164&h=164&fit=crop&auto=format`}
-              srcSet={`${image.src}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-              alt={image.name}
-              loading="lazy"
-            />
+            <img src={getImageSrc(image)} alt={getImageAlt(image, index)} loading="lazy" style={{ objectFit: 'cover' }} />
           </ImageListItem>
         ))}
       </ImageList>
-      {openPhotoswiper && <PhotoSwiper images={backupImages} onClose={() => setOpenPhotoswiper(false)} />}
+      {openPhotoswiper && <PhotoSwiper images={galleryImages} onClose={() => setOpenPhotoswiper(false)} />}
     </Box>
   );
 };

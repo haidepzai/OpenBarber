@@ -16,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -72,7 +73,7 @@ public class EnterpriseController {
     @GetMapping
     public ResponseEntity<Page<EnterpriseDto>> getAllEnterprises(@PageableDefault(size = 12) Pageable pageable) {
         Page<Enterprise> page = enterpriseService.getAllEnterprises(pageable);
-        return ResponseEntity.ok(page.map(enterpriseMapper::toDto));
+        return ResponseEntity.ok(page.map(enterpriseMapper::toSummaryDto));
     }
 
     @ApiOperation(value = "Get Enterprises within Radius", notes = "Retrieves enterprises within the given radius from a geographical point")
@@ -81,7 +82,7 @@ public class EnterpriseController {
             @RequestParam double lat, @RequestParam double lng, @RequestParam double radius,
             @PageableDefault(size = 12) Pageable pageable) {
         Page<Enterprise> page = enterpriseService.getEnterprisesWithinRadius(lat, lng, radius, pageable);
-        return ResponseEntity.ok(page.map(enterpriseMapper::toDto));
+        return ResponseEntity.ok(page.map(enterpriseMapper::toSummaryDto));
     }
 
     /**
@@ -183,6 +184,41 @@ public class EnterpriseController {
      * @param token the token
      * @return the response entity
      */
+    @PostMapping("/{id}/logo")
+    public ResponseEntity<EnterpriseDto> uploadLogo(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file,
+            @RequestHeader("Authorization") String token) {
+        Enterprise enterprise = enterpriseService.uploadLogo(id, file, token);
+        return ResponseEntity.ok(enterpriseMapper.toDto(enterprise));
+    }
+
+    @DeleteMapping("/{id}/logo")
+    public ResponseEntity<EnterpriseDto> deleteLogo(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String token) {
+        Enterprise enterprise = enterpriseService.deleteLogo(id, token);
+        return ResponseEntity.ok(enterpriseMapper.toDto(enterprise));
+    }
+
+    @PostMapping("/{id}/pictures")
+    public ResponseEntity<EnterpriseDto> uploadPictures(
+            @PathVariable Long id,
+            @RequestParam("files") List<MultipartFile> files,
+            @RequestHeader("Authorization") String token) {
+        Enterprise enterprise = enterpriseService.uploadPictures(id, files, token);
+        return ResponseEntity.ok(enterpriseMapper.toDto(enterprise));
+    }
+
+    @DeleteMapping("/{id}/pictures/{index}")
+    public ResponseEntity<EnterpriseDto> deletePicture(
+            @PathVariable Long id,
+            @PathVariable int index,
+            @RequestHeader("Authorization") String token) {
+        Enterprise enterprise = enterpriseService.deletePicture(id, index, token);
+        return ResponseEntity.ok(enterpriseMapper.toDto(enterprise));
+    }
+
     @ApiOperation(value = "Delete Enterprise", notes = "Deletes the enterprise by its ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEnterprise(@PathVariable long id,

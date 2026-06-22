@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URL;
 import java.util.List;
@@ -31,8 +30,8 @@ public class EnterpriseDto {
     private double addressLongitude;
     private double addressLatitude;
     private String email;
-    private MultipartFile logo;
-    private List<MultipartFile> pictures;
+    private String logo;
+    private List<String> pictures;
     private String phoneNumber;
     private String openingTime;
     private String closingTime;

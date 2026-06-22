@@ -51,8 +51,8 @@ const FilterResults = ({ filter }) => {
   // true --> element stays in array
   // false --> element is taken out
   const filterFunction = (shop, index, array) => {
-    const availableServiceTargetAudience = [...new Set(shop.services.map((service) => service.targetAudience))];
-    const employeeCount = shop.employees.length;
+    const availableServiceTargetAudience = [...new Set((shop.services ?? []).map((service) => service.targetAudience))];
+    const employeeCount = shop.employees?.length ?? 0;
 
     return (
       // priceCategory
@@ -71,9 +71,9 @@ const FilterResults = ({ filter }) => {
         dayjs(shop.closingTime).isAfter(filter.closingTime, 'minute') ||
         dayjs(shop.closingTime).isSame(filter.closingTime, 'minute')) &&
       // paymentMethods
-      (filter.paymentMethods.length === 0 || filter.paymentMethods.every((pm) => shop.paymentMethods.includes(pm))) &&
+      (filter.paymentMethods.length === 0 || filter.paymentMethods.every((pm) => (shop.paymentMethods ?? []).includes(pm))) &&
       // drinks
-      (filter.drinks.length === 0 || filter.drinks.every((drink) => shop.drinks.includes(drink)))
+      (filter.drinks.length === 0 || filter.drinks.every((drink) => (shop.drinks ?? []).includes(drink)))
     );
   };
 
@@ -165,7 +165,7 @@ const FilterResults = ({ filter }) => {
                   <Stack direction="row" alignItems="center" spacing={3} sx={{ mb: '20px' }}>
                     <img
                       alt="shop logo"
-                      src={shop.logo ? URL.createObjectURL(shop.logo) : process.env.REACT_APP_BACKUP_IMAGE}
+                      src={shop.logo ? `data:image/jpeg;base64,${shop.logo}` : process.env.REACT_APP_BACKUP_IMAGE}
                       width="205px"
                       height="205px"
                       style={{
