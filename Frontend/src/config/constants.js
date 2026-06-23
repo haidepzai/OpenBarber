@@ -22,6 +22,7 @@ const API_ENDPOINTS = {
   USER_GET: (id) => `${BASE_URL}/api/users/${id}`,
   USER_UPDATE: (id) => `${BASE_URL}/api/users/${id}`,
   USER_INFO: `${BASE_URL}/api/users/info/`,
+  USER_PHOTO: (id) => `${BASE_URL}/api/users/${id}/photo`,
 
   // Enterprises
   ENTERPRISES: `${BASE_URL}/api/enterprises`,

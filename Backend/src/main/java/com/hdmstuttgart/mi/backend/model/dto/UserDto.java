@@ -21,6 +21,11 @@ public class UserDto {
     private Long id;
     private String email;
     private String name;
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
+    private String salutation;
+    private byte[] profilePhoto;
     private String password;
     private Enterprise enterprise;
     private UserRole role;

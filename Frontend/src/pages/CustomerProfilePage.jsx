@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
-  Box, Typography, Chip, Divider, Stack, CircularProgress, Paper, Button, Avatar
+  Box, Typography, Chip, Divider, Stack, CircularProgress, Paper, Button
 } from '@mui/material';
 import EventIcon from '@mui/icons-material/Event';
 import StoreIcon from '@mui/icons-material/Store';

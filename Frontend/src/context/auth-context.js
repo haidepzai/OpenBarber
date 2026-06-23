@@ -50,6 +50,7 @@ export const AuthContextProvider = (props) => {
       setUserId(user.id);
       setEmail(user.email);
       setRole(user.role);
+      setUser(user);
       setIsLoggedIn(true);
       return true;
     } catch {
@@ -88,6 +89,7 @@ export const AuthContextProvider = (props) => {
         const user = await getUserByToken();
         setEmail(user.email);
         setRole(user.role);
+        setUser(user);
       } catch (e) {
         // non-critical – role will be set on next page load
       }

@@ -148,7 +148,7 @@ const LoginModal = ({ gotoSignup }) => {
           if (hasEnterprise) {
             navigate('/edit');
           } else {
-            navigate('/my-profile');
+            navigate('/my-appointments');
           }
         }
       } catch (error) {

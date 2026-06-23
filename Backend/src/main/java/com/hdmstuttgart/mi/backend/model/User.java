@@ -52,6 +52,17 @@ public class User implements UserDetails {
 
     private String name;
 
+    private String firstName;
+
+    private String lastName;
+
+    private String phoneNumber;
+
+    private String salutation;
+
+    @Lob
+    private byte[] profilePhoto;
+
     @CreationTimestamp
     private Date createdAt;
 

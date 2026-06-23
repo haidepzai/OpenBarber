@@ -212,5 +212,14 @@
   "WROTE": "書いた",
   "YOUR_COMMENT": "あなたのコメント",
   "YOUR_COMMENTS": "あなたのコメント",
-  "YOUR_NAME": "あなたの名前"
+  "YOUR_NAME": "あなたの名前",
+  "UPLOAD_PHOTO": "写真をアップロード",
+  "SALUTATION": "敬称",
+  "SAVED": "保存しました！",
+  "SAVE": "保存",
+  "SAVE_FAILED": "保存に失敗しました",
+  "PHOTO_UPLOAD_FAILED": "写真のアップロードに失敗しました",
+  "EDIT_PROFILE": "プロフィール編集",
+  "CANCEL_APPOINTMENT": "キャンセル",
+  "CONFIRM_CANCEL_APPOINTMENT": "本当にキャンセルしますか？"
 }

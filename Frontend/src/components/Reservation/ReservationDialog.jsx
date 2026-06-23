@@ -19,7 +19,7 @@ const initialState = {
   services: [],
   employee: { name: 'Any' },
   employeeId: '',
-  appointmentDateTime: new Date(),
+  appointmentDateTime: null,
   personalData: {
     formOfAddress: 'None',
     firstName: '',
@@ -75,13 +75,15 @@ function ReservationDialog({ open, handleClose, shop }) {
   // Pre-fill personal data for logged-in customers
   useEffect(() => {
     if (authCtx.isLoggedIn && authCtx.role !== 'OPERATOR' && authCtx.user) {
-      const nameParts = (authCtx.user.name || '').split(' ');
+      const u = authCtx.user;
       dispatch({
         type: 'set_personal_data',
         payload: {
-          firstName: nameParts[0] || '',
-          lastName: nameParts.slice(1).join(' ') || '',
+          formOfAddress: u.salutation || 'None',
+          firstName: u.firstName || u.name?.split(' ')[0] || '',
+          lastName: u.lastName || u.name?.split(' ').slice(1).join(' ') || '',
           email: authCtx.email || '',
+          phoneNumber: u.phoneNumber || '',
         },
       });
     }
@@ -94,7 +96,13 @@ function ReservationDialog({ open, handleClose, shop }) {
       case 1:
         return !!data.appointmentDateTime;
       case 2:
-        return !Object.values(data.personalData).map(Boolean).includes(false);
+        return (
+          !!data.personalData.firstName &&
+          !!data.personalData.lastName &&
+          !!data.personalData.email &&
+          !!data.personalData.phoneNumber &&
+          data.personalData.formOfAddress !== 'None'
+        );
       default:
         console.log('rip');
     }
@@ -127,7 +135,7 @@ function ReservationDialog({ open, handleClose, shop }) {
 
   const handleSubmit = async () => {
     authCtx.setIsLoading(true);
-    const isoDateTime = data.appointmentDateTime.toISOString();
+    const isoDateTime = data.appointmentDateTime?.toISOString();
     const requestObject = {
       customerName: `${data.personalData.firstName} ${data.personalData.lastName}`,
       customerPhoneNumber: data.personalData.phoneNumber,

@@ -29,7 +29,7 @@ const Overview = ({ booked, data, handleStep }) => {
     <Box sx={{ borderRadius: '8px', border: '1px solid rgb(236,236,236)', marginBottom: '20px' }}>
       <Stack direction="row" alignItems="center" spacing={3} sx={{ borderTop: '1px solid rgb(236,236,236)', padding: ' 16px 24px' }}>
         <CalendarMonthIcon fontSize="large" />
-        <Typography sx={{ lineHeight: 'unset' }}>{data.appointmentDateTime.toLocaleString('de-DE', options)}</Typography>
+        <Typography sx={{ lineHeight: 'unset' }}>{data.appointmentDateTime?.toLocaleString('de-DE', options) ?? '–'}</Typography>
       </Stack>
       <Stack
         direction="row"
@@ -108,7 +108,7 @@ const Overview = ({ booked, data, handleStep }) => {
         <HourglassBottomIcon fontSize="large" />
         <Typography sx={{ lineHeight: 'unset' }}>
           {t('DURATION')}: {totalDuration()} {t('MINUTES')} (
-          {t('ENDS_APROX', { time: `${calculateEndDate(data.appointmentDateTime, totalDuration())}` })})
+          {t('ENDS_APROX', { time: `${data.appointmentDateTime ? calculateEndDate(new Date(data.appointmentDateTime), totalDuration()) : '–'}` })})
         </Typography>
       </Stack>
     </Box>

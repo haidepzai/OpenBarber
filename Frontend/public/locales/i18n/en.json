@@ -212,5 +212,14 @@
   "WROTE": "Wrote",
   "YOUR_COMMENT": "Your comment",
   "YOUR_COMMENTS": "Your comments",
-  "YOUR_NAME": "Your name"
+  "YOUR_NAME": "Your name",
+  "UPLOAD_PHOTO": "Upload photo",
+  "SALUTATION": "Salutation",
+  "SAVED": "Saved!",
+  "SAVE": "Save",
+  "SAVE_FAILED": "Could not save profile",
+  "PHOTO_UPLOAD_FAILED": "Photo upload failed",
+  "EDIT_PROFILE": "Edit profile",
+  "CANCEL_APPOINTMENT": "Cancel",
+  "CONFIRM_CANCEL_APPOINTMENT": "Really cancel this appointment?"
 }

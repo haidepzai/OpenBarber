@@ -20,13 +20,14 @@ import AppointmentConfirmation from './pages/AppointmentConfirmation';
 import CancelAppointment from './pages/CancelAppointment';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import CustomerProfilePage from './pages/CustomerProfilePage';
+import CustomerEditProfilePage from './pages/CustomerEditProfilePage';
 import AuthContext from './context/auth-context';
 
 // Only accessible for logged-in enterprise operators
 const OperatorRoute = ({ children }) => {
   const authCtx = useContext(AuthContext);
   if (!authCtx.isLoggedIn) return <Navigate to="/" replace />;
-  if (authCtx.role === 'VERIFIED') return <Navigate to="/my-profile" replace />;
+  if (authCtx.role === 'VERIFIED') return <Navigate to="/my-appointments" replace />;
   return children;
 };
 
@@ -54,7 +55,8 @@ function App() {
             <Route path="privacy-policy" element={<Datenschutz />} />
             <Route path="scheduler" element={<OperatorRoute><SchedulerPage /></OperatorRoute>} />
             <Route path="edit" element={<OperatorRoute><EditEnterprisePage /></OperatorRoute>} />
-            <Route path="my-profile" element={<CustomerRoute><CustomerProfilePage /></CustomerRoute>} />
+            <Route path="my-appointments" element={<CustomerRoute><CustomerProfilePage /></CustomerRoute>} />
+            <Route path="my-profile" element={<CustomerRoute><CustomerEditProfilePage /></CustomerRoute>} />
             <Route path="appointment/:routeId" element={<AppointmentConfirmation/>}/>
             <Route path="cancel-appointment/:routeId" element={<CancelAppointment/>}/>
             <Route path="reset-password" element={<ResetPasswordPage/>}/>

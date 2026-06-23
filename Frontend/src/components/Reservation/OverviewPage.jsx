@@ -55,13 +55,16 @@ const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error
         {t('CONTACT_DETAILS')}
       </Typography>
       <Stack direction="column">
-        <FormControl sx={{ width: '259.5px', paddingBottom: '25px' }}>
-          <InputLabel id="demo-simple-select-label">Form of Address</InputLabel>
-          <Select value={data.personalData.formOfAddress} label="Form of Address" name="formOfAddress" onChange={handleChange}>
+        <FormControl sx={{ width: '259.5px', paddingBottom: showErrors && data.personalData.formOfAddress === 'None' ? '5px' : '25px' }} error={showErrors && data.personalData.formOfAddress === 'None'}>
+          <InputLabel id="demo-simple-select-label">Form of Address *</InputLabel>
+          <Select value={data.personalData.formOfAddress} label="Form of Address *" name="formOfAddress" onChange={handleChange}>
             <MenuItem value="Mr.">{t('MR')}</MenuItem>
             <MenuItem value="Mrs.">{t('MRS')}</MenuItem>
             <MenuItem value="None">{t('NO_SELECTION')}</MenuItem>
           </Select>
+          {showErrors && data.personalData.formOfAddress === 'None' && (
+            <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.75 }}>{t('CANT_BE_EMPTY')}</Typography>
+          )}
         </FormControl>
         <Stack direction="row" spacing={3}>
           <TextField

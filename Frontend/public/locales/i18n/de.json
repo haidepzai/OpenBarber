@@ -211,5 +211,14 @@
   "WROTE": "hat geschrieben",
   "YOUR_COMMENT": "Ihr Kommentar",
   "YOUR_COMMENTS": "Ihre Kommentare",
-  "YOUR_NAME": "Ihr Name"
+  "YOUR_NAME": "Ihr Name",
+  "UPLOAD_PHOTO": "Foto hochladen",
+  "SALUTATION": "Anrede",
+  "SAVED": "Gespeichert!",
+  "SAVE": "Speichern",
+  "SAVE_FAILED": "Speichern fehlgeschlagen",
+  "PHOTO_UPLOAD_FAILED": "Foto-Upload fehlgeschlagen",
+  "EDIT_PROFILE": "Profil bearbeiten",
+  "CANCEL_APPOINTMENT": "Absagen",
+  "CONFIRM_CANCEL_APPOINTMENT": "Termin wirklich absagen?"
 }

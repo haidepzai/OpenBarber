@@ -123,6 +123,13 @@ export const usersAPI = {
   getById: (id) => apiClient.get(API_ENDPOINTS.USER_GET(id), { headers: getAuthHeader() }),
   update: (id, data) => apiClient.put(API_ENDPOINTS.USER_UPDATE(id), data, { headers: getAuthHeader() }),
   getInfo: () => apiClient.get(API_ENDPOINTS.USER_INFO, { headers: getAuthHeader() }),
+  uploadPhoto: (id, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.post(API_ENDPOINTS.USER_PHOTO(id), formData, {
+      headers: { ...getAuthHeader(), 'Content-Type': 'multipart/form-data' },
+    });
+  },
 };
 
 // Employees API

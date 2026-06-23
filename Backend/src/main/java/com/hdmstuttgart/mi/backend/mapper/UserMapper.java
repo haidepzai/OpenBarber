@@ -4,23 +4,19 @@ import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.UserDto;
 import org.springframework.stereotype.Component;
 
-/**
- * The type User mapper.
- */
 @Component
 public class UserMapper {
 
-    /**
-     * To dto user dto.
-     *
-     * @param user the user
-     * @return the user dto
-     */
     public static UserDto toDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phoneNumber(user.getPhoneNumber())
+                .salutation(user.getSalutation())
+                .profilePhoto(user.getProfilePhoto())
                 .password(user.getPassword())
                 .enterprise(user.getEnterprise())
                 .role(user.getRole())
@@ -28,17 +24,16 @@ public class UserMapper {
                 .build();
     }
 
-    /**
-     * To user user.
-     *
-     * @param userDto the user dto
-     * @return the user
-     */
     public static User toUser(UserDto userDto) {
         return User.builder()
                 .id(userDto.getId())
                 .email(userDto.getEmail())
                 .name(userDto.getName())
+                .firstName(userDto.getFirstName())
+                .lastName(userDto.getLastName())
+                .phoneNumber(userDto.getPhoneNumber())
+                .salutation(userDto.getSalutation())
+                .profilePhoto(userDto.getProfilePhoto())
                 .password(userDto.getPassword())
                 .enterprise(userDto.getEnterprise())
                 .role(userDto.getRole())
