@@ -65,6 +65,8 @@ public class EnterpriseMapper {
         dto.setPriceCategory(enterprise.getPriceCategory());
         dto.setPaymentMethods(enterprise.getPaymentMethods());
         dto.setDrinks(enterprise.getDrinks());
+        dto.setServices(enterprise.getServices());
+        dto.setEmployees(enterprise.getEmployees());
         dto.setReviews(enterprise.getReviews());
         return dto;
     }

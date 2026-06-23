@@ -82,6 +82,7 @@
   "LOGIN_TITLE": "バーバーショップを管理するためにログインしてください！",
   "LOGOUT": "ログアウト",
   "CHOOSE_LANGUAGE": "言語を選択",
+  "OPENING_HOURS_HINT": "営業時間: {{open}} – {{close}}",
   "LUXURIOUS_SERVICES": "高級サービス",
   "MANAGE_APPOINTMENT": "予約を管理",
   "MEN": "男性",

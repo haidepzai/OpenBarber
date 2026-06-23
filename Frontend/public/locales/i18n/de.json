@@ -81,6 +81,7 @@
   "LOGIN_TITLE": "Melden Sie sich an, um Ihre Friseurgeschäfte zu verwalten!",
   "LOGOUT": "Abmelden",
   "CHOOSE_LANGUAGE": "Sprache auswählen",
+  "OPENING_HOURS_HINT": "Verfügbar: {{open}} – {{close}} Uhr",
   "LUXURIOUS_SERVICES": "Gehobener Service",
   "MANAGE_APPOINTMENT": "Termin verwalten",
   "MEN": "Herren",

@@ -82,6 +82,7 @@
   "LOGIN_TITLE": "Login to manage your barber shops!",
   "LOGOUT": "Logout",
   "CHOOSE_LANGUAGE": "Choose language",
+  "OPENING_HOURS_HINT": "Available: {{open}} – {{close}}",
   "LUXURIOUS_SERVICES": "Luxurious Services",
   "MANAGE_APPOINTMENT": "Manage Appointment",
   "MEN": "Men",

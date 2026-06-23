@@ -10,13 +10,29 @@ import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DateTimePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 
 const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
-const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmployees }) => {
+const parseTime = (timeStr) => {
+  if (!timeStr) return null;
+  // ISO string e.g. "2024-01-01T09:00:00"
+  if (timeStr.includes('T')) {
+    const d = new Date(timeStr);
+    return dayjs().hour(d.getUTCHours()).minute(d.getUTCMinutes()).second(0);
+  }
+  // Plain "HH:mm"
+  const [h, m] = timeStr.split(':').map(Number);
+  return dayjs().hour(h).minute(m).second(0);
+};
+
+const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmployees, openingTime, closingTime }) => {
   const [expanded, setExpanded] = useState(false);
 
   const { t } = useTranslation();
+
+  const minTime = parseTime(openingTime);
+  const maxTime = parseTime(closingTime);
 
   const handlePick = (employee) => {
     pickStylist(employee);
@@ -57,6 +73,15 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
         {t('CHOOSE_DATE')}
       </Typography>
 
+      {minTime && maxTime && (
+        <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
+          {t('OPENING_HOURS_HINT', {
+            open: minTime.format('HH:mm'),
+            close: maxTime.format('HH:mm'),
+          })}
+        </Typography>
+      )}
+
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimePicker
           label={t('CHOOSE_DATE')}
@@ -66,6 +91,8 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
           onChange={(newValue) => {
             pickDate(newValue);
           }}
+          minTime={minTime}
+          maxTime={maxTime}
           renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>
@@ -80,3 +107,4 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
 };
 
 export default DatePage;
+

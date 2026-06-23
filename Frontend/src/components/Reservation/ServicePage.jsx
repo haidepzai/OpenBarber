@@ -16,7 +16,7 @@ const ServicePage = ({ pickedServices, pickService, removeService, name, shopSer
       <Typography variant="overline" display="block" gutterBottom>
         {t('CHOOSE_SERVICE')}
       </Typography>
-      {[...new Set(shopServices.map((obj) => obj.targetAudience))].map((targetAudience) => (
+      {[...new Set((shopServices ?? []).map((obj) => obj.targetAudience))].map((targetAudience) => (
         <Accordion sx={{ marginBottom: '20px' }} key={targetAudience}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
             <Typography sx={{ textTransform: 'capitalize' }}>{targetAudience}</Typography>
