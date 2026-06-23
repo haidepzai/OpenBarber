@@ -31,6 +31,7 @@ public class EnterpriseMapper {
         dto.setPhoneNumber(enterprise.getPhoneNumber());
         dto.setOpeningTime(enterprise.getOpeningTime());
         dto.setClosingTime(enterprise.getClosingTime());
+        dto.setOpeningDays(enterprise.getOpeningDays());
         dto.setWebsite(enterprise.getWebsite());
         dto.setRecommended(enterprise.isRecommended());
         dto.setApproved(enterprise.isApproved());
@@ -59,6 +60,7 @@ public class EnterpriseMapper {
         dto.setPhoneNumber(enterprise.getPhoneNumber());
         dto.setOpeningTime(enterprise.getOpeningTime());
         dto.setClosingTime(enterprise.getClosingTime());
+        dto.setOpeningDays(enterprise.getOpeningDays());
         dto.setWebsite(enterprise.getWebsite());
         dto.setRecommended(enterprise.isRecommended());
         dto.setApproved(enterprise.isApproved());
@@ -88,6 +90,7 @@ public class EnterpriseMapper {
         enterprise.setWebsite(dto.getWebsite());
         enterprise.setOpeningTime(dto.getOpeningTime());
         enterprise.setClosingTime(dto.getClosingTime());
+        enterprise.setOpeningDays(dto.getOpeningDays());
         enterprise.setReviews(dto.getReviews());
         enterprise.setRecommended(dto.isRecommended());
         enterprise.setApproved(dto.isApproved());

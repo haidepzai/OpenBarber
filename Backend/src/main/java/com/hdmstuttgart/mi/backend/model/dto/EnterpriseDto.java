@@ -35,6 +35,7 @@ public class EnterpriseDto {
     private String phoneNumber;
     private String openingTime;
     private String closingTime;
+    private List<String> openingDays;
     private URL website;
     private boolean recommended;
     private boolean approved;

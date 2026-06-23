@@ -85,14 +85,36 @@ const ShopInfoCard = ({ shop, mobile }) => {
             </Tabs>
           </Box>
 
-          <TabPanel value={tab} index={0} sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
+            <TabPanel value={tab} index={0} sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
             <Stack direction="row" alignItems="center" spacing={1}>
               <AccessTimeIcon />
               <Typography variant="h6">{t('OPENING_HOURS')}:</Typography>
               <Typography variant="h6">
-                {shop.openingTime ? convertDateToTime(shop.openingTime) : 'N/A'} - {shop.openingTime ? convertDateToTime(shop.closingTime) : 'N/A'}
+                {shop.openingTime ? convertDateToTime(shop.openingTime) : 'N/A'} - {shop.closingTime ? convertDateToTime(shop.closingTime) : 'N/A'}
               </Typography>
             </Stack>
+
+            {shop.openingDays && shop.openingDays.length > 0 && (
+              <Stack direction="row" flexWrap="wrap" gap={0.5}>
+                {['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'].map((day) => (
+                  <Typography
+                    key={day}
+                    variant="body2"
+                    sx={{
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: '100vw',
+                      fontWeight: 600,
+                      fontSize: '13px',
+                      backgroundColor: shop.openingDays.includes(day) ? 'primary.main' : 'grey.200',
+                      color: shop.openingDays.includes(day) ? 'primary.contrastText' : 'text.disabled',
+                    }}
+                  >
+                    {t(day)}
+                  </Typography>
+                ))}
+              </Stack>
+            )}
 
             <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h7" mb={1} sx={{ fontWeight: 600, color: 'grey.1000' }}>

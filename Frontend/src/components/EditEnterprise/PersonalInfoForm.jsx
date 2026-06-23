@@ -4,9 +4,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
 
 const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', 'PAYPAL'];
 const drinkOptions = ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'];
+const DAYS_OF_WEEK = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
 const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterpriseArrayChange }) => {
   const { t } = useTranslation();
@@ -101,12 +103,12 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
               <TimePicker
                 name="open"
                 label={!enterprise.openingTime && 'Open'}
-                value={enterprise.openingTime === null ? '' : enterprise.openingTime}
+                value={enterprise.openingTime ? dayjs(enterprise.openingTime, 'HH:mm') : null}
                 onChange={(newValue) => {
                   handleEnterpriseChange({
                     target: {
                       name: 'openingTime',
-                      value: newValue.format('HH:mm'),
+                      value: newValue ? newValue.format('HH:mm') : null,
                     },
                   });
                 }}
@@ -120,12 +122,12 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
               <TimePicker
                 name="close"
                 label={!enterprise.closingTime && 'Close'}
-                value={enterprise.closingTime === null ? '' : enterprise.closingTime}
+                value={enterprise.closingTime ? dayjs(enterprise.closingTime, 'HH:mm') : null}
                 onChange={(newValue) => {
                   handleEnterpriseChange({
                     target: {
                       name: 'closingTime',
-                      value: newValue.format('HH:mm'),
+                      value: newValue ? newValue.format('HH:mm') : null,
                     },
                   });
                 }}
@@ -133,6 +135,26 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
               />
             </LocalizationProvider>
           </Stack>
+        </Stack>
+
+        <Stack direction="row" alignItems="flex-start">
+          <Typography variant="body1" sx={{ paddingTop: '8px' }}>{t('OPENING_DAYS')}</Typography>
+          <ToggleButtonGroup
+            value={enterprise.openingDays || []}
+            onChange={(event, newDays) => {
+              handleEnterpriseChange({
+                target: { name: 'openingDays', value: newDays },
+              });
+            }}
+            aria-label="Opening days"
+            sx={{ flexWrap: 'wrap', gap: 0.5 }}
+          >
+            {DAYS_OF_WEEK.map((day) => (
+              <ToggleButton key={day} value={day} aria-label={day} sx={{ minWidth: '48px', fontSize: '13px', padding: '6px 10px' }}>
+                {t(day)}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
         </Stack>
 
         <Stack direction="row">

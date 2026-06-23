@@ -21,6 +21,7 @@ export const buildEnterpriseSavePayload = (enterprise) => ({
     phoneNumber: enterprise.phoneNumber,
     openingTime: enterprise.openingTime,
     closingTime: enterprise.closingTime,
+    openingDays: enterprise.openingDays || [],
     website: enterprise.website,
     recommended: enterprise.recommended,
     approved: enterprise.approved,

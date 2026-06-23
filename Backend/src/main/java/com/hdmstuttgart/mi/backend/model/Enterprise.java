@@ -53,6 +53,10 @@ public class Enterprise {
     private String openingTime;
     private String closingTime;
 
+    @ElementCollection
+    @CollectionTable(name = "enterprise_opening_days", joinColumns = @JoinColumn(name = "enterprise_id"))
+    private List<String> openingDays;
+
     private boolean recommended;
 
     private boolean approved;

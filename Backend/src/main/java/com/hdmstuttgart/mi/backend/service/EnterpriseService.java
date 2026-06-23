@@ -211,6 +211,7 @@ public class EnterpriseService {
                     enterprise.setPriceCategory(newEnterprise.getPriceCategory());
                     enterprise.setOpeningTime(newEnterprise.getOpeningTime());
                     enterprise.setClosingTime(newEnterprise.getClosingTime());
+                    enterprise.setOpeningDays(newEnterprise.getOpeningDays());
 
                     // Update Payment Methods
                     if (newEnterprise.getPaymentMethods() != null) {
