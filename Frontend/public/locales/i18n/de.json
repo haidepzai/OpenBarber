@@ -25,6 +25,8 @@
   "CHECK_INFORMATION": "Überprüfen Sie Ihre Informationen!",
   "CHOOSE_DATE": "Wählen Sie ein Datum",
   "CHOOSE_TIME": "Uhrzeit wählen",
+  "NO_SLOTS_AVAILABLE": "Keine freien Termine an diesem Tag.",
+  "ANY_EMPLOYEE_HINT": "Beliebiger Mitarbeiter",
   "CHOOSE_DURATION": "Wählen Sie eine Dauer (kann 0 sein)!",
   "CHOOSE_OPTION": "Wählen Sie eine Option!",
   "CHOOSE_PRICE": "Wählen Sie einen Preis (kann 0 sein)!",

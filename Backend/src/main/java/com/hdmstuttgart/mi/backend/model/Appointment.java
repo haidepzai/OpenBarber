@@ -1,6 +1,7 @@
 package com.hdmstuttgart.mi.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hdmstuttgart.mi.backend.model.enums.AppointmentType;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,18 +37,20 @@ public class Appointment {
 
     private boolean reviewed;
 
-    @NotBlank(message = "Customer name is mandatory")
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(255) default 'APPOINTMENT'")
+    private AppointmentType appointmentType = AppointmentType.APPOINTMENT;
+
     private String customerName;
 
-    @NotBlank(message = "Customer phone number is mandatory")
     private String customerPhoneNumber;
 
-    @NotBlank(message = "Customer email is mandatory")
-    @Email
     private String customerEmail;
 
     @NotNull(message = "Appointment date-time is mandatory")
     private LocalDateTime appointmentDateTime;
+
+    private LocalDateTime endDateTime;
 
     private boolean confirmed;
 

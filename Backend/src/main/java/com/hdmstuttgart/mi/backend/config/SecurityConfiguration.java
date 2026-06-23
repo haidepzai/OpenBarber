@@ -36,7 +36,7 @@ public class SecurityConfiguration {
             // Swagger
             .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
             // Public read: enterprises, services, reviews
-            .antMatchers(HttpMethod.GET, "/api/enterprises", "/api/enterprises/{id}", "/api/enterprises/within-radius", "/api/enterprises/email").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/enterprises", "/api/enterprises/{id}", "/api/enterprises/within-radius", "/api/enterprises/email", "/api/enterprises/*/available-slots").permitAll()
             .antMatchers(HttpMethod.GET, "/api/reviews").permitAll()
             .antMatchers(HttpMethod.GET, "/api/services").permitAll()
             // Operator-only: manage own enterprise (UNVERIFIED/VERIFIED can create once during signup)

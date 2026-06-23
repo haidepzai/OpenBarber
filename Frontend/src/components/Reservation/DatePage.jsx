@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Button, Chip, IconButton, Stack, Typography } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Box, Chip, CircularProgress, IconButton, Typography } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import Stylist from './Stylist';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -10,61 +10,48 @@ import { DatePicker } from '@mui/x-date-pickers';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
+import { enterprisesAPI } from '../../api/apiClient';
 
-const SLOT_INTERVAL_MIN = 15;
-
-const parseTime = (timeStr) => {
-  if (!timeStr) return null;
-  if (timeStr.includes('T')) {
-    const d = new Date(timeStr);
-    return { h: d.getUTCHours(), m: d.getUTCMinutes() };
-  }
-  const [h, m] = timeStr.split(':').map(Number);
-  return { h, m };
-};
-
-const DEFAULT_OPEN = { h: 8, m: 0 };
-const DEFAULT_CLOSE = { h: 20, m: 0 };
-
-const generateSlots = (openingTime, closingTime) => {
-  const open = parseTime(openingTime) ?? DEFAULT_OPEN;
-  const close = parseTime(closingTime) ?? DEFAULT_CLOSE;
-  const slots = [];
-  let cur = open.h * 60 + open.m;
-  const end = close.h * 60 + close.m;
-  while (cur < end) {
-    const h = Math.floor(cur / 60);
-    const m = cur % 60;
-    slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
-    cur += SLOT_INTERVAL_MIN;
-  }
-  return slots;
-};
-
-const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmployees, openingTime, closingTime }) => {
+const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmployees, enterpriseId, selectedServices }) => {
   const [expanded, setExpanded] = useState(false);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
   const { t } = useTranslation();
 
-  const slots = generateSlots(openingTime, closingTime);
-
   const pickedDay = pickedDate ? dayjs(pickedDate) : null;
-  const pickedTimeStr = pickedDay ? pickedDay.format('HH:mm') : null;
+  const pickedTimeStr = pickedDay && pickedDay.hour() + pickedDay.minute() > 0 ? pickedDay.format('HH:mm') : null;
+
+  const isAnyEmployee = !pickedStylist?.id;
+  const totalDuration = (selectedServices ?? []).reduce((sum, s) => sum + (s.durationInMin ?? 30), 0) || 30;
+
+  const fetchSlots = useCallback(async (day) => {
+    if (!day || !enterpriseId) return;
+    setLoadingSlots(true);
+    try {
+      const dateStr = day.format('YYYY-MM-DD');
+      const employeeId = isAnyEmployee ? null : pickedStylist.id;
+      const res = await enterprisesAPI.getAvailableSlots(enterpriseId, dateStr, employeeId, totalDuration);
+      setAvailableSlots(res.data ?? []);
+    } catch (e) {
+      setAvailableSlots([]);
+    } finally {
+      setLoadingSlots(false);
+    }
+  }, [enterpriseId, isAnyEmployee, pickedStylist?.id, totalDuration]);
+
+  useEffect(() => {
+    if (pickedDay) fetchSlots(pickedDay);
+  }, [pickedDay?.format('YYYY-MM-DD'), fetchSlots]);
 
   const handleDateChange = (newDay) => {
     if (!newDay) return;
-    // Keep existing time if already selected, else don't set time yet
-    if (pickedTimeStr) {
-      const [h, m] = pickedTimeStr.split(':').map(Number);
-      pickDate(newDay.hour(h).minute(m).second(0));
-    } else {
-      pickDate(newDay.startOf('day'));
-    }
+    pickDate(newDay.startOf('day').toDate());
   };
 
   const handleSlotPick = (slot) => {
     const [h, m] = slot.split(':').map(Number);
     const base = pickedDay ?? dayjs();
-    pickDate(base.hour(h).minute(m).second(0));
+    pickDate(base.hour(h).minute(m).second(0).toDate());
   };
 
   const handlePick = (employee) => {
@@ -74,14 +61,14 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
 
   return (
     <Box sx={{ padding: '20px', overflowY: 'auto' }}>
-      <Typography variant="h6" sx={{ marginBottom: '20px' }}>
+      <Typography variant="h6" sx={{ mb: 2 }}>
         {t('RESERVATION_TITLE')}
       </Typography>
 
       <Typography variant="overline" display="block" gutterBottom>
         {t('CHOOSE_STYLIST')}
       </Typography>
-      <Accordion sx={{ marginBottom: '20px' }} expanded={expanded}>
+      <Accordion sx={{ mb: 2 }} expanded={expanded}>
         <Box sx={{ position: 'relative' }} onClick={() => setExpanded(!expanded)}>
           <Stylist employee={pickedStylist} onClick={setExpanded} selected />
           <Box sx={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)' }}>
@@ -90,8 +77,8 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
             </IconButton>
           </Box>
         </Box>
-        {shopEmployees
-          .filter((e) => e.name !== pickedStylist.name)
+        {(shopEmployees ?? [])
+          .filter((e) => e.name !== pickedStylist?.name)
           .map((e) => (
             <Stylist key={e.name} employee={e} onClick={() => handlePick(e)} />
           ))}
@@ -110,30 +97,43 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
         />
       </LocalizationProvider>
 
-      {pickedDay && slots.length > 0 && (
+      {pickedDay && (
         <Box sx={{ mt: 3 }}>
           <Typography variant="overline" display="block" gutterBottom>
             {t('CHOOSE_TIME')}
-            <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 1 }}>
-              ({String((parseTime(openingTime) ?? DEFAULT_OPEN).h).padStart(2,'0')}:{String((parseTime(openingTime) ?? DEFAULT_OPEN).m).padStart(2,'0')} – {String((parseTime(closingTime) ?? DEFAULT_CLOSE).h).padStart(2,'0')}:{String((parseTime(closingTime) ?? DEFAULT_CLOSE).m).padStart(2,'0')})
-            </Typography>
+            {isAnyEmployee && (
+              <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                ({t('ANY_EMPLOYEE_HINT', 'Beliebiger Mitarbeiter')})
+              </Typography>
+            )}
           </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {slots.map((slot) => (
-              <Chip
-                key={slot}
-                label={slot}
-                clickable
-                color={pickedTimeStr === slot ? 'primary' : 'default'}
-                variant={pickedTimeStr === slot ? 'filled' : 'outlined'}
-                onClick={() => handleSlotPick(slot)}
-              />
-            ))}
-          </Box>
+
+          {loadingSlots ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+              <CircularProgress size={24} />
+            </Box>
+          ) : availableSlots.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              {t('NO_SLOTS_AVAILABLE', 'Keine freien Termine an diesem Tag.')}
+            </Typography>
+          ) : (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {availableSlots.map((slot) => (
+                <Chip
+                  key={slot}
+                  label={slot}
+                  clickable
+                  color={pickedTimeStr === slot ? 'primary' : 'default'}
+                  variant={pickedTimeStr === slot ? 'filled' : 'outlined'}
+                  onClick={() => handleSlotPick(slot)}
+                />
+              ))}
+            </Box>
+          )}
         </Box>
       )}
 
-      {pickedDay && pickedTimeStr && pickedTimeStr !== '00:00' && (
+      {pickedDay && pickedTimeStr && (
         <Box sx={{ border: '1px solid rgb(236,236,236)', p: '10px 20px', mt: 2 }}>
           <Typography sx={{ fontSize: '14px' }}>
             {t('APPOINTMENT_ON', { date: pickedDay.format('DD.MM.YYYY') + ' ' + pickedTimeStr + ' Uhr' })}

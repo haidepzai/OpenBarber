@@ -32,6 +32,7 @@ const API_ENDPOINTS = {
   ENTERPRISE_LOGO: (id) => `${BASE_URL}/api/enterprises/${id}/logo`,
   ENTERPRISE_PICTURES: (id) => `${BASE_URL}/api/enterprises/${id}/pictures`,
   ENTERPRISE_PICTURE_DELETE: (id, index) => `${BASE_URL}/api/enterprises/${id}/pictures/${index}`,
+  ENTERPRISE_AVAILABLE_SLOTS: (id) => `${BASE_URL}/api/enterprises/${id}/available-slots`,
   ENTERPRISES_CREATE: `${BASE_URL}/api/enterprises`,
 
   // Appointments

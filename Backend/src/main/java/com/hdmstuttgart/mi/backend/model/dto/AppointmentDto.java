@@ -3,6 +3,7 @@ package com.hdmstuttgart.mi.backend.model.dto;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.Service;
+import com.hdmstuttgart.mi.backend.model.enums.AppointmentType;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -25,11 +26,14 @@ import java.util.UUID;
 public class AppointmentDto {
     private Long id;
     private boolean reviewed;
+    private AppointmentType appointmentType;
     private String customerName;
     private String customerPhoneNumber;
     private String customerEmail;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDateTime appointmentDateTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private LocalDateTime endDateTime;
     private Set<PaymentMethod> paymentMethods;
     private UUID confirmationCode;
 

@@ -81,6 +81,12 @@ const SchedulerPage = () => {
     const serviceList = Array.isArray(services) ? services : [services];
     return serviceList.map(resolveServiceId).filter((serviceId) => serviceId !== null && serviceId !== '');
   };
+  const toLocalISOString = (date) => {
+    const d = date instanceof Date ? date : new Date(date);
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  };
+
   const parseDateTime = (value) => {
     if (!value) {
       return new Date();
@@ -99,14 +105,21 @@ const SchedulerPage = () => {
       return new Date(value);
     }
 
+    // No timezone suffix → treat as local time (append no Z)
     const parsed = new Date(value);
     return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
   };
 
   const mapAppointmentToScheduler = (appointment) => {
     const startDate = parseDateTime(appointment.appointmentDateTime);
-    const totalDuration = getTotalDuration(appointment.services);
-    const endDate = new Date(startDate.getTime() + totalDuration * 60000);
+    // Prefer persisted endDateTime, then calculate from services, then fallback 1h
+    let endDate;
+    if (appointment.endDateTime) {
+      endDate = parseDateTime(appointment.endDateTime);
+    } else {
+      const totalDuration = getTotalDuration(appointment.services);
+      endDate = new Date(startDate.getTime() + (totalDuration || 60) * 60000);
+    }
 
     return {
       ...appointment,
@@ -114,7 +127,10 @@ const SchedulerPage = () => {
       services: normalizeServiceSelection(appointment.services),
       startDate,
       endDate,
-      title: appointment.customerName || 'Appointment',
+      title: appointment.appointmentType === 'VACATION'
+        ? '🏖 Urlaub'
+        : appointment.customerName || 'Appointment',
+      appointmentType: appointment.appointmentType ?? 'APPOINTMENT',
       customer: {
         firstName: appointment.customerName || '',
         lastName: '',
@@ -125,12 +141,18 @@ const SchedulerPage = () => {
   };
 
   const mapSchedulerToAppointment = (appointment) => ({
-    customerName: [appointment.customer?.firstName, appointment.customer?.lastName].filter(Boolean).join(' ').trim(),
-    customerPhoneNumber: appointment.customer?.phoneNumber || '',
-    customerEmail: appointment.customer?.email || '',
-    appointmentDateTime: parseDateTime(appointment.startDate).toISOString(),
+    appointmentType: appointment.appointmentType ?? 'APPOINTMENT',
+    customerName: appointment.appointmentType === 'VACATION'
+      ? ''
+      : [appointment.customer?.firstName, appointment.customer?.lastName].filter(Boolean).join(' ').trim(),
+    customerPhoneNumber: appointment.appointmentType === 'VACATION' ? '' : appointment.customer?.phoneNumber || '',
+    customerEmail: appointment.appointmentType === 'VACATION' ? '' : appointment.customer?.email || '',
+    appointmentDateTime: toLocalISOString(parseDateTime(appointment.startDate)),
+    endDateTime: appointment.endDate ? toLocalISOString(parseDateTime(appointment.endDate)) : null,
     employeeId: appointment.employee?.id ?? appointment.employee ?? appointment.employeeId ?? '',
-    services: normalizeServiceSelection(appointment.services).map((serviceId) => ({ id: serviceId })),
+    services: appointment.appointmentType === 'VACATION'
+      ? []
+      : normalizeServiceSelection(appointment.services).map((serviceId) => ({ id: serviceId })),
     paymentMethods: appointment.paymentMethods || [],
     confirmed: appointment.confirmed || false,
   });
@@ -155,15 +177,22 @@ const SchedulerPage = () => {
       const enterpriseData = enterpriseRes.data;
       setEnterprise(enterpriseData);
 
-      const [appointmentsRes, servicesRes, employeesRes] = await Promise.all([
+      const [appointmentsResult, servicesResult, employeesResult] = await Promise.allSettled([
         appointmentsAPI.getByEnterprise(enterpriseData.id),
         servicesAPI.getByEnterprise(enterpriseData.id),
         employeesAPI.getByEnterprise(enterpriseData.id),
       ]);
 
-      const appointments = appointmentsRes.data?.content ?? appointmentsRes.data ?? [];
-      const services = servicesRes.data || [];
-      const employees = employeesRes.data || [];
+      if (appointmentsResult.status === 'rejected') {
+        showSnack(appointmentsResult.reason?.response?.data?.message || 'Failed to load appointments', 'error');
+        console.error('Appointments error:', appointmentsResult.reason);
+      }
+
+      const appointments = appointmentsResult.status === 'fulfilled'
+        ? (appointmentsResult.value.data?.content ?? appointmentsResult.value.data ?? [])
+        : [];
+      const services = servicesResult.status === 'fulfilled' ? (servicesResult.value.data || []) : [];
+      const employees = employeesResult.status === 'fulfilled' ? (employeesResult.value.data || []) : [];
 
       setData(appointments.map(mapAppointmentToScheduler));
       setAllServices(services);
@@ -172,12 +201,18 @@ const SchedulerPage = () => {
       const hasEmployees = employees.length > 0;
       if (!hasEmployees) {
         setGroupingMode(false);
+      } else {
+        // Auto-select first employee to avoid "All" grouping crash
+        setCurrentEmployee((prev) => prev || String(employees[0].id));
       }
 
+      const selectedEmpId = employees.length > 0 ? String(employees[0].id) : '';
       setResources([
         {
           ...initialResources[0],
-          instances: getEmployeeInstances(employees),
+          instances: getEmployeeInstances(employees).filter((e) =>
+            !selectedEmpId || String(e.id) === selectedEmpId
+          ),
         },
         {
           ...initialResources[1],
@@ -196,24 +231,34 @@ const SchedulerPage = () => {
   };
 
   const filterAppointments = (appointments) =>
-    appointments.filter((appointment) => !currentEmployee || normalizeId(appointment.employee) === normalizeId(currentEmployee));
+    appointments.filter(
+      (appointment) =>
+        appointment &&
+        appointment.startDate instanceof Date &&
+        !isNaN(appointment.startDate) &&
+        (!currentEmployee || normalizeId(appointment.employee) === normalizeId(currentEmployee))
+    );
 
   const changeCurrentEmployee = (newCurrentEmployee) => {
     const normalizedEmployeeId = normalizeId(newCurrentEmployee);
     const newResources = resources.map((resource) => {
       if (resource.fieldName === 'employee') {
-        return {
-          ...resource,
-          instances: normalizedEmployeeId
-            ? [getEmployeeInstances(allEmployees).find((e) => normalizeId(e.id) === normalizedEmployeeId)]
-            : getEmployeeInstances(allEmployees),
-        };
-      } else {
-        return resource;
+        const found = normalizedEmployeeId
+          ? getEmployeeInstances(allEmployees).filter((e) => normalizeId(e.id) === normalizedEmployeeId)
+          : getEmployeeInstances(allEmployees);
+        return { ...resource, instances: found };
       }
+      return resource;
     });
     setCurrentEmployee(normalizedEmployeeId);
     setResources(newResources);
+    // Grouping only works when a specific employee is selected
+    // (appointments without an employee crash the grouping renderer)
+    if (!normalizedEmployeeId) {
+      setGroupingMode(false);
+    } else if (allEmployees.length > 0) {
+      setGroupingMode(true);
+    }
   };
 
   const commitChanges = ({ added, changed, deleted }) => {
@@ -239,6 +284,7 @@ const SchedulerPage = () => {
           .create(enterprise.id, newAppointment)
           .then(() => {
             showSnack('Appointment created successfully', 'success');
+            loadSchedulerData(false);
           })
           .catch((err) => {
             const errorMsg = err.response?.data?.message || 'Failed to create appointment';
@@ -248,35 +294,29 @@ const SchedulerPage = () => {
       }
       if (changed) {
         const changedId = Number(Object.keys(changed)[0]);
-        if (Object.keys(Object.values(changed)[0]).includes('customer')) {
-          const schedulerAppointment = changed[changedId];
-          const newAppointment = mapSchedulerToAppointment(schedulerAppointment);
-          data = data.map((appointment) => (appointment.id === changedId ? schedulerAppointment : appointment));
-          appointmentsAPI
-            .update(changedId, newAppointment)
-            .then(() => {
-              showSnack('Appointment updated successfully', 'success');
-            })
-            .catch((err) => {
-              const errorMsg = err.response?.data?.message || 'Failed to update appointment';
-              showSnack(errorMsg, 'error');
-            });
-        } else {
-          const newProps = changed[changedId];
-          const schedulerAppointment = data.find((appointment) => appointment.id === changedId);
-          const updatedSchedulerAppointment = schedulerAppointment ? { ...schedulerAppointment, ...newProps } : newProps;
-          const newAppointment = mapSchedulerToAppointment(updatedSchedulerAppointment);
-          data = data.map((appointment) => (appointment.id === changedId ? updatedSchedulerAppointment : appointment));
-          appointmentsAPI
-            .patch(changedId, newAppointment)
-            .then(() => {
-              showSnack('Appointment updated successfully', 'success');
-            })
-            .catch((err) => {
-              const errorMsg = err.response?.data?.message || 'Failed to update appointment';
-              showSnack(errorMsg, 'error');
-            });
-        }
+        const existingAppointment = data.find((a) => a.id === changedId) ?? {};
+        const mergedAppointment = { ...existingAppointment, ...changed[changedId] };
+        const newAppointment = mapSchedulerToAppointment(mergedAppointment);
+
+        console.debug('[Scheduler] changed payload:', changed[changedId]);
+        console.debug('[Scheduler] merged endDate:', mergedAppointment.endDate, '→ endDateTime:', newAppointment.endDateTime);
+
+        data = data.map((appointment) => (appointment.id === changedId ? mergedAppointment : appointment));
+
+        const savePromise = Object.keys(changed[changedId] ?? {}).includes('customer')
+          ? appointmentsAPI.update(changedId, newAppointment)
+          : appointmentsAPI.patch(changedId, newAppointment);
+
+        savePromise
+          .then((res) => {
+            console.debug('[Scheduler] save response endDateTime:', res?.data?.endDateTime);
+            showSnack('Appointment updated successfully', 'success');
+            loadSchedulerData(false);
+          })
+          .catch((err) => {
+            console.error('[Scheduler] save error:', err.response?.data);
+            showSnack(err.response?.data?.message || 'Failed to update appointment', 'error');
+          });
       }
       if (deleted !== undefined) {
         data = data.filter((appointment) => appointment.id !== deleted);

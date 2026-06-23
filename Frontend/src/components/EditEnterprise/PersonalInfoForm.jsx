@@ -103,11 +103,10 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
                 label={!enterprise.openingTime && 'Open'}
                 value={enterprise.openingTime === null ? '' : enterprise.openingTime}
                 onChange={(newValue) => {
-                  const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1);
                   handleEnterpriseChange({
                     target: {
                       name: 'openingTime',
-                      value: changedValue.toISOString(),
+                      value: newValue.format('HH:mm'),
                     },
                   });
                 }}
@@ -123,11 +122,10 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
                 label={!enterprise.closingTime && 'Close'}
                 value={enterprise.closingTime === null ? '' : enterprise.closingTime}
                 onChange={(newValue) => {
-                  const changedValue = newValue.set('year', 2023).set('month', 0).set('date', 1);
                   handleEnterpriseChange({
                     target: {
                       name: 'closingTime',
-                      value: changedValue.toISOString(),
+                      value: newValue.format('HH:mm'),
                     },
                   });
                 }}
