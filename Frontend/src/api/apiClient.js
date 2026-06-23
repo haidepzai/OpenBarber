@@ -91,6 +91,11 @@ export const enterprisesAPI = {
     });
   },
   deletePicture: (id, index) => apiClient.delete(API_ENDPOINTS.ENTERPRISE_PICTURE_DELETE(id, index), { headers: getAuthHeader() }),
+  getAvailableSlots: (enterpriseId, date, employeeId, serviceDuration) => {
+    const params = { date, serviceDuration };
+    if (employeeId) params.employeeId = employeeId;
+    return apiClient.get(API_ENDPOINTS.ENTERPRISE_AVAILABLE_SLOTS(enterpriseId), { params });
+  },
 };
 
 // Services API

@@ -226,6 +226,8 @@ function ReservationDialog({ open, handleClose, shop }) {
               shopEmployees={shop.employees}
               openingTime={shop.openingTime}
               closingTime={shop.closingTime}
+              enterpriseId={shop.id}
+              selectedServices={data.services}
             />
           )}
 

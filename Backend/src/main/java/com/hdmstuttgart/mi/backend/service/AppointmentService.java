@@ -5,6 +5,7 @@ import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.Service;
+import com.hdmstuttgart.mi.backend.model.enums.AppointmentType;
 import com.hdmstuttgart.mi.backend.repository.AppointmentRepository;
 import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
 import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
@@ -20,9 +21,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
-import java.lang.reflect.Field;
+
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -65,33 +74,158 @@ public class AppointmentService {
      * @return the appointment
      */
     public Appointment createAppointment(Appointment appointment, long enterpriseId) {
-        if (appointment.getEmployee() == null || appointment.getEmployee().getId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Employee is mandatory");
-        }
-        long employeeId = appointment.getEmployee().getId();
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found enterprise with id = " + enterpriseId));
-        List<Service> services = resolveServices(appointment.getServices(), enterprise);
-        if (services.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one service is mandatory");
-        }
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found employee with id = " + employeeId));
 
-        checkTimeCollision(employeeId, appointment.getAppointmentDateTime(), services);
+        boolean isVacation = AppointmentType.VACATION.equals(appointment.getAppointmentType());
+
+        List<Service> services;
+        Employee employee;
+
+        if (isVacation) {
+            services = List.of();
+            // For vacation, employee is optional; if specified, assign it
+            if (appointment.getEmployee() != null && appointment.getEmployee().getId() != null) {
+                employee = employeeRepository.findById(appointment.getEmployee().getId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+            } else {
+                employee = null;
+            }
+            appointment.setConfirmed(true); // vacations are auto-confirmed
+        } else {
+            services = resolveServices(appointment.getServices(), enterprise);
+            if (services.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one service is mandatory");
+            }
+            if (appointment.getEmployee() == null || appointment.getEmployee().getId() == null) {
+                employee = findAvailableEmployee(enterprise, appointment.getAppointmentDateTime(), services);
+            } else {
+                long employeeId = appointment.getEmployee().getId();
+                employee = employeeRepository.findById(employeeId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found employee with id = " + employeeId));
+                checkTimeCollision(employeeId, appointment.getAppointmentDateTime(), services);
+            }
+        }
 
         appointment.setEnterprise(enterprise);
         appointment.setEmployee(employee);
         appointment.setServices(services);
         appointment.setConfirmationCode(UUID.randomUUID());
+
+        // Calculate and persist endDateTime if not explicitly set
+        if (appointment.getEndDateTime() == null && appointment.getAppointmentDateTime() != null) {
+            int totalDuration = services.stream().mapToInt(Service::getDurationInMin).sum();
+            if (totalDuration == 0) totalDuration = 60; // default 1h for vacation/no services
+            appointment.setEndDateTime(appointment.getAppointmentDateTime().plusMinutes(totalDuration));
+        }
+
         appointment = appointmentRepository.save(appointment);
 
-        try {
-            emailSenderService.sendEmailWithTemplate(appointment, "appointment", appointment.getCustomerEmail());
-        } catch (MessagingException | IOException e) {
-            log.error("Failed to send appointment confirmation email for appointment {}", appointment.getId(), e);
+        if (!isVacation && appointment.getCustomerEmail() != null) {
+            try {
+                emailSenderService.sendEmailWithTemplate(appointment, "appointment", appointment.getCustomerEmail());
+            } catch (MessagingException | IOException e) {
+                log.error("Failed to send appointment confirmation email for appointment {}", appointment.getId(), e);
+            }
         }
         return appointment;
+    }
+
+    private Employee findAvailableEmployee(Enterprise enterprise, LocalDateTime startTime, List<Service> services) {
+        List<Employee> employees = enterprise.getEmployees();
+        if (employees == null || employees.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "No employees available for this enterprise");
+        }
+        int totalDuration = services.stream().mapToInt(Service::getDurationInMin).sum();
+        for (Employee emp : employees) {
+            try {
+                checkTimeCollision(emp.getId(), startTime, services);
+                return emp;
+            } catch (ResponseStatusException ignored) {
+                // Employee not available, try next
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.CONFLICT, "No employee is available at the selected time");
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getAvailableSlots(Long enterpriseId, Long employeeId, LocalDate date, int serviceDurationMin) {
+        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
+
+        int openMinutes = parseTimeToMinutes(enterprise.getOpeningTime(), 8 * 60);
+        int closeMinutes = parseTimeToMinutes(enterprise.getClosingTime(), 20 * 60);
+
+        List<String> allSlots = new ArrayList<>();
+        int cur = openMinutes;
+        while (cur + serviceDurationMin <= closeMinutes) {
+            allSlots.add(String.format("%02d:%02d", cur / 60, cur % 60));
+            cur += 15;
+        }
+
+        List<Employee> employees;
+        if (employeeId != null && employeeId > 0) {
+            employees = List.of(employeeRepository.findById(employeeId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found")));
+        } else {
+            employees = employeeRepository.findAllByEnterpriseId(enterpriseId);
+        }
+
+        if (employees.isEmpty()) return allSlots;
+
+        LocalDateTime dayStart = date.atStartOfDay();
+        LocalDateTime dayEnd = date.atTime(23, 59, 59);
+
+        // Load all appointments per employee once (avoid N×M DB queries)
+        Map<Long, List<Appointment>> appointmentsByEmployee = employees.stream()
+                .collect(Collectors.toMap(
+                        Employee::getId,
+                        emp -> appointmentRepository.findByEmployeeIdAndAppointmentDateTimeBetween(emp.getId(), dayStart, dayEnd)
+                ));
+
+        return allSlots.stream()
+                .filter(slot -> {
+                    String[] parts = slot.split(":");
+                    LocalDateTime slotStart = LocalDateTime.of(date, LocalTime.of(Integer.parseInt(parts[0]), Integer.parseInt(parts[1])));
+                    LocalDateTime slotEnd = slotStart.plusMinutes(serviceDurationMin);
+
+                    for (Employee emp : employees) {
+                        List<Appointment> dayAppointments = appointmentsByEmployee.get(emp.getId());
+                        boolean hasConflict = dayAppointments.stream().anyMatch(existing -> {
+                            LocalDateTime existingEnd;
+                            if (existing.getEndDateTime() != null) {
+                                existingEnd = existing.getEndDateTime();
+                            } else {
+                                // @Transactional keeps session open so lazy loading is safe here
+                                int dur = existing.getServices().stream().mapToInt(Service::getDurationInMin).sum();
+                                if (dur == 0) dur = 60;
+                                existingEnd = existing.getAppointmentDateTime().plusMinutes(dur);
+                            }
+                            return slotStart.isBefore(existingEnd) && slotEnd.isAfter(existing.getAppointmentDateTime());
+                        });
+                        if (!hasConflict) return true;
+                    }
+                    return false;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private int parseTimeToMinutes(String timeStr, int defaultMinutes) {
+        if (timeStr == null || timeStr.isBlank()) return defaultMinutes;
+        try {
+            if (timeStr.contains("T")) {
+                // ISO UTC string (e.g. "2023-01-01T07:00:00.293Z") — convert to local time
+                String normalized = timeStr.replaceAll("\\.\\d+Z$", "Z");
+                if (!normalized.endsWith("Z")) normalized += "Z";
+                LocalTime localTime = Instant.parse(normalized).atZone(ZoneId.systemDefault()).toLocalTime();
+                return localTime.getHour() * 60 + localTime.getMinute();
+            }
+            // Simple "HH:mm" format
+            String[] parts = timeStr.split(":");
+            return Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
+        } catch (Exception e) {
+            return defaultMinutes;
+        }
     }
 
     /**
@@ -199,9 +333,13 @@ public class AppointmentService {
                     appointment.setAppointmentDateTime(newAppointment.getAppointmentDateTime());
                     appointment.setConfirmed(newAppointment.isConfirmed());
                     appointment.setPaymentMethods(newAppointment.getPaymentMethods());
-//                    Appointment.setRating(newAppointment.getRating());
-//                    Appointment.setRatingText(newAppointment.getRatingText());
-
+                    if (newAppointment.getEndDateTime() != null) {
+                        appointment.setEndDateTime(newAppointment.getEndDateTime());
+                    } else if (newAppointment.getAppointmentDateTime() != null) {
+                        int dur = appointment.getServices().stream().mapToInt(Service::getDurationInMin).sum();
+                        if (dur == 0) dur = 60;
+                        appointment.setEndDateTime(newAppointment.getAppointmentDateTime().plusMinutes(dur));
+                    }
                     return appointmentRepository.save(appointment);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment not found with id = " + id));
@@ -215,24 +353,29 @@ public class AppointmentService {
      * @return the appointment
      */
     public Appointment patchAppointment(long id, Appointment updatedAppointment) {
-        Appointment existingAppointment = appointmentRepository.getById(id);
+        Appointment existing = appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment not found with id = " + id));
 
-        Field[] fields = Appointment.class.getDeclaredFields();
+        if (updatedAppointment.getAppointmentDateTime() != null)
+            existing.setAppointmentDateTime(updatedAppointment.getAppointmentDateTime());
+        if (updatedAppointment.getEndDateTime() != null)
+            existing.setEndDateTime(updatedAppointment.getEndDateTime());
+        if (updatedAppointment.getAppointmentType() != null)
+            existing.setAppointmentType(updatedAppointment.getAppointmentType());
+        if (updatedAppointment.getCustomerName() != null)
+            existing.setCustomerName(updatedAppointment.getCustomerName());
+        if (updatedAppointment.getCustomerPhoneNumber() != null)
+            existing.setCustomerPhoneNumber(updatedAppointment.getCustomerPhoneNumber());
+        if (updatedAppointment.getCustomerEmail() != null)
+            existing.setCustomerEmail(updatedAppointment.getCustomerEmail());
+        if (updatedAppointment.getEmployee() != null && updatedAppointment.getEmployee().getId() != null)
+            existing.setEmployee(employeeRepository.findById(updatedAppointment.getEmployee().getId()).orElse(existing.getEmployee()));
+        if (updatedAppointment.getPaymentMethods() != null && !updatedAppointment.getPaymentMethods().isEmpty())
+            existing.setPaymentMethods(updatedAppointment.getPaymentMethods());
+        if (updatedAppointment.getServices() != null && !updatedAppointment.getServices().isEmpty())
+            existing.setServices(resolveServices(updatedAppointment.getServices(), existing.getEnterprise()));
 
-        for (Field field : fields) {
-            try {
-                field.setAccessible(true);
-                Object newValue = field.get(updatedAppointment);
-                if (newValue != null) {
-                    field.set(existingAppointment, newValue);
-                }
-            } catch (IllegalAccessException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to update field: " + field.getName());
-
-            }
-        }
-
-        return appointmentRepository.save(existingAppointment);
+        return appointmentRepository.save(existing);
     }
 
     private List<Service> resolveServices(List<Service> requestedServices, Enterprise enterprise) {

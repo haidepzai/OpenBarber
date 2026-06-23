@@ -5,6 +5,7 @@ import com.hdmstuttgart.mi.backend.mapper.EnterpriseMapper;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.EnterpriseDto;
+import com.hdmstuttgart.mi.backend.service.AppointmentService;
 import com.hdmstuttgart.mi.backend.service.EnterpriseService;
 import com.hdmstuttgart.mi.backend.service.JwtService;
 import com.hdmstuttgart.mi.backend.service.UserService;
@@ -13,12 +14,14 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -30,6 +33,7 @@ import java.util.List;
 public class EnterpriseController {
 
     private final EnterpriseService enterpriseService;
+    private final AppointmentService appointmentService;
     private final UserService userService;
     private final JwtService jwtService;
     private final EnterpriseMapper enterpriseMapper;
@@ -42,8 +46,9 @@ public class EnterpriseController {
      * @param jwtService        the jwt service
      * @param enterpriseMapper  the enterprise mapper
      */
-    public EnterpriseController(EnterpriseService enterpriseService, UserService userService, JwtService jwtService, EnterpriseMapper enterpriseMapper) {
+    public EnterpriseController(EnterpriseService enterpriseService, AppointmentService appointmentService, UserService userService, JwtService jwtService, EnterpriseMapper enterpriseMapper) {
         this.enterpriseService = enterpriseService;
+        this.appointmentService = appointmentService;
         this.userService = userService;
         this.jwtService = jwtService;
         this.enterpriseMapper = enterpriseMapper;
@@ -217,6 +222,17 @@ public class EnterpriseController {
             @RequestHeader("Authorization") String token) {
         Enterprise enterprise = enterpriseService.deletePicture(id, index, token);
         return ResponseEntity.ok(enterpriseMapper.toDto(enterprise));
+    }
+
+    @ApiOperation(value = "Get Available Slots", notes = "Returns available time slots for an enterprise on a given date")
+    @GetMapping("/{id}/available-slots")
+    public ResponseEntity<List<String>> getAvailableSlots(
+            @PathVariable Long id,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) Long employeeId,
+            @RequestParam(defaultValue = "30") int serviceDuration) {
+        List<String> slots = appointmentService.getAvailableSlots(id, employeeId, date, serviceDuration);
+        return ResponseEntity.ok(slots);
     }
 
     @ApiOperation(value = "Delete Enterprise", notes = "Deletes the enterprise by its ID")

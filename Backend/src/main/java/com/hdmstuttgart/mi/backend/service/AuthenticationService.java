@@ -152,31 +152,26 @@ public class AuthenticationService {
      * @return the authentication response
      */
     public AuthenticationResponse refresh(RefreshTokenRequest request) {
-        // Get the username from the refresh token
-        String username = jwtService.extractUsername(request.getRefreshToken());
+        try {
+            String username = jwtService.extractUsername(request.getRefreshToken());
+            User user = userRepository.findByEmail(username)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
 
-        // Load the user from the database
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+            if (!jwtService.isRefreshTokenValid(request.getRefreshToken(), user)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token invalid or expired");
+            }
 
-        // Validate the refresh token
-        jwtService.isRefreshTokenValid(request.getRefreshToken(), user);
+            // Token is valid — no need to re-authenticate with username/password
+            String accessToken = jwtService.generateAccessToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
 
-        // Authenticate the user
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-        // Generate new access and refresh tokens
-        String accessToken = jwtService.generateAccessToken(userDetails);
-        String refreshToken = jwtService.generateRefreshToken(user);
-
-        // Return the new tokens in the response
-       return AuthenticationResponse.builder()
-               .token(accessToken)
-               .refreshToken(refreshToken)
-               .build();
+            return AuthenticationResponse.builder()
+                    .token(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        } catch (io.jsonwebtoken.JwtException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token invalid or expired");
+        }
     }
 
     public void forgotPassword(ForgotPasswordRequest request) {
