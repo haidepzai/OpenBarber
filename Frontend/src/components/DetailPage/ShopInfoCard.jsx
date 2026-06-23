@@ -94,9 +94,10 @@ const ShopInfoCard = ({ shop, mobile }) => {
               </Typography>
             </Stack>
 
-            {shop.openingDays && shop.openingDays.length > 0 && (
-              <Stack direction="row" flexWrap="wrap" gap={0.5}>
-                {['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'].map((day) => (
+            <Stack direction="row" flexWrap="wrap" gap={0.5}>
+              {['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'].map((day) => {
+                const isOpen = shop.openingDays?.includes(day);
+                return (
                   <Typography
                     key={day}
                     variant="body2"
@@ -106,15 +107,15 @@ const ShopInfoCard = ({ shop, mobile }) => {
                       borderRadius: '100vw',
                       fontWeight: 600,
                       fontSize: '13px',
-                      backgroundColor: shop.openingDays.includes(day) ? 'primary.main' : 'grey.200',
-                      color: shop.openingDays.includes(day) ? 'primary.contrastText' : 'text.disabled',
+                      backgroundColor: isOpen ? 'primary.main' : 'grey.200',
+                      color: isOpen ? 'primary.contrastText' : 'text.disabled',
                     }}
                   >
                     {t(day)}
                   </Typography>
-                ))}
-              </Stack>
-            )}
+                );
+              })}
+            </Stack>
 
             <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h7" mb={1} sx={{ fontWeight: 600, color: 'grey.1000' }}>
