@@ -72,6 +72,21 @@ function ReservationDialog({ open, handleClose, shop }) {
     dispatch({ type: 'set_enterprise_id', payload: shop.id });
   }, [shop.id]);
 
+  // Pre-fill personal data for logged-in customers
+  useEffect(() => {
+    if (authCtx.isLoggedIn && authCtx.role !== 'OPERATOR' && authCtx.user) {
+      const nameParts = (authCtx.user.name || '').split(' ');
+      dispatch({
+        type: 'set_personal_data',
+        payload: {
+          firstName: nameParts[0] || '',
+          lastName: nameParts.slice(1).join(' ') || '',
+          email: authCtx.email || '',
+        },
+      });
+    }
+  }, [authCtx.isLoggedIn, authCtx.role, authCtx.user, authCtx.email]);
+
   const validate = (step) => {
     switch (step) {
       case 0:

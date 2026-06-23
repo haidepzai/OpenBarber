@@ -51,10 +51,11 @@ public class AppointmentController {
      */
     @ApiOperation(value = "Create Appointment", notes = "Creates a new appointment for the given enterprise ID")
     @PostMapping
-    public ResponseEntity<AppointmentDto> createAppointment(@Valid @RequestBody AppointmentDto appointmentDto, @RequestParam long enterpriseId) {
+    public ResponseEntity<AppointmentDto> createAppointment(@Valid @RequestBody AppointmentDto appointmentDto, @RequestParam long enterpriseId,
+            @RequestHeader(value = "Authorization", required = false) String token) {
         log.info(appointmentDto.toString());
         Appointment appointment = appointmentMapper.dtoToAppointment(appointmentDto);
-        Appointment createdAppointment = appointmentService.createAppointment(appointment, enterpriseId);
+        Appointment createdAppointment = appointmentService.createAppointment(appointment, enterpriseId, token);
         AppointmentDto createdAppointmentDto = appointmentMapper.appointmentToDto(createdAppointment);
         return new ResponseEntity<>(createdAppointmentDto, HttpStatus.CREATED);
     }
@@ -86,6 +87,15 @@ public class AppointmentController {
             @RequestParam Long enterpriseId,
             @PageableDefault(size = 500) Pageable pageable) {
         Page<Appointment> page = appointmentService.getAppointmentsByEnterpriseId(enterpriseId, pageable);
+        return ResponseEntity.ok(page.map(appointmentMapper::appointmentToDto));
+    }
+
+    @ApiOperation(value = "Get My Appointments", notes = "Fetches all appointments for the currently authenticated customer")
+    @GetMapping("/my")
+    public ResponseEntity<Page<AppointmentDto>> getMyAppointments(
+            @RequestHeader("Authorization") String token,
+            @PageableDefault(size = 50) Pageable pageable) {
+        Page<Appointment> page = appointmentService.getMyAppointments(token, pageable);
         return ResponseEntity.ok(page.map(appointmentMapper::appointmentToDto));
     }
 

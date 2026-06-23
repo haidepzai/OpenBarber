@@ -20,6 +20,7 @@ const AuthContext = React.createContext({
   email: '',
   user: {},
   setUser: () => {},
+  role: null,
 });
 
 export const AuthContextProvider = (props) => {
@@ -28,6 +29,7 @@ export const AuthContextProvider = (props) => {
   const [userId, setUserId] = useState(0);
   const [email, setEmail] = useState('');
   const [user, setUser] = useState({});
+  const [role, setRole] = useState(null);
 
   const deleteJWTTokenFromStorage = () => {
     clearTokens();
@@ -47,6 +49,7 @@ export const AuthContextProvider = (props) => {
       const user = await getUserByToken();
       setUserId(user.id);
       setEmail(user.email);
+      setRole(user.role);
       setIsLoggedIn(true);
       return true;
     } catch {
@@ -68,6 +71,7 @@ export const AuthContextProvider = (props) => {
   const logoutHandler = () => {
     clearTokens();
     setIsLoggedIn(false);
+    setRole(null);
   };
 
   const loginHandler = async (authRequest, customConfig, rememberMe = false) => {
@@ -79,6 +83,14 @@ export const AuthContextProvider = (props) => {
     setUserId(resObj.userId);
     if (resObj.verified) {
       setIsLoggedIn(true);
+      // Fetch user info to get role after login
+      try {
+        const user = await getUserByToken();
+        setEmail(user.email);
+        setRole(user.role);
+      } catch (e) {
+        // non-critical – role will be set on next page load
+      }
     }
 
     return response;
@@ -119,6 +131,7 @@ export const AuthContextProvider = (props) => {
         setEmail,
         user,
         setUser,
+        role,
       }}
     >
       {props.children}

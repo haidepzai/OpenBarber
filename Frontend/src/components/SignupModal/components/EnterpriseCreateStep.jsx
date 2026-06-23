@@ -82,10 +82,10 @@ const EnterpriseCreateStep = () => {
     try {
       console.log(createEnterpriseReq);
       await createEnterprise(createEnterpriseReq, customConfig);
-      setActiveStep(2);
+      setActiveStep(3);
       setCompletedSteps((cs) => {
         const res = [...cs];
-        res[1] = true;
+        res[2] = true;
         return res;
       });
     } catch (err) {

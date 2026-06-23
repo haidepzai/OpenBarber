@@ -133,19 +133,23 @@ const LoginModal = ({ gotoSignup }) => {
         const res = await authCtx.onLogin(authRequest, customConfig, rememberMe);
         // Redirect to signup if not verified or has no enterprise
         const { verified, hasEnterprise } = res.data;
-        if (!hasEnterprise || !verified) {
+        if (!verified) {
           gotoSignup({
-            activeStep: hasEnterprise ? 2 : 1,
-            completedSteps: [true, hasEnterprise, verified, false],
+            activeStep: hasEnterprise ? 3 : 2,
+            completedSteps: [true, true, hasEnterprise, false, false],
           });
-          signUpCtx.setData((prevData) => ({ ...prevData, email: emailState.value }));
+          signUpCtx.setData((prevData) => ({ ...prevData, email: emailState.value, accountType: hasEnterprise ? 'enterprise' : 'customer' }));
         }
 
         if (verified) {
           authCtx.setIsLoggedIn(true);
           signUpCtx.setLoginVisible(false);
           authCtx.setEmail(emailState.value);
-          navigate('/');
+          if (hasEnterprise) {
+            navigate('/edit');
+          } else {
+            navigate('/my-profile');
+          }
         }
       } catch (error) {
         setLoginIsFound(false);

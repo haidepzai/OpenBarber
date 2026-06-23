@@ -49,9 +49,13 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
   };
 
   const handleSlotPick = (slot) => {
-    const [h, m] = slot.split(':').map(Number);
+    const [h, m] = slot.time.split(':').map(Number);
     const base = pickedDay ?? dayjs();
     pickDate(base.hour(h).minute(m).second(0).toDate());
+    // Auto-assign the employee linked to this slot
+    if (slot.employeeId) {
+      pickStylist({ id: slot.employeeId, name: slot.employeeName, picture: slot.employeePicture });
+    }
   };
 
   const handlePick = (employee) => {
@@ -120,11 +124,11 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {availableSlots.map((slot) => (
                 <Chip
-                  key={slot}
-                  label={slot}
+                  key={slot.time}
+                  label={slot.time}
                   clickable
-                  color={pickedTimeStr === slot ? 'primary' : 'default'}
-                  variant={pickedTimeStr === slot ? 'filled' : 'outlined'}
+                  color={pickedTimeStr === slot.time ? 'primary' : 'default'}
+                  variant={pickedTimeStr === slot.time ? 'filled' : 'outlined'}
                   onClick={() => handleSlotPick(slot)}
                 />
               ))}

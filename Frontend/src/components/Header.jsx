@@ -39,7 +39,7 @@ const Header = () => {
           </Stack>
         </Grid>
 
-        {authCtx.isLoggedIn && (
+        {authCtx.isLoggedIn && authCtx.role === 'OPERATOR' && (
           <Grid item xs={4}>
             <Stack direction="row" alignItems="center" spacing={8}>
               <Button type="text" size="large" sx={{ '&:hover': { backgroundColor: '#fff' } }} onClick={() => navigate('/scheduler')}>
@@ -47,6 +47,16 @@ const Header = () => {
               </Button>
               <Button type="text" size="large" sx={{ '&:hover': { backgroundColor: '#fff' } }} onClick={() => navigate('/edit')}>
                 {t('EDIT_PROFILE')}
+              </Button>
+            </Stack>
+          </Grid>
+        )}
+
+        {authCtx.isLoggedIn && authCtx.role === 'VERIFIED' && (
+          <Grid item xs={4}>
+            <Stack direction="row" alignItems="center" spacing={8}>
+              <Button type="text" size="large" sx={{ '&:hover': { backgroundColor: '#fff' } }} onClick={() => navigate('/my-profile')}>
+                {t('MY_APPOINTMENTS')}
               </Button>
             </Stack>
           </Grid>

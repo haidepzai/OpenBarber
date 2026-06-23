@@ -65,6 +65,7 @@ const SignUpStep = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const { t } = useTranslation();
+  const accountType = signUpContext.data?.accountType;
 
   const validEmail = () => emailRegex.test(state.enteredEmail);
   const validPassword = () => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,128}$/.test(state.enteredPassword);
@@ -112,10 +113,11 @@ const SignUpStep = () => {
         }));
         signUpContext.setCompletedSteps((v) => {
           const res = [...v];
-          res[0] = true;
+          res[1] = true;
           return res;
         });
-        signUpContext.setActiveStep(1);
+        // Customer → go to email verification (step 2); Enterprise → go to enterprise setup (step 2)
+        signUpContext.setActiveStep(2);
       } catch (error) {
         dispatch({ type: 'SET_EMAIL_ALREADY_IN_USE', payload: true });
       }
@@ -140,7 +142,7 @@ const SignUpStep = () => {
               {t('SIGN_UP_TITLE')}
             </Typography>
             <TextField
-              label={t('COMPANY_MAIL')}
+              label={accountType === 'enterprise' ? t('COMPANY_MAIL') : t('EMAIL_ADDRESS')}
               required
               value={state.enteredEmail}
               error={!state.emailIsValid || state.emailAlreadyInUse}

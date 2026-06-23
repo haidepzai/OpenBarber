@@ -40,6 +40,7 @@ const API_ENDPOINTS = {
   APPOINTMENTS_CREATE: (enterpriseId) => `${BASE_URL}/api/appointments?enterpriseId=${enterpriseId}`,
   APPOINTMENTS_CANCEL: (id, code) => `${BASE_URL}/api/appointments/${id}?confirmationCode=${code}`,
   APPOINTMENTS_CONFIRM: (id, code) => `${BASE_URL}/api/appointments/${id}?confirmationCode=${code}`,
+  APPOINTMENTS_MY: `${BASE_URL}/api/appointments/my`,
   APPOINTMENTS_BY_ID: (id) => `${BASE_URL}/api/appointments/${id}`,
 
   // Reviews

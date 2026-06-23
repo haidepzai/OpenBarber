@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useContext } from 'react';
 import { Box, Divider, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import AuthContext from '../context/auth-context.js';
-import { getShopByEmail } from '../actions/EnterpriseActions.js';
+import { getShopByUser } from '../actions/EnterpriseActions.js';
 import { getUserById } from '../actions/UserActions.js';
 import EditPersonalInfo from '../components/EditEnterprise/EditPersonalInfo.jsx';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,7 @@ const EditEnterprisePage = () => {
   const { t } = useTranslation();
 
   const loadEnterprise = async () => {
-    const shop = await getShopByEmail(authCtx.email);
+    const shop = await getShopByUser();
     setEnterprise(shop);
   };
 

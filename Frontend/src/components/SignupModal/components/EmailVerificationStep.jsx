@@ -9,7 +9,7 @@ import { API_ENDPOINTS } from '../../../config/constants';
 
 const EmailVerificationStep = () => {
   const {
-    data: { email, verificationCode },
+    data: { email, verificationCode, accountType },
     setData,
     completedSteps,
     setCompletedSteps,
@@ -41,13 +41,20 @@ const EmailVerificationStep = () => {
     };
     try {
       await authCtx.verifyHandler(verifyRequest, customConfig);
-      setActiveStep(3);
-      setCompletedSteps((cs) => {
-        const res = [...cs];
-        res[2] = true;
-        res[3] = true;
-        return res;
-      });
+      if (accountType === 'customer') {
+        // Customer flow: verification done, close modal and redirect
+        authCtx.setIsLoggedIn(true);
+        close();
+      } else {
+        // Enterprise flow: go to awaiting approval step
+        setActiveStep(4);
+        setCompletedSteps((cs) => {
+          const res = [...cs];
+          res[3] = true;
+          res[4] = true;
+          return res;
+        });
+      }
     } catch (err) {
       setError(true);
       const status = err?.response?.status;
@@ -134,7 +141,7 @@ const EmailVerificationStep = () => {
         <Box flexGrow={1} />
         <Button
           type="submit"
-          disabled={!verificationCode || verificationCode.length !== 6 || completedSteps.slice(0, 2).some((e) => !e)}
+          disabled={!verificationCode || verificationCode.length !== 6 || completedSteps.slice(0, accountType === 'customer' ? 2 : 3).some((e) => !e)}
           variant="contained"
         >
           {t('CONTINUE')}

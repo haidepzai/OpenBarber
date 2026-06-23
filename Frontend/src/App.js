@@ -2,7 +2,7 @@ import './css/App.css';
 import DetailPage from './pages/DetailPage';
 import LandingPage from './pages/LandingPage';
 import ErrorPage from './pages/ErrorPage';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -19,6 +19,24 @@ import { SignupContext } from './context/Signup.context';
 import AppointmentConfirmation from './pages/AppointmentConfirmation';
 import CancelAppointment from './pages/CancelAppointment';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import CustomerProfilePage from './pages/CustomerProfilePage';
+import AuthContext from './context/auth-context';
+
+// Only accessible for logged-in enterprise operators
+const OperatorRoute = ({ children }) => {
+  const authCtx = useContext(AuthContext);
+  if (!authCtx.isLoggedIn) return <Navigate to="/" replace />;
+  if (authCtx.role === 'VERIFIED') return <Navigate to="/my-profile" replace />;
+  return children;
+};
+
+// Only accessible for logged-in customers
+const CustomerRoute = ({ children }) => {
+  const authCtx = useContext(AuthContext);
+  if (!authCtx.isLoggedIn) return <Navigate to="/" replace />;
+  if (authCtx.role === 'OPERATOR') return <Navigate to="/edit" replace />;
+  return children;
+};
 
 function App() {
   const signUpCtx = useContext(SignupContext);
@@ -34,8 +52,9 @@ function App() {
             <Route path="shops/:routeId" element={<DetailPage />} />
             <Route path="filter" element={<FilterPage />} />
             <Route path="privacy-policy" element={<Datenschutz />} />
-            <Route path="scheduler" element={<SchedulerPage />} />
-            <Route path="edit" element={<EditEnterprisePage />} />
+            <Route path="scheduler" element={<OperatorRoute><SchedulerPage /></OperatorRoute>} />
+            <Route path="edit" element={<OperatorRoute><EditEnterprisePage /></OperatorRoute>} />
+            <Route path="my-profile" element={<CustomerRoute><CustomerProfilePage /></CustomerRoute>} />
             <Route path="appointment/:routeId" element={<AppointmentConfirmation/>}/>
             <Route path="cancel-appointment/:routeId" element={<CancelAppointment/>}/>
             <Route path="reset-password" element={<ResetPasswordPage/>}/>

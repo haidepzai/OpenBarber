@@ -57,6 +57,11 @@ public class Appointment {
     @Column(unique = true)
     private UUID confirmationCode;
 
+    @ManyToOne(optional = true)
+    @JsonIgnore
+    @JoinColumn(name = "customer_id")
+    private User customer;
+
     @ElementCollection(targetClass = PaymentMethod.class)
     @CollectionTable(name = "appointment_payment_methods", joinColumns = @JoinColumn(name = "appointment_id"))
     @Enumerated(EnumType.STRING)
