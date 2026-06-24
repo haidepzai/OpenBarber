@@ -19,9 +19,11 @@ import {
   GroupingPanel,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { useEffect, useState } from 'react';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { FormGroup, Snackbar, Alert } from '@mui/material';
+import { FormGroup, Snackbar, Alert, Box } from '@mui/material';
 import { appointmentsAPI, employeesAPI, servicesAPI, shopsAPI } from '../api/apiClient';
 import EmployeeSelect from '../components/Scheduler/EmployeeSelect';
 import TimeTableCell from '../components/Scheduler/TimeTableCell';
@@ -34,6 +36,8 @@ import { initialResources, getServiceInstances, getEmployeeInstances, grouping, 
 import { mapAppointmentToScheduler, mapSchedulerToAppointment } from '../components/Scheduler/schedulerUtils';
 
 const SchedulerPage = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [loading, setLoading] = useState(true);
   const [shop, setShop] = useState(null);
   const [allServices, setAllServices] = useState([]);
@@ -264,27 +268,51 @@ const SchedulerPage = () => {
       {loading ? (
         <></>
       ) : (
-        <Paper sx={{ width: currentViewName === 'Day' ? '70%' : '100%', margin: '0 auto' }}>
+        <Paper sx={{ width: '100%', margin: '0 auto' }}>
+          {/* Mobile controls row — rendered outside the Scheduler toolbar to avoid layout conflicts */}
+          {isMobile && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 1, pt: 1, flexWrap: 'wrap' }}>
+              {!groupingMode && (
+                <EmployeeSelect value={currentEmployee} handleChange={changeCurrentEmployee} options={getEmployeeInstances(allEmployees)} />
+              )}
+              <FormControlLabel
+                sx={{ m: 0, '& .MuiFormControlLabel-label': { fontSize: '0.75rem', whiteSpace: 'nowrap' } }}
+                control={
+                  <Switch
+                    size="small"
+                    checked={groupingMode}
+                    onChange={(e) => setGroupingMode(e.target.checked)}
+                    disabled={allEmployees.length === 0}
+                  />
+                }
+                label="Gruppieren"
+              />
+            </Box>
+          )}
+
           <Scheduler data={filterAppointments(data)}>
             <Toolbar
               flexibleSpaceComponent={() => (
                 <Toolbar.FlexibleSpace style={{ margin: '0 auto 0 0', display: 'flex', gap: '40px', alignItems: 'center' }}>
-                  {!groupingMode && (
+                  {/* Desktop only — on mobile controls are rendered above */}
+                  {!isMobile && !groupingMode && (
                     <EmployeeSelect value={currentEmployee} handleChange={changeCurrentEmployee} options={getEmployeeInstances(allEmployees)} />
                   )}
-                  <FormGroup>
-                    <FormControlLabel
-                      sx={{ whiteSpace: 'nowrap' }}
-                      control={
-                        <Switch
-                          checked={groupingMode}
-                          onChange={(event) => setGroupingMode(event.target.checked)}
-                          disabled={allEmployees.length === 0}
-                        />
-                      }
-                      label="Group by Hairdresser"
-                    />
-                  </FormGroup>
+                  {!isMobile && (
+                    <FormGroup>
+                      <FormControlLabel
+                        sx={{ whiteSpace: 'nowrap' }}
+                        control={
+                          <Switch
+                            checked={groupingMode}
+                            onChange={(event) => setGroupingMode(event.target.checked)}
+                            disabled={allEmployees.length === 0}
+                          />
+                        }
+                        label="Group by Hairdresser"
+                      />
+                    </FormGroup>
+                  )}
                 </Toolbar.FlexibleSpace>
               )}
             />

@@ -1,19 +1,6 @@
 // @ts-nocheck
-import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  IconButton,
-  Paper,
-  Rating,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogTitle, Divider, Paper, Stack, TextField, Typography, Box, CircularProgress, Rating, IconButton } from '@mui/material';
+import React from 'react';
 import StoreIcon from '@mui/icons-material/Store';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import { Delete, Edit } from '@mui/icons-material';
@@ -24,12 +11,12 @@ import { reviewsAPI } from '../../api/apiClient';
 const ReviewList = ({ reviews = [], loading, onRefetch }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [editingReview, setEditingReview] = useState(null);
-  const [editingPhotoFile, setEditingPhotoFile] = useState(null);
-  const [editingPhotoPreview, setEditingPhotoPreview] = useState(null);
-  const [removeEditingPhoto, setRemoveEditingPhoto] = useState(false);
-  const [deletingReview, setDeletingReview] = useState(null);
-  const [savingReview, setSavingReview] = useState(false);
+  const [editingReview, setEditingReview] = React.useState(null);
+  const [editingPhotoFile, setEditingPhotoFile] = React.useState(null);
+  const [editingPhotoPreview, setEditingPhotoPreview] = React.useState(null);
+  const [removeEditingPhoto, setRemoveEditingPhoto] = React.useState(false);
+  const [deletingReview, setDeletingReview] = React.useState(null);
+  const [savingReview, setSavingReview] = React.useState(false);
 
   const getReviewPhotoSrc = (photo) => (photo ? `data:image/jpeg;base64,${photo}` : null);
 
@@ -105,15 +92,15 @@ const ReviewList = ({ reviews = [], loading, onRefetch }) => {
       elevation={2}
       onClick={() => review.shopId && navigate(`/shops/${review.shopId}`)}
       sx={{
-        p: 3,
+        p: { xs: 2, sm: 3 },
         borderRadius: 3,
         cursor: review.shopId ? 'pointer' : 'default',
         transition: 'box-shadow 0.2s, transform 0.15s',
         '&:hover': review.shopId ? { boxShadow: 6, transform: 'translateY(-2px)' } : {},
       }}
     >
-      <Stack direction="row" justifyContent="space-between" alignItems="flex-start" gap={2}>
-        <Stack gap={1} flex={1}>
+      <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'flex-start' }} gap={2}>
+        <Stack gap={1} flex={1} minWidth={0}>
           {review.shopName && (
             <Stack direction="row" alignItems="center" gap={1}>
               <StoreIcon fontSize="small" color="action" />
@@ -127,18 +114,13 @@ const ReviewList = ({ reviews = [], loading, onRefetch }) => {
             {review.comment}
           </Typography>
           {review.reviewPhotoData && (
-            <Box
-              component="img"
-              src={getReviewPhotoSrc(review.reviewPhotoData)}
-              alt={t('REVIEW_PHOTO')}
-              sx={{ width: 96, height: 96, objectFit: 'cover', borderRadius: 2 }}
-            />
+            <Box component="img" src={getReviewPhotoSrc(review.reviewPhotoData)} alt={t('REVIEW_PHOTO')} sx={{ width: { xs: '100%', sm: 96 }, maxWidth: 220, height: 96, objectFit: 'cover', borderRadius: 2 }} />
           )}
           <Typography variant="caption" color="text.disabled">
             {new Date(review.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
           </Typography>
         </Stack>
-        <Stack direction="row" gap={0.5}>
+        <Stack direction="row" gap={0.5} justifyContent="flex-end">
           <IconButton
             size="small"
             onClick={(event) => {
@@ -183,19 +165,9 @@ const ReviewList = ({ reviews = [], loading, onRefetch }) => {
 
       <Dialog open={!!editingReview} onClose={closeEditDialog} fullWidth maxWidth="sm">
         <DialogTitle>{t('EDIT_REVIEW', 'Bewertung bearbeiten')}</DialogTitle>
-        <Box sx={{ px: 3, pb: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Rating
-            value={editingReview?.rating ?? 0}
-            onChange={(_, value) => setEditingReview((review) => ({ ...review, rating: value }))}
-            sx={{ color: 'primary.main' }}
-          />
-          <TextField
-            multiline
-            rows={4}
-            fullWidth
-            value={editingReview?.comment ?? ''}
-            onChange={(event) => setEditingReview((review) => ({ ...review, comment: event.target.value }))}
-          />
+        <Box sx={{ px: { xs: 2, sm: 3 }, pb: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Rating value={editingReview?.rating ?? 0} onChange={(_, value) => setEditingReview((review) => ({ ...review, rating: value }))} sx={{ color: 'primary.main' }} />
+          <TextField multiline rows={4} fullWidth value={editingReview?.comment ?? ''} onChange={(event) => setEditingReview((review) => ({ ...review, comment: event.target.value }))} />
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
             <Button component="label" variant="outlined">
               {t(editingPhotoPreview || (!removeEditingPhoto && editingReview?.reviewPhotoData) ? 'CHANGE_PHOTO' : 'ADD_PHOTO')}
@@ -203,12 +175,7 @@ const ReviewList = ({ reviews = [], loading, onRefetch }) => {
             </Button>
             {(editingPhotoPreview || (!removeEditingPhoto && editingReview?.reviewPhotoData)) && (
               <>
-                <Box
-                  component="img"
-                  src={editingPhotoPreview || getReviewPhotoSrc(editingReview?.reviewPhotoData)}
-                  alt={t('REVIEW_PHOTO')}
-                  sx={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 2 }}
-                />
+                <Box component="img" src={editingPhotoPreview || getReviewPhotoSrc(editingReview?.reviewPhotoData)} alt={t('REVIEW_PHOTO')} sx={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 2 }} />
                 <Button color="error" onClick={handleRemoveEditPhoto}>
                   {t('REMOVE_PHOTO')}
                 </Button>
@@ -216,9 +183,11 @@ const ReviewList = ({ reviews = [], loading, onRefetch }) => {
             )}
           </Box>
         </Box>
-        <DialogActions>
-          <Button onClick={closeEditDialog}>{t('CANCEL', 'Abbrechen')}</Button>
-          <Button variant="contained" onClick={handleSaveReview} disabled={savingReview || !editingReview?.comment?.trim()}>
+        <DialogActions sx={{ flexDirection: { xs: 'column', sm: 'row' }, gap: 1, px: { xs: 2, sm: 3 }, pb: 2 }}>
+          <Button onClick={closeEditDialog} fullWidth={!!editingReview} sx={{ width: { xs: '100%', sm: 'auto' } }}>
+            {t('CANCEL', 'Abbrechen')}
+          </Button>
+          <Button variant="contained" onClick={handleSaveReview} disabled={savingReview || !editingReview?.comment?.trim()} sx={{ width: { xs: '100%', sm: 'auto' } }}>
             {savingReview ? <CircularProgress size={18} /> : t('SAVE', 'Speichern')}
           </Button>
         </DialogActions>
@@ -226,9 +195,11 @@ const ReviewList = ({ reviews = [], loading, onRefetch }) => {
 
       <Dialog open={!!deletingReview} onClose={() => setDeletingReview(null)}>
         <DialogTitle>{t('CONFIRM_DELETE_REVIEW', 'Bewertung wirklich löschen?')}</DialogTitle>
-        <DialogActions>
-          <Button onClick={() => setDeletingReview(null)}>{t('CANCEL', 'Abbrechen')}</Button>
-          <Button color="error" variant="contained" onClick={handleDeleteReview}>
+        <DialogActions sx={{ flexDirection: { xs: 'column', sm: 'row' }, gap: 1, px: 2, pb: 2 }}>
+          <Button onClick={() => setDeletingReview(null)} sx={{ width: { xs: '100%', sm: 'auto' } }}>
+            {t('CANCEL', 'Abbrechen')}
+          </Button>
+          <Button color="error" variant="contained" onClick={handleDeleteReview} sx={{ width: { xs: '100%', sm: 'auto' } }}>
             {t('DELETE', 'Löschen')}
           </Button>
         </DialogActions>

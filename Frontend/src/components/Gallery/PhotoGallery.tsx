@@ -8,9 +8,10 @@ import mostImage from '../../assets/most.jpg';
 import priceImage from '../../assets/price.jpg';
 import locationImage from '../../assets/location.jpg';
 import tipsImage from '../../assets/tips.jpg';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, useMediaQuery } from '@mui/material';
 import PhotoSwiper from './PhotoSwiper';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@mui/material/styles';
 
 const backupImages = [
   { name: 'Best Ratings', src: ratingsImage },
@@ -24,6 +25,9 @@ const backupImages = [
 const PhotoGallery = ({ pictures, reviewPhotos = [] }) => {
   const [openPhotoswiper, setOpenPhotoswiper] = useState(false);
   const { t } = useTranslation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
   const uploadedImages = [...(pictures ?? []), ...reviewPhotos.filter(Boolean)];
   const galleryImages = uploadedImages.length > 0 ? uploadedImages : backupImages;
@@ -32,10 +36,15 @@ const PhotoGallery = ({ pictures, reviewPhotos = [] }) => {
 
   return (
     <Box>
-      <Typography variant="h6" sx={{ paddingLeft: '10px' }}>
+      <Typography variant="h6" sx={{ pb: 1 }}>
         {galleryImages.length} {t('PHOTOS')}
       </Typography>
-      <ImageList sx={{ width: '100%', height: '344px', borderRadius: '5px', boxShadow: 4 }} cols={4} rowHeight={170} variant="quilted">
+      <ImageList
+        sx={{ width: '100%', height: { xs: 240, sm: 300, md: 344 }, borderRadius: '5px', boxShadow: 4, m: 0 }}
+        cols={isMobile ? 2 : 4}
+        rowHeight={isMobile ? 116 : isTablet ? 145 : 170}
+        variant="quilted"
+      >
         {galleryImages.map((image, index) => (
           <ImageListItem key={index} onClick={() => setOpenPhotoswiper(true)} sx={{ '&:hover': { cursor: 'pointer' } }}>
             <img src={getImageSrc(image)} alt={getImageAlt(image, index)} loading="lazy" style={{ objectFit: 'cover' }} />

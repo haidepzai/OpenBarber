@@ -146,7 +146,7 @@ const Filter = ({ filter, setFilter }) => {
             max={20}
             valueLabelDisplay="auto"
             getAriaValueText={() => filter.employeeCount}
-            sx={{ width: '100%' }}
+            sx={{ flex: 1, minWidth: 0 }}
           />
           <Typography variant="subtitle1" sx={{ whiteSpace: 'nowrap', minWidth: '50px' }}>
             {filter.employeeCount[0] === filter.employeeCount[1]
@@ -187,7 +187,7 @@ const Filter = ({ filter, setFilter }) => {
             <Typography variant="body1">{t('OPENING_TIME')}</Typography>
             <Typography variant="body1">{t('CLOSING_TIME')}</Typography>
           </Stack>
-          <Stack direction="row" sx={{ '& > *': { flex: '1' } }} gap={2}>
+          <Stack direction="row" sx={{ '& > *': { flex: '1', minWidth: 0 } }} gap={2}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
                 name="open"

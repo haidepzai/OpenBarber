@@ -44,9 +44,13 @@ function MySwiper() {
       <Swiper
         slidesPerView={5}
         spaceBetween={20}
-        pagination={{
-          clickable: true,
+        breakpoints={{
+          0:   { slidesPerView: 1, spaceBetween: 12 },
+          480: { slidesPerView: 2, spaceBetween: 16 },
+          768: { slidesPerView: 3, spaceBetween: 20 },
+          1024: { slidesPerView: 5, spaceBetween: 20 },
         }}
+        pagination={{ clickable: true }}
         navigation={true}
         modules={[Pagination, Navigation]}
       >

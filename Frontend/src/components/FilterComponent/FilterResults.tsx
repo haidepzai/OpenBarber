@@ -125,7 +125,7 @@ const FilterResults = ({ filter }) => {
   return (
     <Fragment>
       <Box sx={{ flex: '4 1 0' }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: '100%', m: '20px 0' }}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'center' }} sx={{ width: '100%', m: '20px 0' }} gap={1}>
           <Typography variant="body1">
             {filteredShops.length} {t('SHOPS_AVAILABLE_IN')} {locationName}
           </Typography>
@@ -153,7 +153,7 @@ const FilterResults = ({ filter }) => {
           <>
             {filteredShops.map((shop) => (
               <Box key={shop.id} sx={{ margin: '20px 0' }}>
-                <Stack direction="row" alignItems="center" spacing={3} sx={{ mb: '20px' }}>
+                <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'flex-start', sm: 'center' }} spacing={3} sx={{ mb: '20px' }}>
                   <img
                     alt="shop logo"
                     src={shop.logo ? `data:image/jpeg;base64,${shop.logo}` : import.meta.env.VITE_BACKUP_IMAGE}
@@ -165,6 +165,7 @@ const FilterResults = ({ filter }) => {
                       objectFit: 'cover',
                       objectPosition: 'center',
                       cursor: 'pointer',
+                      maxWidth: '100%',
                     }}
                     onClick={() => goToShop(shop.id)}
                   />

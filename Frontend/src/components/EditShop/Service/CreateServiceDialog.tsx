@@ -97,9 +97,9 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm" aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
         <DialogTitle id="alert-dialog-title">{editingMode() ? 'Edit your service' : 'Add a service'}</DialogTitle>
-        <DialogContent sx={{ width: '400px' }}>
+        <DialogContent sx={{ width: { xs: '100%', sm: '400px' }, maxWidth: '100%' }}>
           <Stack direction="column" spacing={4}>
             <TextField
               type="text"
@@ -167,7 +167,7 @@ const CreateServiceDialog = ({ open, setOpen, editedService, setEditedService, u
             />
           </Stack>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'space-between', m: '8px 24px 24px 24px', p: '0' }}>
+        <DialogActions sx={{ justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' }, gap: 1, m: '8px 24px 24px 24px', p: '0' }}>
           <Button variant="outlined" onClick={handleClose} autoFocus>
             {t('CANCEL')}
           </Button>
