@@ -43,7 +43,7 @@ const SchedulerPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentViewName, setCurrentViewName] = useState('Week');
   const [currentEmployee, setCurrentEmployee] = useState('');
-  const [groupingMode, setGroupingMode] = useState(true);
+  const [groupingMode, setGroupingMode] = useState(false);
   const [snackMessage, setSnackMessage] = useState('');
   const [snackSeverity, setSnackSeverity] = useState('success');
   const [snackOpen, setSnackOpen] = useState(false);
@@ -118,18 +118,15 @@ const SchedulerPage = () => {
       setAllEmployees(employees);
 
       const hasEmployees = employees.length > 0;
-      if (!hasEmployees) {
-        setGroupingMode(false);
-      } else {
-        // Auto-select first employee to avoid "All" grouping crash
+      if (!hasEmployees) setGroupingMode(false);
+      if (hasEmployees) {
         setCurrentEmployee((prev) => prev || String(employees[0].id));
       }
 
-      const selectedEmpId = employees.length > 0 ? String(employees[0].id) : '';
       setResources([
         {
           ...initialResources[0],
-          instances: getEmployeeInstances(employees).filter((e) => !selectedEmpId || String(e.id) === selectedEmpId),
+          instances: getEmployeeInstances(employees),
         },
         {
           ...initialResources[1],
@@ -153,29 +150,12 @@ const SchedulerPage = () => {
         appointment &&
         appointment.startDate instanceof Date &&
         !isNaN(appointment.startDate) &&
-        (!currentEmployee || normalizeId(appointment.employee) === normalizeId(currentEmployee))
+        (groupingMode || !currentEmployee || normalizeId(appointment.employee) === normalizeId(currentEmployee))
     );
 
   const changeCurrentEmployee = (newCurrentEmployee) => {
     const normalizedEmployeeId = normalizeId(newCurrentEmployee);
-    const newResources = resources.map((resource) => {
-      if (resource.fieldName === 'employee') {
-        const found = normalizedEmployeeId
-          ? getEmployeeInstances(allEmployees).filter((e) => normalizeId(e.id) === normalizedEmployeeId)
-          : getEmployeeInstances(allEmployees);
-        return { ...resource, instances: found };
-      }
-      return resource;
-    });
     setCurrentEmployee(normalizedEmployeeId);
-    setResources(newResources);
-    // Grouping only works when a specific employee is selected
-    // (appointments without an employee crash the grouping renderer)
-    if (!normalizedEmployeeId) {
-      setGroupingMode(false);
-    } else if (allEmployees.length > 0) {
-      setGroupingMode(true);
-    }
   };
 
   const commitChanges = ({ added, changed, deleted }) => {
@@ -289,7 +269,9 @@ const SchedulerPage = () => {
             <Toolbar
               flexibleSpaceComponent={() => (
                 <Toolbar.FlexibleSpace style={{ margin: '0 auto 0 0', display: 'flex', gap: '40px', alignItems: 'center' }}>
-                  <EmployeeSelect value={currentEmployee} handleChange={changeCurrentEmployee} options={getEmployeeInstances(allEmployees)} />
+                  {!groupingMode && (
+                    <EmployeeSelect value={currentEmployee} handleChange={changeCurrentEmployee} options={getEmployeeInstances(allEmployees)} />
+                  )}
                   <FormGroup>
                     <FormControlLabel
                       sx={{ whiteSpace: 'nowrap' }}

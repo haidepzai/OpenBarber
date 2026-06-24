@@ -19,8 +19,6 @@ const backupImages = [
   { name: 'With Beard Trimming', src: beardImage },
   { name: 'Most Ratings', src: mostImage },
   { name: 'Our personal tips', src: tipsImage },
-  { name: 'Best Ratings', src: ratingsImage },
-  { name: 'Cheapest Prices', src: priceImage },
 ];
 
 const PhotoGallery = ({ pictures, reviewPhotos = [] }) => {

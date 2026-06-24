@@ -17,7 +17,7 @@ import { Lazy, Pagination, Navigation } from 'swiper';
 import { Box, IconButton } from '@mui/material';
 const PhotoSwiper = ({ images, onClose }) => {
   const getImageSrc = (image) => (typeof image === 'string' ? `data:image/jpeg;base64,${image}` : image.src);
-  const getImageKey = (image, index) => (typeof image === 'string' ? index : image.name);
+  const getImageKey = (image, index) => (typeof image === 'string' ? index : `${image.name}-${index}`);
 
   return (
     <Box
