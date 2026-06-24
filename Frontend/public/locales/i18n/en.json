@@ -221,5 +221,15 @@
   "PHOTO_UPLOAD_FAILED": "Photo upload failed",
   "EDIT_PROFILE": "Edit profile",
   "BOOKING_FAILED": "Booking failed. Please try again.",
-  "CONFIRM_CANCEL_APPOINTMENT": "Really cancel this appointment?"
+  "CONFIRM_CANCEL_APPOINTMENT": "Really cancel this appointment?",
+  "LOGIN_TO_REVIEW": "Please log in to leave a review.",
+  "REVIEW_ERROR": "Review failed. Please try again.",
+  "CONFIRM_DELETE_REVIEW": "Really delete this review?",
+  "EDIT": "Edit",
+  "DELETE": "Delete",
+  "CANCEL": "Cancel",
+  "SAVE": "Save",
+  "MY_REVIEWS": "My Reviews",
+  "NO_REVIEWS": "No reviews submitted yet.",
+  "EDIT_REVIEW": "Edit Review"
 }

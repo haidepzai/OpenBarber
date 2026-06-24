@@ -220,5 +220,15 @@
   "PHOTO_UPLOAD_FAILED": "Foto-Upload fehlgeschlagen",
   "EDIT_PROFILE": "Profil bearbeiten",
   "BOOKING_FAILED": "Buchung fehlgeschlagen. Bitte erneut versuchen.",
-  "CONFIRM_CANCEL_APPOINTMENT": "Termin wirklich absagen?"
+  "CONFIRM_CANCEL_APPOINTMENT": "Termin wirklich absagen?",
+  "LOGIN_TO_REVIEW": "Bitte einloggen um eine Bewertung zu hinterlassen.",
+  "REVIEW_ERROR": "Bewertung fehlgeschlagen. Bitte erneut versuchen.",
+  "CONFIRM_DELETE_REVIEW": "Bewertung wirklich löschen?",
+  "EDIT": "Bearbeiten",
+  "DELETE": "Löschen",
+  "CANCEL": "Abbrechen",
+  "SAVE": "Speichern",
+  "MY_REVIEWS": "Meine Bewertungen",
+  "NO_REVIEWS": "Noch keine Bewertungen abgegeben.",
+  "EDIT_REVIEW": "Bewertung bearbeiten"
 }

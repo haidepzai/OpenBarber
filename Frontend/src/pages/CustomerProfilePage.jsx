@@ -1,13 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
-  Box, Typography, Chip, Divider, Stack, CircularProgress, Paper, Button
+  Box, Typography, Chip, Divider, Stack, CircularProgress, Paper, Button,
+  IconButton, TextField, Dialog, DialogTitle, DialogActions, Rating
 } from '@mui/material';
 import EventIcon from '@mui/icons-material/Event';
 import StoreIcon from '@mui/icons-material/Store';
 import PersonIcon from '@mui/icons-material/Person';
+import RateReviewIcon from '@mui/icons-material/RateReview';
+import { Edit, Delete } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import AuthContext from '../context/auth-context';
-import { appointmentsAPI } from '../api/apiClient';
+import { appointmentsAPI, reviewsAPI } from '../api/apiClient';
 
 const CustomerProfilePage = () => {
   const { t } = useTranslation();
@@ -15,6 +18,12 @@ const CustomerProfilePage = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(null);
+
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [editingReview, setEditingReview] = useState(null); // { id, comment, rating }
+  const [deletingReview, setDeletingReview] = useState(null);
+  const [savingReview, setSavingReview] = useState(false);
 
   const load = async () => {
     try {
@@ -28,6 +37,19 @@ const CustomerProfilePage = () => {
   };
 
   useEffect(() => { load(); }, []);
+
+  const loadReviews = async () => {
+    try {
+      const res = await reviewsAPI.getMy();
+      setReviews(res.data?.content ?? []);
+    } catch (e) {
+      setReviews([]);
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  useEffect(() => { loadReviews(); }, []);
 
   const handleCancel = async (a) => {
     if (!window.confirm(t('CONFIRM_CANCEL_APPOINTMENT', 'Termin wirklich absagen?'))) return;
@@ -114,6 +136,59 @@ const CustomerProfilePage = () => {
     </Paper>
   );
 
+  const handleSaveReview = async () => {
+    if (!editingReview) return;
+    setSavingReview(true);
+    try {
+      await reviewsAPI.update(editingReview.id, { comment: editingReview.comment, rating: editingReview.rating });
+      await loadReviews();
+      setEditingReview(null);
+    } catch (e) {
+      console.error('Update review failed', e);
+    } finally {
+      setSavingReview(false);
+    }
+  };
+
+  const handleDeleteReview = async () => {
+    if (!deletingReview) return;
+    try {
+      await reviewsAPI.delete(deletingReview.id);
+      await loadReviews();
+      setDeletingReview(null);
+    } catch (e) {
+      console.error('Delete review failed', e);
+    }
+  };
+
+  const renderReviewCard = (r) => (
+    <Paper key={r.id} elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="flex-start" gap={2}>
+        <Stack gap={1} flex={1}>
+          {r.enterpriseName && (
+            <Stack direction="row" alignItems="center" gap={1}>
+              <StoreIcon fontSize="small" color="action" />
+              <Typography variant="body2" fontWeight={600}>{r.enterpriseName}</Typography>
+            </Stack>
+          )}
+          <Rating value={r.rating} readOnly precision={0.5} size="small" sx={{ color: 'primary.main' }} />
+          <Typography variant="body2" color="text.secondary">{r.comment}</Typography>
+          <Typography variant="caption" color="text.disabled">
+            {new Date(r.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+          </Typography>
+        </Stack>
+        <Stack direction="row" gap={0.5}>
+          <IconButton size="small" onClick={() => setEditingReview({ id: r.id, comment: r.comment, rating: r.rating })}>
+            <Edit fontSize="small" />
+          </IconButton>
+          <IconButton size="small" color="error" onClick={() => setDeletingReview(r)}>
+            <Delete fontSize="small" />
+          </IconButton>
+        </Stack>
+      </Stack>
+    </Paper>
+  );
+
   return (
     <Box sx={{ width: '60%', margin: '40px auto', minHeight: '60vh' }}>
       <Typography variant="h4" fontWeight={600} mb={1}>{t('MY_APPOINTMENTS', 'Meine Termine')}</Typography>
@@ -138,8 +213,54 @@ const CustomerProfilePage = () => {
           ) : (
             <Stack gap={2}>{past.map((a) => renderCard(a, false))}</Stack>
           )}
+
+          <Divider sx={{ my: 3 }} />
+
+          <Stack direction="row" alignItems="center" gap={1} mb={2}>
+            <RateReviewIcon color="primary" />
+            <Typography variant="h6" fontWeight={600}>{t('MY_REVIEWS', 'Meine Bewertungen')}</Typography>
+          </Stack>
+          {reviewsLoading ? (
+            <Stack alignItems="center" mt={2}><CircularProgress size={24} /></Stack>
+          ) : reviews.length === 0 ? (
+            <Typography color="text.secondary">{t('NO_REVIEWS', 'Noch keine Bewertungen abgegeben.')}</Typography>
+          ) : (
+            <Stack gap={2}>{reviews.map(renderReviewCard)}</Stack>
+          )}
         </>
       )}
+
+      {/* Edit Review Dialog */}
+      <Dialog open={!!editingReview} onClose={() => setEditingReview(null)} fullWidth maxWidth="sm">
+        <DialogTitle>{t('EDIT_REVIEW', 'Bewertung bearbeiten')}</DialogTitle>
+        <Box sx={{ px: 3, pb: 2 }}>
+          <Rating
+            value={editingReview?.rating ?? 0}
+            onChange={(_, v) => setEditingReview((r) => ({ ...r, rating: v }))}
+            sx={{ mb: 2, color: 'primary.main' }}
+          />
+          <TextField
+            multiline rows={4} fullWidth
+            value={editingReview?.comment ?? ''}
+            onChange={(e) => setEditingReview((r) => ({ ...r, comment: e.target.value }))}
+          />
+        </Box>
+        <DialogActions>
+          <Button onClick={() => setEditingReview(null)}>{t('CANCEL', 'Abbrechen')}</Button>
+          <Button variant="contained" onClick={handleSaveReview} disabled={savingReview || !editingReview?.comment?.trim()}>
+            {savingReview ? <CircularProgress size={18} /> : t('SAVE', 'Speichern')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Review Confirm Dialog */}
+      <Dialog open={!!deletingReview} onClose={() => setDeletingReview(null)}>
+        <DialogTitle>{t('CONFIRM_DELETE_REVIEW', 'Bewertung wirklich löschen?')}</DialogTitle>
+        <DialogActions>
+          <Button onClick={() => setDeletingReview(null)}>{t('CANCEL', 'Abbrechen')}</Button>
+          <Button color="error" variant="contained" onClick={handleDeleteReview}>{t('DELETE', 'Löschen')}</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

@@ -1,6 +1,7 @@
 package com.hdmstuttgart.mi.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hdmstuttgart.mi.backend.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,4 +50,9 @@ public class Review {
     @JsonIgnore
     @JoinColumn(name = "enterprise_id")
     private Enterprise enterprise;
+
+    @ManyToOne(optional = true)
+    @JsonIgnore
+    @JoinColumn(name = "reviewer_id")
+    private User reviewer;
 }

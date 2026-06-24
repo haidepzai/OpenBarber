@@ -73,6 +73,7 @@ const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error
             value={data.personalData.firstName}
             onChange={handleChange}
             fullWidth
+            required
             error={showErrors && !data.personalData.firstName}
             helperText={showErrors && !data.personalData.firstName && t('CANT_BE_EMPTY')}
             sx={{ paddingBottom: showErrors && !data.personalData.firstName ? '5px' : '28px' }}
@@ -83,6 +84,7 @@ const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error
             value={data.personalData.lastName}
             onChange={handleChange}
             fullWidth
+            required
             error={showErrors && !data.personalData.lastName}
             helperText={showErrors && !data.personalData.lastName && t('CANT_BE_EMPTY')}
             sx={{ paddingBottom: showErrors && !data.personalData.lastName ? '5px' : '28px' }}
@@ -94,6 +96,7 @@ const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error
           value={data.personalData.email}
           onChange={handleChange}
           fullWidth
+          required
           error={showErrors && !data.personalData.email}
           helperText={showErrors && !data.personalData.email && t('CANT_BE_EMPTY')}
           sx={{ paddingBottom: showErrors && !data.personalData.email ? '5px' : '28px' }}
@@ -104,6 +107,7 @@ const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error
           value={data.personalData.phoneNumber}
           onChange={handleChange}
           fullWidth
+          required
           error={showErrors && !data.personalData.phoneNumber}
           helperText={showErrors && !data.personalData.phoneNumber && t('CANT_BE_EMPTY')}
           sx={{ paddingBottom: showErrors && !data.personalData.phoneNumber ? '5px' : '28px' }}

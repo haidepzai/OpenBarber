@@ -87,12 +87,17 @@ public class ReviewService {
     public Review createReview(Review review, Long enterpriseId, String token) {
         String username = jwtService.extractUsername(token.substring(7));
 
-        userRepository.findByEmail(username)
+        User reviewer = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UnauthorizedException("Not allowed to review"));
+
+        if (reviewRepository.existsByEnterpriseIdAndReviewerId(enterpriseId, reviewer.getId())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "You have already reviewed this enterprise");
+        }
 
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
         review.setEnterprise(enterprise);
+        review.setReviewer(reviewer);
         return reviewRepository.save(review);
     }
 
@@ -127,23 +132,34 @@ public class ReviewService {
      * @param newReview the new review
      * @return the review
      */
-    public Review updateReview(long id, Review newReview) {
+    public Review updateReview(long id, Review newReview, String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UnauthorizedException("Not authorized"));
         Review existingReview = getReviewById(id);
-        existingReview.setAuthor(newReview.getAuthor());
+        if (existingReview.getReviewer() == null || !existingReview.getReviewer().getId().equals(user.getId())) {
+            throw new UnauthorizedException("You can only edit your own reviews");
+        }
         existingReview.setComment(newReview.getComment());
         existingReview.setRating(newReview.getRating());
         return reviewRepository.save(existingReview);
     }
 
-    /**
-     * Delete review.
-     *
-     * @param id the id
-     */
-    public void deleteReview(long id) {
-        if (!reviewRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id = " + id);
+    public void deleteReview(long id, String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UnauthorizedException("Not authorized"));
+        Review review = getReviewById(id);
+        if (review.getReviewer() == null || !review.getReviewer().getId().equals(user.getId())) {
+            throw new UnauthorizedException("You can only delete your own reviews");
         }
         reviewRepository.deleteById(id);
+    }
+
+    public Page<Review> getMyReviews(String token, Pageable pageable) {
+        String username = jwtService.extractUsername(token.substring(7));
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UnauthorizedException("Not authorized"));
+        return reviewRepository.findAllByReviewerId(user.getId(), pageable);
     }
 }

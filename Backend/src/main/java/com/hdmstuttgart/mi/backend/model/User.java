@@ -60,7 +60,7 @@ public class User implements UserDetails {
 
     private String salutation;
 
-    @Lob
+    @Column(columnDefinition = "bytea")
     private byte[] profilePhoto;
 
     @CreationTimestamp

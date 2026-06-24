@@ -221,5 +221,15 @@
   "PHOTO_UPLOAD_FAILED": "写真のアップロードに失敗しました",
   "EDIT_PROFILE": "プロフィール編集",
   "CANCEL_APPOINTMENT": "キャンセル",
-  "CONFIRM_CANCEL_APPOINTMENT": "本当にキャンセルしますか？"
+  "CONFIRM_CANCEL_APPOINTMENT": "本当にキャンセルしますか？",
+  "LOGIN_TO_REVIEW": "レビューを投稿するにはログインしてください。",
+  "REVIEW_ERROR": "レビューに失敗しました。もう一度お試しください。",
+  "CONFIRM_DELETE_REVIEW": "本当にレビューを削除しますか？",
+  "EDIT": "編集",
+  "DELETE": "削除",
+  "CANCEL": "キャンセル",
+  "SAVE": "保存",
+  "MY_REVIEWS": "マイレビュー",
+  "NO_REVIEWS": "まだレビューはありません。",
+  "EDIT_REVIEW": "レビューを編集"
 }

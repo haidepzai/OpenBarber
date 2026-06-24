@@ -44,7 +44,11 @@ public class SecurityConfiguration {
             .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
             // Public read: enterprises, services, reviews
             .antMatchers(HttpMethod.GET, "/api/enterprises", "/api/enterprises/{id}", "/api/enterprises/within-radius", "/api/enterprises/email", "/api/enterprises/*/available-slots").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/reviews/my").authenticated()
             .antMatchers(HttpMethod.GET, "/api/reviews").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/reviews/auth").authenticated()
+            .antMatchers(HttpMethod.PUT, "/api/reviews/**").authenticated()
+            .antMatchers(HttpMethod.DELETE, "/api/reviews/**").authenticated()
             .antMatchers(HttpMethod.GET, "/api/services").permitAll()
             // Operator-only: manage own enterprise (UNVERIFIED/VERIFIED can create once during signup)
             .antMatchers(HttpMethod.POST, "/api/enterprises").hasAnyAuthority("OPERATOR", "VERIFIED", "UNVERIFIED")

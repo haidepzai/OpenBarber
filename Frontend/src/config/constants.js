@@ -46,7 +46,10 @@ const API_ENDPOINTS = {
 
   // Reviews
   REVIEWS: (enterpriseId) => `${BASE_URL}/api/reviews?enterpriseId=${enterpriseId}`,
-  REVIEWS_CREATE: (enterpriseId) => `${BASE_URL}/api/reviews?enterpriseId=${enterpriseId}`,
+  REVIEWS_MY: `${BASE_URL}/api/reviews/my`,
+  REVIEWS_CREATE_AUTH: (enterpriseId) => `${BASE_URL}/api/reviews/auth?enterpriseId=${enterpriseId}`,
+  REVIEW_UPDATE: (id) => `${BASE_URL}/api/reviews/${id}`,
+  REVIEW_DELETE: (id) => `${BASE_URL}/api/reviews/${id}`,
 
   // Services
   SERVICES: (enterpriseId) => `${BASE_URL}/api/services?enterpriseId=${enterpriseId}`,

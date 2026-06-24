@@ -74,7 +74,10 @@ const refreshAccessToken = async () => {
 // Reviews API
 export const reviewsAPI = {
   getByEnterprise: (enterpriseId) => apiClient.get(API_ENDPOINTS.REVIEWS(enterpriseId)),
-  create: (enterpriseId, data) => apiClient.post(API_ENDPOINTS.REVIEWS_CREATE(enterpriseId), data),
+  getMy: () => apiClient.get(API_ENDPOINTS.REVIEWS_MY, { headers: getAuthHeader() }),
+  create: (enterpriseId, data) => apiClient.post(API_ENDPOINTS.REVIEWS_CREATE_AUTH(enterpriseId), data, { headers: getAuthHeader() }),
+  update: (id, data) => apiClient.put(API_ENDPOINTS.REVIEW_UPDATE(id), data, { headers: getAuthHeader() }),
+  delete: (id) => apiClient.delete(API_ENDPOINTS.REVIEW_DELETE(id), { headers: getAuthHeader() }),
 };
 
 // Enterprises API
