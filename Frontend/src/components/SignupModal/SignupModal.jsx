@@ -1,7 +1,8 @@
 import React, { Fragment, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
 
-import { Box, Stepper, Step, StepButton, Stack } from '@mui/material';
+import { Box, IconButton, Stepper, Step, StepButton, Stack } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import SignUpStep from './components/SignUpStep';
 import EnterpriseCreateStep from './components/EnterpriseCreateStep';
 import AwaitingApprovalStep from './components/AwaitingApprovalStep';
@@ -24,15 +25,17 @@ const SignupModal = () => {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     const cb = (e) => {
-      if (e.key === 'Escape') {
-        authCtx.onLogout();
-        signUpCtx.setSignupVisible(false);
-        document.body.style.overflow = '';
-      }
+      if (e.key === 'Escape') handleClose();
     };
     document.addEventListener('keydown', cb);
     return () => document.removeEventListener('keydown', cb);
   }, [authCtx, signUpCtx]);
+
+  const handleClose = () => {
+    authCtx.onLogout();
+    signUpCtx.setSignupVisible(false);
+    document.body.style.overflow = '';
+  };
 
   const renderStep = () => {
     const step = signUpCtx.activeStep;
@@ -79,15 +82,20 @@ const SignupModal = () => {
               flexDirection: 'column',
             }}
           >
-            <Stepper nonLinear activeStep={signUpCtx.activeStep}>
-              {steps.map((label, index) => (
-                <Step key={label} completed={signUpCtx.completedSteps[index]}>
-                  <StepButton type="button" onClick={() => signUpCtx.setActiveStep(index)} disabled={true}>
-                    {label}
-                  </StepButton>
-                </Step>
-              ))}
-            </Stepper>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+              <Stepper nonLinear activeStep={signUpCtx.activeStep} sx={{ flex: 1 }}>
+                {steps.map((label, index) => (
+                  <Step key={label} completed={signUpCtx.completedSteps[index]}>
+                    <StepButton type="button" onClick={() => signUpCtx.setActiveStep(index)} disabled={true}>
+                      {label}
+                    </StepButton>
+                  </Step>
+                ))}
+              </Stepper>
+              <IconButton onClick={handleClose} sx={{ ml: 2 }} aria-label="close">
+                <CloseIcon />
+              </IconButton>
+            </Box>
             <Stack flexGrow="1">
               {renderStep()}
             </Stack>
