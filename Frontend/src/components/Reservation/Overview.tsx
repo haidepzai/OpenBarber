@@ -11,6 +11,8 @@ const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'nume
 
 const Overview = ({ booked, data, handleStep }) => {
   const { t } = useTranslation();
+  const isAny = !data.employee?.id;
+  const displayEmployee = isAny && data.assignedEmployee ? data.assignedEmployee : data.employee;
 
   const calculateEndDate = (date, duration) => {
     date.setMinutes(date.getMinutes() + duration);
@@ -84,21 +86,13 @@ const Overview = ({ booked, data, handleStep }) => {
       >
         <Stack direction="row" alignItems="center" spacing={3}>
           <Avatar
-            alt="Alexandra"
-            src={data.employee.picture ? `data:image/jpeg;base64,${data.employee.picture}` : undefined}
+            alt={displayEmployee?.name}
+            src={displayEmployee?.picture ? `data:image/jpeg;base64,${displayEmployee.picture}` : undefined}
             sx={{ width: 35, height: 35 }}
           />
           <Box>
-            <Typography sx={{ lineHeight: 'unset' }}>{data.employee.name}</Typography>
-            <Typography
-              variant="overline"
-              sx={{
-                textTransform: 'uppercase',
-                lineHeight: 'unset',
-                color: '#666',
-              }}
-            >
-              {data.employee.titel}
+            <Typography sx={{ lineHeight: 'unset' }}>
+              {displayEmployee?.name}{displayEmployee?.title ? ` – ${displayEmployee.title}` : ''}
             </Typography>
           </Box>
         </Stack>

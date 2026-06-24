@@ -23,6 +23,7 @@ const initialState = {
   services: [],
   employee: { name: 'Any' },
   employeeId: '',
+  assignedEmployee: null, // auto-assigned from slot when "Any" is selected — does not change the displayed stylist
   appointmentDateTime: null,
   personalData: {
     formOfAddress: 'None',
@@ -48,7 +49,9 @@ const reducer = (state, action) => {
     case 'remove_service':
       return { ...state, services: state.services.filter((service) => service !== action.payload) };
     case 'set_employee':
-      return { ...state, employee: action.payload, employeeId: action.payload.id };
+      return { ...state, employee: action.payload, employeeId: action.payload.id, assignedEmployee: null };
+    case 'set_assigned_employee':
+      return { ...state, assignedEmployee: action.payload };
     case 'set_date':
       return { ...state, appointmentDateTime: action.payload };
     case 'set_personal_data':
@@ -150,7 +153,7 @@ function ReservationDialog({ open, handleClose, shop }) {
       customerEmail: data.personalData.email,
       appointmentDateTime: isoDateTime,
       shopId: shop.id,
-      employeeId: data.employee?.id ?? data.employeeId,
+      employeeId: data.assignedEmployee?.id ?? data.employee?.id ?? data.employeeId,
       services: data.services.map((service) => ({ id: service.id })),
       paymentMethod: data.paymentMethod,
     };
@@ -189,6 +192,10 @@ function ReservationDialog({ open, handleClose, shop }) {
 
   const pickStylist = (employee) => {
     dispatch({ type: 'set_employee', payload: employee });
+  };
+
+  const assignEmployee = (employee) => {
+    dispatch({ type: 'set_assigned_employee', payload: employee });
   };
 
   const pickDate = (date) => {
@@ -257,6 +264,7 @@ function ReservationDialog({ open, handleClose, shop }) {
             <DatePage
               pickedStylist={data.employee}
               pickStylist={pickStylist}
+              assignEmployee={assignEmployee}
               pickedDate={data.appointmentDateTime}
               pickDate={pickDate}
               shopEmployees={shop.employees}

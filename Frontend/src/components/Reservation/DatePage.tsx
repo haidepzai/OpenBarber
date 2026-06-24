@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { shopsAPI } from '../../api/apiClient';
 
-const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmployees, shopId, selectedServices }) => {
+const DatePage = ({ pickedStylist, pickStylist, assignEmployee, pickedDate, pickDate, shopEmployees, shopId, selectedServices }) => {
   const [expanded, setExpanded] = useState(false);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -56,14 +56,18 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
     const [h, m] = slot.time.split(':').map(Number);
     const base = pickedDay ?? dayjs();
     pickDate(base.hour(h).minute(m).second(0).toDate());
-    // Auto-assign the employee linked to this slot
     if (slot.employeeId) {
-      pickStylist({ id: slot.employeeId, name: slot.employeeName, picture: slot.employeePicture });
+      if (isAnyEmployee) {
+        // Keep "Any" displayed; store the auto-assigned employee separately
+        assignEmployee({ id: slot.employeeId, name: slot.employeeName, picture: slot.employeePicture });
+      } else {
+        pickStylist({ id: slot.employeeId, name: slot.employeeName, picture: slot.employeePicture });
+      }
     }
   };
 
   const handlePick = (employee) => {
-    pickStylist(employee);
+    pickStylist(employee); // this also clears assignedEmployee via reducer
     setExpanded(false);
   };
 
