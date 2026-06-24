@@ -8,7 +8,7 @@ import DetailPageBG from '../components/DetailPage/DetailPageBG';
 
 import '../css/DetailPage/DetailPage.css';
 import { useParams } from 'react-router-dom';
-import { getShop } from '../actions/ShopActions';
+import { shopsAPI } from '../api/apiClient';
 
 const DetailPage = () => {
   const { routeId } = useParams();
@@ -17,8 +17,8 @@ const DetailPage = () => {
   const [loading, setLoading] = useState(true);
 
   const loadShop = useCallback(async () => {
-    const shop = await getShop(routeId);
-    setShop(shop);
+    const { data } = await shopsAPI.getById(routeId);
+    setShop(data);
   }, [routeId]);
 
   useEffect(() => {

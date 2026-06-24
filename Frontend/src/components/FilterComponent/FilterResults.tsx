@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import TodayIcon from '@mui/icons-material/Today';
 import ReservationDialog from '../Reservation/ReservationDialog';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getShopsWithinRadius, getShops } from '../../actions/ShopActions';
+import { shopsAPI } from '../../api/apiClient';
 import { useTranslation } from 'react-i18next';
 import { convertDateToTime } from '../../shared/ConvertTime';
 
@@ -101,8 +101,9 @@ const FilterResults = ({ filter }) => {
     setIsLoading(true);
     try {
       const hasCoordinates = location.state?.lat != null && location.state?.lng != null;
-      const data = hasCoordinates ? await getShopsWithinRadius(location.state.lat, location.state.lng, page - 1) : await getShops(page - 1);
-      setShops(Array.isArray(data?.content) ? data.content : []);
+      const response = hasCoordinates ? await shopsAPI.getWithinRadius(location.state.lat, location.state.lng, page - 1) : await shopsAPI.getAll(page - 1);
+      const data = response.data;
+      setShops(Array.isArray(data?.content) ? data.content : Array.isArray(data) ? data : []);
       setTotalPages(data?.totalPages ?? 1);
     } catch (error) {
       setShops([]);

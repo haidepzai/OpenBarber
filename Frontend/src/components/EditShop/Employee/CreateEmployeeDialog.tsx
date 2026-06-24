@@ -8,7 +8,7 @@ import { Box, Stack, TextField } from '@mui/material';
 import React, { useEffect, useState, useCallback, useReducer, useContext } from 'react';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { createEmployee, updateStylist } from '../../../actions/EmployeeActions';
+import { employeesAPI } from '../../../api/apiClient';
 import AuthContext from '../../../context/auth-context';
 import { useTranslation } from 'react-i18next';
 
@@ -97,12 +97,12 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
       // Update Employee
       if (editingMode()) {
         updateEmployee(employee);
-        await updateStylist(editedEmployee.id, employee);
+        await employeesAPI.update(editedEmployee.id, employee);
         setEditedEmployee(undefined);
       } else {
         // Add Employee
         addEmployee(employee);
-        await createEmployee(employee, authCtx.user.shop.id);
+        await employeesAPI.create(employee, authCtx.user.shop.id);
         dispatch({ type: 'RESET' });
       }
       setInitialClick(false);

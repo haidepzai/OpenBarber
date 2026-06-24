@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type AxiosRequestConfig } from 'axios';
 import { API_ENDPOINTS, TIMEOUTS } from '../config/constants';
 import { clearTokens, getAccessToken, getRefreshToken, setAccessToken, setRefreshToken } from '../context/tokenStorage';
 
@@ -50,9 +50,10 @@ const createApiClient = () => {
 const apiClient = createApiClient();
 let refreshInFlight: Promise<string> | null = null;
 
-const getAuthHeader = (): RequestHeaders => ({
-  Authorization: `Bearer ${getAccessToken()}`,
-});
+const getAuthHeader = (): RequestHeaders => {
+  const token = getAccessToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 const refreshAccessToken = async (): Promise<string> => {
   if (!refreshInFlight) {
@@ -93,8 +94,13 @@ export const reviewsAPI = {
 };
 
 export const shopsAPI = {
+  getAll: (page = 0, size = 12) => apiClient.get(API_ENDPOINTS.SHOPS, { params: { page, size } }),
+  getWithinRadius: (lat: unknown, lng: unknown, page = 0, size = 12) =>
+    apiClient.get(API_ENDPOINTS.SHOPS_RADIUS, { params: { lat, lng, radius: 5, page, size } }),
+  getByEmail: (email: unknown) => apiClient.get(API_ENDPOINTS.SHOPS_BY_EMAIL, { params: { email } }),
   getByUser: () => apiClient.get(API_ENDPOINTS.SHOPS_BY_USER, { headers: getAuthHeader() }),
   getById: (id: unknown) => apiClient.get(API_ENDPOINTS.SHOP_DETAIL(id), { headers: getAuthHeader() }),
+  create: (data: unknown, config?: AxiosRequestConfig) => apiClient.post(API_ENDPOINTS.SHOPS_CREATE, data, config),
   uploadLogo: (id: unknown, file: File) => {
     const formData = new FormData();
     formData.append('file', file);

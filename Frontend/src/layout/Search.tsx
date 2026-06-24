@@ -10,7 +10,7 @@ import EventIcon from '@mui/icons-material/Event';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { usePlacesWidget } from 'react-google-autocomplete';
-import { getCurrentLocation, getGeocoordinates } from '../actions/GoogleMapsActions';
+import { getCurrentLocation, getGeocoordinates } from '../utils/geolocation';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 

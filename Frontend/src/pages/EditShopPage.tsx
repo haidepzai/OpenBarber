@@ -3,8 +3,6 @@ import React, { useEffect, useRef, useState, useContext } from 'react';
 import { Box, Divider, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import AuthContext from '../context/auth-context';
-import { getShopByUser } from '../actions/ShopActions';
-import { getUserById } from '../actions/UserActions';
 import EditPersonalInfo from '../components/EditShop/EditPersonalInfo.tsx';
 import { useTranslation } from 'react-i18next';
 import PersonalInfoForm from '../components/EditShop/PersonalInfoForm';
@@ -13,7 +11,7 @@ import FormActions from '../components/EditShop/FormActions';
 import SnackbarManager from '../components/EditShop/SnackbarManager';
 import ServiceTable from '../components/EditShop/Service/ServiceTable.tsx';
 import EmployeeTable from '../components/EditShop/Employee/EmployeeTable.tsx';
-import { shopsAPI } from '../api/apiClient';
+import { shopsAPI, usersAPI } from '../api/apiClient';
 import { saveShopData } from '../components/EditShop/utils';
 
 const EditShopPage = () => {
@@ -32,13 +30,13 @@ const EditShopPage = () => {
   const { t } = useTranslation();
 
   const loadShop = async () => {
-    const shop = await getShopByUser();
-    setShop(shop);
+    const { data } = await shopsAPI.getByUser();
+    setShop(data);
   };
 
   const loadUser = async () => {
-    const userData = await getUserById(authCtx.userId);
-    authCtx.setUser(userData);
+    const { data } = await usersAPI.getById(authCtx.userId);
+    authCtx.setUser(data);
   };
 
   useEffect(() => {

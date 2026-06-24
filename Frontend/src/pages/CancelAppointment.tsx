@@ -3,7 +3,7 @@ import { CheckCircleRounded, ErrorOutlineRounded } from '@mui/icons-material';
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 import React, { Fragment, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { cancelAppointment } from '../actions/AppointmentActions';
+import { appointmentsAPI } from '../api/apiClient';
 import { useTranslation } from 'react-i18next';
 
 const CancelAppointment = () => {
@@ -18,7 +18,7 @@ const CancelAppointment = () => {
   useEffect(() => {
     const canceledAppointment = async () => {
       try {
-        await cancelAppointment(routeId, searchParams.get('confirmationCode'));
+        await appointmentsAPI.cancel(routeId, searchParams.get('confirmationCode'));
       } catch (error) {
         setError(true);
         setIsLoading(false);

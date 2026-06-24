@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState, type ReactNode } from 'react';
-import { getUserByToken } from '../actions/UserActions';
+import { usersAPI } from '../api/apiClient';
 import { API_ENDPOINTS } from '../config/constants';
 import type { AuthContextType, User } from '../types';
 import { clearTokens, getRefreshToken, hasSession, setAccessToken, setRefreshToken } from './tokenStorage';
@@ -53,7 +53,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       const response = await axios.post(API_ENDPOINTS.AUTH_REFRESH, { refreshToken });
       setAccessToken(response.data.token);
       setRefreshToken(response.data.refreshToken);
-      const currentUser = (await getUserByToken()) as Partial<User>;
+      const currentUser = (await usersAPI.getInfo()).data as Partial<User>;
       setUserId(currentUser.id ?? 0);
       setEmail(currentUser.email ?? '');
       setRole(currentUser.role ?? null);
@@ -91,7 +91,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     if (resObj.verified) {
       setIsLoggedIn(true);
       try {
-        const currentUser = (await getUserByToken()) as Partial<User>;
+        const currentUser = (await usersAPI.getInfo()).data as Partial<User>;
         setEmail(currentUser.email ?? '');
         setRole(currentUser.role ?? null);
         setUser(currentUser);
@@ -112,7 +112,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     setIsLoggedIn(true);
 
     try {
-      const currentUser = (await getUserByToken()) as Partial<User>;
+      const currentUser = (await usersAPI.getInfo()).data as Partial<User>;
       setEmail(currentUser.email ?? '');
       setRole(currentUser.role ?? null);
       setUser(currentUser);

@@ -3,7 +3,7 @@ import { CheckCircleRounded } from '@mui/icons-material';
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 import React, { Fragment, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { confirmAppointment } from '../actions/AppointmentActions';
+import { appointmentsAPI } from '../api/apiClient';
 import { useTranslation } from 'react-i18next';
 
 const AppointmentConfirmation = () => {
@@ -18,7 +18,7 @@ const AppointmentConfirmation = () => {
   useEffect(() => {
     const confirmedAppointment = async () => {
       try {
-        await confirmAppointment(routeId, searchParams.get('confirmationCode'));
+        await appointmentsAPI.confirm(routeId, searchParams.get('confirmationCode'));
       } catch (error) {
         setIsConfirmed(true);
         setIsLoading(false);

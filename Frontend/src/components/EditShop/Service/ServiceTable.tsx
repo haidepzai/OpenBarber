@@ -22,7 +22,7 @@ import { Button } from '@mui/material';
 import DeleteServicesDialog from './DeleteServicesDialog';
 import CreateServiceDialog from './CreateServiceDialog';
 import EditIcon from '@mui/icons-material/Edit';
-import { deleteServiceById } from '../../../actions/ServiceActions';
+import { servicesAPI } from '../../../api/apiClient';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -277,9 +277,7 @@ export default function ServiceTable(props: ServiceTableProps) {
   const deleteServices = async () => {
     //Delete from DB
     const servicesToDelete = services.filter((service) => selected.includes(service.title));
-    servicesToDelete.forEach((service) => {
-      deleteServiceById(service.id);
-    });
+    await Promise.all(servicesToDelete.map((service) => servicesAPI.delete(service.id)));
     //Update UI
     const newServices = services.filter((service) => !selected.includes(service.title));
     setServices(newServices);

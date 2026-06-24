@@ -10,7 +10,7 @@ import ServicePage from './ServicePage';
 import DatePage from './DatePage';
 import OverviewPage from './OverviewPage';
 import SuccessScreen from './SuccessScreen';
-import { createAppointment } from '../../actions/AppointmentActions';
+import { appointmentsAPI } from '../../api/apiClient';
 import AuthContext from '../../context/auth-context';
 import { useTranslation } from 'react-i18next';
 
@@ -155,7 +155,7 @@ function ReservationDialog({ open, handleClose, shop }) {
       paymentMethod: data.paymentMethod,
     };
     try {
-      await createAppointment(requestObject, shop.id, isGuest ? captchaToken : null);
+      await appointmentsAPI.create(shop.id, requestObject, isGuest ? captchaToken : null);
       setShowSuccessScreen(true);
     } catch (err) {
       console.error('Could not book', err);

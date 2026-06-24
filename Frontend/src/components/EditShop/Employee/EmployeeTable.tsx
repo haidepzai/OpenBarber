@@ -22,7 +22,7 @@ import { Button } from '@mui/material';
 import DeleteEmployeesDialog from './DeleteEmployeesDialog';
 import CreateEmployeeDialog from './CreateEmployeeDialog';
 import EditIcon from '@mui/icons-material/Edit';
-import { deleteEmployeeById } from '../../../actions/EmployeeActions';
+import { employeesAPI } from '../../../api/apiClient';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -269,12 +269,10 @@ export default function EmployeeTable(props: EmployeeTableProps) {
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employees.length) : 0;
 
-  const deleteEmployees = () => {
+  const deleteEmployees = async () => {
     //Delete from DB
     const employeesToDelete = employees.filter((employee) => selected.includes(employee.name));
-    employeesToDelete.forEach((employee) => {
-      deleteEmployeeById(employee.id);
-    });
+    await Promise.all(employeesToDelete.map((employee) => employeesAPI.delete(employee.id)));
     //Update UI
     const newEmployees = employees.filter((employee) => !selected.includes(employee.name));
     setEmployees(newEmployees);

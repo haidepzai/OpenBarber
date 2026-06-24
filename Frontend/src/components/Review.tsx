@@ -2,7 +2,6 @@
 import React, { Fragment, useContext, useState } from 'react';
 
 import { Box, Button, Rating, TextField, Typography } from '@mui/material';
-import { createReviewAuth } from '../actions/ReviewActions';
 import { useTranslation } from 'react-i18next';
 import AuthContext from '../context/auth-context';
 import { reviewsAPI } from '../api/apiClient';
@@ -38,7 +37,7 @@ const Review = ({ shop, onReview }) => {
 
     try {
       setErrorMessage('');
-      const createdReview = await createReviewAuth(reviewRequest, shop.id);
+      const { data: createdReview } = await reviewsAPI.create(shop.id, reviewRequest);
       if (photoFile) {
         try {
           await reviewsAPI.uploadPhoto(createdReview.id, photoFile);

@@ -5,7 +5,6 @@ import { Edit, Delete } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import AuthContext from '../../context/auth-context';
-import { updateReview, deleteReview } from '../../actions/ReviewActions';
 import { reviewsAPI } from '../../api/apiClient';
 
 const AVATAR_URL = 'https://www.shareicon.net/data/2016/09/15/829473_man_512x512.png';
@@ -41,7 +40,7 @@ const ShopReview = ({ review, onUpdated, onDeleted }) => {
   };
 
   const handleSaveEdit = async () => {
-    await updateReview(review.id, { comment: editComment, rating: editRating });
+    await reviewsAPI.update(review.id, { comment: editComment, rating: editRating });
     if (removePhoto && review.reviewPhotoData) {
       await reviewsAPI.deletePhoto(review.id);
     }
@@ -53,7 +52,7 @@ const ShopReview = ({ review, onUpdated, onDeleted }) => {
   };
 
   const handleDelete = async () => {
-    await deleteReview(review.id);
+    await reviewsAPI.delete(review.id);
     setConfirmDelete(false);
     if (onDeleted) onDeleted();
   };

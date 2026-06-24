@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { Stack, Typography, Button, Box, TextField } from '@mui/material';
 import React, { useContext } from 'react';
+import { shopsAPI } from '../../../api/apiClient';
 import { SignupContext } from '../../../context/Signup.context';
 import { usePlacesWidget } from 'react-google-autocomplete';
-import { createShop } from '../../../actions/ShopActions';
 import { getAccessToken } from '../../../context/tokenStorage';
 import { useTranslation } from 'react-i18next';
 
@@ -82,7 +82,7 @@ const ShopCreateStep = () => {
 
     try {
       console.log(createShopReq);
-      await createShop(createShopReq, customConfig);
+      await shopsAPI.create(createShopReq, customConfig);
       setActiveStep(3);
       setCompletedSteps((cs) => {
         const res = [...cs];

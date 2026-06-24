@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material';
 import React, { Fragment, useContext, useReducer, useState } from 'react';
+import { usersAPI } from '../../api/apiClient';
 import AuthContext from '../../context/auth-context';
-import { updateUser } from '../../actions/UserActions';
 import { useTranslation } from 'react-i18next';
 
 const emailReducer = (state, action) => {
@@ -55,7 +55,7 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
 
   const saveUser = async () => {
     try {
-      await updateUser(authCtx.userId, authCtx.user);
+      await usersAPI.update(authCtx.userId, authCtx.user);
       onOpenSnackBar(t('USER_CHANGES_SAVED'));
     } catch (error) {
       onOpenSnackBar(t('COULD_NOT_SAVE_USER'));
