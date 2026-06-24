@@ -219,6 +219,6 @@
   "SAVE_FAILED": "Speichern fehlgeschlagen",
   "PHOTO_UPLOAD_FAILED": "Foto-Upload fehlgeschlagen",
   "EDIT_PROFILE": "Profil bearbeiten",
-  "CANCEL_APPOINTMENT": "Absagen",
+  "BOOKING_FAILED": "Buchung fehlgeschlagen. Bitte erneut versuchen.",
   "CONFIRM_CANCEL_APPOINTMENT": "Termin wirklich absagen?"
 }

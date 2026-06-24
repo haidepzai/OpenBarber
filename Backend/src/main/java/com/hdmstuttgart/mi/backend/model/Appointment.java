@@ -54,6 +54,14 @@ public class Appointment {
 
     private boolean confirmed;
 
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     @Column(unique = true)
     private UUID confirmationCode;
 

@@ -63,6 +63,8 @@ function ReservationDialog({ open, handleClose, shop }) {
   const [error, setError] = useState(initialErrorState);
   const [activeStep, setActiveStep] = useState(0);
   const [showSuccessScreen, setShowSuccessScreen] = useState(false);
+  const [bookingError, setBookingError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { t } = useTranslation();
 
@@ -93,8 +95,11 @@ function ReservationDialog({ open, handleClose, shop }) {
     switch (step) {
       case 0:
         return data.services.length > 0;
-      case 1:
-        return !!data.appointmentDateTime;
+      case 1: {
+        if (!data.appointmentDateTime) return false;
+        const d = new Date(data.appointmentDateTime);
+        return d.getHours() > 0 || d.getMinutes() > 0; // time slot must be picked (not midnight)
+      }
       case 2:
         return (
           !!data.personalData.firstName &&
@@ -108,25 +113,16 @@ function ReservationDialog({ open, handleClose, shop }) {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (activeStep === 0 && !validate(0)) {
-      setError({
-        ...error,
-        0: t('CHOOSE_SERVICE'),
-      });
+      setError({ ...error, 0: t('CHOOSE_SERVICE') });
     } else if (activeStep === 1 && !validate(1)) {
-      setError({
-        ...error,
-        1: t('PICK_DATE'),
-      });
+      setError({ ...error, 1: t('PICK_DATE') });
     } else if (activeStep === 2 && !validate(2)) {
-      setError({
-        ...error,
-        2: t('CHECK_INFORMATION'),
-      });
+      setError({ ...error, 2: t('CHECK_INFORMATION') });
     } else {
       if (activeStep === 2) {
-        handleSubmit();
+        await handleSubmit();
       } else {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
       }
@@ -134,8 +130,14 @@ function ReservationDialog({ open, handleClose, shop }) {
   };
 
   const handleSubmit = async () => {
-    authCtx.setIsLoading(true);
-    const isoDateTime = data.appointmentDateTime?.toISOString();
+    setIsSubmitting(true);
+    setBookingError('');
+    // Send local time (not UTC) because backend uses LocalDateTime without timezone
+    const d = data.appointmentDateTime;
+    const pad = (n) => String(n).padStart(2, '0');
+    const isoDateTime = d
+      ? `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`
+      : null;
     const requestObject = {
       customerName: `${data.personalData.firstName} ${data.personalData.lastName}`,
       customerPhoneNumber: data.personalData.phoneNumber,
@@ -147,12 +149,14 @@ function ReservationDialog({ open, handleClose, shop }) {
       paymentMethod: data.paymentMethod,
     };
     try {
-      const res = await createAppointment(requestObject, shop.id);
+      await createAppointment(requestObject, shop.id);
       setShowSuccessScreen(true);
-    } catch (error) {
-      console.error('Could not book', error);
+    } catch (err) {
+      console.error('Could not book', err);
+      setBookingError(t('BOOKING_FAILED', 'Buchung fehlgeschlagen. Bitte erneut versuchen.'));
+    } finally {
+      setIsSubmitting(false);
     }
-    authCtx.setIsLoading(false);
   };
 
   const handleStep = (step) => {
@@ -256,12 +260,12 @@ function ReservationDialog({ open, handleClose, shop }) {
 
           {activeStep === 2 && (
             <Fragment>
-              {authCtx.isLoading && (
+              {isSubmitting && (
                 <Stack alignItems="center" justifyContent="center" flexGrow="1">
                   <CircularProgress />
                 </Stack>
               )}
-              {!authCtx.isLoading && (
+              {!isSubmitting && (
                 <OverviewPage
                   data={data}
                   dispatch={dispatch}
@@ -287,10 +291,18 @@ function ReservationDialog({ open, handleClose, shop }) {
               zIndex: '1',
             }}
           >
-            <Button variant="outlined" type="button" onClick={handleClose}>
+            <Button variant="outlined" type="button" onClick={handleClose} disabled={isSubmitting}>
               {t('CLOSE')}
             </Button>
-            {error[activeStep] && (
+            {bookingError && (
+              <Typography
+                variant="body1"
+                sx={{ backgroundColor: 'error.dark', borderRadius: '40px', fontSize: '14px', color: 'white.main', padding: '5px 20px' }}
+              >
+                {bookingError}
+              </Typography>
+            )}
+            {!bookingError && error[activeStep] && (
               <Typography
                 variant="body1"
                 sx={{ backgroundColor: 'error.dark', borderRadius: '40px', fontSize: '14px', color: 'white.main', padding: '5px 20px' }}
@@ -298,8 +310,8 @@ function ReservationDialog({ open, handleClose, shop }) {
                 {error[activeStep]}
               </Typography>
             )}
-            <Button variant={error[activeStep] ? 'outlined' : 'contained'} type="button" onClick={handleNext}>
-              {activeStep === 2 ? `${t('BOOK_NOW')}` : `${t('NEXT')}`}
+            <Button variant={(bookingError || error[activeStep]) ? 'outlined' : 'contained'} type="button" onClick={handleNext} disabled={isSubmitting}>
+              {isSubmitting ? <CircularProgress size={20} /> : activeStep === 2 ? `${t('BOOK_NOW')}` : `${t('NEXT')}`}
             </Button>
           </Box>
         </Box>

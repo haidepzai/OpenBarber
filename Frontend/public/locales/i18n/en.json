@@ -220,6 +220,6 @@
   "SAVE_FAILED": "Could not save profile",
   "PHOTO_UPLOAD_FAILED": "Photo upload failed",
   "EDIT_PROFILE": "Edit profile",
-  "CANCEL_APPOINTMENT": "Cancel",
+  "BOOKING_FAILED": "Booking failed. Please try again.",
   "CONFIRM_CANCEL_APPOINTMENT": "Really cancel this appointment?"
 }

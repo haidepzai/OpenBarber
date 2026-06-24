@@ -13,6 +13,12 @@ const createApiClient = () => {
       const originalRequest = error.config;
 
       if (error.response?.status === 401 && originalRequest && !originalRequest._retry && originalRequest.url !== API_ENDPOINTS.AUTH_REFRESH) {
+        // Only retry with refresh token if we actually have one (logged-in user)
+        const refreshToken = getRefreshToken();
+        if (!refreshToken) {
+          return Promise.reject(error);
+        }
+
         originalRequest._retry = true;
 
         try {
@@ -112,7 +118,11 @@ export const appointmentsAPI = {
   getMy: () => apiClient.get(API_ENDPOINTS.APPOINTMENTS_MY, { headers: getAuthHeader() }),
   cancel: (id, code) => apiClient.delete(API_ENDPOINTS.APPOINTMENTS_CANCEL(id, code), { headers: getAuthHeader() }),
   confirm: (id, code) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CONFIRM(id, code), {}, { headers: getAuthHeader() }),
-  create: (enterpriseId, data) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CREATE(enterpriseId), data, { headers: getAuthHeader() }),
+  create: (enterpriseId, data) => {
+    const token = getAccessToken();
+    const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    return apiClient.post(API_ENDPOINTS.APPOINTMENTS_CREATE(enterpriseId), data, config);
+  },
   update: (id, data) => apiClient.put(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), data, { headers: getAuthHeader() }),
   patch: (id, data) => apiClient.patch(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), data, { headers: getAuthHeader() }),
   delete: (id) => apiClient.delete(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), { headers: getAuthHeader() }),

@@ -257,10 +257,21 @@ public class AppointmentService {
                 .mapToInt(Service::getDurationInMin)
                 .sum();
         LocalDateTime endTime = startTime.plusMinutes(totalDurationMin);
+        LocalDateTime expiryThreshold = LocalDateTime.now().minusMinutes(30);
 
-        List<Appointment> confirmedAppointments = appointmentRepository.findByEmployeeIdAndConfirmedTrue(employeeId);
+        // Block confirmed appointments AND unconfirmed guest appointments within 30-minute window
+        List<Appointment> relevantAppointments = appointmentRepository
+                .findByEmployeeIdAndConfirmedTrue(employeeId);
+        relevantAppointments.addAll(
+                appointmentRepository.findByEmployeeIdAndAppointmentDateTimeBetween(
+                        employeeId, startTime.minusHours(12), startTime.plusHours(12))
+                        .stream()
+                        .filter(a -> !a.isConfirmed() && a.getCustomer() == null
+                                && a.getCreatedAt() != null && a.getCreatedAt().isAfter(expiryThreshold))
+                        .toList()
+        );
 
-        for (Appointment existing : confirmedAppointments) {
+        for (Appointment existing : relevantAppointments) {
             int existingDurationMin = existing.getServices().stream()
                     .mapToInt(Service::getDurationInMin)
                     .sum();

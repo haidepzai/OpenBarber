@@ -57,6 +57,8 @@ public class SecurityConfiguration {
             .antMatchers(HttpMethod.PUT, "/api/services/**").hasAuthority("OPERATOR")
             .antMatchers(HttpMethod.DELETE, "/api/services/**").hasAuthority("OPERATOR")
             // Appointments: operators manage, verified users can create/read
+            .antMatchers(HttpMethod.POST, "/api/appointments").permitAll() // guest booking allowed
+            .antMatchers(HttpMethod.GET, "/api/appointments/confirmation/**", "/api/appointments/cancel/**").permitAll() // email confirmation links
             .antMatchers("/api/appointments/**").hasAnyAuthority("OPERATOR", "VERIFIED")
             // User info: authenticated only
             .antMatchers("/api/enterprises/user").authenticated()

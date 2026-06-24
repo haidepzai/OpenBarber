@@ -60,6 +60,10 @@ public class AppointmentMapper {
     public Appointment dtoToAppointment(AppointmentDto appointmentDTO) {
         Appointment appointment = modelMapper.map(appointmentDTO, Appointment.class);
 
+        // customer is always resolved from JWT token in the service layer, never from DTO
+        // (ModelMapper maps customerId → customer.id creating a transient User → Hibernate error)
+        appointment.setCustomer(null);
+
         if (appointmentDTO.getEmployeeId() != null) {
             Employee employee = new Employee();
             employee.setId(appointmentDTO.getEmployeeId());
