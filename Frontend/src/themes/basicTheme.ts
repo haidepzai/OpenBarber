@@ -20,3 +20,26 @@ export const basicTheme = createTheme({
     },
   },
 });
+
+export const footerTheme = createTheme(basicTheme, {
+  components: {
+    MuiLink: {
+      defaultProps: {
+        color: basicTheme.palette.white.main,
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          size: 'large',
+          color: basicTheme.palette.white.main,
+        },
+      },
+    },
+    MuiSvgIcon: {
+      defaultProps: {
+        fontSize: 'inherit',
+      },
+    },
+  },
+});

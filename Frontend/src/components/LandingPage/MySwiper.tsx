@@ -5,17 +5,17 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import '../css/components/Swiper.css';
+import '../../css/components/Swiper.css';
 // import required modules
 import { Navigation, Pagination } from 'swiper';
 
-import beardImage from '../assets/beard.jpg';
-import ratingsImage from '../assets/rating.jpg';
-import mostImage from '../assets/most.jpg';
-import priceImage from '../assets/price.jpg';
-import locationImage from '../assets/location.jpg';
-import tipsImage from '../assets/tips.jpg';
-import luxuryImage from '../assets/luxury.jpg';
+import beardImage from '../../assets/beard.jpg';
+import ratingsImage from '../../assets/rating.jpg';
+import mostImage from '../../assets/most.jpg';
+import priceImage from '../../assets/price.jpg';
+import locationImage from '../../assets/location.jpg';
+import tipsImage from '../../assets/tips.jpg';
+import luxuryImage from '../../assets/luxury.jpg';
 import { useTranslation } from 'react-i18next';
 import { Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';

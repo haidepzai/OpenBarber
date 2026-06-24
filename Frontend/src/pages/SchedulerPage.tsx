@@ -31,6 +31,7 @@ import AppointmentTooltipComponent from '../components/Scheduler/AppointmentTool
 import AppointmentFormLayout from '../components/Scheduler/AppointmentFormLayout';
 import TextEditor from '../components/Scheduler/TextEditor';
 import { initialResources, getServiceInstances, getEmployeeInstances, grouping, allowDrag } from '../components/Scheduler/SchedulerConfig';
+import { mapAppointmentToScheduler, mapSchedulerToAppointment } from '../components/Scheduler/schedulerUtils';
 
 const SchedulerPage = () => {
   const [loading, setLoading] = useState(true);
@@ -47,7 +48,6 @@ const SchedulerPage = () => {
   const [snackSeverity, setSnackSeverity] = useState('success');
   const [snackOpen, setSnackOpen] = useState(false);
 
-  const getTotalDuration = (services = []) => services.reduce((total, service) => total + Number(service?.durationInMin || 0), 0);
   const normalizeId = (value) => (value === null || value === undefined || value === '' ? '' : String(value));
   const resolveServiceId = (serviceValue) => {
     if (serviceValue === null || serviceValue === undefined || serviceValue === '') {
@@ -75,101 +75,6 @@ const SchedulerPage = () => {
 
     const serviceList = Array.isArray(services) ? services : [services];
     return serviceList.map(resolveServiceId).filter((serviceId) => serviceId !== null && serviceId !== '');
-  };
-  const toLocalISOString = (date) => {
-    const d = date instanceof Date ? date : new Date(date);
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-  };
-
-  const parseDateTime = (value) => {
-    if (!value) {
-      return new Date();
-    }
-
-    if (value instanceof Date) {
-      return value;
-    }
-
-    if (Array.isArray(value)) {
-      const [year, month, day, hour = 0, minute = 0, second = 0, nano = 0] = value;
-      return new Date(year, month - 1, day, hour, minute, second, Math.floor(nano / 1000000));
-    }
-
-    if (typeof value === 'number') {
-      return new Date(value);
-    }
-
-    // No timezone suffix → treat as local time (append no Z)
-    const parsed = new Date(value);
-    return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
-  };
-
-  const mapAppointmentToScheduler = (appointment) => {
-    const startDate = parseDateTime(appointment.appointmentDateTime);
-    let endDate;
-    if (appointment.endDateTime) {
-      endDate = parseDateTime(appointment.endDateTime);
-    } else {
-      const totalDuration = getTotalDuration(appointment.services);
-      endDate = new Date(startDate.getTime() + (totalDuration || 60) * 60000);
-    }
-
-    return {
-      ...appointment,
-      employee: appointment.employeeId ?? appointment.employee?.id ?? '',
-      services: normalizeServiceSelection(appointment.services),
-      startDate,
-      endDate,
-      title: appointment.appointmentType === 'VACATION' ? '🏖 Urlaub' : appointment.customerName || 'Appointment',
-      appointmentType: appointment.appointmentType ?? 'APPOINTMENT',
-      customer: {
-        firstName: appointment.customerName || '',
-        lastName: '',
-        phoneNumber: appointment.customerPhoneNumber || '',
-        email: appointment.customerEmail || '',
-      },
-    };
-  };
-
-  const parseShopTime = (timeStr, referenceDate) => {
-    if (!timeStr) return null;
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    const d = new Date(referenceDate);
-    d.setHours(hours, minutes, 0, 0);
-    return d;
-  };
-
-  const mapSchedulerToAppointment = (appointment) => {
-    let startDate = parseDateTime(appointment.startDate);
-    let endDate = appointment.endDate ? parseDateTime(appointment.endDate) : null;
-
-    if (appointment.allDay) {
-      // Span shop opening hours; fallback to 08:00–20:00
-      const openTime =
-        parseShopTime(shop?.openingTime, startDate) ?? new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8, 0, 0);
-      const closeTime =
-        parseShopTime(shop?.closingTime, startDate) ?? new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 20, 0, 0);
-      startDate = openTime;
-      endDate = closeTime;
-    }
-
-    return {
-      appointmentType: appointment.appointmentType ?? 'APPOINTMENT',
-      customerName:
-        appointment.appointmentType === 'VACATION'
-          ? ''
-          : [appointment.customer?.firstName, appointment.customer?.lastName].filter(Boolean).join(' ').trim(),
-      customerPhoneNumber: appointment.appointmentType === 'VACATION' ? '' : appointment.customer?.phoneNumber || '',
-      customerEmail: appointment.appointmentType === 'VACATION' ? '' : appointment.customer?.email || '',
-      appointmentDateTime: toLocalISOString(startDate),
-      endDateTime: endDate ? toLocalISOString(endDate) : null,
-      employeeId: appointment.employee?.id ?? appointment.employee ?? appointment.employeeId ?? '',
-      services:
-        appointment.appointmentType === 'VACATION' ? [] : normalizeServiceSelection(appointment.services).map((serviceId) => ({ id: serviceId })),
-      paymentMethods: appointment.paymentMethods || [],
-      confirmed: appointment.confirmed || false,
-    };
   };
 
   const showSnack = (message, severity = 'error') => {
@@ -208,7 +113,7 @@ const SchedulerPage = () => {
       const services = servicesResult.status === 'fulfilled' ? servicesResult.value.data || [] : [];
       const employees = employeesResult.status === 'fulfilled' ? employeesResult.value.data || [] : [];
 
-      setData(appointments.map(mapAppointmentToScheduler));
+      setData(appointments.map((appointment) => mapAppointmentToScheduler(appointment, services)));
       setAllServices(services);
       setAllEmployees(employees);
 
@@ -291,7 +196,7 @@ const SchedulerPage = () => {
             email: '',
           },
         };
-        const newAppointment = mapSchedulerToAppointment(schedulerAppointment);
+        const newAppointment = mapSchedulerToAppointment(schedulerAppointment, allEmployees, allServices, shop);
         data = [...data, schedulerAppointment];
 
         appointmentsAPI
@@ -310,7 +215,7 @@ const SchedulerPage = () => {
         const changedId = Number(Object.keys(changed)[0]);
         const existingAppointment = data.find((a) => a.id === changedId) ?? {};
         const mergedAppointment = { ...existingAppointment, ...changed[changedId] };
-        const newAppointment = mapSchedulerToAppointment(mergedAppointment);
+        const newAppointment = mapSchedulerToAppointment(mergedAppointment, allEmployees, allServices, shop);
 
         console.debug('[Scheduler] changed payload:', changed[changedId]);
         console.debug('[Scheduler] merged endDate:', mergedAppointment.endDate, '→ endDateTime:', newAppointment.endDateTime);

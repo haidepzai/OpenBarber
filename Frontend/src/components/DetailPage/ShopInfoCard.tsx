@@ -5,7 +5,7 @@ import GoogleMaps from '../../components/GoogleMaps';
 import ReservationDialog from '../../components/Reservation/ReservationDialog';
 import PhotoGallery from '../../components/Gallery/PhotoGallery';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { convertDateToTime } from '../../shared/ConvertTime';
+import { convertDateToTime } from '../../utils/time';
 import { useTranslation } from 'react-i18next';
 import { servicesAPI } from '../../api/apiClient';
 

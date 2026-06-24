@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Search from '../layout/Search';
+import Search from '../components/Search';
 import { Box, Stack } from '@mui/material';
 import FilterResults from '../components/FilterComponent/FilterResults';
 import Filter from '../components/FilterComponent/Filter';

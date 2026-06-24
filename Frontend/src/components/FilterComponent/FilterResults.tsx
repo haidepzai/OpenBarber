@@ -14,7 +14,7 @@ import ReservationDialog from '../Reservation/ReservationDialog';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { shopsAPI } from '../../api/apiClient';
 import { useTranslation } from 'react-i18next';
-import { convertDateToTime } from '../../shared/ConvertTime';
+import { convertDateToTime } from '../../utils/time';
 
 const FilterResults = ({ filter }) => {
   const location = useLocation();

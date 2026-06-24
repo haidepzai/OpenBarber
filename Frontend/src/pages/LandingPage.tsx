@@ -1,9 +1,9 @@
 import { Button, CircularProgress, Divider, Stack } from '@mui/material';
 import React, { useEffect, useState, useCallback } from 'react';
 import MediaCard from '../components/CardComponent/MediaCard';
-import Search from '../layout/Search';
+import Search from '../components/Search';
 import { Box, Typography } from '@mui/material';
-import MySwiper from '../layout/MySwiper';
+import MySwiper from '../components/LandingPage/MySwiper';
 import dayjs from 'dayjs';
 import ReservationDialog from '../components/Reservation/ReservationDialog';
 import { useNavigate } from 'react-router-dom';
