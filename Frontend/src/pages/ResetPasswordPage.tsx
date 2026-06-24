@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { API_ENDPOINTS } from '../config/constants';
 import { useTranslation } from 'react-i18next';
+import PasswordRequirements from '../components/PasswordRequirements';
 
 const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
@@ -18,8 +19,9 @@ const ResetPasswordPage = () => {
   const [status, setStatus] = useState(null); // 'success' | 'error'
   const [errorMsg, setErrorMsg] = useState('');
 
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,128}$/;
   const passwordsMatch = newPassword === confirmPassword;
-  const isValid = newPassword.length >= 8 && passwordsMatch;
+  const isValid = passwordRegex.test(newPassword) && passwordsMatch;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,9 +86,8 @@ const ResetPasswordPage = () => {
                 required
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                error={newPassword.length > 0 && newPassword.length < 8}
-                helperText={newPassword.length > 0 && newPassword.length < 8 ? t('PLEASE_ENTER_PASSWORD') : ''}
               />
+              <PasswordRequirements password={newPassword} />
               <TextField
                 label={t('RESET_PASSWORD_CONFIRM')}
                 type="password"

@@ -109,10 +109,10 @@ const ShopCreateStep = () => {
   }
 
   return (
-    <Stack component="form" height="100%" gap={2} pt={8} onSubmit={onSubmit}>
+    <Stack component="form" sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', gap: 2, pt: 4 }} onSubmit={onSubmit}>
       {/* <Typography variant="h4">Please enter some information about your shop.</Typography> */}
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, maxWidth: '800px' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, overflowY: 'auto', flexGrow: 1, pr: 1, pb: 2 }}>
         <Stack gap={4}>
           <Typography variant="h6">{t('SHOP_SETUP')}</Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr 1fr', gap: 2 }}>
@@ -244,7 +244,7 @@ const ShopCreateStep = () => {
         </Stack> */}
       </Box>
 
-      <Stack direction="row" justifyContent="space-between" marginTop="auto" width="100%" gap={2}>
+      <Stack direction="row" justifyContent="space-between" sx={{ pt: 2, flexShrink: 0, borderTop: 1, borderColor: 'divider' }} width="100%" gap={2}>
         <Button variant="outlined" onClick={close} tabIndex={-1}>
           {t('CANCEL')}
         </Button>

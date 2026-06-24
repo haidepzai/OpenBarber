@@ -25,14 +25,14 @@ const RoleSelectStep = () => {
   const shopHovered = hovered === 'shop';
 
   return (
-    <Stack height="100%" alignItems="center" justifyContent="center" gap={4}>
-      <Typography variant="h4" fontWeight="bold">
+    <Stack height="100%" alignItems="center" justifyContent="center" gap={3}>
+      <Typography variant="h5" fontWeight="bold">
         {t('REGISTER_AS')}
       </Typography>
       <Typography variant="body1" color="textSecondary">
         {t('REGISTER_AS_SUBTITLE')}
       </Typography>
-      <Stack direction="row" gap={4} mt={2}>
+      <Stack direction="row" gap={3} mt={1} sx={{ width: '100%', justifyContent: 'center' }}>
         <Box
           onClick={() => select('customer')}
           onMouseEnter={() => setHovered('customer')}
@@ -42,8 +42,9 @@ const RoleSelectStep = () => {
             border: '2px solid',
             borderColor: 'primary.main',
             borderRadius: 4,
-            padding: 5,
-            width: '220px',
+            padding: 4,
+            flex: '1 1 0',
+            maxWidth: 260,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -52,7 +53,7 @@ const RoleSelectStep = () => {
             backgroundColor: customerHovered ? 'primary.main' : 'transparent',
           }}
         >
-          <PersonIcon sx={{ fontSize: 60, color: customerHovered ? '#fff' : 'primary.main', transition: 'color 0.2s' }} />
+          <PersonIcon sx={{ fontSize: 48, color: customerHovered ? '#fff' : 'primary.main', transition: 'color 0.2s' }} />
           <Typography variant="h6" fontWeight="600" sx={{ color: customerHovered ? '#fff' : 'text.primary', transition: 'color 0.2s' }}>
             {t('AS_CUSTOMER')}
           </Typography>
@@ -71,10 +72,7 @@ const RoleSelectStep = () => {
                 ? { borderColor: '#fff', color: '#fff', '&:hover': { borderColor: '#fff', backgroundColor: 'rgba(255,255,255,0.1)' } }
                 : {}
             }
-            onClick={(e) => {
-              e.stopPropagation();
-              select('customer');
-            }}
+            onClick={(e) => { e.stopPropagation(); select('customer'); }}
           >
             {t('CONTINUE')}
           </Button>
@@ -89,8 +87,9 @@ const RoleSelectStep = () => {
             border: '2px solid',
             borderColor: shopHovered ? 'grey.800' : 'grey.400',
             borderRadius: 4,
-            padding: 5,
-            width: '220px',
+            padding: 4,
+            flex: '1 1 0',
+            maxWidth: 260,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -99,7 +98,7 @@ const RoleSelectStep = () => {
             backgroundColor: shopHovered ? 'grey.800' : 'transparent',
           }}
         >
-          <StoreIcon sx={{ fontSize: 60, color: shopHovered ? '#fff' : 'text.secondary', transition: 'color 0.2s' }} />
+          <StoreIcon sx={{ fontSize: 48, color: shopHovered ? '#fff' : 'text.secondary', transition: 'color 0.2s' }} />
           <Typography variant="h6" fontWeight="600" sx={{ color: shopHovered ? '#fff' : 'text.primary', transition: 'color 0.2s' }}>
             {t('AS_SHOP')}
           </Typography>
@@ -116,10 +115,7 @@ const RoleSelectStep = () => {
             sx={
               shopHovered ? { borderColor: '#fff', color: '#fff', '&:hover': { borderColor: '#fff', backgroundColor: 'rgba(255,255,255,0.1)' } } : {}
             }
-            onClick={(e) => {
-              e.stopPropagation();
-              select('shop');
-            }}
+            onClick={(e) => { e.stopPropagation(); select('shop'); }}
           >
             {t('CONTINUE')}
           </Button>

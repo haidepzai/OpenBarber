@@ -50,9 +50,8 @@ public class AuthenticationService {
         }
 
         var user = User.builder()
-//                .firstname(request.getFirstname())
-//                .lastname(request.getLastname())
-//                .name(request.getName())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .email(request.getEmail())
                 .confirmationCode(UUID.randomUUID().toString().substring(0, 6).toUpperCase())
                 .confirmationCodeExpiry(Date.from(Instant.now().plusSeconds(15 * 60)))

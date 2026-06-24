@@ -33,7 +33,7 @@ const EmailVerificationStep = () => {
       return;
     }
 
-    const verifyRequest = { confirmationCode: verificationCode };
+    const verifyRequest = { confirmationCode: verificationCode.trim().toUpperCase() };
     const customConfig = {
       headers: {
         'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ const EmailVerificationStep = () => {
   }
 
   return (
-    <Stack component="form" height="100%" justifyContent="center" alignItems="center" gap={4} pt={16} onSubmit={onSubmit}>
+    <Stack component="form" sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', justifyContent: 'center', alignItems: 'center', gap: 4 }} onSubmit={onSubmit}>
       <Typography variant="h4" fontWeight="bold">
         {t('VERIFY_MAIL')}
       </Typography>
@@ -113,8 +113,10 @@ const EmailVerificationStep = () => {
         variant="outlined"
         error={error}
         autoComplete="off"
+        inputProps={{ style: { textTransform: 'uppercase', letterSpacing: '0.3em' } }}
         onInput={(e) => {
-          setData((d) => ({ ...d, verificationCode: e.target.value }));
+          const val = (e.target as HTMLInputElement).value.trim().toUpperCase();
+          setData((d) => ({ ...d, verificationCode: val }));
           setError(false);
           setErrorMsg('');
         }}
@@ -131,7 +133,7 @@ const EmailVerificationStep = () => {
         {t('RESEND_VERIFICATION_CODE')}
       </Button>
 
-      <Stack direction="row" justifyContent="space-between" marginTop="auto" width="100%" gap={2}>
+      <Stack direction="row" justifyContent="space-between" sx={{ pt: 2, mt: 'auto', flexShrink: 0, borderTop: 1, borderColor: 'divider' }} width="100%" gap={2}>
         <Button variant="outlined" onClick={close} tabIndex={-1}>
           {t('CANCEL')}
         </Button>

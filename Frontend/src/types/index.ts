@@ -118,6 +118,8 @@ export interface SignupData {
   confirmPassword: string;
   verificationCode: string;
   accountType: string | null;
+  firstName: string;
+  lastName: string;
   shopName: string;
   shopOwner: string;
   shopPhoneNumber: string;

@@ -71,20 +71,19 @@ const SignupModal = () => {
         >
           <Box
             sx={{
-              width: 'min(2000px, 90%)',
-              height: 'min(1000px, 90%)',
-              maxHeight: 'min(1000px, 90%)',
+              width: 'min(860px, 95%)',
+              maxHeight: '92vh',
               backgroundColor: 'background.default',
-              borderRadius: 5,
+              borderRadius: 4,
               boxShadow: 10,
-              padding: 5,
+              padding: { xs: 3, sm: 4 },
               boxSizing: 'border-box',
               display: 'flex',
               flexDirection: 'column',
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-              <Stepper nonLinear activeStep={signUpCtx.activeStep} sx={{ flex: 1 }}>
+              <Stepper nonLinear activeStep={signUpCtx.activeStep} sx={{ flex: 1, '& .MuiStepLabel-label': { fontSize: '0.75rem' } }}>
                 {steps.map((label, index) => (
                   <Step key={label} completed={signUpCtx.completedSteps[index]}>
                     <StepButton type="button" onClick={() => signUpCtx.setActiveStep(index)} disabled={true}>
@@ -97,7 +96,7 @@ const SignupModal = () => {
                 <CloseIcon />
               </IconButton>
             </Box>
-            <Stack flexGrow="1">{renderStep()}</Stack>
+            <Stack flexGrow="1" sx={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>{renderStep()}</Stack>
           </Box>
         </Box>,
         portalElement

@@ -13,6 +13,8 @@ const defaultSignupData: SignupData = {
   confirmPassword: '',
   verificationCode: '',
   accountType: null,
+  firstName: '',
+  lastName: '',
   shopName: '',
   shopOwner: '',
   shopPhoneNumber: '',

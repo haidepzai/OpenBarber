@@ -3,6 +3,7 @@ import React, { Fragment, useContext, useReducer } from 'react';
 import { Stack, TextField, Typography, Button, CircularProgress } from '@mui/material';
 import { SignupContext } from '../../../context/Signup.context';
 import AuthContext from '../../../context/auth-context';
+import PasswordRequirements from '../../PasswordRequirements';
 import { useTranslation } from 'react-i18next';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -15,6 +16,8 @@ const initialState = {
   passwordIsValid: true,
   passwordsMatch: true,
   enteredConfirmPassWord: '',
+  enteredFirstName: '',
+  enteredLastName: '',
 };
 
 const reducer = (state, action) => {
@@ -53,6 +56,16 @@ const reducer = (state, action) => {
       return {
         ...state,
         enteredConfirmPassWord: action.payload,
+      };
+    case 'SET_ENTERED_FIRST_NAME':
+      return {
+        ...state,
+        enteredFirstName: action.payload,
+      };
+    case 'SET_ENTERED_LAST_NAME':
+      return {
+        ...state,
+        enteredLastName: action.payload,
       };
     default:
       return state;
@@ -99,6 +112,8 @@ const SignUpStep = () => {
       const registerRequest = {
         email: state.enteredEmail,
         password: state.enteredPassword,
+        firstName: state.enteredFirstName,
+        lastName: state.enteredLastName,
       };
       const customConfig = {
         headers: {
@@ -111,6 +126,8 @@ const SignUpStep = () => {
         signUpContext.setData((d) => ({
           ...d,
           email: state.enteredEmail,
+          firstName: state.enteredFirstName,
+          lastName: state.enteredLastName,
         }));
         signUpContext.setCompletedSteps((v) => {
           const res = [...v];
@@ -134,14 +151,30 @@ const SignUpStep = () => {
         </Stack>
       )}
       {!authCtx.isLoading && (
-        <Stack component="form" onSubmit={onSubmit} height="100%">
-          <Stack gap={2} mt={8} mb="auto" width="max(500px, 50%)">
+        <Stack component="form" onSubmit={onSubmit} sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <Stack gap={2} mt={4} sx={{ overflowY: 'auto', flexGrow: 1, pr: 1, pb: 2 }}>
             <Typography variant="h4" fontWeight="bold">
               {t('SIGN_UP')}
             </Typography>
             <Typography variant="body1" color="textSecondary" marginBottom={4}>
               {t('SIGN_UP_TITLE')}
             </Typography>
+            <Stack direction="row" gap={2}>
+              <TextField
+                label={t('FIRST_NAME')}
+                required
+                value={state.enteredFirstName}
+                onChange={(e) => dispatch({ type: 'SET_ENTERED_FIRST_NAME', payload: e.target.value })}
+                sx={{ flex: 1 }}
+              />
+              <TextField
+                label={t('LAST_NAME')}
+                required
+                value={state.enteredLastName}
+                onChange={(e) => dispatch({ type: 'SET_ENTERED_LAST_NAME', payload: e.target.value })}
+                sx={{ flex: 1 }}
+              />
+            </Stack>
             <TextField
               label={accountType === 'shop' ? t('COMPANY_MAIL') : t('EMAIL_ADDRESS')}
               required
@@ -161,6 +194,7 @@ const SignUpStep = () => {
               onChange={(e) => dispatch({ type: 'SET_ENTERED_PASSWORD', payload: e.target.value })}
               onBlur={() => onBlur('password')}
             />
+            <PasswordRequirements password={state.enteredPassword} />
             <TextField
               label={t('CONFIRM_PASSWORD')}
               required
@@ -172,14 +206,14 @@ const SignUpStep = () => {
               onBlur={() => onBlur('confirmPassword')}
             />
           </Stack>
-          <Stack direction="row" justifyContent="space-between" marginTop="auto">
-            <Button variant="outlined" onClick={() => signUpContext.close()} tabIndex={-1}>
-              {t('CANCEL')}
+          <Stack direction="row" justifyContent="space-between" sx={{ pt: 2, mt: 'auto', flexShrink: 0, borderTop: 1, borderColor: 'divider' }}>
+            <Button variant="outlined" onClick={() => signUpContext.setActiveStep(0)} tabIndex={-1}>
+              {t('BACK')}
             </Button>
             <Button
               type="submit"
               disabled={
-                !(state.enteredEmail && state.enteredPassword && state.enteredConfirmPassWord) ||
+                !(state.enteredFirstName && state.enteredLastName && state.enteredEmail && state.enteredPassword && state.enteredConfirmPassWord) ||
                 !validEmail() ||
                 !validPassword() ||
                 !state.passwordsMatch
