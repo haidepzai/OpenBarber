@@ -233,5 +233,17 @@
   "NO_REVIEWS": "まだレビューはありません。",
   "EDIT_REVIEW": "レビューを編集",
   "BOOKING_FAILED": "予約に失敗しました。もう一度お試しください。",
-  "CAPTCHA_REQUIRED": "ロボットでないことを確認してください。"
+  "CAPTCHA_REQUIRED": "ロボットでないことを確認してください。",
+  "NO_BARBERS_FOUND": "この地域ではバーバーが見つかりませんでした。",
+  "RATING_5": "最高",
+  "RATING_4_5": "とても良い",
+  "RATING_4": "良い",
+  "RATING_3_5": "まあまあ",
+  "RATING_3": "普通",
+  "RATING_2_5": "平凡",
+  "RATING_2": "期待外れ",
+  "RATING_1_5": "がっかり",
+  "RATING_1": "悪い",
+  "RATING_0_5": "お勧めしない",
+  "RATING_0": "最悪"
 }

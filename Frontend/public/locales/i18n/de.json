@@ -231,5 +231,17 @@
   "MY_REVIEWS": "Meine Bewertungen",
   "NO_REVIEWS": "Noch keine Bewertungen abgegeben.",
   "EDIT_REVIEW": "Bewertung bearbeiten",
-  "CAPTCHA_REQUIRED": "Bitte bestätige, dass du kein Roboter bist."
+  "CAPTCHA_REQUIRED": "Bitte bestätige, dass du kein Roboter bist.",
+  "NO_BARBERS_FOUND": "Keine Barbiere in dieser Umgebung gefunden.",
+  "RATING_5": "Ausgezeichnet",
+  "RATING_4_5": "Sehr gut",
+  "RATING_4": "Gut",
+  "RATING_3_5": "Akzeptabel",
+  "RATING_3": "OK",
+  "RATING_2_5": "Mittelmäßig",
+  "RATING_2": "Schwach",
+  "RATING_1_5": "Enttäuschend",
+  "RATING_1": "Schlecht",
+  "RATING_0_5": "Nicht empfohlen",
+  "RATING_0": "Sehr schlecht"
 }

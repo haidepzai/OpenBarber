@@ -232,5 +232,17 @@
   "MY_REVIEWS": "My Reviews",
   "NO_REVIEWS": "No reviews submitted yet.",
   "EDIT_REVIEW": "Edit Review",
-  "CAPTCHA_REQUIRED": "Please confirm you are not a robot."
+  "CAPTCHA_REQUIRED": "Please confirm you are not a robot.",
+  "NO_BARBERS_FOUND": "No barbers found in this area.",
+  "RATING_5": "Excellent",
+  "RATING_4_5": "Very Good",
+  "RATING_4": "Good",
+  "RATING_3_5": "Very Acceptable",
+  "RATING_3": "OK",
+  "RATING_2_5": "Mediocre",
+  "RATING_2": "Slightly Underwhelming",
+  "RATING_1_5": "Underwhelming",
+  "RATING_1": "Poor",
+  "RATING_0_5": "Not Recommended",
+  "RATING_0": "Bad"
 }
