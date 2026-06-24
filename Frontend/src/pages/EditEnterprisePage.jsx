@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import { Box, Divider, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import AuthContext from '../context/auth-context.js';
-import { getShopByUser } from '../actions/EnterpriseActions.js';
-import { getUserById } from '../actions/UserActions.js';
+import AuthContext from '../context/auth-context';
+import { getShopByUser } from '../actions/EnterpriseActions';
+import { getUserById } from '../actions/UserActions';
 import EditPersonalInfo from '../components/EditEnterprise/EditPersonalInfo.jsx';
 import { useTranslation } from 'react-i18next';
 import PersonalInfoForm from '../components/EditEnterprise/PersonalInfoForm';
@@ -13,7 +13,7 @@ import SnackbarManager from '../components/EditEnterprise/SnackbarManager';
 import ServiceTable from '../components/EditEnterprise/Service/ServiceTable.tsx';
 import EmployeeTable from '../components/EditEnterprise/Employee/EmployeeTable.tsx';
 import { enterprisesAPI } from '../api/apiClient';
-import { saveEnterpriseData } from '../components/EditEnterprise/utils.js';
+import { saveEnterpriseData } from '../components/EditEnterprise/utils';
 
 const EditEnterprisePage = () => {
   const [loading, setLoading] = useState(true);
@@ -176,7 +176,7 @@ const EditEnterprisePage = () => {
             <Box
               sx={{
                 backgroundSize: 'cover',
-                backgroundImage: `url(${enterprise.logo ? `data:image/jpeg;base64,${enterprise.logo}` : process.env.REACT_APP_BACKUP_IMAGE})`,
+                backgroundImage: `url(${enterprise.logo ? `data:image/jpeg;base64,${enterprise.logo}` : import.meta.env.VITE_BACKUP_IMAGE})`,
                 backgroundPosition: 'center center',
                 width: '100%',
                 height: '40vh',

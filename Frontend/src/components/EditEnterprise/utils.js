@@ -1,5 +1,5 @@
 import apiClient from '../../api/apiClient';
-import {API_ENDPOINTS} from '../../config/constants.js';
+import {API_ENDPOINTS} from '../../config/constants';
 import { getAccessToken } from '../../context/tokenStorage';
 
 const mapServiceForSave = (service) => ({

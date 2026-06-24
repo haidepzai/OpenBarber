@@ -3,7 +3,7 @@ import React, { Fragment, useMemo } from 'react';
 
 const GoogleMaps = ({ lat = 48.783333, lng = 9.183333, height = '100%', width = '100%' }) => {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API,
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_API,
   });
 
   const center = useMemo(

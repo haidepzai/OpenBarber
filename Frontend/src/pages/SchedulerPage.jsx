@@ -21,7 +21,7 @@ import { useEffect, useState } from 'react';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { FormGroup, Snackbar, Alert } from '@mui/material';
-import { appointmentsAPI, employeesAPI, servicesAPI, enterprisesAPI } from '../api/apiClient.js';
+import { appointmentsAPI, employeesAPI, servicesAPI, enterprisesAPI } from '../api/apiClient';
 import EmployeeSelect from '../components/Scheduler/EmployeeSelect';
 import TimeTableCell from '../components/Scheduler/TimeTableCell';
 import DayScaleCell from '../components/Scheduler/DayScaleCell';

@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Overview from './Overview';
 import { useTranslation } from 'react-i18next';
-require('dayjs/locale/de');
+import 'dayjs/locale/de';
 
 const OverviewPage = ({ data, dispatch, handleStep, showErrors, noneEmpty, error, setError, shopPaymentMethods }) => {
   const { t } = useTranslation();

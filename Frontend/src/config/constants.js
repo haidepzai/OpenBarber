@@ -3,9 +3,9 @@
  * All magic strings, URLs, timeouts, and constants go here.
  */
 
-const BASE_URL = (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080').replace(/\/api\/?$/, '').replace(/\/$/, '');
-const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API || '';
-const GOOGLE_GEOCODE_URL = process.env.REACT_APP_GOOGLE_GEOCODE || '';
+const BASE_URL = (import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080').replace(/\/api\/?$/, '').replace(/\/$/, '');
+const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API || '';
+const GOOGLE_GEOCODE_URL = import.meta.env.VITE_GOOGLE_GEOCODE || '';
 
 // API Endpoints
 const API_ENDPOINTS = {

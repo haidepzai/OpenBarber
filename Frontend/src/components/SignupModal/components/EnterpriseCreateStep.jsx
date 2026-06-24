@@ -6,7 +6,7 @@ import { createEnterprise } from '../../../actions/EnterpriseActions';
 import { getAccessToken } from '../../../context/tokenStorage';
 import { useTranslation } from 'react-i18next';
 
-const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
+const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API;
 
 const PropInput = (props) => {
   const { data, setData } = useContext(SignupContext);

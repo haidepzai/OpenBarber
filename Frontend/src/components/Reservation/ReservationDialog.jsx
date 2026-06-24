@@ -13,7 +13,7 @@ import { createAppointment } from '../../actions/AppointmentActions';
 import AuthContext from '../../context/auth-context';
 import { useTranslation } from 'react-i18next';
 
-const RECAPTCHA_SITE_KEY = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
 const steps = ['Services', 'Date', 'Booking'];
 

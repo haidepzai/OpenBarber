@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-function MySwiper(props) {
+function MySwiper() {
   const navigate = useNavigate();
 
   const { t } = useTranslation();

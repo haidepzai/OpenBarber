@@ -19,10 +19,10 @@ import { visuallyHidden } from '@mui/utils';
 import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { Button } from '@mui/material';
-import DeleteEmployeesDialog from './DeleteEmployeesDialog.js';
-import CreateEmployeeDialog from './CreateEmployeeDialog.js';
+import DeleteEmployeesDialog from './DeleteEmployeesDialog';
+import CreateEmployeeDialog from './CreateEmployeeDialog';
 import EditIcon from '@mui/icons-material/Edit';
-import { deleteEmployeeById } from '../../../actions/EmployeeActions.js';
+import { deleteEmployeeById } from '../../../actions/EmployeeActions';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {

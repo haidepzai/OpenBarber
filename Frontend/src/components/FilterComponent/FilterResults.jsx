@@ -158,7 +158,7 @@ const FilterResults = ({ filter }) => {
                   <Stack direction="row" alignItems="center" spacing={3} sx={{ mb: '20px' }}>
                     <img
                       alt="shop logo"
-                      src={shop.logo ? `data:image/jpeg;base64,${shop.logo}` : process.env.REACT_APP_BACKUP_IMAGE}
+                      src={shop.logo ? `data:image/jpeg;base64,${shop.logo}` : import.meta.env.VITE_BACKUP_IMAGE}
                       width="205px"
                       height="205px"
                       style={{
