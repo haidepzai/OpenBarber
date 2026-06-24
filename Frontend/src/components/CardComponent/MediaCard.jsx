@@ -26,7 +26,17 @@ export default function MediaCard({ shop, setOpenModal }) {
 
   return (
     <>
-      <Card sx={{ width: 250, borderRadius: 3, display: 'flex', flexDirection: 'column' }}>
+      <Card sx={{
+        width: 250,
+        borderRadius: 3,
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+        '&:hover': {
+          transform: 'translateY(-6px) scale(1.02)',
+          boxShadow: '0 12px 28px rgba(0,0,0,0.18)',
+        },
+      }}>
         <CardActionArea component={RouterLink} to={`shops/${shop.id}`} sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, alignItems: 'stretch' }}>
           <CardMedia
             component="img"

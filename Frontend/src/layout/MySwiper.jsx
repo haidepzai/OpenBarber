@@ -62,25 +62,41 @@ function MySwiper() {
                 width: '300px',
                 borderRadius: '10px',
                 boxShadow: 'rgba(0, 0, 0, 0.6) 0px 2px 8px',
-                transition: '0.15s ease-in-out',
-                '& img': {
-                  objectFit: 'cover',
-                  filter: 'brightness(0.55) contrast(1.2)',
-                  borderRadius: '10px',
-                  transition: '0.15s ease-in-out',
-                },
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 '&:hover': {
                   cursor: 'pointer',
-                  '& img': {
-                    filter: 'brightness(0.55) contrast(1.2)',
+                  transform: 'scale(1.04)',
+                  boxShadow: 'rgba(0, 0, 0, 0.7) 0px 8px 24px',
+                  '& .swiper-img': {
+                    filter: 'brightness(0.4) contrast(1.3)',
+                    transform: 'scale(1.08)',
                   },
                   '& h4': {
-                    textShadow: '3px 3px 1px #6D5344',
+                    textShadow: '3px 3px 6px rgba(93,71,58,0.9)',
+                    letterSpacing: '2px',
                   },
                 },
               }}
             >
-              <img src={currElement.src} alt="category" />
+              <Box sx={{
+                position: 'absolute',
+                inset: 0,
+                borderRadius: '10px',
+                overflow: 'hidden',
+              }}>
+                <img
+                  className="swiper-img"
+                  src={currElement.src}
+                  alt="category"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    filter: 'brightness(0.55) contrast(1.2)',
+                    transition: 'transform 0.3s ease, filter 0.3s ease',
+                  }}
+                />
+              </Box>
               <Typography
                 variant="h4"
                 sx={{
@@ -89,9 +105,12 @@ function MySwiper() {
                   top: '50%',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
+                  width: '85%',
                   margin: '0',
                   color: 'white.main',
-                  transition: '0.15s ease-in-out',
+                  fontSize: 'clamp(0.95rem, 1.5vw, 1.5rem)',
+                  lineHeight: 1.3,
+                  transition: 'letter-spacing 0.3s ease, text-shadow 0.3s ease',
                 }}
               >
                 {currElement.name}
