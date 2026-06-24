@@ -36,8 +36,8 @@ public class Employee {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "enterprise_id")
-    private Enterprise enterprise;
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
 /*    @OneToMany
     private List<Appointment> appointments;*/

@@ -46,7 +46,7 @@ const EmailVerificationStep = () => {
         authCtx.setIsLoggedIn(true);
         close();
       } else {
-        // Enterprise flow: go to awaiting approval step
+        // Shop flow: go to awaiting approval step
         setActiveStep(4);
         setCompletedSteps((cs) => {
           const res = [...cs];

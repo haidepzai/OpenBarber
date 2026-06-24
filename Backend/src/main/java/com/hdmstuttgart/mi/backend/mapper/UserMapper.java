@@ -18,7 +18,7 @@ public class UserMapper {
                 .salutation(user.getSalutation())
                 .profilePhoto(user.getProfilePhoto())
                 .password(user.getPassword())
-                .enterprise(user.getEnterprise())
+                .shop(user.getShop())
                 .role(user.getRole())
                 .createdAt(user.getCreatedAt())
                 .build();
@@ -35,7 +35,7 @@ public class UserMapper {
                 .salutation(userDto.getSalutation())
                 .profilePhoto(userDto.getProfilePhoto())
                 .password(userDto.getPassword())
-                .enterprise(userDto.getEnterprise())
+                .shop(userDto.getShop())
                 .role(userDto.getRole())
                 .createdAt(userDto.getCreatedAt())
                 .build();

@@ -20,8 +20,8 @@ public class ReviewDto {
     private String comment;
     private double rating;
     private Date createdAt;
-    private Long enterpriseId;
-    private String enterpriseName;
+    private Long shopId;
+    private String shopName;
     private byte[] authorPhoto;
     private Long reviewerId;
 }

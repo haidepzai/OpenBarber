@@ -1,15 +1,15 @@
 import { reviewsAPI } from '../api/apiClient';
 
-export const createReview = async (review, enterpriseId) => {
-  return reviewsAPI.create(enterpriseId, review);
+export const createReview = async (review, shopId) => {
+  return reviewsAPI.create(shopId, review);
 };
 
-export const createReviewWithUUID = async (review, enterpriseId, uuid) => {
-  return reviewsAPI.create(enterpriseId, review);
+export const createReviewWithUUID = async (review, shopId, uuid) => {
+  return reviewsAPI.create(shopId, review);
 };
 
-export const createReviewAuth = async (review, enterpriseId) => {
-  return reviewsAPI.create(enterpriseId, review);
+export const createReviewAuth = async (review, shopId) => {
+  return reviewsAPI.create(shopId, review);
 };
 
 export const updateReview = async (id, review) => {

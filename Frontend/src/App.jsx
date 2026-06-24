@@ -14,7 +14,7 @@ import FilterPage from './pages/FilterPage';
 import SignupModal from './components/SignupModal/SignupModal';
 import Datenschutz from './pages/Datenschutz';
 import SchedulerPage from './pages/SchedulerPage';
-import EditEnterprisePage from './pages/EditEnterprisePage';
+import EditShopPage from './pages/EditShopPage';
 import { SignupContext } from './context/Signup.context';
 import AppointmentConfirmation from './pages/AppointmentConfirmation';
 import CancelAppointment from './pages/CancelAppointment';
@@ -23,7 +23,7 @@ import CustomerProfilePage from './pages/CustomerProfilePage';
 import CustomerEditProfilePage from './pages/CustomerEditProfilePage';
 import AuthContext from './context/auth-context';
 
-// Only accessible for logged-in enterprise operators
+// Only accessible for logged-in shop operators
 const OperatorRoute = ({ children }) => {
   const authCtx = useContext(AuthContext);
   if (!authCtx.isLoggedIn) return <Navigate to="/" replace />;
@@ -54,7 +54,7 @@ function App() {
             <Route path="filter" element={<FilterPage />} />
             <Route path="privacy-policy" element={<Datenschutz />} />
             <Route path="scheduler" element={<OperatorRoute><SchedulerPage /></OperatorRoute>} />
-            <Route path="edit" element={<OperatorRoute><EditEnterprisePage /></OperatorRoute>} />
+            <Route path="edit" element={<OperatorRoute><EditShopPage /></OperatorRoute>} />
             <Route path="my-appointments" element={<CustomerRoute><CustomerProfilePage /></CustomerRoute>} />
             <Route path="my-profile" element={<CustomerRoute><CustomerEditProfilePage /></CustomerRoute>} />
             <Route path="appointment/:routeId" element={<AppointmentConfirmation/>}/>

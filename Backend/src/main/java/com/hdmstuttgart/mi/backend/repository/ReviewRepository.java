@@ -14,11 +14,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Override
     List<Review> findAll();
 
-    Page<Review> findAllByEnterpriseId(Long enterpriseId, Pageable pageable);
+    Page<Review> findAllByShopId(Long shopId, Pageable pageable);
 
-    Optional<Review> findByEnterpriseIdAndReviewerId(Long enterpriseId, Long reviewerId);
+    Optional<Review> findByShopIdAndReviewerId(Long shopId, Long reviewerId);
 
-    boolean existsByEnterpriseIdAndReviewerId(Long enterpriseId, Long reviewerId);
+    boolean existsByShopIdAndReviewerId(Long shopId, Long reviewerId);
 
     Page<Review> findAllByReviewerId(Long reviewerId, Pageable pageable);
 }

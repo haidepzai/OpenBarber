@@ -7,7 +7,7 @@ import DetailPageBG from '../components/DetailPage/DetailPageBG';
 
 import '../css/DetailPage/DetailPage.css';
 import { useParams } from 'react-router-dom';
-import { getShop } from '../actions/EnterpriseActions';
+import { getShop } from '../actions/ShopActions';
 
 const DetailPage = () => {
   const { routeId } = useParams();
@@ -16,8 +16,8 @@ const DetailPage = () => {
   const [loading, setLoading] = useState(true);
 
   const loadShop = useCallback(async () => {
-    const enterprise = await getShop(routeId);
-    setShop(enterprise);
+    const shop = await getShop(routeId);
+    setShop(shop);
   }, [routeId]);
 
   useEffect(() => {

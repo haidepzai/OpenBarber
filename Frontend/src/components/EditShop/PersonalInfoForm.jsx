@@ -10,7 +10,7 @@ const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', '
 const drinkOptions = ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'];
 const DAYS_OF_WEEK = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
-const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterpriseArrayChange }) => {
+const PersonalInfoForm = ({ shop, handleShopChange, handleShopArrayChange }) => {
   const { t } = useTranslation();
 
   return (
@@ -40,9 +40,9 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
           <TextField
             InputLabelProps={{ shrink: false }}
             name="name"
-            placeholder={t('NAME_ENTERPRISE')}
-            value={enterprise.name === null ? '' : enterprise.name}
-            onChange={handleEnterpriseChange}
+            placeholder={t('NAME_SHOP')}
+            value={shop.name === null ? '' : shop.name}
+            onChange={handleShopChange}
             fullWidth
           />
         </Stack>
@@ -53,8 +53,8 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
             InputLabelProps={{ shrink: false }}
             name="address"
             placeholder={t('ADDRESS_EXAMPLE')}
-            value={enterprise.address === null ? '' : enterprise.address}
-            onChange={handleEnterpriseChange}
+            value={shop.address === null ? '' : shop.address}
+            onChange={handleShopChange}
             fullWidth
           />
         </Stack>
@@ -65,8 +65,8 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
             InputLabelProps={{ shrink: false }}
             name="phoneNumber"
             placeholder={t('PHONE_NUMBER_EXAMPLE')}
-            value={enterprise.phoneNumber === null ? '' : enterprise.phoneNumber}
-            onChange={handleEnterpriseChange}
+            value={shop.phoneNumber === null ? '' : shop.phoneNumber}
+            onChange={handleShopChange}
             fullWidth
             type="number"
           />
@@ -78,8 +78,8 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
             InputLabelProps={{ shrink: false }}
             name="website"
             placeholder={t('WEBSITE_EXAMPLE')}
-            value={enterprise.website === null ? '' : enterprise.website}
-            onChange={handleEnterpriseChange}
+            value={shop.website === null ? '' : shop.website}
+            onChange={handleShopChange}
             fullWidth
           />
         </Stack>
@@ -90,8 +90,8 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
             InputLabelProps={{ shrink: false }}
             name="email"
             placeholder={t('EMAIL_ADDRESS_EXAMPLE')}
-            value={enterprise.email === null ? '' : enterprise.email}
-            onChange={handleEnterpriseChange}
+            value={shop.email === null ? '' : shop.email}
+            onChange={handleShopChange}
             fullWidth
           />
         </Stack>
@@ -102,10 +102,10 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
                 name="open"
-                label={!enterprise.openingTime && 'Open'}
-                value={enterprise.openingTime ? dayjs(enterprise.openingTime, 'HH:mm') : null}
+                label={!shop.openingTime && 'Open'}
+                value={shop.openingTime ? dayjs(shop.openingTime, 'HH:mm') : null}
                 onChange={(newValue) => {
-                  handleEnterpriseChange({
+                  handleShopChange({
                     target: {
                       name: 'openingTime',
                       value: newValue ? newValue.format('HH:mm') : null,
@@ -121,10 +121,10 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
                 name="close"
-                label={!enterprise.closingTime && 'Close'}
-                value={enterprise.closingTime ? dayjs(enterprise.closingTime, 'HH:mm') : null}
+                label={!shop.closingTime && 'Close'}
+                value={shop.closingTime ? dayjs(shop.closingTime, 'HH:mm') : null}
                 onChange={(newValue) => {
-                  handleEnterpriseChange({
+                  handleShopChange({
                     target: {
                       name: 'closingTime',
                       value: newValue ? newValue.format('HH:mm') : null,
@@ -140,9 +140,9 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
         <Stack direction="row" alignItems="flex-start">
           <Typography variant="body1" sx={{ paddingTop: '8px' }}>{t('OPENING_DAYS')}</Typography>
           <ToggleButtonGroup
-            value={enterprise.openingDays || []}
+            value={shop.openingDays || []}
             onChange={(event, newDays) => {
-              handleEnterpriseChange({
+              handleShopChange({
                 target: { name: 'openingDays', value: newDays },
               });
             }}
@@ -161,10 +161,10 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
           <Typography variant="body1">{t('PRICE_CATEGORY')}</Typography>
           <ToggleButtonGroup
             name="priceCategory"
-            value={enterprise.priceCategory === null ? '' : enterprise.priceCategory}
+            value={shop.priceCategory === null ? '' : shop.priceCategory}
             exclusive
             onChange={(event, value) => {
-              handleEnterpriseChange({
+              handleShopChange({
                 target: {
                   name: 'priceCategory',
                   value,
@@ -195,8 +195,8 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
                 key={method}
                 control={
                   <Checkbox
-                    checked={enterprise.paymentMethods.includes(method)}
-                    onChange={(event) => handleEnterpriseArrayChange(event, method)}
+                    checked={shop.paymentMethods.includes(method)}
+                    onChange={(event) => handleShopArrayChange(event, method)}
                   />
                 }
                 label={t(method)}
@@ -214,7 +214,7 @@ const PersonalInfoForm = ({ enterprise, handleEnterpriseChange, handleEnterprise
                 name="drinks"
                 key={drink}
                 control={
-                  <Checkbox checked={enterprise.drinks.includes(drink)} onChange={(event) => handleEnterpriseArrayChange(event, drink)} />
+                  <Checkbox checked={shop.drinks.includes(drink)} onChange={(event) => handleShopArrayChange(event, drink)} />
                 }
                 label={t(drink)}
                 sx={{ '& .MuiTypography-root': { textTransform: 'capitalize' } }}

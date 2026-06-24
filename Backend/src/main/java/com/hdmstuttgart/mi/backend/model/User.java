@@ -66,8 +66,8 @@ public class User implements UserDetails {
     @CreationTimestamp
     private Date createdAt;
 
-    @OneToOne(cascade=CascadeType.ALL) /*(mappedBy = "enterprise")*/
-    private Enterprise enterprise;
+    @OneToOne(cascade=CascadeType.ALL) /*(mappedBy = "shop")*/
+    private Shop shop;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;

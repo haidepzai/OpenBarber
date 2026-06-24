@@ -2,24 +2,24 @@ import React, { useEffect, useRef, useState, useContext } from 'react';
 import { Box, Divider, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import AuthContext from '../context/auth-context';
-import { getShopByUser } from '../actions/EnterpriseActions';
+import { getShopByUser } from '../actions/ShopActions';
 import { getUserById } from '../actions/UserActions';
-import EditPersonalInfo from '../components/EditEnterprise/EditPersonalInfo.jsx';
+import EditPersonalInfo from '../components/EditShop/EditPersonalInfo.jsx';
 import { useTranslation } from 'react-i18next';
-import PersonalInfoForm from '../components/EditEnterprise/PersonalInfoForm';
-import PictureUpload from '../components/EditEnterprise/PictureUpload';
-import FormActions from '../components/EditEnterprise/FormActions';
-import SnackbarManager from '../components/EditEnterprise/SnackbarManager';
-import ServiceTable from '../components/EditEnterprise/Service/ServiceTable.tsx';
-import EmployeeTable from '../components/EditEnterprise/Employee/EmployeeTable.tsx';
-import { enterprisesAPI } from '../api/apiClient';
-import { saveEnterpriseData } from '../components/EditEnterprise/utils';
+import PersonalInfoForm from '../components/EditShop/PersonalInfoForm';
+import PictureUpload from '../components/EditShop/PictureUpload';
+import FormActions from '../components/EditShop/FormActions';
+import SnackbarManager from '../components/EditShop/SnackbarManager';
+import ServiceTable from '../components/EditShop/Service/ServiceTable.tsx';
+import EmployeeTable from '../components/EditShop/Employee/EmployeeTable.tsx';
+import { shopsAPI } from '../api/apiClient';
+import { saveShopData } from '../components/EditShop/utils';
 
-const EditEnterprisePage = () => {
+const EditShopPage = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveCooldown, setSaveCooldown] = useState(false);
-  const [enterprise, setEnterprise] = useState({});
+  const [shop, setShop] = useState({});
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -30,9 +30,9 @@ const EditEnterprisePage = () => {
   const authCtx = useContext(AuthContext);
   const { t } = useTranslation();
 
-  const loadEnterprise = async () => {
+  const loadShop = async () => {
     const shop = await getShopByUser();
-    setEnterprise(shop);
+    setShop(shop);
   };
 
   const loadUser = async () => {
@@ -43,22 +43,22 @@ const EditEnterprisePage = () => {
   useEffect(() => {
     const loadData = async () => {
       await loadUser();
-      await loadEnterprise();
+      await loadShop();
       setLoading(false);
     };
     loadData();
   }, []);
 
-  const saveEnterprise = async () => {
+  const saveShop = async () => {
     if (saving) {
       return;
     }
 
     setSaving(true);
     try {
-      const savedEnterprise = await saveEnterpriseData(enterprise);
-      if (savedEnterprise) {
-        setEnterprise(savedEnterprise);
+      const savedShop = await saveShopData(shop);
+      if (savedShop) {
+        setShop(savedShop);
         handleSnackbarOpen('Save successful', 'success');
         setSaveCooldown(true);
       } else {
@@ -71,32 +71,32 @@ const EditEnterprisePage = () => {
     }
   };
 
-  const resetEnterprise = async () => {
-    await loadEnterprise();
-    handleSnackbarOpen(t('ENTERPRISE_DATA_RESET'));
+  const resetShop = async () => {
+    await loadShop();
+    handleSnackbarOpen(t('SHOP_DATA_RESET'));
   };
 
-  const handleEnterpriseChange = (event) => {
+  const handleShopChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setEnterprise({
-      ...enterprise,
+    setShop({
+      ...shop,
       [name]: value,
     });
   };
 
-  const handleEnterpriseArrayChange = (event, value) => {
+  const handleShopArrayChange = (event, value) => {
     const name = event.target.name;
     const checked = event.target.checked;
     if (checked) {
-      setEnterprise({
-        ...enterprise,
-        [name]: [...enterprise[name], value],
+      setShop({
+        ...shop,
+        [name]: [...shop[name], value],
       });
     } else {
-      setEnterprise({
-        ...enterprise,
-        [name]: enterprise[name].filter((el) => el !== value),
+      setShop({
+        ...shop,
+        [name]: shop[name].filter((el) => el !== value),
       });
     }
   };
@@ -105,8 +105,8 @@ const EditEnterprisePage = () => {
     const file = event.target.files[0];
     if (!file) return;
     try {
-      const res = await enterprisesAPI.uploadLogo(enterprise.id, file);
-      setEnterprise((prev) => ({ ...prev, logo: res.data.logo }));
+      const res = await shopsAPI.uploadLogo(shop.id, file);
+      setShop((prev) => ({ ...prev, logo: res.data.logo }));
       handleSnackbarOpen(t('LOGO_UPLOADED'));
     } catch (err) {
       handleSnackbarOpen(t('UPLOAD_FAILED'), 'error');
@@ -117,8 +117,8 @@ const EditEnterprisePage = () => {
     const files = Array.from(event.target.files);
     if (!files.length) return;
     try {
-      const res = await enterprisesAPI.uploadPictures(enterprise.id, files);
-      setEnterprise((prev) => ({ ...prev, pictures: res.data.pictures }));
+      const res = await shopsAPI.uploadPictures(shop.id, files);
+      setShop((prev) => ({ ...prev, pictures: res.data.pictures }));
       handleSnackbarOpen(t('PICTURES_UPLOADED'));
     } catch (err) {
       handleSnackbarOpen(t('UPLOAD_FAILED'), 'error');
@@ -127,8 +127,8 @@ const EditEnterprisePage = () => {
 
   const handleDeletePicture = async (index) => {
     try {
-      const res = await enterprisesAPI.deletePicture(enterprise.id, index);
-      setEnterprise((prev) => ({ ...prev, pictures: res.data.pictures }));
+      const res = await shopsAPI.deletePicture(shop.id, index);
+      setShop((prev) => ({ ...prev, pictures: res.data.pictures }));
       handleSnackbarOpen(t('PICTURE_DELETED'));
     } catch (err) {
       handleSnackbarOpen(t('UPLOAD_FAILED'), 'error');
@@ -172,11 +172,11 @@ const EditEnterprisePage = () => {
     <>
       {!loading && (
         <>
-          {enterprise.logo && (
+          {shop.logo && (
             <Box
               sx={{
                 backgroundSize: 'cover',
-                backgroundImage: `url(${enterprise.logo ? `data:image/jpeg;base64,${enterprise.logo}` : import.meta.env.VITE_BACKUP_IMAGE})`,
+                backgroundImage: `url(${shop.logo ? `data:image/jpeg;base64,${shop.logo}` : import.meta.env.VITE_BACKUP_IMAGE})`,
                 backgroundPosition: 'center center',
                 width: '100%',
                 height: '40vh',
@@ -188,22 +188,22 @@ const EditEnterprisePage = () => {
               {t('PROFILE')}
             </Typography>
             <Typography variant="h2" sx={{ fontSize: '16px', fontWeight: '500', color: 'rgba(0, 0, 0, 0.45)', m: '0 0 20px 24px' }}>
-              {t('EDIT_ENTERPRISE_TITLE')}
+              {t('EDIT_SHOP_TITLE')}
             </Typography>
             <Paper elevation={2}>
-              <PersonalInfoForm enterprise={enterprise} handleEnterpriseChange={handleEnterpriseChange} handleEnterpriseArrayChange={handleEnterpriseArrayChange} />
+              <PersonalInfoForm shop={shop} handleShopChange={handleShopChange} handleShopArrayChange={handleShopArrayChange} />
 
               <Divider orientation="horizontal" sx={{ m: '24px 0' }} />
 
-              <PictureUpload enterprise={enterprise} handleLogoUpload={handleLogoUpload} handlePicturesUpload={handlePicturesUpload} handleDeletePicture={handleDeletePicture} />
+              <PictureUpload shop={shop} handleLogoUpload={handleLogoUpload} handlePicturesUpload={handlePicturesUpload} handleDeletePicture={handleDeletePicture} />
 
               <Divider orientation="horizontal" sx={{ m: '24px 0' }} />
 
               <ServiceTable
-                services={enterprise.services}
+                services={shop.services}
                 setServices={(newServices) => {
-                  setEnterprise({
-                    ...enterprise,
+                  setShop({
+                    ...shop,
                     services: newServices,
                   });
                 }}
@@ -212,10 +212,10 @@ const EditEnterprisePage = () => {
               <Divider orientation="horizontal" sx={{ m: '24px 0' }} />
 
               <EmployeeTable
-                employees={enterprise.employees}
+                employees={shop.employees}
                 setEmployees={(newEmployees) => {
-                  setEnterprise({
-                    ...enterprise,
+                  setShop({
+                    ...shop,
                     employees: newEmployees,
                   });
                 }}
@@ -223,7 +223,7 @@ const EditEnterprisePage = () => {
 
               <Divider orientation="horizontal" sx={{ m: '24px 0' }} />
 
-              <FormActions onReset={resetEnterprise} onSave={saveEnterprise} saving={saving} disabled={saveCooldown} />
+              <FormActions onReset={resetShop} onSave={saveShop} saving={saving} disabled={saveCooldown} />
             </Paper>
 
             <EditPersonalInfo onLoadingUser={loadUser} onOpenSnackBar={handleSnackbarOpen} />
@@ -236,4 +236,4 @@ const EditEnterprisePage = () => {
   );
 };
 
-export default EditEnterprisePage;
+export default EditShopPage;

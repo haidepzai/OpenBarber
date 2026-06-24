@@ -2,7 +2,7 @@ package com.hdmstuttgart.mi.backend.mapper;
 
 import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.Employee;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.Service;
 import com.hdmstuttgart.mi.backend.model.dto.AppointmentDto;
 import org.modelmapper.ModelMapper;
@@ -41,9 +41,9 @@ public class AppointmentMapper {
             dto.setEmployeeId(appointment.getEmployee().getId());
             dto.setEmployeeName(appointment.getEmployee().getName());
         }
-        if (appointment.getEnterprise() != null) {
-            dto.setEnterpriseId(appointment.getEnterprise().getId());
-            dto.setEnterpriseName(appointment.getEnterprise().getName());
+        if (appointment.getShop() != null) {
+            dto.setShopId(appointment.getShop().getId());
+            dto.setShopName(appointment.getShop().getName());
         }
         if (appointment.getCustomer() != null) {
             dto.setCustomerId(appointment.getCustomer().getId());
@@ -70,10 +70,10 @@ public class AppointmentMapper {
             appointment.setEmployee(employee);
         }
 
-        if (appointmentDTO.getEnterpriseId() != null) {
-            Enterprise enterprise = new Enterprise();
-            enterprise.setId(appointmentDTO.getEnterpriseId());
-            appointment.setEnterprise(enterprise);
+        if (appointmentDTO.getShopId() != null) {
+            Shop shop = new Shop();
+            shop.setId(appointmentDTO.getShopId());
+            appointment.setShop(shop);
         }
 
         if (appointmentDTO.getServices() != null) {

@@ -42,20 +42,20 @@ public class SecurityConfiguration {
             .antMatchers("/api/auth/**").permitAll()
             // Swagger
             .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
-            // Public read: enterprises, services, reviews
-            .antMatchers(HttpMethod.GET, "/api/enterprises", "/api/enterprises/{id}", "/api/enterprises/within-radius", "/api/enterprises/email", "/api/enterprises/*/available-slots").permitAll()
+            // Public read: shops, services, reviews
+            .antMatchers(HttpMethod.GET, "/api/shops", "/api/shops/{id}", "/api/shops/within-radius", "/api/shops/email", "/api/shops/*/available-slots").permitAll()
             .antMatchers(HttpMethod.GET, "/api/reviews/my").authenticated()
             .antMatchers(HttpMethod.GET, "/api/reviews").permitAll()
             .antMatchers(HttpMethod.POST, "/api/reviews/auth").authenticated()
             .antMatchers(HttpMethod.PUT, "/api/reviews/**").authenticated()
             .antMatchers(HttpMethod.DELETE, "/api/reviews/**").authenticated()
             .antMatchers(HttpMethod.GET, "/api/services").permitAll()
-            // Operator-only: manage own enterprise (UNVERIFIED/VERIFIED can create once during signup)
-            .antMatchers(HttpMethod.POST, "/api/enterprises").hasAnyAuthority("OPERATOR", "VERIFIED", "UNVERIFIED")
-            .antMatchers(HttpMethod.POST, "/api/enterprises/*/**").hasAuthority("OPERATOR")
-            .antMatchers(HttpMethod.PUT, "/api/enterprises/**").hasAuthority("OPERATOR")
-            .antMatchers(HttpMethod.PATCH, "/api/enterprises/**").hasAuthority("OPERATOR")
-            .antMatchers(HttpMethod.DELETE, "/api/enterprises/**").hasAuthority("OPERATOR")
+            // Operator-only: manage own shop (UNVERIFIED/VERIFIED can create once during signup)
+            .antMatchers(HttpMethod.POST, "/api/shops").hasAnyAuthority("OPERATOR", "VERIFIED", "UNVERIFIED")
+            .antMatchers(HttpMethod.POST, "/api/shops/*/**").hasAuthority("OPERATOR")
+            .antMatchers(HttpMethod.PUT, "/api/shops/**").hasAuthority("OPERATOR")
+            .antMatchers(HttpMethod.PATCH, "/api/shops/**").hasAuthority("OPERATOR")
+            .antMatchers(HttpMethod.DELETE, "/api/shops/**").hasAuthority("OPERATOR")
             .antMatchers("/api/employees/**").hasAuthority("OPERATOR")
             .antMatchers(HttpMethod.POST, "/api/services").hasAuthority("OPERATOR")
             .antMatchers(HttpMethod.PUT, "/api/services/**").hasAuthority("OPERATOR")
@@ -65,7 +65,7 @@ public class SecurityConfiguration {
             .antMatchers(HttpMethod.GET, "/api/appointments/confirmation/**", "/api/appointments/cancel/**").permitAll() // email confirmation links
             .antMatchers("/api/appointments/**").hasAnyAuthority("OPERATOR", "VERIFIED")
             // User info: authenticated only
-            .antMatchers("/api/enterprises/user").authenticated()
+            .antMatchers("/api/shops/user").authenticated()
             .antMatchers("/api/users/**").authenticated()
             // Catch-all: require authentication
             .anyRequest().authenticated()

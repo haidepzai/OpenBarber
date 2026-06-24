@@ -21,7 +21,7 @@ import { useEffect, useState } from 'react';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { FormGroup, Snackbar, Alert } from '@mui/material';
-import { appointmentsAPI, employeesAPI, servicesAPI, enterprisesAPI } from '../api/apiClient';
+import { appointmentsAPI, employeesAPI, servicesAPI, shopsAPI } from '../api/apiClient';
 import EmployeeSelect from '../components/Scheduler/EmployeeSelect';
 import TimeTableCell from '../components/Scheduler/TimeTableCell';
 import DayScaleCell from '../components/Scheduler/DayScaleCell';
@@ -39,7 +39,7 @@ import {
 
 const SchedulerPage = () => {
   const [loading, setLoading] = useState(true);
-  const [enterprise, setEnterprise] = useState(null);
+  const [shop, setShop] = useState(null);
   const [allServices, setAllServices] = useState([]);
   const [allEmployees, setAllEmployees] = useState([]);
   const [data, setData] = useState([]);
@@ -112,7 +112,6 @@ const SchedulerPage = () => {
 
   const mapAppointmentToScheduler = (appointment) => {
     const startDate = parseDateTime(appointment.appointmentDateTime);
-    // Prefer persisted endDateTime, then calculate from services, then fallback 1h
     let endDate;
     if (appointment.endDateTime) {
       endDate = parseDateTime(appointment.endDateTime);
@@ -140,22 +139,43 @@ const SchedulerPage = () => {
     };
   };
 
-  const mapSchedulerToAppointment = (appointment) => ({
-    appointmentType: appointment.appointmentType ?? 'APPOINTMENT',
-    customerName: appointment.appointmentType === 'VACATION'
-      ? ''
-      : [appointment.customer?.firstName, appointment.customer?.lastName].filter(Boolean).join(' ').trim(),
-    customerPhoneNumber: appointment.appointmentType === 'VACATION' ? '' : appointment.customer?.phoneNumber || '',
-    customerEmail: appointment.appointmentType === 'VACATION' ? '' : appointment.customer?.email || '',
-    appointmentDateTime: toLocalISOString(parseDateTime(appointment.startDate)),
-    endDateTime: appointment.endDate ? toLocalISOString(parseDateTime(appointment.endDate)) : null,
-    employeeId: appointment.employee?.id ?? appointment.employee ?? appointment.employeeId ?? '',
-    services: appointment.appointmentType === 'VACATION'
-      ? []
-      : normalizeServiceSelection(appointment.services).map((serviceId) => ({ id: serviceId })),
-    paymentMethods: appointment.paymentMethods || [],
-    confirmed: appointment.confirmed || false,
-  });
+  const parseShopTime = (timeStr, referenceDate) => {
+    if (!timeStr) return null;
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    const d = new Date(referenceDate);
+    d.setHours(hours, minutes, 0, 0);
+    return d;
+  };
+
+  const mapSchedulerToAppointment = (appointment) => {
+    let startDate = parseDateTime(appointment.startDate);
+    let endDate = appointment.endDate ? parseDateTime(appointment.endDate) : null;
+
+    if (appointment.allDay) {
+      // Span shop opening hours; fallback to 08:00–20:00
+      const openTime = parseShopTime(shop?.openingTime, startDate) ?? new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8, 0, 0);
+      const closeTime = parseShopTime(shop?.closingTime, startDate) ?? new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 20, 0, 0);
+      startDate = openTime;
+      endDate = closeTime;
+    }
+
+    return {
+      appointmentType: appointment.appointmentType ?? 'APPOINTMENT',
+      customerName: appointment.appointmentType === 'VACATION'
+        ? ''
+        : [appointment.customer?.firstName, appointment.customer?.lastName].filter(Boolean).join(' ').trim(),
+      customerPhoneNumber: appointment.appointmentType === 'VACATION' ? '' : appointment.customer?.phoneNumber || '',
+      customerEmail: appointment.appointmentType === 'VACATION' ? '' : appointment.customer?.email || '',
+      appointmentDateTime: toLocalISOString(startDate),
+      endDateTime: endDate ? toLocalISOString(endDate) : null,
+      employeeId: appointment.employee?.id ?? appointment.employee ?? appointment.employeeId ?? '',
+      services: appointment.appointmentType === 'VACATION'
+        ? []
+        : normalizeServiceSelection(appointment.services).map((serviceId) => ({ id: serviceId })),
+      paymentMethods: appointment.paymentMethods || [],
+      confirmed: appointment.confirmed || false,
+    };
+  };
 
   const showSnack = (message, severity = 'error') => {
     setSnackMessage(message);
@@ -173,14 +193,14 @@ const SchedulerPage = () => {
     }
 
     try {
-      const enterpriseRes = await enterprisesAPI.getByUser();
-      const enterpriseData = enterpriseRes.data;
-      setEnterprise(enterpriseData);
+      const shopRes = await shopsAPI.getByUser();
+      const shopData = shopRes.data;
+      setShop(shopData);
 
       const [appointmentsResult, servicesResult, employeesResult] = await Promise.allSettled([
-        appointmentsAPI.getByEnterprise(enterpriseData.id),
-        servicesAPI.getByEnterprise(enterpriseData.id),
-        employeesAPI.getByEnterprise(enterpriseData.id),
+        appointmentsAPI.getByShop(shopData.id),
+        servicesAPI.getByShop(shopData.id),
+        employeesAPI.getByShop(shopData.id),
       ]);
 
       if (appointmentsResult.status === 'rejected') {
@@ -281,7 +301,7 @@ const SchedulerPage = () => {
         data = [...data, schedulerAppointment];
 
         appointmentsAPI
-          .create(enterprise.id, newAppointment)
+          .create(shop.id, newAppointment)
           .then(() => {
             showSnack('Appointment created successfully', 'success');
             loadSchedulerData(false);

@@ -48,8 +48,8 @@ public class Review {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "enterprise_id")
-    private Enterprise enterprise;
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
     @ManyToOne(optional = true)
     @JsonIgnore

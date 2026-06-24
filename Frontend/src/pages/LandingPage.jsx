@@ -7,7 +7,7 @@ import MySwiper from '../layout/MySwiper';
 import dayjs from 'dayjs';
 import ReservationDialog from '../components/Reservation/ReservationDialog';
 import { useNavigate } from 'react-router-dom';
-import { getEnterprises } from '../actions/EnterpriseActions';
+import { getShops } from '../actions/ShopActions';
 import { useTranslation } from 'react-i18next';
 import { reviewsAPI } from '../api/apiClient';
 
@@ -25,12 +25,12 @@ const LandingPage = () => {
 
   const loadData = useCallback(async () => {
     try {
-      const shopsData = await getEnterprises(0, 6);
+      const shopsData = await getShops(0, 6);
       const normalizedShops = Array.isArray(shopsData?.content) ? shopsData.content : [];
 
       const shopsWithReviews = await Promise.all(
         normalizedShops.map(async (shop) => {
-          const res = await reviewsAPI.getByEnterprise(shop.id);
+          const res = await reviewsAPI.getByShop(shop.id);
           return { ...shop, reviews: res.data?.content ?? res.data ?? [] };
         })
       );

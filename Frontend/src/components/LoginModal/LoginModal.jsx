@@ -131,21 +131,21 @@ const LoginModal = ({ gotoSignup }) => {
       };
       try {
         const res = await authCtx.onLogin(authRequest, customConfig, rememberMe);
-        // Redirect to signup if not verified or has no enterprise
-        const { verified, hasEnterprise } = res.data;
+        // Redirect to signup if not verified or has no shop
+        const { verified, hasShop } = res.data;
         if (!verified) {
           gotoSignup({
-            activeStep: hasEnterprise ? 3 : 2,
-            completedSteps: [true, true, hasEnterprise, false, false],
+            activeStep: hasShop ? 3 : 2,
+            completedSteps: [true, true, hasShop, false, false],
           });
-          signUpCtx.setData((prevData) => ({ ...prevData, email: emailState.value, accountType: hasEnterprise ? 'enterprise' : 'customer' }));
+          signUpCtx.setData((prevData) => ({ ...prevData, email: emailState.value, accountType: hasShop ? 'shop' : 'customer' }));
         }
 
         if (verified) {
           authCtx.setIsLoggedIn(true);
           signUpCtx.setLoginVisible(false);
           authCtx.setEmail(emailState.value);
-          if (hasEnterprise) {
+          if (hasShop) {
             navigate('/edit');
           } else {
             navigate('/my-appointments');

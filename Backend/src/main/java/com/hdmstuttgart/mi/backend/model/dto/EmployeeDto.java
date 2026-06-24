@@ -11,5 +11,5 @@ public class EmployeeDto {
     private String name;
     private String title;
     private String picture;
-    private Long enterpriseId;
+    private Long shopId;
 }

@@ -20,7 +20,7 @@ const ShopDetailView = ({ shop }) => {
 
   const loadReviews = async () => {
     try {
-      const res = await reviewsAPI.getByEnterprise(shop.id);
+      const res = await reviewsAPI.getByShop(shop.id);
       const data = res.data?.content ?? [];
       setReviews(data);
       if (currentUserId) {

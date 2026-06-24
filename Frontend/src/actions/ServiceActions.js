@@ -4,7 +4,7 @@ export const deleteServiceById = async (id) => {
   return servicesAPI.delete(id);
 };
 
-export const createService = async (service, enterpriseId) => {
+export const createService = async (service, shopId) => {
   return servicesAPI.create(service);
 };
 

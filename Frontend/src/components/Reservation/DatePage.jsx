@@ -10,9 +10,9 @@ import { DatePicker } from '@mui/x-date-pickers';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { enterprisesAPI } from '../../api/apiClient';
+import { shopsAPI } from '../../api/apiClient';
 
-const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmployees, enterpriseId, selectedServices }) => {
+const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmployees, shopId, selectedServices }) => {
   const [expanded, setExpanded] = useState(false);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -25,19 +25,19 @@ const DatePage = ({ pickedStylist, pickStylist, pickedDate, pickDate, shopEmploy
   const totalDuration = (selectedServices ?? []).reduce((sum, s) => sum + (s.durationInMin ?? 30), 0) || 30;
 
   const fetchSlots = useCallback(async (day) => {
-    if (!day || !enterpriseId) return;
+    if (!day || !shopId) return;
     setLoadingSlots(true);
     try {
       const dateStr = day.format('YYYY-MM-DD');
       const employeeId = isAnyEmployee ? null : pickedStylist.id;
-      const res = await enterprisesAPI.getAvailableSlots(enterpriseId, dateStr, employeeId, totalDuration);
+      const res = await shopsAPI.getAvailableSlots(shopId, dateStr, employeeId, totalDuration);
       setAvailableSlots(res.data ?? []);
     } catch (e) {
       setAvailableSlots([]);
     } finally {
       setLoadingSlots(false);
     }
-  }, [enterpriseId, isAnyEmployee, pickedStylist?.id, totalDuration]);
+  }, [shopId, isAnyEmployee, pickedStylist?.id, totalDuration]);
 
   useEffect(() => {
     if (pickedDay) fetchSlots(pickedDay);

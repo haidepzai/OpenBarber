@@ -18,7 +18,7 @@ const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 const steps = ['Services', 'Date', 'Booking'];
 
 const initialState = {
-  enterpriseId: '',
+  shopId: '',
   services: [],
   employee: { name: 'Any' },
   employeeId: '',
@@ -52,8 +52,8 @@ const reducer = (state, action) => {
       return { ...state, appointmentDateTime: action.payload };
     case 'set_personal_data':
       return { ...state, personalData: { ...state.personalData, ...action.payload } };
-    case 'set_enterprise_id':
-      return { ...state, enterpriseId: action.payload };
+    case 'set_shop_id':
+      return { ...state, shopId: action.payload };
     case 'set_payment_method':
       return { ...state, paymentMethod: action.payload };
     default:
@@ -77,7 +77,7 @@ function ReservationDialog({ open, handleClose, shop }) {
   const isGuest = !authCtx.isLoggedIn;
 
   useEffect(() => {
-    dispatch({ type: 'set_enterprise_id', payload: shop.id });
+    dispatch({ type: 'set_shop_id', payload: shop.id });
   }, [shop.id]);
 
   // Pre-fill personal data for logged-in customers
@@ -150,7 +150,7 @@ function ReservationDialog({ open, handleClose, shop }) {
       customerPhoneNumber: data.personalData.phoneNumber,
       customerEmail: data.personalData.email,
       appointmentDateTime: isoDateTime,
-      enterpriseId: shop.id,
+      shopId: shop.id,
       employeeId: data.employee?.id ?? data.employeeId,
       services: data.services.map((service) => ({ id: service.id })),
       paymentMethod: data.paymentMethod,
@@ -263,7 +263,7 @@ function ReservationDialog({ open, handleClose, shop }) {
               shopEmployees={shop.employees}
               openingTime={shop.openingTime}
               closingTime={shop.closingTime}
-              enterpriseId={shop.id}
+              shopId={shop.id}
               selectedServices={data.services}
             />
           )}

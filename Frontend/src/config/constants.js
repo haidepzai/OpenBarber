@@ -24,42 +24,42 @@ const API_ENDPOINTS = {
   USER_INFO: `${BASE_URL}/api/users/info/`,
   USER_PHOTO: (id) => `${BASE_URL}/api/users/${id}/photo`,
 
-  // Enterprises
-  ENTERPRISES: `${BASE_URL}/api/enterprises`,
-  ENTERPRISES_BY_EMAIL: `${BASE_URL}/api/enterprises/email`,
-  ENTERPRISES_BY_USER: `${BASE_URL}/api/enterprises/user`,
-  ENTERPRISES_RADIUS: `${BASE_URL}/api/enterprises/within-radius`,
-  ENTERPRISE_DETAIL: (id) => `${BASE_URL}/api/enterprises/${id}`,
-  ENTERPRISE_LOGO: (id) => `${BASE_URL}/api/enterprises/${id}/logo`,
-  ENTERPRISE_PICTURES: (id) => `${BASE_URL}/api/enterprises/${id}/pictures`,
-  ENTERPRISE_PICTURE_DELETE: (id, index) => `${BASE_URL}/api/enterprises/${id}/pictures/${index}`,
-  ENTERPRISE_AVAILABLE_SLOTS: (id) => `${BASE_URL}/api/enterprises/${id}/available-slots`,
-  ENTERPRISES_CREATE: `${BASE_URL}/api/enterprises`,
+  // Shops
+  SHOPS: `${BASE_URL}/api/shops`,
+  SHOPS_BY_EMAIL: `${BASE_URL}/api/shops/email`,
+  SHOPS_BY_USER: `${BASE_URL}/api/shops/user`,
+  SHOPS_RADIUS: `${BASE_URL}/api/shops/within-radius`,
+  SHOP_DETAIL: (id) => `${BASE_URL}/api/shops/${id}`,
+  SHOP_LOGO: (id) => `${BASE_URL}/api/shops/${id}/logo`,
+  SHOP_PICTURES: (id) => `${BASE_URL}/api/shops/${id}/pictures`,
+  SHOP_PICTURE_DELETE: (id, index) => `${BASE_URL}/api/shops/${id}/pictures/${index}`,
+  SHOP_AVAILABLE_SLOTS: (id) => `${BASE_URL}/api/shops/${id}/available-slots`,
+  SHOPS_CREATE: `${BASE_URL}/api/shops`,
 
   // Appointments
-  APPOINTMENTS: (enterpriseId) => `${BASE_URL}/api/appointments?enterpriseId=${enterpriseId}`,
-  APPOINTMENTS_CREATE: (enterpriseId) => `${BASE_URL}/api/appointments?enterpriseId=${enterpriseId}`,
+  APPOINTMENTS: (shopId) => `${BASE_URL}/api/appointments?shopId=${shopId}`,
+  APPOINTMENTS_CREATE: (shopId) => `${BASE_URL}/api/appointments?shopId=${shopId}`,
   APPOINTMENTS_CANCEL: (id, code) => `${BASE_URL}/api/appointments/${id}?confirmationCode=${code}`,
   APPOINTMENTS_CONFIRM: (id, code) => `${BASE_URL}/api/appointments/${id}?confirmationCode=${code}`,
   APPOINTMENTS_MY: `${BASE_URL}/api/appointments/my`,
   APPOINTMENTS_BY_ID: (id) => `${BASE_URL}/api/appointments/${id}`,
 
   // Reviews
-  REVIEWS: (enterpriseId) => `${BASE_URL}/api/reviews?enterpriseId=${enterpriseId}`,
+  REVIEWS: (shopId) => `${BASE_URL}/api/reviews?shopId=${shopId}`,
   REVIEWS_MY: `${BASE_URL}/api/reviews/my`,
-  REVIEWS_CREATE_AUTH: (enterpriseId) => `${BASE_URL}/api/reviews/auth?enterpriseId=${enterpriseId}`,
+  REVIEWS_CREATE_AUTH: (shopId) => `${BASE_URL}/api/reviews/auth?shopId=${shopId}`,
   REVIEW_UPDATE: (id) => `${BASE_URL}/api/reviews/${id}`,
   REVIEW_DELETE: (id) => `${BASE_URL}/api/reviews/${id}`,
 
   // Services
-  SERVICES: (enterpriseId) => `${BASE_URL}/api/services?enterpriseId=${enterpriseId}`,
+  SERVICES: (shopId) => `${BASE_URL}/api/services?shopId=${shopId}`,
   SERVICE_DELETE: (id) => `${BASE_URL}/api/services/${id}`,
   SERVICE_CREATE: `${BASE_URL}/api/services`,
   SERVICE_UPDATE: (id) => `${BASE_URL}/api/services/${id}`,
 
   // Employees
   EMPLOYEES: `${BASE_URL}/api/employees`,
-  EMPLOYEES_BY_ENTERPRISE: (enterpriseId) => `${BASE_URL}/api/employees?enterpriseId=${enterpriseId}`,
+  EMPLOYEES_BY_SHOP: (shopId) => `${BASE_URL}/api/employees?shopId=${shopId}`,
   EMPLOYEE_BY_ID: (id) => `${BASE_URL}/api/employees/${id}`,
   EMPLOYEE_CREATE: `${BASE_URL}/api/employees`,
   EMPLOYEE_UPDATE: (id) => `${BASE_URL}/api/employees/${id}`,

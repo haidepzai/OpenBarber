@@ -116,7 +116,7 @@ const SignUpStep = () => {
           res[1] = true;
           return res;
         });
-        // Customer → go to email verification (step 2); Enterprise → go to enterprise setup (step 2)
+        // Customer → go to email verification (step 2); Shop → go to shop setup (step 2)
         signUpContext.setActiveStep(2);
       } catch (error) {
         dispatch({ type: 'SET_EMAIL_ALREADY_IN_USE', payload: true });
@@ -142,7 +142,7 @@ const SignUpStep = () => {
               {t('SIGN_UP_TITLE')}
             </Typography>
             <TextField
-              label={accountType === 'enterprise' ? t('COMPANY_MAIL') : t('EMAIL_ADDRESS')}
+              label={accountType === 'shop' ? t('COMPANY_MAIL') : t('EMAIL_ADDRESS')}
               required
               value={state.enteredEmail}
               error={!state.emailIsValid || state.emailAlreadyInUse}

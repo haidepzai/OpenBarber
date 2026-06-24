@@ -9,9 +9,9 @@ export const deleteEmployeeById = async (id) => {
   }
 };
 
-export const createEmployee = async (employee, enterpriseId) => {
+export const createEmployee = async (employee, shopId) => {
   try {
-    const response = await employeesAPI.create(employee, enterpriseId);
+    const response = await employeesAPI.create(employee, shopId);
     return response;
   } catch (err) {
     throw new Error('Could not create employee');

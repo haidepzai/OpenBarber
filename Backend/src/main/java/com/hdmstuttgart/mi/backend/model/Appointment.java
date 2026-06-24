@@ -78,8 +78,8 @@ public class Appointment {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "enterprise_id")
-    private Enterprise enterprise;
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
     @ManyToOne
     @JsonIgnore

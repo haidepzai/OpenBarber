@@ -16,7 +16,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Override
     List<Appointment> findAll();
 
-    Page<Appointment> findAllByEnterpriseId(Long enterpriseId, Pageable pageable);
+    Page<Appointment> findAllByShopId(Long shopId, Pageable pageable);
 
     Optional<Appointment> findById(UUID id);
 
@@ -28,8 +28,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByEmployeeIdAndAppointmentDateTimeBetween(
             Long employeeId, LocalDateTime start, LocalDateTime end);
 
-    List<Appointment> findByEnterpriseIdAndConfirmedTrueAndAppointmentDateTimeBetween(
-            Long enterpriseId, LocalDateTime start, LocalDateTime end);
+    List<Appointment> findByShopIdAndConfirmedTrueAndAppointmentDateTimeBetween(
+            Long shopId, LocalDateTime start, LocalDateTime end);
 
     Page<Appointment> findByCustomerId(Long customerId, Pageable pageable);
 

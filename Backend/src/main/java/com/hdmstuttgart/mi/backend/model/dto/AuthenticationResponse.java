@@ -17,7 +17,7 @@ public class AuthenticationResponse {
     private String token;
     private String refreshToken;
     private boolean verified;
-    private boolean hasEnterprise;
+    private boolean hasShop;
     private long userId;
 
     /**

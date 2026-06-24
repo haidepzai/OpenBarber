@@ -79,13 +79,13 @@ const CustomerProfilePage = () => {
     <Paper
       key={a.id}
       elevation={2}
-      onClick={() => a.enterpriseId && navigate(`/shops/${a.enterpriseId}`)}
+      onClick={() => a.shopId && navigate(`/shops/${a.shopId}`)}
       sx={{
         p: 3,
         borderRadius: 3,
-        cursor: a.enterpriseId ? 'pointer' : 'default',
+        cursor: a.shopId ? 'pointer' : 'default',
         transition: 'box-shadow 0.2s, transform 0.15s',
-        '&:hover': a.enterpriseId ? { boxShadow: 6, transform: 'translateY(-2px)' } : {},
+        '&:hover': a.shopId ? { boxShadow: 6, transform: 'translateY(-2px)' } : {},
       }}
     >
       <Stack direction="row" alignItems="flex-start" justifyContent="space-between" flexWrap="wrap" gap={1}>
@@ -102,10 +102,10 @@ const CustomerProfilePage = () => {
           </Stack>
 
           {/* Salon */}
-          {a.enterpriseName && (
+          {a.shopName && (
             <Stack direction="row" alignItems="center" gap={1}>
               <StoreIcon fontSize="small" color="action" />
-              <Typography variant="body2">{a.enterpriseName}</Typography>
+              <Typography variant="body2">{a.shopName}</Typography>
             </Stack>
           )}
 
@@ -178,21 +178,21 @@ const CustomerProfilePage = () => {
     <Paper
       key={r.id}
       elevation={2}
-      onClick={() => r.enterpriseId && navigate(`/shops/${r.enterpriseId}`)}
+      onClick={() => r.shopId && navigate(`/shops/${r.shopId}`)}
       sx={{
         p: 3,
         borderRadius: 3,
-        cursor: r.enterpriseId ? 'pointer' : 'default',
+        cursor: r.shopId ? 'pointer' : 'default',
         transition: 'box-shadow 0.2s, transform 0.15s',
-        '&:hover': r.enterpriseId ? { boxShadow: 6, transform: 'translateY(-2px)' } : {},
+        '&:hover': r.shopId ? { boxShadow: 6, transform: 'translateY(-2px)' } : {},
       }}
     >
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start" gap={2}>
         <Stack gap={1} flex={1}>
-          {r.enterpriseName && (
+          {r.shopName && (
             <Stack direction="row" alignItems="center" gap={1}>
               <StoreIcon fontSize="small" color="action" />
-              <Typography variant="body2" fontWeight={600}>{r.enterpriseName}</Typography>
+              <Typography variant="body2" fontWeight={600}>{r.shopName}</Typography>
             </Stack>
           )}
           <Rating value={r.rating} readOnly precision={0.5} size="small" sx={{ color: 'primary.main' }} />

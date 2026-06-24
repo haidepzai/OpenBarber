@@ -3,10 +3,10 @@ package com.hdmstuttgart.mi.backend.service;
 import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.Employee;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
-import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
+import com.hdmstuttgart.mi.backend.repository.ShopRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import io.camassia.mjml.MJMLClient;
 import io.camassia.mjml.model.request.RenderRequest;
@@ -48,7 +48,7 @@ public class EmailSenderService {
 
     private final EmployeeRepository employeeRepository;
 
-    private final EnterpriseRepository enterpriseRepository;
+    private final ShopRepository shopRepository;
 
     private MJMLClient mjmlClient;
 
@@ -68,14 +68,14 @@ public class EmailSenderService {
      * @param mailSender           the mail sender
      * @param userRepository       the user repository
      * @param employeeRepository   the employee repository
-     * @param enterpriseRepository the enterprise repository
+     * @param shopRepository the shop repository
      * @param mjmlClient           the mjml client
      * @param appId                the app id
      * @param mailUsername         the mail username
      * @param appKey               the app key
      */
     public EmailSenderService(JavaMailSender mailSender, UserRepository userRepository, EmployeeRepository employeeRepository,
-                              EnterpriseRepository enterpriseRepository, MJMLClient mjmlClient,
+                              ShopRepository shopRepository, MJMLClient mjmlClient,
                               @Value("${mjmlSecrets.appId}") String appId,
                               @Value("${mailCredentials.username}") String mailUsername,
                               @Value("${mjmlSecrets.appKey}") String appKey,
@@ -83,7 +83,7 @@ public class EmailSenderService {
         this.mailSender = mailSender;
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
-        this.enterpriseRepository = enterpriseRepository;
+        this.shopRepository = shopRepository;
         this.mjmlClient = mjmlClient;
         this.appId = appId;
         this.mailUsername = mailUsername;
@@ -195,8 +195,8 @@ public class EmailSenderService {
         String customerName = appointment.getCustomerName();
         Employee employee = employeeRepository.findById(appointment.getEmployee().getId()).orElseThrow();
         String employeeName = employee.getName();
-        Enterprise enterprise = enterpriseRepository.findById(appointment.getEnterprise().getId()).orElseThrow();
-        String enterpriseName = enterprise.getName();
+        Shop shop = shopRepository.findById(appointment.getShop().getId()).orElseThrow();
+        String shopName = shop.getName();
         String confirmationCode = appointment.getConfirmationCode().toString();
 
         String template = mjmlTemplateTexts.get(templateName);
@@ -204,7 +204,7 @@ public class EmailSenderService {
             throw new IOException("MJML template not found: " + templateName);
         }
         String preparedText = template
-                .replace("blank_enterpriseName", enterpriseName)
+                .replace("blank_shopName", shopName)
                 .replace("blank_username", customerName)
                 .replace("blank_stylist", employeeName)
                 .replace("blank_appointmentDate", appointmentDate)

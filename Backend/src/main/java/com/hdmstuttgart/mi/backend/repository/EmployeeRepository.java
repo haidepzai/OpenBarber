@@ -15,10 +15,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findAll();
 
     /**
-     * Find all by enterprise id list.
+     * Find all by shop id list.
      *
-     * @param enterpriseId the enterprise id
+     * @param shopId the shop id
      * @return the list
      */
-    List<Employee> findAllByEnterpriseId(Long enterpriseId);
+    List<Employee> findAllByShopId(Long shopId);
 }

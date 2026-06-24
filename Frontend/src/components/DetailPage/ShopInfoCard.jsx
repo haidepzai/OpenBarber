@@ -23,8 +23,8 @@ const ShopInfoCard = ({ shop, mobile }) => {
     const loadData = async () => {
       try {
         const [reviewsRes, servicesRes] = await Promise.all([
-          reviewsAPI.getByEnterprise(shop.id),
-          servicesAPI.getByEnterprise(shop.id),
+          reviewsAPI.getByShop(shop.id),
+          servicesAPI.getByShop(shop.id),
         ]);
         setReviews(reviewsRes.data?.content ?? []);
         setServices(servicesRes.data);

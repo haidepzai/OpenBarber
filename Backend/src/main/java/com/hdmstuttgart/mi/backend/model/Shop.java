@@ -15,14 +15,15 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The type Enterprise.
+ * The type Shop.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Enterprise {
+@Table(name = "shop")
+public class Shop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -54,7 +55,7 @@ public class Enterprise {
     private String closingTime;
 
     @ElementCollection
-    @CollectionTable(name = "enterprise_opening_days", joinColumns = @JoinColumn(name = "enterprise_id"))
+    @CollectionTable(name = "shop_opening_days", joinColumns = @JoinColumn(name = "shop_id"))
     private List<String> openingDays;
 
     private boolean recommended;
@@ -66,12 +67,12 @@ public class Enterprise {
     private int priceCategory;
 
     @ElementCollection(targetClass = PaymentMethod.class)
-    @CollectionTable(name = "enterprise_payment_methods", joinColumns = @JoinColumn(name = "enterprise_id"))
+    @CollectionTable(name = "shop_payment_methods", joinColumns = @JoinColumn(name = "shop_id"))
     @Enumerated(EnumType.STRING)
     private Set<PaymentMethod> paymentMethods;
 
     @ElementCollection(targetClass = Drink.class)
-    @CollectionTable(name = "enterprise_drinks", joinColumns = @JoinColumn(name = "enterprise_id"))
+    @CollectionTable(name = "shop_drinks", joinColumns = @JoinColumn(name = "shop_id"))
     @Enumerated(EnumType.STRING)
     private Set<Drink> drinks;
 
@@ -80,22 +81,22 @@ public class Enterprise {
 
     /*@Lob*/
     @ElementCollection
-    @CollectionTable(name = "enterprise_pictures")
+    @CollectionTable(name = "shop_pictures", joinColumns = @JoinColumn(name = "shop_id"))
     private List<byte[]> pictures;
 
-    @OneToMany(cascade=CascadeType.ALL, mappedBy = "enterprise")
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "shop")
     @BatchSize(size = 50)
     private List<Service> services;
 
-    @OneToMany(cascade=CascadeType.ALL, mappedBy = "enterprise")
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "shop")
     @BatchSize(size = 50)
     private List<Employee> employees;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "enterprise")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shop")
     @BatchSize(size = 50)
     private List<Appointment> appointments;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "enterprise")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shop")
     @BatchSize(size = 50)
     private List<Review> reviews;
 }

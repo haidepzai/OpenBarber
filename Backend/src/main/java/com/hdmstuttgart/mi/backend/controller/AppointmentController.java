@@ -44,12 +44,12 @@ public class AppointmentController {
      * Create appointment response entity.
      *
      * @param appointmentDto the appointment dto
-     * @param enterpriseId   the enterprise id
+     * @param shopId   the shop id
      * @return the response entity
      */
-    @ApiOperation(value = "Create Appointment", notes = "Creates a new appointment for the given enterprise ID")
+    @ApiOperation(value = "Create Appointment", notes = "Creates a new appointment for the given shop ID")
     @PostMapping
-    public ResponseEntity<AppointmentDto> createAppointment(@Valid @RequestBody AppointmentDto appointmentDto, @RequestParam long enterpriseId,
+    public ResponseEntity<AppointmentDto> createAppointment(@Valid @RequestBody AppointmentDto appointmentDto, @RequestParam long shopId,
             @RequestHeader(value = "Authorization", required = false) String token,
             @RequestHeader(value = "X-Recaptcha-Token", required = false) String captchaToken) {
         // For guest bookings (no auth token), require a valid reCAPTCHA
@@ -60,7 +60,7 @@ public class AppointmentController {
         }
         log.info(appointmentDto.toString());
         Appointment appointment = appointmentMapper.dtoToAppointment(appointmentDto);
-        Appointment createdAppointment = appointmentService.createAppointment(appointment, enterpriseId, token);
+        Appointment createdAppointment = appointmentService.createAppointment(appointment, shopId, token);
         AppointmentDto createdAppointmentDto = appointmentMapper.appointmentToDto(createdAppointment);
         return new ResponseEntity<>(createdAppointmentDto, HttpStatus.CREATED);
     }
@@ -81,17 +81,17 @@ public class AppointmentController {
     }
 
     /**
-     * Gets appointments by enterprise id.
+     * Gets appointments by shop id.
      *
-     * @param enterpriseId the enterprise id
-     * @return the appointments by enterprise id
+     * @param shopId the shop id
+     * @return the appointments by shop id
      */
-    @ApiOperation(value = "Get Appointments by Enterprise ID", notes = "Fetches all appointments for the given enterprise ID")
+    @ApiOperation(value = "Get Appointments by Shop ID", notes = "Fetches all appointments for the given shop ID")
     @GetMapping
-    public ResponseEntity<Page<AppointmentDto>> getAppointmentsByEnterpriseId(
-            @RequestParam Long enterpriseId,
+    public ResponseEntity<Page<AppointmentDto>> getAppointmentsByShopId(
+            @RequestParam Long shopId,
             @PageableDefault(size = 500) Pageable pageable) {
-        Page<Appointment> page = appointmentService.getAppointmentsByEnterpriseId(enterpriseId, pageable);
+        Page<Appointment> page = appointmentService.getAppointmentsByShopId(shopId, pageable);
         return ResponseEntity.ok(page.map(appointmentMapper::appointmentToDto));
     }
 

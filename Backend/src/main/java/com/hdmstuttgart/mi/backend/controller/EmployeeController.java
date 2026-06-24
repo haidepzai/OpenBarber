@@ -40,29 +40,29 @@ public class EmployeeController {
      * Create employee response entity.
      *
      * @param employeeDto  the employee dto
-     * @param enterpriseId the enterprise id
+     * @param shopId the shop id
      * @return the response entity
      * @throws IOException the io exception
      */
-    @ApiOperation(value = "Create Employee", notes = "Creates a new employee for the given enterprise ID")
+    @ApiOperation(value = "Create Employee", notes = "Creates a new employee for the given shop ID")
     @PostMapping
-    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto, @RequestParam Long enterpriseId) throws IOException {
+    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto, @RequestParam Long shopId) throws IOException {
         Employee employee = employeeMapper.toEntity(employeeDto);
-        Employee createdEmployee = employeeService.createEmployee(employee, enterpriseId);
+        Employee createdEmployee = employeeService.createEmployee(employee, shopId);
         EmployeeDto createdEmployeeDto = employeeMapper.toDto(createdEmployee);
         return new ResponseEntity<>(createdEmployeeDto, HttpStatus.CREATED);
     }
 
     /**
-     * Gets employees by enterprise id.
+     * Gets employees by shop id.
      *
-     * @param enterpriseId the enterprise id
-     * @return the employees by enterprise id
+     * @param shopId the shop id
+     * @return the employees by shop id
      */
-    @ApiOperation(value = "Get Employees by Enterprise ID", notes = "Fetches all employees for the given enterprise ID")
+    @ApiOperation(value = "Get Employees by Shop ID", notes = "Fetches all employees for the given shop ID")
     @GetMapping
-    public ResponseEntity<List<EmployeeDto>> getEmployeesByEnterpriseId(@RequestParam Long enterpriseId) {
-        List<Employee> employees = employeeService.getEmployeesByEnterpriseId(enterpriseId);
+    public ResponseEntity<List<EmployeeDto>> getEmployeesByShopId(@RequestParam Long shopId) {
+        List<Employee> employees = employeeService.getEmployeesByShopId(shopId);
         List<EmployeeDto> employeeDtos = employees.stream()
                 .map(employeeMapper::toDto)
                 .collect(Collectors.toList());

@@ -101,7 +101,7 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
       } else {
         // Add Employee
         addEmployee(employee);
-        await createEmployee(employee, authCtx.user.enterprise.id);
+        await createEmployee(employee, authCtx.user.shop.id);
         dispatch({ type: 'RESET' });
       }
       setInitialClick(false);
