@@ -9,7 +9,8 @@ export const createReviewWithUUID = async (review, shopId, uuid) => {
 };
 
 export const createReviewAuth = async (review, shopId) => {
-  return reviewsAPI.create(shopId, review);
+  const response = await reviewsAPI.create(shopId, review);
+  return response.data;
 };
 
 export const updateReview = async (id, review) => {

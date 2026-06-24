@@ -82,6 +82,14 @@ export const reviewsAPI = {
   create: (shopId: unknown, data: unknown) => apiClient.post(API_ENDPOINTS.REVIEWS_CREATE_AUTH(shopId), data, { headers: getAuthHeader() }),
   update: (id: unknown, data: unknown) => apiClient.put(API_ENDPOINTS.REVIEW_UPDATE(id), data, { headers: getAuthHeader() }),
   delete: (id: unknown) => apiClient.delete(API_ENDPOINTS.REVIEW_DELETE(id), { headers: getAuthHeader() }),
+  uploadPhoto: (id: unknown, file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.post(API_ENDPOINTS.REVIEW_PHOTO(id), formData, {
+      headers: { ...getAuthHeader(), 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  deletePhoto: (id: unknown) => apiClient.delete(API_ENDPOINTS.REVIEW_PHOTO(id), { headers: getAuthHeader() }),
 };
 
 export const shopsAPI = {

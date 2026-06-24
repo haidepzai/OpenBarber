@@ -51,6 +51,9 @@ public class Review {
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
+    @Column(columnDefinition = "bytea")
+    private byte[] photoData;
+
     @ManyToOne(optional = true)
     @JsonIgnore
     @JoinColumn(name = "reviewer_id")

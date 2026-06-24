@@ -50,6 +50,7 @@ const API_ENDPOINTS = {
   REVIEWS_CREATE_AUTH: (shopId) => `${BASE_URL}/api/reviews/auth?shopId=${shopId}`,
   REVIEW_UPDATE: (id) => `${BASE_URL}/api/reviews/${id}`,
   REVIEW_DELETE: (id) => `${BASE_URL}/api/reviews/${id}`,
+  REVIEW_PHOTO: (id) => `${BASE_URL}/api/reviews/${id}/photo`,
 
   // Services
   SERVICES: (shopId) => `${BASE_URL}/api/services?shopId=${shopId}`,

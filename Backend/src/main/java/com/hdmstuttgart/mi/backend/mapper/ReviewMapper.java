@@ -32,6 +32,7 @@ public class ReviewMapper {
                 .shopId(review.getShop().getId())
                 .shopName(review.getShop().getName())
                 .authorPhoto(review.getReviewer() != null ? review.getReviewer().getProfilePhoto() : null)
+                .reviewPhotoData(review.getPhotoData())
                 .reviewerId(review.getReviewer() != null ? review.getReviewer().getId() : null)
                 .build();
     }
@@ -62,6 +63,7 @@ public class ReviewMapper {
                 .comment(reviewDto.getComment())
                 .createdAt(reviewDto.getCreatedAt())
                 .rating(reviewDto.getRating())
+                .photoData(reviewDto.getReviewPhotoData())
                 .shop(shop)
                 .build();
     }

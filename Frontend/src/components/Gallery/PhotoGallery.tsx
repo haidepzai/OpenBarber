@@ -23,11 +23,12 @@ const backupImages = [
   { name: 'Cheapest Prices', src: priceImage },
 ];
 
-const PhotoGallery = ({ pictures }) => {
+const PhotoGallery = ({ pictures, reviewPhotos = [] }) => {
   const [openPhotoswiper, setOpenPhotoswiper] = useState(false);
   const { t } = useTranslation();
 
-  const galleryImages = pictures && pictures.length > 0 ? pictures : backupImages;
+  const uploadedImages = [...(pictures ?? []), ...reviewPhotos.filter(Boolean)];
+  const galleryImages = uploadedImages.length > 0 ? uploadedImages : backupImages;
   const getImageSrc = (image) => (typeof image === 'string' ? `data:image/jpeg;base64,${image}` : image.src);
   const getImageAlt = (image, index) => (typeof image === 'string' ? `shop-picture-${index}` : image.name);
 

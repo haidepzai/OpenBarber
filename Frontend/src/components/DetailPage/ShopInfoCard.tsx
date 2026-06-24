@@ -7,31 +7,28 @@ import PhotoGallery from '../../components/Gallery/PhotoGallery';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { convertDateToTime } from '../../shared/ConvertTime';
 import { useTranslation } from 'react-i18next';
-import { reviewsAPI, servicesAPI } from '../../api/apiClient';
+import { servicesAPI } from '../../api/apiClient';
 
 const TabPanel = ({ children, value, index, ...props }) => (value === index ? <Box {...props}>{children}</Box> : null);
 
-const ShopInfoCard = ({ shop, mobile }) => {
+const ShopInfoCard = ({ shop, mobile, reviews = [] }) => {
   const [tab, setTab] = useState(0);
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
-  const [reviews, setReviews] = React.useState([]);
   const [services, setServices] = React.useState([]);
 
   const { t } = useTranslation();
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadServices = async () => {
       try {
-        const [reviewsRes, servicesRes] = await Promise.all([reviewsAPI.getByShop(shop.id), servicesAPI.getByShop(shop.id)]);
-        setReviews(reviewsRes.data?.content ?? []);
+        const servicesRes = await servicesAPI.getByShop(shop.id);
         setServices(servicesRes.data);
       } catch (error) {
-        setReviews([]);
         setServices([]);
       }
     };
-    loadData();
+    loadServices();
   }, [shop.id]);
 
   const rating = () => {
@@ -192,7 +189,7 @@ const ShopInfoCard = ({ shop, mobile }) => {
           <GoogleMaps lat={shop.addressLatitude} lng={shop.addressLongitude} />
         </Box>
 
-        <PhotoGallery pictures={shop.pictures} />
+        <PhotoGallery pictures={shop.pictures} reviewPhotos={reviews.filter((review) => review.reviewPhotoData).map((review) => review.reviewPhotoData)} />
       </Box>
 
       <ReservationDialog open={openReservationDialog} handleClose={() => setOpenReservationDialog(false)} shop={shop} />

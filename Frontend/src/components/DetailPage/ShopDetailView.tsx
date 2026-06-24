@@ -45,7 +45,7 @@ const ShopDetailView = ({ shop }) => {
         gap: 4,
       }}
     >
-      <ShopInfoCard shop={shop} mobile={mobile} />
+      <ShopInfoCard shop={shop} mobile={mobile} reviews={reviews} />
 
       {!isReviewed && (
         <Review

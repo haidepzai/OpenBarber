@@ -5,16 +5,27 @@ import { Box, Button, Rating, TextField, Typography } from '@mui/material';
 import { createReviewAuth } from '../actions/ReviewActions';
 import { useTranslation } from 'react-i18next';
 import AuthContext from '../context/auth-context';
+import { reviewsAPI } from '../api/apiClient';
 
 const Review = ({ shop, onReview }) => {
   const [value, setValue] = useState(1);
   const [comment, setComment] = useState('');
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
   const authCtx = useContext(AuthContext);
   const isLoggedIn = authCtx.isLoggedIn;
   const user = authCtx.user;
 
   const [errorMessage, setErrorMessage] = useState('');
   const { t } = useTranslation();
+
+  const clearSelectedPhoto = () => {
+    if (photoPreview) {
+      URL.revokeObjectURL(photoPreview);
+    }
+    setPhotoFile(null);
+    setPhotoPreview(null);
+  };
 
   const handleClick = async () => {
     const authorName = user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.name || '';
@@ -24,8 +35,20 @@ const Review = ({ shop, onReview }) => {
       rating: value,
       createdAt: new Date(),
     };
+
     try {
-      await createReviewAuth(reviewRequest, shop.id);
+      setErrorMessage('');
+      const createdReview = await createReviewAuth(reviewRequest, shop.id);
+      if (photoFile) {
+        try {
+          await reviewsAPI.uploadPhoto(createdReview.id, photoFile);
+        } catch (error) {
+          setErrorMessage(t('PHOTO_UPLOAD_FAILED', 'Foto-Upload fehlgeschlagen'));
+        }
+      }
+      setComment('');
+      setValue(1);
+      clearSelectedPhoto();
       onReview(true);
     } catch (error) {
       setErrorMessage(t('REVIEW_ERROR', 'Bewertung fehlgeschlagen. Bitte erneut versuchen.'));
@@ -35,6 +58,18 @@ const Review = ({ shop, onReview }) => {
   const handleCommentChange = (event) => {
     setComment(event.target.value);
   };
+
+  const handlePhotoChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (photoPreview) {
+      URL.revokeObjectURL(photoPreview);
+    }
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+    setErrorMessage('');
+  };
+
   if (!isLoggedIn) {
     return (
       <Fragment>
@@ -73,6 +108,21 @@ const Review = ({ shop, onReview }) => {
           error={errorMessage.length > 0}
           helperText={errorMessage.length > 0 && errorMessage}
         />
+
+        <Box sx={{ width: '50%', margin: '0 auto 24px', display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+          <Button component="label" variant="outlined">
+            {t(photoPreview ? 'CHANGE_PHOTO' : 'ADD_PHOTO')}
+            <input hidden type="file" accept="image/*" onChange={handlePhotoChange} />
+          </Button>
+          {photoPreview && (
+            <>
+              <Box component="img" src={photoPreview} alt={t('REVIEW_PHOTO')} sx={{ width: 96, height: 96, objectFit: 'cover', borderRadius: 2 }} />
+              <Button color="error" onClick={clearSelectedPhoto}>
+                {t('REMOVE_PHOTO')}
+              </Button>
+            </>
+          )}
+        </Box>
 
         <Box sx={{ display: 'flex', gap: 4, pb: 3, mb: 5, width: '50%', margin: 'auto', alignItems: 'center' }}>
           <Rating
