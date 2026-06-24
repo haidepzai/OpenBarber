@@ -274,7 +274,7 @@ export default function EmployeeTable(props: EmployeeTableProps) {
     const employeesToDelete = employees.filter((employee) => selected.includes(employee.name));
     employeesToDelete.forEach((employee) => {
       deleteEmployeeById(employee.id);
-    })    
+    });
     //Update UI
     const newEmployees = employees.filter((employee) => !selected.includes(employee.name));
     setEmployees(newEmployees);

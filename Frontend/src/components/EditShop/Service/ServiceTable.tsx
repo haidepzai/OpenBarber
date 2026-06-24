@@ -215,7 +215,6 @@ interface Service {
   price: number;
 }
 
-
 export default function ServiceTable(props: ServiceTableProps) {
   const { services, setServices } = props;
   const [order, setOrder] = React.useState<Order>('asc');
@@ -280,7 +279,7 @@ export default function ServiceTable(props: ServiceTableProps) {
     const servicesToDelete = services.filter((service) => selected.includes(service.title));
     servicesToDelete.forEach((service) => {
       deleteServiceById(service.id);
-    })    
+    });
     //Update UI
     const newServices = services.filter((service) => !selected.includes(service.title));
     setServices(newServices);
