@@ -1,6 +1,9 @@
 .env:
   prefix: ""
 
+recaptcha:
+  secret: ${RECAPTCHA_SECRET}
+
 app:
   frontend-url: ${APP_FRONTEND_URL:http://localhost:3000}
 

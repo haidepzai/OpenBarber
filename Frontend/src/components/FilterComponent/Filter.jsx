@@ -14,8 +14,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useTranslation } from 'react-i18next';
 
+import { CalendarMonth } from '@mui/icons-material';
+
 const paymentMethodOptions = ['ON_SITE_CASH', 'ON_SITE_CARD', 'BANK_TRANSFER', 'PAYPAL'];
 const drinkOptions = ['COFFEE', 'TEA', 'WATER', 'SOFT_DRINKS', 'BEER', 'CHAMPAGNE', 'SPARKLING_WINE'];
+const dayOptions = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
 const Filter = ({ filter, setFilter }) => {
   const { t } = useTranslation();
@@ -152,6 +155,25 @@ const Filter = ({ filter, setFilter }) => {
               : filter.employeeCount[0] + ' - ' + (filter.employeeCount[1] >= 20 ? '20+' : filter.employeeCount[1])}
           </Typography>
         </Stack>
+      </FormControl>
+
+      <FormControl component="fieldset" variant="standard" fullWidth>
+        <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
+          <CalendarMonth />
+          {t('OPENING_DAYS')}
+        </FormLabel>
+        <ToggleButtonGroup
+          value={filter.openingDays}
+          onChange={(event, newDays) => setFilter({ ...filter, openingDays: newDays })}
+          aria-label="opening days"
+          sx={{ flexWrap: 'wrap', gap: '4px' }}
+        >
+          {dayOptions.map((day) => (
+            <ToggleButton key={day} value={day} aria-label={day} sx={{ width: '44px', minWidth: '44px' }}>
+              {t(day)}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
       </FormControl>
 
       <FormControl component="fieldset" variant="standard" fullWidth>

@@ -36,11 +36,13 @@ public class AppointmentDto {
     private LocalDateTime endDateTime;
     private Set<PaymentMethod> paymentMethods;
     private UUID confirmationCode;
-
     private boolean confirmed;
+    private Long customerId;
 
     private Long enterpriseId;
+    private String enterpriseName;
     private Long employeeId;
+    private String employeeName;
     private List<Service> services;
 
     @Override

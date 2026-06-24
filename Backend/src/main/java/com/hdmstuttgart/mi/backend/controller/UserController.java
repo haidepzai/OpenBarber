@@ -1,5 +1,6 @@
 package com.hdmstuttgart.mi.backend.controller;
 
+import com.hdmstuttgart.mi.backend.exception.UnauthorizedException;
 import com.hdmstuttgart.mi.backend.mapper.UserMapper;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.UserDto;
@@ -11,11 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -124,19 +128,41 @@ public class UserController {
     @ApiOperation(value = "Update User", notes = "Updates a user's information if authenticated")
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto, @RequestHeader("Authorization") String token) {
-        // Get the email of the authenticated user from the JWT token
         String email = jwtService.extractUsername(token.substring(7));
-
-        // Check if the authenticated user matches the user being updated
         User user = userService.getUserById(id);
         if (!user.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        // Update the user
-        User updatedUser = userService.updateUser(id, UserMapper.toUser(userDto));
+        User userUpdate = User.builder()
+                .name(userDto.getName())
+                .firstName(userDto.getFirstName())
+                .lastName(userDto.getLastName())
+                .phoneNumber(userDto.getPhoneNumber())
+                .salutation(userDto.getSalutation())
+                .build();
+        User updatedUser = userService.updateUser(id, userUpdate);
         UserDto updatedUserDto = UserMapper.toDto(updatedUser);
         return ResponseEntity.ok(updatedUserDto);
+    }
+
+    @ApiOperation(value = "Upload Profile Photo")
+    @PostMapping(value = "/{id}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UserDto> uploadProfilePhoto(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file,
+            @RequestHeader("Authorization") String token) throws IOException {
+        String email = jwtService.extractUsername(token.substring(7));
+        User user = userService.getUserById(id);
+        if (!user.getEmail().equals(email)) {
+            throw new UnauthorizedException("Not authorized");
+        }
+        User photoUpdate = User.builder()
+                .name(user.getName())
+                .profilePhoto(file.getBytes())
+                .build();
+        User saved = userService.updateUser(id, photoUpdate);
+        return ResponseEntity.ok(UserMapper.toDto(saved));
     }
 
     /**

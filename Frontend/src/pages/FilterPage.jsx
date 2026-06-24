@@ -19,6 +19,7 @@ const FilterPage = () => {
     employeeCount: [0, 20],
     openingTime: null,
     closingTime: null,
+    openingDays: [],
     paymentMethods: [],
     drinks: [],
     recommended: true,

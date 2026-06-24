@@ -91,12 +91,15 @@ public class UserService {
      */
     public User updateUser(Long id, User user) {
         User existingUser = getUserById(id);
-        existingUser.setEmail(user.getEmail());
-        existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        //existingUser.setConfirmationCode(user.getConfirmationCode());
-        existingUser.setName(user.getName());
-        existingUser.setEnterprise(user.getEnterprise());
-        existingUser.setRole(user.getRole());
+        if (user.getName() != null) existingUser.setName(user.getName());
+        if (user.getFirstName() != null) existingUser.setFirstName(user.getFirstName());
+        if (user.getLastName() != null) existingUser.setLastName(user.getLastName());
+        if (user.getPhoneNumber() != null) existingUser.setPhoneNumber(user.getPhoneNumber());
+        if (user.getSalutation() != null) existingUser.setSalutation(user.getSalutation());
+        if (user.getProfilePhoto() != null) existingUser.setProfilePhoto(user.getProfilePhoto());
+        if (user.getPassword() != null && !user.getPassword().isBlank()) {
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         return userRepository.save(existingUser);
     }
 

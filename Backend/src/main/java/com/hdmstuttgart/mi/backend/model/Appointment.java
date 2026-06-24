@@ -54,8 +54,21 @@ public class Appointment {
 
     private boolean confirmed;
 
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     @Column(unique = true)
     private UUID confirmationCode;
+
+    @ManyToOne(optional = true)
+    @JsonIgnore
+    @JoinColumn(name = "customer_id")
+    private User customer;
 
     @ElementCollection(targetClass = PaymentMethod.class)
     @CollectionTable(name = "appointment_payment_methods", joinColumns = @JoinColumn(name = "appointment_id"))

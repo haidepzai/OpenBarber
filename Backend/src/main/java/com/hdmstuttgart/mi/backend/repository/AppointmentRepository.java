@@ -30,4 +30,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     List<Appointment> findByEnterpriseIdAndConfirmedTrueAndAppointmentDateTimeBetween(
             Long enterpriseId, LocalDateTime start, LocalDateTime end);
+
+    Page<Appointment> findByCustomerId(Long customerId, Pageable pageable);
+
+    // For Option B: find unconfirmed guest appointments older than the given threshold
+    List<Appointment> findByConfirmedFalseAndCustomerIsNullAndCreatedAtBefore(LocalDateTime threshold);
 }

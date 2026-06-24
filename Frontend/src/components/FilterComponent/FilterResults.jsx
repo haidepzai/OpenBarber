@@ -13,20 +13,7 @@ import ReservationDialog from '../Reservation/ReservationDialog';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getEnterprisesWithinRadius, getEnterprises } from '../../actions/EnterpriseActions';
 import { useTranslation } from 'react-i18next';
-
-const ratingNames = {
-  5: 'Excellent',
-  4.5: 'Very good',
-  4: 'Good',
-  3.5: 'Very Acceptable',
-  3: 'OK',
-  2.5: 'Mediocre',
-  2: 'Slightly Underwhelming',
-  1.5: 'Underwhelming',
-  1: 'Poor',
-  0.5: 'Not Recommended',
-  0: 'Bad',
-};
+import { convertDateToTime } from '../../shared/ConvertTime';
 
 const FilterResults = ({ filter }) => {
   const location = useLocation();
@@ -48,9 +35,22 @@ const FilterResults = ({ filter }) => {
     setSortValue(value);
   };
 
+  const getRatingLabel = (r) => {
+    const rounded = Math.round(r * 2) / 2;
+    const key = `RATING_${String(rounded).replace('.', '_')}`;
+    return t(key);
+  };
+
+  const rating = (shop) => {
+    const reviews = shop.reviews ?? [];
+    if (reviews.length === 0) return 0;
+    const sum = reviews.reduce((a, b) => a + b.rating, 0);
+    return sum / reviews.length;
+  };
+
   // true --> element stays in array
   // false --> element is taken out
-  const filterFunction = (shop, index, array) => {
+  const filterFunction = (shop) => {
     const availableServiceTargetAudience = [...new Set((shop.services ?? []).map((service) => service.targetAudience))];
     const employeeCount = shop.employees?.length ?? 0;
 
@@ -63,13 +63,16 @@ const FilterResults = ({ filter }) => {
       (filter.employeeCount[1] < 20
         ? employeeCount >= filter.employeeCount[0] && employeeCount <= filter.employeeCount[1]
         : employeeCount >= filter.employeeCount[0]) &&
-      // hours
+      // opening days
+      (filter.openingDays.length === 0 ||
+        filter.openingDays.every((day) => (shop.openingDays ?? []).includes(day))) &&
+      // hours – prefix HH:mm strings with a fixed date so dayjs can parse them
       (!filter.openingTime ||
-        dayjs(shop.openingTime).isBefore(filter.openingTime, 'minute') ||
-        dayjs(shop.openingTime).isSame(filter.openingTime, 'minute')) &&
+        dayjs(`1970-01-01T${shop.openingTime}`).isBefore(filter.openingTime, 'minute') ||
+        dayjs(`1970-01-01T${shop.openingTime}`).isSame(filter.openingTime, 'minute')) &&
       (!filter.closingTime ||
-        dayjs(shop.closingTime).isAfter(filter.closingTime, 'minute') ||
-        dayjs(shop.closingTime).isSame(filter.closingTime, 'minute')) &&
+        dayjs(`1970-01-01T${shop.closingTime}`).isAfter(filter.closingTime, 'minute') ||
+        dayjs(`1970-01-01T${shop.closingTime}`).isSame(filter.closingTime, 'minute')) &&
       // paymentMethods
       (filter.paymentMethods.length === 0 || filter.paymentMethods.every((pm) => (shop.paymentMethods ?? []).includes(pm))) &&
       // drinks
@@ -82,17 +85,13 @@ const FilterResults = ({ filter }) => {
   const sortFunction = (shopA, shopB) => {
     switch (sortValue) {
       case 'Suggested':
-        if (shopA.recommended && !shopB.recommended) {
-          return -1;
-        } else if (shopA.recommended === shopB.recommended) {
-          return 0;
-        } else {
-          return 1;
-        }
+        if (shopA.recommended && !shopB.recommended) return -1;
+        if (!shopA.recommended && shopB.recommended) return 1;
+        return 0;
       case 'Best Ratings':
         return rating(shopB) - rating(shopA);
       case 'Most Ratings':
-        return shopB.reviews.length - shopA.reviews.length;
+        return (shopB.reviews?.length ?? 0) - (shopA.reviews?.length ?? 0);
       default:
         return 0;
     }
@@ -114,12 +113,6 @@ const FilterResults = ({ filter }) => {
     }
   }, [location.state, page]);
 
-  const rating = (shop) => {
-    const sum = shop.reviews.map((review) => review.rating).reduce((a, b) => a + b, 0);
-    const avg = sum / shop.reviews.length || 0;
-    return avg;
-  };
-
   const goToShop = (id) => {
     navigate(`/shops/${id}`);
   };
@@ -128,16 +121,18 @@ const FilterResults = ({ filter }) => {
     loadData();
   }, [loadData]);
 
+  const filteredShops = shops.filter(filterFunction).sort(sortFunction);
+
   return (
     <Fragment>
       <Box sx={{ flex: '4 1 0' }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: '100%', m: '20px 0' }}>
           <Typography variant="body1">
-            {shops.length} {t('SHOPS_AVAILABLE_IN')} {locationName}
+            {filteredShops.length} {t('SHOPS_AVAILABLE_IN')} {locationName}
           </Typography>
           <FormControl>
-            <InputLabel id="sort">Sort</InputLabel>
-            <Select labelId="sort" id="sort" value={sortValue} label={t('SHOPS_AVAILABLE_IN')} onChange={handleChange} sx={{ width: '200px' }}>
+            <InputLabel id="sort">{t('SORT')}</InputLabel>
+            <Select labelId="sort" id="sort" value={sortValue} label={t('SORT')} onChange={handleChange} sx={{ width: '200px' }}>
               <MenuItem value="Suggested">{t('SUGGESTED')}</MenuItem>
               <MenuItem value="Best Ratings">{t('BEST_RATINGS')}</MenuItem>
               <MenuItem value="Most Ratings">{t('MOST_RATINGS')}</MenuItem>
@@ -150,16 +145,14 @@ const FilterResults = ({ filter }) => {
             <CircularProgress />
           </Stack>
         )}
-        {!isLoading && shops.length === 0 && (
+        {!isLoading && filteredShops.length === 0 && (
           <Stack alignItems="center" justifyContent="center" sx={{ py: 6 }}>
-            <Typography variant="body1">No barbers found</Typography>
+            <Typography variant="body1">{t('NO_BARBERS_FOUND')}</Typography>
           </Stack>
         )}
-        {!isLoading && shops.length !== 0 && (
+        {!isLoading && filteredShops.length !== 0 && (
           <>
-            {shops
-              .filter(filterFunction)
-              .sort(sortFunction)
+            {filteredShops
               .map((shop) => (
                 <Box key={shop.id} sx={{ margin: '20px 0' }}>
                   <Stack direction="row" alignItems="center" spacing={3} sx={{ mb: '20px' }}>
@@ -182,7 +175,7 @@ const FilterResults = ({ filter }) => {
                       <Stack direction="row" spacing={1} alignItems="center">
                         <Rating readOnly precision={0.5} value={rating(shop)} />
                         <Typography variant="span" sx={{ fontWeight: 'bold' }}>
-                          {ratingNames[rating(shop)]}
+                          {getRatingLabel(rating(shop))}
                         </Typography>
                         <Typography variant="span">
                           ({shop.reviews.length} {t('REVIEWS')})
@@ -214,7 +207,7 @@ const FilterResults = ({ filter }) => {
                       <Stack direction="row" alignItems="center" spacing={1}>
                         <QueryBuilderIcon sx={{ color: 'rgba(0, 0, 0, 0.7)' }} />
                         <Typography variant="body1">
-                          {dayjs(shop.openingTime).format('hh:mm A')} - {dayjs(shop.closingTime).format('hh:mm A')}
+                          {convertDateToTime(shop.openingTime)} - {convertDateToTime(shop.closingTime)}
                         </Typography>
                       </Stack>
                       <Button

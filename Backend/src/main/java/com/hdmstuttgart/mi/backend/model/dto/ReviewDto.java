@@ -21,4 +21,7 @@ public class ReviewDto {
     private double rating;
     private Date createdAt;
     private Long enterpriseId;
+    private String enterpriseName;
+    private byte[] authorPhoto;
+    private Long reviewerId;
 }

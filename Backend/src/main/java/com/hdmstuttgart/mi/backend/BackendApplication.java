@@ -11,9 +11,12 @@ import org.slf4j.Logger;
 
 
 
+import org.springframework.scheduling.annotation.EnableScheduling;
+
 //@RestController
 //@EnableJpaAuditing
 @SpringBootApplication
+@EnableScheduling
 public class BackendApplication {
 
     private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);

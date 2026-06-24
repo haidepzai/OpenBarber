@@ -13,61 +13,56 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * The type Appointment mapper.
- */
 @Component
 public class AppointmentMapper {
 
     private final ModelMapper modelMapper;
 
-    /**
-     * Instantiates a new Appointment mapper.
-     *
-     * @param modelMapper the model mapper
-     */
     @Autowired
     public AppointmentMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
 
-    /**
-     * Appointment to dto appointment dto.
-     *
-     * @param appointment the appointment
-     * @return the appointment dto
-     */
     public AppointmentDto appointmentToDto(Appointment appointment) {
-        AppointmentDto dto = modelMapper.map(appointment, AppointmentDto.class);
+        AppointmentDto dto = new AppointmentDto();
+        dto.setId(appointment.getId());
+        dto.setReviewed(appointment.isReviewed());
+        dto.setAppointmentType(appointment.getAppointmentType());
+        dto.setCustomerName(appointment.getCustomerName());
+        dto.setCustomerPhoneNumber(appointment.getCustomerPhoneNumber());
+        dto.setCustomerEmail(appointment.getCustomerEmail());
+        dto.setAppointmentDateTime(appointment.getAppointmentDateTime());
+        dto.setEndDateTime(appointment.getEndDateTime());
+        dto.setPaymentMethods(appointment.getPaymentMethods());
+        dto.setConfirmationCode(appointment.getConfirmationCode());
+        dto.setConfirmed(appointment.isConfirmed());
+        dto.setServices(appointment.getServices());
         if (appointment.getEmployee() != null) {
             dto.setEmployeeId(appointment.getEmployee().getId());
+            dto.setEmployeeName(appointment.getEmployee().getName());
         }
         if (appointment.getEnterprise() != null) {
             dto.setEnterpriseId(appointment.getEnterprise().getId());
+            dto.setEnterpriseName(appointment.getEnterprise().getName());
+        }
+        if (appointment.getCustomer() != null) {
+            dto.setCustomerId(appointment.getCustomer().getId());
         }
         return dto;
     }
 
-    /**
-     * Appointment to dtos list.
-     *
-     * @param appointments the appointments
-     * @return the list
-     */
     public List<AppointmentDto> appointmentToDtos(List<Appointment> appointments) {
         return appointments.stream()
                 .map(this::appointmentToDto)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Dto to appointment appointment.
-     *
-     * @param appointmentDTO the appointment dto
-     * @return the appointment
-     */
     public Appointment dtoToAppointment(AppointmentDto appointmentDTO) {
         Appointment appointment = modelMapper.map(appointmentDTO, Appointment.class);
+
+        // customer is always resolved from JWT token in the service layer, never from DTO
+        // (ModelMapper maps customerId → customer.id creating a transient User → Hibernate error)
+        appointment.setCustomer(null);
 
         if (appointmentDTO.getEmployeeId() != null) {
             Employee employee = new Employee();

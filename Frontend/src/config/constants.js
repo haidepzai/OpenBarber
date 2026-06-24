@@ -22,6 +22,7 @@ const API_ENDPOINTS = {
   USER_GET: (id) => `${BASE_URL}/api/users/${id}`,
   USER_UPDATE: (id) => `${BASE_URL}/api/users/${id}`,
   USER_INFO: `${BASE_URL}/api/users/info/`,
+  USER_PHOTO: (id) => `${BASE_URL}/api/users/${id}/photo`,
 
   // Enterprises
   ENTERPRISES: `${BASE_URL}/api/enterprises`,
@@ -40,11 +41,15 @@ const API_ENDPOINTS = {
   APPOINTMENTS_CREATE: (enterpriseId) => `${BASE_URL}/api/appointments?enterpriseId=${enterpriseId}`,
   APPOINTMENTS_CANCEL: (id, code) => `${BASE_URL}/api/appointments/${id}?confirmationCode=${code}`,
   APPOINTMENTS_CONFIRM: (id, code) => `${BASE_URL}/api/appointments/${id}?confirmationCode=${code}`,
+  APPOINTMENTS_MY: `${BASE_URL}/api/appointments/my`,
   APPOINTMENTS_BY_ID: (id) => `${BASE_URL}/api/appointments/${id}`,
 
   // Reviews
   REVIEWS: (enterpriseId) => `${BASE_URL}/api/reviews?enterpriseId=${enterpriseId}`,
-  REVIEWS_CREATE: (enterpriseId) => `${BASE_URL}/api/reviews?enterpriseId=${enterpriseId}`,
+  REVIEWS_MY: `${BASE_URL}/api/reviews/my`,
+  REVIEWS_CREATE_AUTH: (enterpriseId) => `${BASE_URL}/api/reviews/auth?enterpriseId=${enterpriseId}`,
+  REVIEW_UPDATE: (id) => `${BASE_URL}/api/reviews/${id}`,
+  REVIEW_DELETE: (id) => `${BASE_URL}/api/reviews/${id}`,
 
   // Services
   SERVICES: (enterpriseId) => `${BASE_URL}/api/services?enterpriseId=${enterpriseId}`,

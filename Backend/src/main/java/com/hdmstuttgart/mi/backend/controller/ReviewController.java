@@ -105,6 +105,15 @@ public class ReviewController {
      * @param enterpriseId the enterprise id
      * @return the reviews by enterprise id
      */
+    @ApiOperation(value = "Get My Reviews", notes = "Returns all reviews written by the authenticated user")
+    @GetMapping("/my")
+    public ResponseEntity<Page<ReviewDto>> getMyReviews(
+            @RequestHeader("Authorization") String token,
+            @PageableDefault(size = 50) Pageable pageable) {
+        Page<Review> page = reviewService.getMyReviews(token, pageable);
+        return ResponseEntity.ok(page.map(ReviewMapper::toDto));
+    }
+
     @ApiOperation(value = "Get Reviews by Enterprise ID", notes = "Retrieves paginated reviews for a specific enterprise by its ID")
     @GetMapping
     public ResponseEntity<Page<ReviewDto>> getReviewsByEnterpriseId(
@@ -136,26 +145,20 @@ public class ReviewController {
      * @param enterpriseId the enterprise id
      * @return the response entity
      */
-    @ApiOperation(value = "Update Review", notes = "Updates an existing review with the given ID")
+    @ApiOperation(value = "Update Review", notes = "Updates an existing review (owner only)")
     @PutMapping("/{id}")
-    public ResponseEntity<ReviewDto> updateReview(@PathVariable long id, @Valid @RequestBody ReviewDto newReviewDto, Long enterpriseId) {
-        Enterprise enterprise = enterpriseService.getEnterpriseById(enterpriseId);
-        Review review = ReviewMapper.toEntity(newReviewDto, enterprise);
-        Review updatedReview = reviewService.updateReview(id, review);
-        ReviewDto updatedReviewDto = ReviewMapper.toDto(updatedReview);
-        return new ResponseEntity<>(updatedReviewDto, HttpStatus.OK);
+    public ResponseEntity<ReviewDto> updateReview(@PathVariable long id, @Valid @RequestBody ReviewDto newReviewDto,
+            @RequestHeader("Authorization") String token) {
+        Review review = ReviewMapper.toEntity(newReviewDto, null);
+        Review updatedReview = reviewService.updateReview(id, review, token);
+        return ResponseEntity.ok(ReviewMapper.toDto(updatedReview));
     }
 
-    /**
-     * Delete review response entity.
-     *
-     * @param id the id
-     * @return the response entity
-     */
-    @ApiOperation(value = "Delete Review", notes = "Deletes a review by its ID")
+    @ApiOperation(value = "Delete Review", notes = "Deletes a review (owner only)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteReview(@PathVariable long id) {
-        reviewService.deleteReview(id);
+    public ResponseEntity<String> deleteReview(@PathVariable long id,
+            @RequestHeader("Authorization") String token) {
+        reviewService.deleteReview(id, token);
         return new ResponseEntity<>("Review deleted with id = " + id, HttpStatus.NO_CONTENT);
     }
 }

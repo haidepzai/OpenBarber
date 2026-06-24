@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
 import { CheckCircleRounded } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
@@ -6,6 +6,7 @@ import { reviewsAPI } from '../../api/apiClient';
 import ShopInfoCard from './ShopInfoCard';
 import ShopReview from './ShopReview';
 import Review from '../../components/Review';
+import AuthContext from '../../context/auth-context';
 
 const ShopDetailView = ({ shop }) => {
   const mobile = useMediaQuery('(max-width: 800px)');
@@ -13,20 +14,26 @@ const ShopDetailView = ({ shop }) => {
 
   const [reviews, setReviews] = useState([]);
   const [isReviewed, setIsReviewed] = useState(false);
-
   const { t } = useTranslation();
+  const authCtx = useContext(AuthContext);
+  const currentUserId = authCtx.user?.id;
+
+  const loadReviews = async () => {
+    try {
+      const res = await reviewsAPI.getByEnterprise(shop.id);
+      const data = res.data?.content ?? [];
+      setReviews(data);
+      if (currentUserId) {
+        setIsReviewed(data.some((r) => r.reviewerId === currentUserId));
+      }
+    } catch (error) {
+      setReviews([]);
+    }
+  };
 
   useEffect(() => {
-    const loadReviews = async () => {
-      try {
-        const res = await reviewsAPI.getByEnterprise(shop.id);
-        setReviews(res.data?.content ?? []);
-      } catch (error) {
-        setReviews([]);
-      }
-    };
     loadReviews();
-  }, [shop.id]);
+  }, [shop.id, currentUserId]);
 
   return (
     <Box
@@ -39,7 +46,7 @@ const ShopDetailView = ({ shop }) => {
     >
       <ShopInfoCard shop={shop} mobile={mobile} />
 
-      {!isReviewed && <Review shop={shop} onReview={() => setIsReviewed(true)} />}
+      {!isReviewed && <Review shop={shop} onReview={() => { setIsReviewed(true); loadReviews(); }} />}
 
       {isReviewed && (
         <Stack alignItems="center" justifyContent="center" flexGrow="1" sx={{ borderBottom: 1, borderColor: 'divider', pb: 3 }}>
@@ -53,10 +60,20 @@ const ShopDetailView = ({ shop }) => {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {reviews &&
           reviews.length > 0 &&
-          reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((review, i) => <ShopReview key={i} review={review} />)}
+          reviews
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map((review, i) => (
+              <ShopReview
+                key={review.id ?? i}
+                review={review}
+                onUpdated={loadReviews}
+                onDeleted={() => { loadReviews(); setIsReviewed(false); }}
+              />
+            ))}
       </Box>
     </Box>
   );
 };
 
 export default ShopDetailView;
+

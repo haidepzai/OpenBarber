@@ -1,7 +1,7 @@
 import { appointmentsAPI } from '../api/apiClient';
 
-export const createAppointment = async (appointment, enterpriseId) => {
-  return appointmentsAPI.create(enterpriseId, appointment);
+export const createAppointment = async (appointment, enterpriseId, captchaToken = null) => {
+  return appointmentsAPI.create(enterpriseId, appointment, captchaToken);
 };
 
 export const confirmAppointment = async (id, confirmationCode) => {

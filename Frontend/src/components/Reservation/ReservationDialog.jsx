@@ -1,9 +1,10 @@
-import React, { Fragment, useContext, useEffect, useReducer, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import { Box, Button, CircularProgress, Stack, Typography } from '@mui/material';
+import ReCAPTCHA from 'react-google-recaptcha';
 import ServicePage from './ServicePage';
 import DatePage from './DatePage';
 import OverviewPage from './OverviewPage';
@@ -12,6 +13,8 @@ import { createAppointment } from '../../actions/AppointmentActions';
 import AuthContext from '../../context/auth-context';
 import { useTranslation } from 'react-i18next';
 
+const RECAPTCHA_SITE_KEY = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
+
 const steps = ['Services', 'Date', 'Booking'];
 
 const initialState = {
@@ -19,7 +22,7 @@ const initialState = {
   services: [],
   employee: { name: 'Any' },
   employeeId: '',
-  appointmentDateTime: new Date(),
+  appointmentDateTime: null,
   personalData: {
     formOfAddress: 'None',
     firstName: '',
@@ -63,47 +66,70 @@ function ReservationDialog({ open, handleClose, shop }) {
   const [error, setError] = useState(initialErrorState);
   const [activeStep, setActiveStep] = useState(0);
   const [showSuccessScreen, setShowSuccessScreen] = useState(false);
-
-  const { t } = useTranslation();
+  const [bookingError, setBookingError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const recaptchaRef = useRef(null);
 
   const authCtx = useContext(AuthContext);
+  const { t } = useTranslation();
+
+  const isGuest = !authCtx.isLoggedIn;
 
   useEffect(() => {
     dispatch({ type: 'set_enterprise_id', payload: shop.id });
   }, [shop.id]);
 
+  // Pre-fill personal data for logged-in customers
+  useEffect(() => {
+    if (authCtx.isLoggedIn && authCtx.role !== 'OPERATOR' && authCtx.user) {
+      const u = authCtx.user;
+      dispatch({
+        type: 'set_personal_data',
+        payload: {
+          formOfAddress: u.salutation || 'None',
+          firstName: u.firstName || u.name?.split(' ')[0] || '',
+          lastName: u.lastName || u.name?.split(' ').slice(1).join(' ') || '',
+          email: authCtx.email || '',
+          phoneNumber: u.phoneNumber || '',
+        },
+      });
+    }
+  }, [authCtx.isLoggedIn, authCtx.role, authCtx.user, authCtx.email]);
+
   const validate = (step) => {
     switch (step) {
       case 0:
         return data.services.length > 0;
-      case 1:
-        return !!data.appointmentDateTime;
+      case 1: {
+        if (!data.appointmentDateTime) return false;
+        const d = new Date(data.appointmentDateTime);
+        return d.getHours() > 0 || d.getMinutes() > 0;
+      }
       case 2:
-        return !Object.values(data.personalData).map(Boolean).includes(false);
+        return (
+          !!data.personalData.firstName &&
+          !!data.personalData.lastName &&
+          !!data.personalData.email &&
+          !!data.personalData.phoneNumber &&
+          data.personalData.formOfAddress !== 'None' &&
+          (!isGuest || !!captchaToken)
+        );
       default:
         console.log('rip');
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (activeStep === 0 && !validate(0)) {
-      setError({
-        ...error,
-        0: t('CHOOSE_SERVICE'),
-      });
+      setError({ ...error, 0: t('CHOOSE_SERVICE') });
     } else if (activeStep === 1 && !validate(1)) {
-      setError({
-        ...error,
-        1: t('PICK_DATE'),
-      });
+      setError({ ...error, 1: t('PICK_DATE') });
     } else if (activeStep === 2 && !validate(2)) {
-      setError({
-        ...error,
-        2: t('CHECK_INFORMATION'),
-      });
+      setError({ ...error, 2: t('CHECK_INFORMATION') });
     } else {
       if (activeStep === 2) {
-        handleSubmit();
+        await handleSubmit();
       } else {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
       }
@@ -111,8 +137,14 @@ function ReservationDialog({ open, handleClose, shop }) {
   };
 
   const handleSubmit = async () => {
-    authCtx.setIsLoading(true);
-    const isoDateTime = data.appointmentDateTime.toISOString();
+    setIsSubmitting(true);
+    setBookingError('');
+    // Send local time (not UTC) because backend uses LocalDateTime without timezone
+    const d = data.appointmentDateTime;
+    const pad = (n) => String(n).padStart(2, '0');
+    const isoDateTime = d
+      ? `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`
+      : null;
     const requestObject = {
       customerName: `${data.personalData.firstName} ${data.personalData.lastName}`,
       customerPhoneNumber: data.personalData.phoneNumber,
@@ -124,12 +156,17 @@ function ReservationDialog({ open, handleClose, shop }) {
       paymentMethod: data.paymentMethod,
     };
     try {
-      const res = await createAppointment(requestObject, shop.id);
+      await createAppointment(requestObject, shop.id, isGuest ? captchaToken : null);
       setShowSuccessScreen(true);
-    } catch (error) {
-      console.error('Could not book', error);
+    } catch (err) {
+      console.error('Could not book', err);
+      setBookingError(t('BOOKING_FAILED', 'Buchung fehlgeschlagen. Bitte erneut versuchen.'));
+      // Reset captcha on error so user can retry
+      if (recaptchaRef.current) recaptchaRef.current.reset();
+      setCaptchaToken(null);
+    } finally {
+      setIsSubmitting(false);
     }
-    authCtx.setIsLoading(false);
   };
 
   const handleStep = (step) => {
@@ -233,12 +270,12 @@ function ReservationDialog({ open, handleClose, shop }) {
 
           {activeStep === 2 && (
             <Fragment>
-              {authCtx.isLoading && (
+              {isSubmitting && (
                 <Stack alignItems="center" justifyContent="center" flexGrow="1">
                   <CircularProgress />
                 </Stack>
               )}
-              {!authCtx.isLoading && (
+              {!isSubmitting && (
                 <OverviewPage
                   data={data}
                   dispatch={dispatch}
@@ -249,6 +286,21 @@ function ReservationDialog({ open, handleClose, shop }) {
                   setError={setError}
                   shopPaymentMethods={shop.paymentMethods}
                 />
+              )}
+              {!isSubmitting && isGuest && (
+                <Stack alignItems="center" sx={{ py: 2 }}>
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={RECAPTCHA_SITE_KEY}
+                    onChange={(token) => setCaptchaToken(token)}
+                    onExpired={() => setCaptchaToken(null)}
+                  />
+                  {!!error[2] && !captchaToken && (
+                    <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+                      {t('CAPTCHA_REQUIRED', 'Bitte bestätige, dass du kein Roboter bist.')}
+                    </Typography>
+                  )}
+                </Stack>
               )}
             </Fragment>
           )}
@@ -264,10 +316,18 @@ function ReservationDialog({ open, handleClose, shop }) {
               zIndex: '1',
             }}
           >
-            <Button variant="outlined" type="button" onClick={handleClose}>
+            <Button variant="outlined" type="button" onClick={handleClose} disabled={isSubmitting}>
               {t('CLOSE')}
             </Button>
-            {error[activeStep] && (
+            {bookingError && (
+              <Typography
+                variant="body1"
+                sx={{ backgroundColor: 'error.dark', borderRadius: '40px', fontSize: '14px', color: 'white.main', padding: '5px 20px' }}
+              >
+                {bookingError}
+              </Typography>
+            )}
+            {!bookingError && error[activeStep] && (
               <Typography
                 variant="body1"
                 sx={{ backgroundColor: 'error.dark', borderRadius: '40px', fontSize: '14px', color: 'white.main', padding: '5px 20px' }}
@@ -275,8 +335,8 @@ function ReservationDialog({ open, handleClose, shop }) {
                 {error[activeStep]}
               </Typography>
             )}
-            <Button variant={error[activeStep] ? 'outlined' : 'contained'} type="button" onClick={handleNext}>
-              {activeStep === 2 ? `${t('BOOK_NOW')}` : `${t('NEXT')}`}
+            <Button variant={(bookingError || error[activeStep]) ? 'outlined' : 'contained'} type="button" onClick={handleNext} disabled={isSubmitting}>
+              {isSubmitting ? <CircularProgress size={20} /> : activeStep === 2 ? `${t('BOOK_NOW')}` : `${t('NEXT')}`}
             </Button>
           </Box>
         </Box>

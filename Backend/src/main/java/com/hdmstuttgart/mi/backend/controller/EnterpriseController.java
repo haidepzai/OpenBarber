@@ -5,6 +5,7 @@ import com.hdmstuttgart.mi.backend.mapper.EnterpriseMapper;
 import com.hdmstuttgart.mi.backend.model.Enterprise;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.EnterpriseDto;
+import com.hdmstuttgart.mi.backend.model.dto.SlotDto;
 import com.hdmstuttgart.mi.backend.service.AppointmentService;
 import com.hdmstuttgart.mi.backend.service.EnterpriseService;
 import com.hdmstuttgart.mi.backend.service.JwtService;
@@ -100,6 +101,9 @@ public class EnterpriseController {
     @GetMapping("/user")
     public ResponseEntity<EnterpriseDto> getEnterpriseByUser(@RequestHeader("Authorization") String token) {
         Enterprise enterprise = enterpriseService.getEnterpriseByUser(token);
+        if (enterprise == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         EnterpriseDto enterpriseDto = enterpriseMapper.toDto(enterprise);
         return new ResponseEntity<>(enterpriseDto, HttpStatus.OK);
     }
@@ -226,12 +230,12 @@ public class EnterpriseController {
 
     @ApiOperation(value = "Get Available Slots", notes = "Returns available time slots for an enterprise on a given date")
     @GetMapping("/{id}/available-slots")
-    public ResponseEntity<List<String>> getAvailableSlots(
+    public ResponseEntity<List<SlotDto>> getAvailableSlots(
             @PathVariable Long id,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) Long employeeId,
             @RequestParam(defaultValue = "30") int serviceDuration) {
-        List<String> slots = appointmentService.getAvailableSlots(id, employeeId, date, serviceDuration);
+        List<SlotDto> slots = appointmentService.getAvailableSlots(id, employeeId, date, serviceDuration);
         return ResponseEntity.ok(slots);
     }
 

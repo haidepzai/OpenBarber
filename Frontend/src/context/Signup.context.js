@@ -9,12 +9,13 @@ export const SignupProvider = ({ children }) => {
     currentStep: 0,
   });
   const [activeStep, setActiveStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState(signupState.completedSteps || Array(4).fill(false));
+  const [completedSteps, setCompletedSteps] = useState(signupState.completedSteps || Array(5).fill(false));
   const [data, setData] = useState({
     email: '',
     password: '',
     confirmPassword: '',
     verificationCode: '',
+    accountType: null, // 'customer' | 'enterprise'
 
     enterpriseName: '',
     enterpriseOwner: '',
@@ -28,8 +29,16 @@ export const SignupProvider = ({ children }) => {
   const authCtx = useContext(AuthContext);
 
   const handleClose = () => {
-    authCtx.onLogout(); //delete token if close sign up process
+    authCtx.onLogout();
     setSignupVisible(false);
+    setActiveStep(0);
+    setCompletedSteps(Array(5).fill(false));
+    setData({
+      email: '', password: '', confirmPassword: '', verificationCode: '',
+      accountType: null,
+      enterpriseName: '', enterpriseOwner: '', enterprisePhoneNumber: '',
+      enterpriseStreet: null, enterpriseStreetText: '',
+    });
     document.body.style.overflow = '';
   };
 

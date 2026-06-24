@@ -30,6 +30,9 @@ public class ReviewMapper {
                 .createdAt(review.getCreatedAt())
                 .rating(review.getRating())
                 .enterpriseId(review.getEnterprise().getId())
+                .enterpriseName(review.getEnterprise().getName())
+                .authorPhoto(review.getReviewer() != null ? review.getReviewer().getProfilePhoto() : null)
+                .reviewerId(review.getReviewer() != null ? review.getReviewer().getId() : null)
                 .build();
     }
 

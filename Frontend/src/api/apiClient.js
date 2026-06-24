@@ -13,6 +13,12 @@ const createApiClient = () => {
       const originalRequest = error.config;
 
       if (error.response?.status === 401 && originalRequest && !originalRequest._retry && originalRequest.url !== API_ENDPOINTS.AUTH_REFRESH) {
+        // Only retry with refresh token if we actually have one (logged-in user)
+        const refreshToken = getRefreshToken();
+        if (!refreshToken) {
+          return Promise.reject(error);
+        }
+
         originalRequest._retry = true;
 
         try {
@@ -68,7 +74,10 @@ const refreshAccessToken = async () => {
 // Reviews API
 export const reviewsAPI = {
   getByEnterprise: (enterpriseId) => apiClient.get(API_ENDPOINTS.REVIEWS(enterpriseId)),
-  create: (enterpriseId, data) => apiClient.post(API_ENDPOINTS.REVIEWS_CREATE(enterpriseId), data),
+  getMy: () => apiClient.get(API_ENDPOINTS.REVIEWS_MY, { headers: getAuthHeader() }),
+  create: (enterpriseId, data) => apiClient.post(API_ENDPOINTS.REVIEWS_CREATE_AUTH(enterpriseId), data, { headers: getAuthHeader() }),
+  update: (id, data) => apiClient.put(API_ENDPOINTS.REVIEW_UPDATE(id), data, { headers: getAuthHeader() }),
+  delete: (id) => apiClient.delete(API_ENDPOINTS.REVIEW_DELETE(id), { headers: getAuthHeader() }),
 };
 
 // Enterprises API
@@ -109,9 +118,17 @@ export const servicesAPI = {
 // Appointments API
 export const appointmentsAPI = {
   getByEnterprise: (enterpriseId) => apiClient.get(API_ENDPOINTS.APPOINTMENTS(enterpriseId), { headers: getAuthHeader() }),
-  cancel: (id, code) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CANCEL(id, code), {}, { headers: getAuthHeader() }),
+  getMy: () => apiClient.get(API_ENDPOINTS.APPOINTMENTS_MY, { headers: getAuthHeader() }),
+  cancel: (id, code) => apiClient.delete(API_ENDPOINTS.APPOINTMENTS_CANCEL(id, code), { headers: getAuthHeader() }),
   confirm: (id, code) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CONFIRM(id, code), {}, { headers: getAuthHeader() }),
-  create: (enterpriseId, data) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CREATE(enterpriseId), data, { headers: getAuthHeader() }),
+  create: (enterpriseId, data, captchaToken = null) => {
+    const token = getAccessToken();
+    const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    if (captchaToken) {
+      config.headers = { ...(config.headers || {}), 'X-Recaptcha-Token': captchaToken };
+    }
+    return apiClient.post(API_ENDPOINTS.APPOINTMENTS_CREATE(enterpriseId), data, config);
+  },
   update: (id, data) => apiClient.put(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), data, { headers: getAuthHeader() }),
   patch: (id, data) => apiClient.patch(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), data, { headers: getAuthHeader() }),
   delete: (id) => apiClient.delete(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), { headers: getAuthHeader() }),
@@ -122,6 +139,13 @@ export const usersAPI = {
   getById: (id) => apiClient.get(API_ENDPOINTS.USER_GET(id), { headers: getAuthHeader() }),
   update: (id, data) => apiClient.put(API_ENDPOINTS.USER_UPDATE(id), data, { headers: getAuthHeader() }),
   getInfo: () => apiClient.get(API_ENDPOINTS.USER_INFO, { headers: getAuthHeader() }),
+  uploadPhoto: (id, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.post(API_ENDPOINTS.USER_PHOTO(id), formData, {
+      headers: { ...getAuthHeader(), 'Content-Type': 'multipart/form-data' },
+    });
+  },
 };
 
 // Employees API
