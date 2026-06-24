@@ -234,6 +234,8 @@
   "BOOKING_FAILED": "予約に失敗しました。もう一度お試しください。",
   "CAPTCHA_REQUIRED": "ロボットでないことを確認してください。",
   "NO_BARBERS_FOUND": "この地域ではバーバーが見つかりませんでした。",
+  "OR": "または",
+  "OR_SIGN_UP_WITH_GOOGLE": "またはGoogleで登録",
   "RATING_5": "最高",
   "RATING_4_5": "とても良い",
   "RATING_4": "良い",

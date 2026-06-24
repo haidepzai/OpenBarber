@@ -90,7 +90,11 @@ const EmailVerificationStep = () => {
   }
 
   return (
-    <Stack component="form" sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', justifyContent: 'center', alignItems: 'center', gap: 4 }} onSubmit={onSubmit}>
+    <Stack
+      component="form"
+      sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', justifyContent: 'center', alignItems: 'center', gap: 4 }}
+      onSubmit={onSubmit}
+    >
       <Typography variant="h4" fontWeight="bold">
         {t('VERIFY_MAIL')}
       </Typography>
@@ -133,7 +137,13 @@ const EmailVerificationStep = () => {
         {t('RESEND_VERIFICATION_CODE')}
       </Button>
 
-      <Stack direction="row" justifyContent="space-between" sx={{ pt: 2, mt: 'auto', flexShrink: 0, borderTop: 1, borderColor: 'divider' }} width="100%" gap={2}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        sx={{ pt: 2, mt: 'auto', flexShrink: 0, borderTop: 1, borderColor: 'divider' }}
+        width="100%"
+        gap={2}
+      >
         <Button variant="outlined" onClick={close} tabIndex={-1}>
           {t('CANCEL')}
         </Button>

@@ -96,7 +96,9 @@ const SignupModal = () => {
                 <CloseIcon />
               </IconButton>
             </Box>
-            <Stack flexGrow="1" sx={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>{renderStep()}</Stack>
+            <Stack flexGrow="1" sx={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+              {renderStep()}
+            </Stack>
           </Box>
         </Box>,
         portalElement

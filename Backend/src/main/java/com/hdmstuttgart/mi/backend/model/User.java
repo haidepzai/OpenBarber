@@ -36,6 +36,9 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(unique = true)
+    private String googleId;
+
     @Size(min = 8)
     @Column(nullable = false)
     private String password;

@@ -3,6 +3,7 @@ import React, { Fragment, useContext, useEffect, useReducer, useRef, useState } 
 import ReactDOM from 'react-dom';
 import { Box, Typography, Stack, TextField, Button, Checkbox } from '@mui/material';
 import { ArrowBackRounded } from '@mui/icons-material';
+import { GoogleLogin } from '@react-oauth/google';
 import OpenBarberLogo from '../../assets/logo_openbarber.svg';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
@@ -115,6 +116,26 @@ const LoginModal = ({ gotoSignup }) => {
   const handleSignUp = () => {
     signUpCtx.setLoginVisible(false);
     signUpCtx.setSignupVisible(true);
+  };
+
+  const handleGoogleLogin = async (credentialResponse) => {
+    if (!credentialResponse.credential) {
+      setLoginIsFound(false);
+      return;
+    }
+
+    try {
+      const res = await authCtx.onGoogleLogin(credentialResponse.credential);
+      signUpCtx.setLoginVisible(false);
+      const { hasShop } = res.data;
+      if (hasShop) {
+        navigate('/edit');
+      } else {
+        navigate('/my-appointments');
+      }
+    } catch {
+      setLoginIsFound(false);
+    }
   };
 
   const submitHandler = async (event) => {
@@ -239,6 +260,22 @@ const LoginModal = ({ gotoSignup }) => {
                 >
                   {t('FORGOT_PASSWORD')}
                 </Button>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, my: 1 }}>
+                  <Box sx={{ flex: 1, height: '1px', bgcolor: 'divider' }} />
+                  <Typography variant="caption" color="text.secondary">
+                    {t('OR')}
+                  </Typography>
+                  <Box sx={{ flex: 1, height: '1px', bgcolor: 'divider' }} />
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <GoogleLogin
+                    onSuccess={handleGoogleLogin}
+                    onError={() => setLoginIsFound(false)}
+                    text="signin_with"
+                    shape="rectangular"
+                    size="large"
+                  />
+                </Box>
               </Stack>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
                 <Button variant="outlined" size="large" sx={{ flexGrow: 1 }} onClick={handleSignUp}>

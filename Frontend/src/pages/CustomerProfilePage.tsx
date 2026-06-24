@@ -269,7 +269,12 @@ const CustomerProfilePage = () => {
             {r.comment}
           </Typography>
           {r.reviewPhotoData && (
-            <Box component="img" src={getReviewPhotoSrc(r.reviewPhotoData)} alt={t('REVIEW_PHOTO')} sx={{ width: 96, height: 96, objectFit: 'cover', borderRadius: 2 }} />
+            <Box
+              component="img"
+              src={getReviewPhotoSrc(r.reviewPhotoData)}
+              alt={t('REVIEW_PHOTO')}
+              sx={{ width: 96, height: 96, objectFit: 'cover', borderRadius: 2 }}
+            />
           )}
           <Typography variant="caption" color="text.disabled">
             {new Date(r.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}

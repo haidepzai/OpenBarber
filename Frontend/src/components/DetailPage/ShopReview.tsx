@@ -139,7 +139,12 @@ const ShopReview = ({ review, onUpdated, onDeleted }) => {
               </Button>
               {editDisplayPhoto && (
                 <>
-                  <Box component="img" src={editDisplayPhoto} alt={t('REVIEW_PHOTO')} sx={{ width: 140, height: 140, objectFit: 'cover', borderRadius: 2 }} />
+                  <Box
+                    component="img"
+                    src={editDisplayPhoto}
+                    alt={t('REVIEW_PHOTO')}
+                    sx={{ width: 140, height: 140, objectFit: 'cover', borderRadius: 2 }}
+                  />
                   <Button color="error" size="small" onClick={handleRemovePhoto}>
                     {t('REMOVE_PHOTO')}
                   </Button>
@@ -159,7 +164,12 @@ const ShopReview = ({ review, onUpdated, onDeleted }) => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography variant="body1">{review.comment}</Typography>
             {reviewPhotoSrc && (
-              <Box component="img" src={reviewPhotoSrc} alt={t('REVIEW_PHOTO')} sx={{ width: '100%', maxWidth: 320, maxHeight: 320, objectFit: 'cover', borderRadius: 2 }} />
+              <Box
+                component="img"
+                src={reviewPhotoSrc}
+                alt={t('REVIEW_PHOTO')}
+                sx={{ width: '100%', maxWidth: 320, maxHeight: 320, objectFit: 'cover', borderRadius: 2 }}
+              />
             )}
           </Box>
         )}

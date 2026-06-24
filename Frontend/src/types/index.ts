@@ -93,6 +93,7 @@ export interface AuthContextType {
   isLoggedIn: boolean;
   onLogout: () => void;
   onLogin: (authRequest: unknown, customConfig?: unknown, rememberMe?: boolean) => Promise<unknown>;
+  onGoogleLogin: (idToken: string) => Promise<unknown>;
   onSignUp: (registerRequest: unknown, customConfig?: unknown) => Promise<unknown>;
   deleteJWTTokenFromStorage: () => void;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;

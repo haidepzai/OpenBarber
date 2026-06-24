@@ -30,7 +30,13 @@ const AwaitingApprovalStep = () => {
         </Typography>
       </Stack>
 
-      <Stack direction="row" justifyContent="space-between" sx={{ pt: 2, mt: 'auto', flexShrink: 0, borderTop: 1, borderColor: 'divider' }} width="100%" gap={2}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        sx={{ pt: 2, mt: 'auto', flexShrink: 0, borderTop: 1, borderColor: 'divider' }}
+        width="100%"
+        gap={2}
+      >
         <Box flexGrow={1} />
         <Button onClick={handleClose} variant="contained">
           {t('FINISH')}

@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  *
  * Tiers per IP:
  *  - AUTH_VERIFY   (/api/auth/verify, /api/auth/resend-verification): 5 req/15 min
- *  - AUTH_STRICT   (/api/auth/authenticate, /api/auth/register):      5 req/min
+ *  - AUTH_STRICT   (/api/auth/authenticate, /api/auth/register, /api/auth/google): 5 req/min
  *  - AUTH_GENERAL  (/api/auth/**):                                    20 req/min
  *  - API_GENERAL   (all other /api/**):                               60 req/min
  */
@@ -87,7 +87,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
     }
 
     private boolean isAuthStrict(String path) {
-        return path.equals("/api/auth/authenticate") || path.equals("/api/auth/register");
+        return path.equals("/api/auth/authenticate") || path.equals("/api/auth/register") || path.equals("/api/auth/google");
     }
 
     private boolean isAuthGeneral(String path) {

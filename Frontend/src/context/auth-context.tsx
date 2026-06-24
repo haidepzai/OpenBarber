@@ -9,6 +9,7 @@ const defaultAuthContext: AuthContextType = {
   isLoggedIn: false,
   onLogout: () => undefined,
   onLogin: async () => undefined,
+  onGoogleLogin: async (_idToken: string) => undefined,
   onSignUp: async () => undefined,
   deleteJWTTokenFromStorage: () => undefined,
   setIsLoggedIn: () => undefined,
@@ -102,6 +103,26 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     return response;
   };
 
+  const googleLoginHandler = async (idToken: string) => {
+    const response = await axios.post(API_ENDPOINTS.AUTH_GOOGLE, { idToken });
+    const resObj = response.data;
+    setAccessToken(resObj.token);
+    setRefreshToken(resObj.refreshToken);
+    setUserId(resObj.userId ?? 0);
+    setIsLoggedIn(true);
+
+    try {
+      const currentUser = (await getUserByToken()) as Partial<User>;
+      setEmail(currentUser.email ?? '');
+      setRole(currentUser.role ?? null);
+      setUser(currentUser);
+    } catch {
+      // non-critical – role will be set on next page load
+    }
+
+    return response;
+  };
+
   const signUpHandler = async (registerRequest: unknown, customConfig?: unknown) => {
     try {
       const response = await axios.post(API_ENDPOINTS.AUTH_REGISTER, registerRequest, customConfig);
@@ -126,6 +147,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         isLoggedIn,
         onLogout: logoutHandler,
         onLogin: loginHandler,
+        onGoogleLogin: googleLoginHandler,
         deleteJWTTokenFromStorage,
         setIsLoggedIn,
         onSignUp: signUpHandler,

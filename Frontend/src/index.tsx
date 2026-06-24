@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import './css/index.css';
 import App from './App';
 import { AuthContextProvider } from './context/auth-context';
@@ -15,9 +16,11 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 
 root.render(
-  <AuthContextProvider>
-    <SignupProvider>
-      <App />
-    </SignupProvider>
-  </AuthContextProvider>
+  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
+    <AuthContextProvider>
+      <SignupProvider>
+        <App />
+      </SignupProvider>
+    </AuthContextProvider>
+  </GoogleOAuthProvider>
 );

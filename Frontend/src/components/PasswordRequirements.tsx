@@ -10,11 +10,11 @@ interface Requirement {
 }
 
 const REQUIREMENTS: Requirement[] = [
-  { key: 'PASS_REQ_LENGTH',    test: (pw) => pw.length >= 8 },
+  { key: 'PASS_REQ_LENGTH', test: (pw) => pw.length >= 8 },
   { key: 'PASS_REQ_UPPERCASE', test: (pw) => /[A-Z]/.test(pw) },
   { key: 'PASS_REQ_LOWERCASE', test: (pw) => /[a-z]/.test(pw) },
-  { key: 'PASS_REQ_NUMBER',    test: (pw) => /\d/.test(pw) },
-  { key: 'PASS_REQ_SPECIAL',   test: (pw) => /[@$!%*?&]/.test(pw) },
+  { key: 'PASS_REQ_NUMBER', test: (pw) => /\d/.test(pw) },
+  { key: 'PASS_REQ_SPECIAL', test: (pw) => /[@$!%*?&]/.test(pw) },
 ];
 
 interface PasswordRequirementsProps {
@@ -35,10 +35,7 @@ const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({ password })
             ) : (
               <RadioButtonUncheckedIcon sx={{ fontSize: 16, color: 'text.disabled' }} />
             )}
-            <Typography
-              variant="caption"
-              sx={{ color: met ? 'success.main' : 'text.secondary', transition: 'color 0.2s' }}
-            >
+            <Typography variant="caption" sx={{ color: met ? 'success.main' : 'text.secondary', transition: 'color 0.2s' }}>
               {t(key)}
             </Typography>
           </Stack>

@@ -11,6 +11,7 @@ const GOOGLE_GEOCODE_URL = import.meta.env.VITE_GOOGLE_GEOCODE || '';
 const API_ENDPOINTS = {
   // Auth
   AUTH_LOGIN: `${BASE_URL}/api/auth/authenticate`,
+  AUTH_GOOGLE: `${BASE_URL}/api/auth/google`,
   AUTH_REGISTER: `${BASE_URL}/api/auth/register`,
   AUTH_VERIFY: `${BASE_URL}/api/auth/verify`,
   AUTH_REFRESH: `${BASE_URL}/api/auth/refresh`,
