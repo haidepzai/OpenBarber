@@ -4,6 +4,7 @@ import MediaCard from '../components/CardComponent/MediaCard';
 import Search from '../components/Search';
 import { Box, Typography } from '@mui/material';
 import MySwiper from '../components/LandingPage/MySwiper';
+import LocationBanner from '../components/LandingPage/LocationBanner';
 import dayjs from 'dayjs';
 import ReservationDialog from '../components/Reservation/ReservationDialog';
 import { useNavigate } from 'react-router-dom';
@@ -61,6 +62,7 @@ const LandingPage = () => {
         </Typography>
         <Search dateAndTime={dateAndTime} setDateAndTime={setDateAndTime} />
       </Box>
+      <LocationBanner />
       {/*paddingLeft: "10vh", paddingRight: "10vh" */}
       <Box sx={{ margin: '0 auto', maxWidth: '80%' }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: '36px', p: '0 15px' }}>

@@ -250,5 +250,11 @@
   "PASS_REQ_LOWERCASE": "At least one lowercase letter",
   "PASS_REQ_NUMBER": "At least one number",
   "PASS_REQ_SPECIAL": "At least one special character (@$!%*?&)",
-  "PASS_REQ_LENGTH": "At least 8 characters"
+  "PASS_REQ_LENGTH": "At least 8 characters",
+  "LOCATION_DETECTING": "Detecting your location…",
+  "LOCATION_DETECTED": "You seem to be in {{location}}. Is that correct?",
+  "LOCATION_GET_CURRENT": "Get current location",
+  "LOCATION_DENIED": "We couldn't determine your exact location. Please enable location access in your browser settings.",
+  "LOCATION_ERROR": "Location could not be determined.",
+  "LOCATION_IDLE_HINT": "Find barbers near you."
 }

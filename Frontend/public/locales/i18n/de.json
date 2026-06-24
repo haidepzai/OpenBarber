@@ -249,5 +249,11 @@
   "PASS_REQ_LOWERCASE": "Mindestens ein Kleinbuchstabe",
   "PASS_REQ_NUMBER": "Mindestens eine Zahl",
   "PASS_REQ_SPECIAL": "Mindestens ein Sonderzeichen (@$!%*?&)",
-  "PASS_REQ_LENGTH": "Mindestens 8 Zeichen"
+  "PASS_REQ_LENGTH": "Mindestens 8 Zeichen",
+  "LOCATION_DETECTING": "Standort wird ermittelt…",
+  "LOCATION_DETECTED": "Sie scheinen in {{location}} zu sein. Trifft das nicht zu?",
+  "LOCATION_GET_CURRENT": "Aktuellen Standort abrufen",
+  "LOCATION_DENIED": "Wir konnten Ihren genauen Standort nicht ermitteln. Bitte aktivieren Sie den Standort in Ihren Browsereinstellungen.",
+  "LOCATION_ERROR": "Standort konnte nicht ermittelt werden.",
+  "LOCATION_IDLE_HINT": "Finden Sie Barbiere in Ihrer Nähe."
 }

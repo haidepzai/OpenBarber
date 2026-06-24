@@ -251,5 +251,11 @@
   "PASS_REQ_LOWERCASE": "小文字を1つ以上",
   "PASS_REQ_NUMBER": "数字を1つ以上",
   "PASS_REQ_SPECIAL": "特殊文字を1つ以上 (@$!%*?&)",
-  "PASS_REQ_LENGTH": "8文字以上"
+  "PASS_REQ_LENGTH": "8文字以上",
+  "LOCATION_DETECTING": "場所を検出中…",
+  "LOCATION_DETECTED": "{{location}}にいるようです。違いますか？",
+  "LOCATION_GET_CURRENT": "現在地を取得",
+  "LOCATION_DENIED": "正確な位置情報を取得できませんでした。ブラウザの設定で位置情報を有効にしてください。",
+  "LOCATION_ERROR": "位置情報を取得できませんでした。",
+  "LOCATION_IDLE_HINT": "近くのバーバーを探す。"
 }
