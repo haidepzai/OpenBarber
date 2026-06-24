@@ -13,9 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -152,6 +155,23 @@ public class ReviewController {
         Review review = ReviewMapper.toEntity(newReviewDto, null);
         Review updatedReview = reviewService.updateReview(id, review, token);
         return ResponseEntity.ok(ReviewMapper.toDto(updatedReview));
+    }
+
+    @PostMapping(value = "/{id}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ReviewDto> uploadReviewPhoto(
+            @PathVariable long id,
+            @RequestParam("file") MultipartFile file,
+            @RequestHeader("Authorization") String token) throws IOException {
+        Review updated = reviewService.uploadPhoto(id, file.getBytes(), token);
+        return ResponseEntity.ok(ReviewMapper.toDto(updated));
+    }
+
+    @DeleteMapping("/{id}/photo")
+    public ResponseEntity<ReviewDto> deleteReviewPhoto(
+            @PathVariable long id,
+            @RequestHeader("Authorization") String token) {
+        Review updated = reviewService.deletePhoto(id, token);
+        return ResponseEntity.ok(ReviewMapper.toDto(updated));
     }
 
     @ApiOperation(value = "Delete Review", notes = "Deletes a review (owner only)")

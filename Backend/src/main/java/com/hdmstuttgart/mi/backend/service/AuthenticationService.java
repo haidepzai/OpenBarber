@@ -10,19 +10,23 @@ import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -38,6 +42,9 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final EmailSenderService emailSenderService;
 
+    @Value("${google.client-id}")
+    private String googleClientId;
+
     /**
      * Register authentication response.
      *
@@ -50,9 +57,8 @@ public class AuthenticationService {
         }
 
         var user = User.builder()
-//                .firstname(request.getFirstname())
-//                .lastname(request.getLastname())
-//                .name(request.getName())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .email(request.getEmail())
                 .confirmationCode(UUID.randomUUID().toString().substring(0, 6).toUpperCase())
                 .confirmationCodeExpiry(Date.from(Instant.now().plusSeconds(15 * 60)))
@@ -102,6 +108,93 @@ public class AuthenticationService {
                 .hasShop(user.getShop() != null)
                 .userId(user.getId())
                 .build();
+    }
+
+    public AuthenticationResponse googleLogin(String idToken) {
+        Map<String, Object> googlePayload = verifyGoogleToken(idToken);
+
+        String email = (String) googlePayload.get("email");
+        String googleId = (String) googlePayload.get("sub");
+        String firstName = (String) googlePayload.getOrDefault("given_name", "");
+        String lastName = (String) googlePayload.getOrDefault("family_name", "");
+
+        if (email == null || email.isBlank() || googleId == null || googleId.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Google token");
+        }
+
+        Optional<User> existingByGoogleId = userRepository.findByGoogleId(googleId);
+        Optional<User> existingByEmail = userRepository.findByEmail(email);
+
+        User user;
+        if (existingByGoogleId.isPresent()) {
+            user = existingByGoogleId.get();
+        } else if (existingByEmail.isPresent()) {
+            user = existingByEmail.get();
+            user.setGoogleId(googleId);
+        } else {
+            user = User.builder()
+                    .email(email)
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .googleId(googleId)
+                    .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                    .role(UserRole.VERIFIED)
+                    .build();
+        }
+
+        if (user.getRole() == UserRole.UNVERIFIED) {
+            user.setRole(user.getShop() != null ? UserRole.OPERATOR : UserRole.VERIFIED);
+            user.setConfirmationCode(null);
+            user.setConfirmationCodeExpiry(null);
+            user.setVerificationAttempts(0);
+        }
+
+        if ((user.getFirstName() == null || user.getFirstName().isBlank()) && !firstName.isBlank()) {
+            user.setFirstName(firstName);
+        }
+        if ((user.getLastName() == null || user.getLastName().isBlank()) && !lastName.isBlank()) {
+            user.setLastName(lastName);
+        }
+
+        user = userRepository.save(user);
+
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        return AuthenticationResponse.builder()
+                .token(accessToken)
+                .refreshToken(refreshToken)
+                .userId(user.getId())
+                .verified(true)
+                .hasShop(user.getShop() != null)
+                .build();
+    }
+
+    private Map<String, Object> verifyGoogleToken(String idToken) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            Map<String, Object> payload = response.getBody();
+
+            if (payload == null) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Google token");
+            }
+
+            String aud = (String) payload.get("aud");
+            if (googleClientId == null || googleClientId.isBlank() || !googleClientId.equals(aud)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token not issued for this app");
+            }
+
+            Object emailVerified = payload.get("email_verified");
+            if (emailVerified != null && !Boolean.parseBoolean(String.valueOf(emailVerified))) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Google email is not verified");
+            }
+
+            return payload;
+        } catch (HttpClientErrorException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Google token");
+        }
     }
 
     /**

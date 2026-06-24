@@ -23,6 +23,8 @@ public interface UserRepository extends JpaRepository<User, Long>{
      */
     Optional<User> findByEmail(String email);
 
+    Optional<User> findByGoogleId(String googleId);
+
     Optional<User> findByPasswordResetToken(String passwordResetToken);
 
 //        Optional<User> findByUsername(String username);

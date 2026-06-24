@@ -133,33 +133,46 @@ public class ReviewService {
      * @return the review
      */
     public Review updateReview(long id, Review newReview, String token) {
-        String username = jwtService.extractUsername(token.substring(7));
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UnauthorizedException("Not authorized"));
-        Review existingReview = getReviewById(id);
-        if (existingReview.getReviewer() == null || !existingReview.getReviewer().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You can only edit your own reviews");
-        }
+        Review existingReview = requireOwnedReview(id, token, "You can only edit your own reviews");
         existingReview.setComment(newReview.getComment());
         existingReview.setRating(newReview.getRating());
         return reviewRepository.save(existingReview);
     }
 
+    public Review uploadPhoto(long id, byte[] photoData, String token) {
+        Review review = requireOwnedReview(id, token, "You can only edit your own reviews");
+        review.setPhotoData(photoData);
+        return reviewRepository.save(review);
+    }
+
+    public Review deletePhoto(long id, String token) {
+        Review review = requireOwnedReview(id, token, "You can only edit your own reviews");
+        review.setPhotoData(null);
+        return reviewRepository.save(review);
+    }
+
     public void deleteReview(long id, String token) {
-        String username = jwtService.extractUsername(token.substring(7));
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UnauthorizedException("Not authorized"));
-        Review review = getReviewById(id);
-        if (review.getReviewer() == null || !review.getReviewer().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You can only delete your own reviews");
-        }
+        requireOwnedReview(id, token, "You can only delete your own reviews");
         reviewRepository.deleteById(id);
     }
 
     public Page<Review> getMyReviews(String token, Pageable pageable) {
-        String username = jwtService.extractUsername(token.substring(7));
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UnauthorizedException("Not authorized"));
+        User user = getAuthenticatedUser(token);
         return reviewRepository.findAllByReviewerId(user.getId(), pageable);
+    }
+
+    private User getAuthenticatedUser(String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+        return userRepository.findByEmail(username)
+                .orElseThrow(() -> new UnauthorizedException("Not authorized"));
+    }
+
+    private Review requireOwnedReview(long id, String token, String message) {
+        User user = getAuthenticatedUser(token);
+        Review review = getReviewById(id);
+        if (review.getReviewer() == null || !review.getReviewer().getId().equals(user.getId())) {
+            throw new UnauthorizedException(message);
+        }
+        return review;
     }
 }

@@ -23,5 +23,6 @@ public class ReviewDto {
     private Long shopId;
     private String shopName;
     private byte[] authorPhoto;
+    private byte[] reviewPhotoData;
     private Long reviewerId;
 }

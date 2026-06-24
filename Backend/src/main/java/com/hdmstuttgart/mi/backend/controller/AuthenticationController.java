@@ -32,6 +32,12 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
+    @ApiOperation(value = "Authenticate User With Google", notes = "Authenticates a user with Google Identity Services and returns a JWT token")
+    @PostMapping("/google")
+    public ResponseEntity<AuthenticationResponse> googleLogin(@Valid @RequestBody GoogleAuthRequest request) {
+        return ResponseEntity.ok(authenticationService.googleLogin(request.getIdToken()));
+    }
+
     @ApiOperation(value = "Verify User", notes = "Verifies a user's token")
     @PostMapping("/verify")
     public ResponseEntity<AuthenticationResponse> verify(@Valid @RequestBody VerificationRequest request, @RequestHeader("Authorization") String token) {

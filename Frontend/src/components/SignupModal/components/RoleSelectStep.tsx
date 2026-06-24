@@ -1,0 +1,165 @@
+// @ts-nocheck
+import React, { useContext, useState } from 'react';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
+import StoreIcon from '@mui/icons-material/Store';
+import { GoogleLogin } from '@react-oauth/google';
+import { useNavigate } from 'react-router-dom';
+import AuthContext from '../../../context/auth-context';
+import { SignupContext } from '../../../context/Signup.context';
+import { useTranslation } from 'react-i18next';
+
+const RoleSelectStep = () => {
+  const authCtx = useContext(AuthContext);
+  const signUpCtx = useContext(SignupContext);
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [hovered, setHovered] = useState(null); // 'customer' | 'shop' | null
+
+  const select = (type) => {
+    signUpCtx.setData((d) => ({ ...d, accountType: type }));
+    signUpCtx.setActiveStep(1);
+    signUpCtx.setCompletedSteps((v) => {
+      const res = [...v];
+      res[0] = true;
+      return res;
+    });
+  };
+
+  const customerHovered = hovered === 'customer';
+  const shopHovered = hovered === 'shop';
+
+  const handleGoogleSignup = async (credentialResponse) => {
+    if (!credentialResponse.credential) {
+      return;
+    }
+
+    try {
+      const response = await authCtx.onGoogleLogin(credentialResponse.credential);
+      signUpCtx.setSignupVisible(false);
+      if (response.data.hasShop) {
+        navigate('/edit');
+      } else {
+        navigate('/my-appointments');
+      }
+    } catch {
+      // ignore for now
+    }
+  };
+
+  return (
+    <Stack height="100%" alignItems="center" justifyContent="center" gap={3}>
+      <Typography variant="h5" fontWeight="bold">
+        {t('REGISTER_AS')}
+      </Typography>
+      <Typography variant="body1" color="textSecondary">
+        {t('REGISTER_AS_SUBTITLE')}
+      </Typography>
+      <Stack direction="row" gap={3} mt={1} sx={{ width: '100%', justifyContent: 'center' }}>
+        <Box
+          onClick={() => select('customer')}
+          onMouseEnter={() => setHovered('customer')}
+          onMouseLeave={() => setHovered(null)}
+          sx={{
+            cursor: 'pointer',
+            border: '2px solid',
+            borderColor: 'primary.main',
+            borderRadius: 4,
+            padding: 4,
+            flex: '1 1 0',
+            maxWidth: 260,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            transition: 'all 0.2s',
+            backgroundColor: customerHovered ? 'primary.main' : 'transparent',
+          }}
+        >
+          <PersonIcon sx={{ fontSize: 48, color: customerHovered ? '#fff' : 'primary.main', transition: 'color 0.2s' }} />
+          <Typography variant="h6" fontWeight="600" sx={{ color: customerHovered ? '#fff' : 'text.primary', transition: 'color 0.2s' }}>
+            {t('AS_CUSTOMER')}
+          </Typography>
+          <Typography
+            variant="body2"
+            textAlign="center"
+            sx={{ color: customerHovered ? 'rgba(255,255,255,0.85)' : 'text.secondary', transition: 'color 0.2s' }}
+          >
+            {t('AS_CUSTOMER_DESC')}
+          </Typography>
+          <Button
+            variant={customerHovered ? 'outlined' : 'contained'}
+            fullWidth
+            sx={
+              customerHovered
+                ? { borderColor: '#fff', color: '#fff', '&:hover': { borderColor: '#fff', backgroundColor: 'rgba(255,255,255,0.1)' } }
+                : {}
+            }
+            onClick={(e) => {
+              e.stopPropagation();
+              select('customer');
+            }}
+          >
+            {t('CONTINUE')}
+          </Button>
+        </Box>
+
+        <Box
+          onClick={() => select('shop')}
+          onMouseEnter={() => setHovered('shop')}
+          onMouseLeave={() => setHovered(null)}
+          sx={{
+            cursor: 'pointer',
+            border: '2px solid',
+            borderColor: shopHovered ? 'grey.800' : 'grey.400',
+            borderRadius: 4,
+            padding: 4,
+            flex: '1 1 0',
+            maxWidth: 260,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            transition: 'all 0.2s',
+            backgroundColor: shopHovered ? 'grey.800' : 'transparent',
+          }}
+        >
+          <StoreIcon sx={{ fontSize: 48, color: shopHovered ? '#fff' : 'text.secondary', transition: 'color 0.2s' }} />
+          <Typography variant="h6" fontWeight="600" sx={{ color: shopHovered ? '#fff' : 'text.primary', transition: 'color 0.2s' }}>
+            {t('AS_SHOP')}
+          </Typography>
+          <Typography
+            variant="body2"
+            textAlign="center"
+            sx={{ color: shopHovered ? 'rgba(255,255,255,0.85)' : 'text.secondary', transition: 'color 0.2s' }}
+          >
+            {t('AS_SHOP_DESC')}
+          </Typography>
+          <Button
+            variant="outlined"
+            fullWidth
+            sx={
+              shopHovered ? { borderColor: '#fff', color: '#fff', '&:hover': { borderColor: '#fff', backgroundColor: 'rgba(255,255,255,0.1)' } } : {}
+            }
+            onClick={(e) => {
+              e.stopPropagation();
+              select('shop');
+            }}
+          >
+            {t('CONTINUE')}
+          </Button>
+        </Box>
+      </Stack>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%', maxWidth: 560, mt: 1 }}>
+        <Box sx={{ flex: 1, height: '1px', bgcolor: 'divider' }} />
+        <Typography variant="caption" color="text.secondary">
+          {t('OR_SIGN_UP_WITH_GOOGLE')}
+        </Typography>
+        <Box sx={{ flex: 1, height: '1px', bgcolor: 'divider' }} />
+      </Box>
+      <GoogleLogin onSuccess={handleGoogleSignup} onError={() => undefined} text="signup_with" shape="rectangular" size="large" />
+    </Stack>
+  );
+};
+
+export default RoleSelectStep;
