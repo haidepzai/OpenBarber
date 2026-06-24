@@ -230,5 +230,6 @@
   "SAVE": "Speichern",
   "MY_REVIEWS": "Meine Bewertungen",
   "NO_REVIEWS": "Noch keine Bewertungen abgegeben.",
-  "EDIT_REVIEW": "Bewertung bearbeiten"
+  "EDIT_REVIEW": "Bewertung bearbeiten",
+  "CAPTCHA_REQUIRED": "Bitte bestätige, dass du kein Roboter bist."
 }

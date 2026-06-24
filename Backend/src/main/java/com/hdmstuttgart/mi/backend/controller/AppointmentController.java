@@ -5,6 +5,7 @@ import com.hdmstuttgart.mi.backend.mapper.AppointmentMapper;
 import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.dto.AppointmentDto;
 import com.hdmstuttgart.mi.backend.service.AppointmentService;
+import com.hdmstuttgart.mi.backend.service.RecaptchaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -29,17 +31,13 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
     private final AppointmentMapper appointmentMapper;
+    private final RecaptchaService recaptchaService;
     private static final Logger log = LoggerFactory.getLogger(AppointmentController.class);
 
-    /**
-     * Instantiates a new Appointment controller.
-     *
-     * @param appointmentService the appointment service
-     * @param appointmentMapper  the appointment mapper
-     */
-    public AppointmentController(AppointmentService appointmentService, AppointmentMapper appointmentMapper) {
+    public AppointmentController(AppointmentService appointmentService, AppointmentMapper appointmentMapper, RecaptchaService recaptchaService) {
         this.appointmentService = appointmentService;
         this.appointmentMapper = appointmentMapper;
+        this.recaptchaService = recaptchaService;
     }
 
     /**
@@ -52,7 +50,14 @@ public class AppointmentController {
     @ApiOperation(value = "Create Appointment", notes = "Creates a new appointment for the given enterprise ID")
     @PostMapping
     public ResponseEntity<AppointmentDto> createAppointment(@Valid @RequestBody AppointmentDto appointmentDto, @RequestParam long enterpriseId,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestHeader(value = "X-Recaptcha-Token", required = false) String captchaToken) {
+        // For guest bookings (no auth token), require a valid reCAPTCHA
+        if (token == null || token.isBlank()) {
+            if (!recaptchaService.verify(captchaToken)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "reCAPTCHA verification failed");
+            }
+        }
         log.info(appointmentDto.toString());
         Appointment appointment = appointmentMapper.dtoToAppointment(appointmentDto);
         Appointment createdAppointment = appointmentService.createAppointment(appointment, enterpriseId, token);

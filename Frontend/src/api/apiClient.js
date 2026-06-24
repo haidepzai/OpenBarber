@@ -121,9 +121,12 @@ export const appointmentsAPI = {
   getMy: () => apiClient.get(API_ENDPOINTS.APPOINTMENTS_MY, { headers: getAuthHeader() }),
   cancel: (id, code) => apiClient.delete(API_ENDPOINTS.APPOINTMENTS_CANCEL(id, code), { headers: getAuthHeader() }),
   confirm: (id, code) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CONFIRM(id, code), {}, { headers: getAuthHeader() }),
-  create: (enterpriseId, data) => {
+  create: (enterpriseId, data, captchaToken = null) => {
     const token = getAccessToken();
     const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    if (captchaToken) {
+      config.headers = { ...(config.headers || {}), 'X-Recaptcha-Token': captchaToken };
+    }
     return apiClient.post(API_ENDPOINTS.APPOINTMENTS_CREATE(enterpriseId), data, config);
   },
   update: (id, data) => apiClient.put(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), data, { headers: getAuthHeader() }),

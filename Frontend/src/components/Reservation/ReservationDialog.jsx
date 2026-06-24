@@ -1,9 +1,10 @@
-import React, { Fragment, useContext, useEffect, useReducer, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import { Box, Button, CircularProgress, Stack, Typography } from '@mui/material';
+import ReCAPTCHA from 'react-google-recaptcha';
 import ServicePage from './ServicePage';
 import DatePage from './DatePage';
 import OverviewPage from './OverviewPage';
@@ -11,6 +12,8 @@ import SuccessScreen from './SuccessScreen';
 import { createAppointment } from '../../actions/AppointmentActions';
 import AuthContext from '../../context/auth-context';
 import { useTranslation } from 'react-i18next';
+
+const RECAPTCHA_SITE_KEY = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
 const steps = ['Services', 'Date', 'Booking'];
 
@@ -65,10 +68,13 @@ function ReservationDialog({ open, handleClose, shop }) {
   const [showSuccessScreen, setShowSuccessScreen] = useState(false);
   const [bookingError, setBookingError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { t } = useTranslation();
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const recaptchaRef = useRef(null);
 
   const authCtx = useContext(AuthContext);
+  const { t } = useTranslation();
+
+  const isGuest = !authCtx.isLoggedIn;
 
   useEffect(() => {
     dispatch({ type: 'set_enterprise_id', payload: shop.id });
@@ -98,7 +104,7 @@ function ReservationDialog({ open, handleClose, shop }) {
       case 1: {
         if (!data.appointmentDateTime) return false;
         const d = new Date(data.appointmentDateTime);
-        return d.getHours() > 0 || d.getMinutes() > 0; // time slot must be picked (not midnight)
+        return d.getHours() > 0 || d.getMinutes() > 0;
       }
       case 2:
         return (
@@ -106,7 +112,8 @@ function ReservationDialog({ open, handleClose, shop }) {
           !!data.personalData.lastName &&
           !!data.personalData.email &&
           !!data.personalData.phoneNumber &&
-          data.personalData.formOfAddress !== 'None'
+          data.personalData.formOfAddress !== 'None' &&
+          (!isGuest || !!captchaToken)
         );
       default:
         console.log('rip');
@@ -149,11 +156,14 @@ function ReservationDialog({ open, handleClose, shop }) {
       paymentMethod: data.paymentMethod,
     };
     try {
-      await createAppointment(requestObject, shop.id);
+      await createAppointment(requestObject, shop.id, isGuest ? captchaToken : null);
       setShowSuccessScreen(true);
     } catch (err) {
       console.error('Could not book', err);
       setBookingError(t('BOOKING_FAILED', 'Buchung fehlgeschlagen. Bitte erneut versuchen.'));
+      // Reset captcha on error so user can retry
+      if (recaptchaRef.current) recaptchaRef.current.reset();
+      setCaptchaToken(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -276,6 +286,21 @@ function ReservationDialog({ open, handleClose, shop }) {
                   setError={setError}
                   shopPaymentMethods={shop.paymentMethods}
                 />
+              )}
+              {!isSubmitting && isGuest && (
+                <Stack alignItems="center" sx={{ py: 2 }}>
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={RECAPTCHA_SITE_KEY}
+                    onChange={(token) => setCaptchaToken(token)}
+                    onExpired={() => setCaptchaToken(null)}
+                  />
+                  {!!error[2] && !captchaToken && (
+                    <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+                      {t('CAPTCHA_REQUIRED', 'Bitte bestätige, dass du kein Roboter bist.')}
+                    </Typography>
+                  )}
+                </Stack>
               )}
             </Fragment>
           )}

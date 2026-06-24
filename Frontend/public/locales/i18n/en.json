@@ -231,5 +231,6 @@
   "SAVE": "Save",
   "MY_REVIEWS": "My Reviews",
   "NO_REVIEWS": "No reviews submitted yet.",
-  "EDIT_REVIEW": "Edit Review"
+  "EDIT_REVIEW": "Edit Review",
+  "CAPTCHA_REQUIRED": "Please confirm you are not a robot."
 }

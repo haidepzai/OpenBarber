@@ -231,5 +231,7 @@
   "SAVE": "保存",
   "MY_REVIEWS": "マイレビュー",
   "NO_REVIEWS": "まだレビューはありません。",
-  "EDIT_REVIEW": "レビューを編集"
+  "EDIT_REVIEW": "レビューを編集",
+  "BOOKING_FAILED": "予約に失敗しました。もう一度お試しください。",
+  "CAPTCHA_REQUIRED": "ロボットでないことを確認してください。"
 }
