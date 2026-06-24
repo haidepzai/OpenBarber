@@ -2,10 +2,10 @@ package com.hdmstuttgart.mi.backend.controller;
 
 import com.hdmstuttgart.mi.backend.exception.UnauthorizedException;
 import com.hdmstuttgart.mi.backend.mapper.ServiceMapper;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.Service;
 import com.hdmstuttgart.mi.backend.model.dto.ServiceDto;
-import com.hdmstuttgart.mi.backend.service.EnterpriseService;
+import com.hdmstuttgart.mi.backend.service.ShopService;
 import com.hdmstuttgart.mi.backend.service.JwtService;
 import com.hdmstuttgart.mi.backend.service.ServiceService;
 import com.hdmstuttgart.mi.backend.service.UserService;
@@ -28,7 +28,7 @@ public class ServiceController {
 
     private final ServiceService serviceService;
     private final UserService userService;
-    private final EnterpriseService enterpriseService;
+    private final ShopService shopService;
     private final ServiceMapper serviceMapper;
     private final JwtService jwtService;
 
@@ -37,14 +37,14 @@ public class ServiceController {
      *
      * @param serviceService    the service service
      * @param userService       the user service
-     * @param enterpriseService the enterprise service
+     * @param shopService the shop service
      * @param serviceMapper     the service mapper
      * @param jwtService        the jwt service
      */
-    public ServiceController(ServiceService serviceService, UserService userService, EnterpriseService enterpriseService, ServiceMapper serviceMapper, JwtService jwtService) {
+    public ServiceController(ServiceService serviceService, UserService userService, ShopService shopService, ServiceMapper serviceMapper, JwtService jwtService) {
         this.serviceService = serviceService;
         this.userService = userService;
-        this.enterpriseService = enterpriseService;
+        this.shopService = shopService;
         this.serviceMapper = serviceMapper;
         this.jwtService = jwtService;
     }
@@ -53,29 +53,29 @@ public class ServiceController {
      * Create service response entity.
      *
      * @param serviceDto   the service dto
-     * @param enterpriseId the enterprise id
+     * @param shopId the shop id
      * @param token        the token
      * @return the response entity
      */
-    @ApiOperation(value = "Create Service", notes = "Creates a new service for the given enterprise ID")
+    @ApiOperation(value = "Create Service", notes = "Creates a new service for the given shop ID")
     @PostMapping
     public ResponseEntity<ServiceDto> createService(
             @Valid @RequestBody ServiceDto serviceDto,
-            @RequestParam Long enterpriseId,
+            @RequestParam Long shopId,
             @RequestHeader("Authorization") String token
     ) {
         // Validate the JWT token and extract the user information
         String email = jwtService.extractUsername(token.substring(7));
         userService.getUserByEmail(email);
         // Check if the user is authorized to perform the operation based on their email
-        Enterprise enterprise = enterpriseService.getEnterpriseById(enterpriseId);
-        if (!email.equals(enterprise.getEmail())) {
+        Shop shop = shopService.getShopById(shopId);
+        if (!email.equals(shop.getEmail())) {
             throw new UnauthorizedException("User is not authorized to perform this operation");
         }
 
         // Convert the DTO to the entity
         Service service = serviceMapper.toEntity(serviceDto);
-        Service createdService = serviceService.createService(service, enterpriseId);
+        Service createdService = serviceService.createService(service, shopId);
 
         // Convert the created entity to DTO and return it in the response
         ServiceDto createdServiceDto = serviceMapper.toDto(createdService);
@@ -83,15 +83,15 @@ public class ServiceController {
     }
 
     /**
-     * Gets services by enterprise id.
+     * Gets services by shop id.
      *
-     * @param enterpriseId the enterprise id
-     * @return the services by enterprise id
+     * @param shopId the shop id
+     * @return the services by shop id
      */
-    @ApiOperation(value = "Get Services by Enterprise ID", notes = "Retrieves all services for a specific enterprise")
+    @ApiOperation(value = "Get Services by Shop ID", notes = "Retrieves all services for a specific shop")
     @GetMapping
-    public ResponseEntity<List<ServiceDto>> getServicesByEnterpriseId(@RequestParam Long enterpriseId) {
-        List<ServiceDto> serviceDtos = serviceService.getServicesByEnterpriseId(enterpriseId)
+    public ResponseEntity<List<ServiceDto>> getServicesByShopId(@RequestParam Long shopId) {
+        List<ServiceDto> serviceDtos = serviceService.getServicesByShopId(shopId)
                 .stream()
                 .map(serviceMapper::toDto)
                 .collect(Collectors.toList());

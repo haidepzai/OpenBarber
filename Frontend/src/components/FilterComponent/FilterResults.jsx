@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import TodayIcon from '@mui/icons-material/Today';
 import ReservationDialog from '../Reservation/ReservationDialog';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getEnterprisesWithinRadius, getEnterprises } from '../../actions/EnterpriseActions';
+import { getShopsWithinRadius, getShops } from '../../actions/ShopActions';
 import { useTranslation } from 'react-i18next';
 import { convertDateToTime } from '../../shared/ConvertTime';
 
@@ -102,8 +102,8 @@ const FilterResults = ({ filter }) => {
     try {
       const hasCoordinates = location.state?.lat != null && location.state?.lng != null;
       const data = hasCoordinates
-        ? await getEnterprisesWithinRadius(location.state.lat, location.state.lng, page - 1)
-        : await getEnterprises(page - 1);
+        ? await getShopsWithinRadius(location.state.lat, location.state.lng, page - 1)
+        : await getShops(page - 1);
       setShops(Array.isArray(data?.content) ? data.content : []);
       setTotalPages(data?.totalPages ?? 1);
     } catch (error) {
@@ -158,7 +158,7 @@ const FilterResults = ({ filter }) => {
                   <Stack direction="row" alignItems="center" spacing={3} sx={{ mb: '20px' }}>
                     <img
                       alt="shop logo"
-                      src={shop.logo ? `data:image/jpeg;base64,${shop.logo}` : process.env.REACT_APP_BACKUP_IMAGE}
+                      src={shop.logo ? `data:image/jpeg;base64,${shop.logo}` : import.meta.env.VITE_BACKUP_IMAGE}
                       width="205px"
                       height="205px"
                       style={{

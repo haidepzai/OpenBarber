@@ -46,7 +46,7 @@ function Footer() {
         </Stack>
         <Stack direction="column" gap={3}>
           <Button variant="contained" color="white" sx={{ color: '#6D5344' }}>
-            {t('FOR_ENTERPRISES')}
+            {t('FOR_SHOPS')}
           </Button>
           <Stack direction="row" gap={1}>
             <IconButton aria-label="delete" color="lol">

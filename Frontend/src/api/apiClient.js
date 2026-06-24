@@ -73,43 +73,43 @@ const refreshAccessToken = async () => {
 
 // Reviews API
 export const reviewsAPI = {
-  getByEnterprise: (enterpriseId) => apiClient.get(API_ENDPOINTS.REVIEWS(enterpriseId)),
+  getByShop: (shopId) => apiClient.get(API_ENDPOINTS.REVIEWS(shopId)),
   getMy: () => apiClient.get(API_ENDPOINTS.REVIEWS_MY, { headers: getAuthHeader() }),
-  create: (enterpriseId, data) => apiClient.post(API_ENDPOINTS.REVIEWS_CREATE_AUTH(enterpriseId), data, { headers: getAuthHeader() }),
+  create: (shopId, data) => apiClient.post(API_ENDPOINTS.REVIEWS_CREATE_AUTH(shopId), data, { headers: getAuthHeader() }),
   update: (id, data) => apiClient.put(API_ENDPOINTS.REVIEW_UPDATE(id), data, { headers: getAuthHeader() }),
   delete: (id) => apiClient.delete(API_ENDPOINTS.REVIEW_DELETE(id), { headers: getAuthHeader() }),
 };
 
-// Enterprises API
-export const enterprisesAPI = {
-  getByUser: () => apiClient.get(API_ENDPOINTS.ENTERPRISES_BY_USER, { headers: getAuthHeader() }),
-  getById: (id) => apiClient.get(API_ENDPOINTS.ENTERPRISE_DETAIL(id), { headers: getAuthHeader() }),
+// Shops API
+export const shopsAPI = {
+  getByUser: () => apiClient.get(API_ENDPOINTS.SHOPS_BY_USER, { headers: getAuthHeader() }),
+  getById: (id) => apiClient.get(API_ENDPOINTS.SHOP_DETAIL(id), { headers: getAuthHeader() }),
   uploadLogo: (id, file) => {
     const formData = new FormData();
     formData.append('file', file);
-    return apiClient.post(API_ENDPOINTS.ENTERPRISE_LOGO(id), formData, {
+    return apiClient.post(API_ENDPOINTS.SHOP_LOGO(id), formData, {
       headers: { ...getAuthHeader(), 'Content-Type': 'multipart/form-data' },
     });
   },
-  deleteLogo: (id) => apiClient.delete(API_ENDPOINTS.ENTERPRISE_LOGO(id), { headers: getAuthHeader() }),
+  deleteLogo: (id) => apiClient.delete(API_ENDPOINTS.SHOP_LOGO(id), { headers: getAuthHeader() }),
   uploadPictures: (id, files) => {
     const formData = new FormData();
     files.forEach((file) => formData.append('files', file));
-    return apiClient.post(API_ENDPOINTS.ENTERPRISE_PICTURES(id), formData, {
+    return apiClient.post(API_ENDPOINTS.SHOP_PICTURES(id), formData, {
       headers: { ...getAuthHeader(), 'Content-Type': 'multipart/form-data' },
     });
   },
-  deletePicture: (id, index) => apiClient.delete(API_ENDPOINTS.ENTERPRISE_PICTURE_DELETE(id, index), { headers: getAuthHeader() }),
-  getAvailableSlots: (enterpriseId, date, employeeId, serviceDuration) => {
+  deletePicture: (id, index) => apiClient.delete(API_ENDPOINTS.SHOP_PICTURE_DELETE(id, index), { headers: getAuthHeader() }),
+  getAvailableSlots: (shopId, date, employeeId, serviceDuration) => {
     const params = { date, serviceDuration };
     if (employeeId) params.employeeId = employeeId;
-    return apiClient.get(API_ENDPOINTS.ENTERPRISE_AVAILABLE_SLOTS(enterpriseId), { params });
+    return apiClient.get(API_ENDPOINTS.SHOP_AVAILABLE_SLOTS(shopId), { params });
   },
 };
 
 // Services API
 export const servicesAPI = {
-  getByEnterprise: (enterpriseId) => apiClient.get(API_ENDPOINTS.SERVICES(enterpriseId)),
+  getByShop: (shopId) => apiClient.get(API_ENDPOINTS.SERVICES(shopId)),
   delete: (id) => apiClient.delete(API_ENDPOINTS.SERVICE_DELETE(id), { headers: getAuthHeader() }),
   create: (data) => apiClient.post(API_ENDPOINTS.SERVICE_CREATE, data, { headers: getAuthHeader() }),
   update: (id, data) => apiClient.put(API_ENDPOINTS.SERVICE_UPDATE(id), data, { headers: getAuthHeader() }),
@@ -117,17 +117,17 @@ export const servicesAPI = {
 
 // Appointments API
 export const appointmentsAPI = {
-  getByEnterprise: (enterpriseId) => apiClient.get(API_ENDPOINTS.APPOINTMENTS(enterpriseId), { headers: getAuthHeader() }),
+  getByShop: (shopId) => apiClient.get(API_ENDPOINTS.APPOINTMENTS(shopId), { headers: getAuthHeader() }),
   getMy: () => apiClient.get(API_ENDPOINTS.APPOINTMENTS_MY, { headers: getAuthHeader() }),
   cancel: (id, code) => apiClient.delete(API_ENDPOINTS.APPOINTMENTS_CANCEL(id, code), { headers: getAuthHeader() }),
   confirm: (id, code) => apiClient.post(API_ENDPOINTS.APPOINTMENTS_CONFIRM(id, code), {}, { headers: getAuthHeader() }),
-  create: (enterpriseId, data, captchaToken = null) => {
+  create: (shopId, data, captchaToken = null) => {
     const token = getAccessToken();
     const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
     if (captchaToken) {
       config.headers = { ...(config.headers || {}), 'X-Recaptcha-Token': captchaToken };
     }
-    return apiClient.post(API_ENDPOINTS.APPOINTMENTS_CREATE(enterpriseId), data, config);
+    return apiClient.post(API_ENDPOINTS.APPOINTMENTS_CREATE(shopId), data, config);
   },
   update: (id, data) => apiClient.put(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), data, { headers: getAuthHeader() }),
   patch: (id, data) => apiClient.patch(API_ENDPOINTS.APPOINTMENTS_BY_ID(id), data, { headers: getAuthHeader() }),
@@ -150,11 +150,11 @@ export const usersAPI = {
 
 // Employees API
 export const employeesAPI = {
-  getByEnterprise: (enterpriseId) => apiClient.get(API_ENDPOINTS.EMPLOYEES_BY_ENTERPRISE(enterpriseId), { headers: getAuthHeader() }),
-  create: (data, enterpriseId) => {
+  getByShop: (shopId) => apiClient.get(API_ENDPOINTS.EMPLOYEES_BY_SHOP(shopId), { headers: getAuthHeader() }),
+  create: (data, shopId) => {
     const config = {
       method: 'POST',
-      params: { enterpriseId },
+      params: { shopId },
       headers: getAuthHeader(),
     };
     return apiClient.post(API_ENDPOINTS.EMPLOYEE_CREATE, data, config);

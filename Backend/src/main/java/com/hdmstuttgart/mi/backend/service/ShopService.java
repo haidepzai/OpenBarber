@@ -2,13 +2,13 @@ package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.exception.UnauthorizedException;
 import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import com.hdmstuttgart.mi.backend.model.enums.UserRole;
-import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
+import com.hdmstuttgart.mi.backend.repository.ShopRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,26 +27,26 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * The type Enterprise service.
+ * The type Shop service.
  */
 @Service
 @RequiredArgsConstructor
-public class EnterpriseService {
+public class ShopService {
 
-    private static final Logger log = LoggerFactory.getLogger(EnterpriseService.class);
-    private final EnterpriseRepository enterpriseRepository;
+    private static final Logger log = LoggerFactory.getLogger(ShopService.class);
+    private final ShopRepository shopRepository;
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
 
     /**
-     * Create enterprise enterprise.
+     * Create shop shop.
      *
      * @param request the request
      * @param token   the token
-     * @return the enterprise
+     * @return the shop
      */
-    public Enterprise createEnterprise(Enterprise request, String token) {
+    public Shop createShop(Shop request, String token) {
         String username = jwtService.extractUsername(token.substring(7));
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
@@ -101,7 +101,7 @@ public class EnterpriseService {
                 employees.add(employee);
             }
         }
-        Enterprise enterprise = Enterprise.builder()
+        Shop shop = Shop.builder()
             .name(request.getName())
             .owner(request.getOwner())
             .email(request.getEmail())
@@ -123,141 +123,141 @@ public class EnterpriseService {
             .services(services)
             .employees(employees)
             .build();
-        user.setEnterprise(enterprise);
+        user.setShop(shop);
         if (user.getRole() == UserRole.VERIFIED) {
             user.setRole(UserRole.OPERATOR);
         }
-        return userRepository.save(user).getEnterprise();
+        return userRepository.save(user).getShop();
     }
 
     /**
-     * Gets all enterprises.
+     * Gets all shops.
      *
-     * @return the all enterprises
+     * @return the all shops
      */
-    public Page<Enterprise> getAllEnterprises(Pageable pageable) {
-        return enterpriseRepository.findAll(pageable);
+    public Page<Shop> getAllShops(Pageable pageable) {
+        return shopRepository.findAll(pageable);
     }
 
-    public Page<Enterprise> getEnterprisesWithinRadius(double lat, double lng, double radius, Pageable pageable) {
-        return enterpriseRepository.findWithinRadius(lat, lng, radius, pageable);
+    public Page<Shop> getShopsWithinRadius(double lat, double lng, double radius, Pageable pageable) {
+        return shopRepository.findWithinRadius(lat, lng, radius, pageable);
     }
 
     /**
-     * Gets enterprise by id.
+     * Gets shop by id.
      *
      * @param id the id
-     * @return the enterprise by id
+     * @return the shop by id
      */
-    public Enterprise getEnterpriseById(long id) {
-        return enterpriseRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
+    public Shop getShopById(long id) {
+        return shopRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + id));
     }
 
     /**
-     * Gets enterprise by email.
+     * Gets shop by email.
      *
      * @param email the email
-     * @return the enterprise by email
+     * @return the shop by email
      */
-    public Enterprise getEnterpriseByEmail(String email) {
-        return enterpriseRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with email = " + email));
+    public Shop getShopByEmail(String email) {
+        return shopRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with email = " + email));
     }
 
     /**
-     * Gets enterprise by user.
+     * Gets shop by user.
      *
      * @param token the token
-     * @return the enterprise by user
+     * @return the shop by user
      */
-    public Enterprise getEnterpriseByUser(String token) {
+    public Shop getShopByUser(String token) {
         String username = jwtService.extractUsername(token.substring(7));
 
         User user = userRepository.findByEmail(username)
                 .orElseThrow();
 
-        return user.getEnterprise();
+        return user.getShop();
     }
 
     /**
-     * Update enterprise enterprise.
+     * Update shop shop.
      *
      * @param id            the id
-     * @param newEnterprise the new enterprise
+     * @param newShop the new shop
      * @param token         the token
-     * @return the enterprise
+     * @return the shop
      */
-    public Enterprise updateEnterprise(long id, Enterprise newEnterprise, String token) {
+    public Shop updateShop(long id, Shop newShop, String token) {
         String username = jwtService.extractUsername(token.substring(7));
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
-        if (user.getEnterprise().getId() != id) {
-            throw new UnauthorizedException("Not allowed to update enterprise");
+        if (user.getShop().getId() != id) {
+            throw new UnauthorizedException("Not allowed to update shop");
         }
-        return enterpriseRepository.findById(id)
-                .map(enterprise -> {
-                    enterprise.setName(newEnterprise.getName());
-                    enterprise.setAddress(newEnterprise.getAddress());
-                    enterprise.setAddressLongitude(newEnterprise.getAddressLongitude());
-                    enterprise.setAddressLatitude(newEnterprise.getAddressLatitude());
-                    enterprise.setEmail(newEnterprise.getEmail());
-                    //enterprise.setLogo(newEnterprise.getLogo());
-                    //enterprise.setPictures(newEnterprise.getPictures());
-                    enterprise.setWebsite(newEnterprise.getWebsite());
-                    enterprise.setPhoneNumber(newEnterprise.getPhoneNumber());
-                    enterprise.setApproved(newEnterprise.isApproved());
-                    enterprise.setPriceCategory(newEnterprise.getPriceCategory());
-                    enterprise.setOpeningTime(newEnterprise.getOpeningTime());
-                    enterprise.setClosingTime(newEnterprise.getClosingTime());
-                    enterprise.setOpeningDays(newEnterprise.getOpeningDays());
+        return shopRepository.findById(id)
+                .map(shop -> {
+                    shop.setName(newShop.getName());
+                    shop.setAddress(newShop.getAddress());
+                    shop.setAddressLongitude(newShop.getAddressLongitude());
+                    shop.setAddressLatitude(newShop.getAddressLatitude());
+                    shop.setEmail(newShop.getEmail());
+                    //shop.setLogo(newShop.getLogo());
+                    //shop.setPictures(newShop.getPictures());
+                    shop.setWebsite(newShop.getWebsite());
+                    shop.setPhoneNumber(newShop.getPhoneNumber());
+                    shop.setApproved(newShop.isApproved());
+                    shop.setPriceCategory(newShop.getPriceCategory());
+                    shop.setOpeningTime(newShop.getOpeningTime());
+                    shop.setClosingTime(newShop.getClosingTime());
+                    shop.setOpeningDays(newShop.getOpeningDays());
 
                     // Update Payment Methods
-                    if (newEnterprise.getPaymentMethods() != null) {
-                        Set<PaymentMethod> paymentMethodsSet = newEnterprise.getPaymentMethods()
+                    if (newShop.getPaymentMethods() != null) {
+                        Set<PaymentMethod> paymentMethodsSet = newShop.getPaymentMethods()
                                 .stream()
                                 .map(paymentMethod -> PaymentMethod.valueOf(paymentMethod.toString()))
                                 .collect(Collectors.toSet());
 
-                        // Set paymentMethods in Enterprise entity
-                        enterprise.setPaymentMethods(paymentMethodsSet);
+                        // Set paymentMethods in Shop entity
+                        shop.setPaymentMethods(paymentMethodsSet);
                     }
 
 
                     // Update Drinks
-                    if (newEnterprise.getDrinks() != null) {
-                        Set<Drink> drinksSet = newEnterprise.getDrinks()
+                    if (newShop.getDrinks() != null) {
+                        Set<Drink> drinksSet = newShop.getDrinks()
                                 .stream()
                                 .map(drinks -> Drink.valueOf(drinks.name()))
                                 .collect(Collectors.toSet());
 
-                        enterprise.setDrinks(drinksSet);
+                        shop.setDrinks(drinksSet);
                     }
 
                     // Update services
-                    if (newEnterprise.getServices() != null) {
+                    if (newShop.getServices() != null) {
                         List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
-                        for (com.hdmstuttgart.mi.backend.model.Service serviceRequest : newEnterprise.getServices()) {
+                        for (com.hdmstuttgart.mi.backend.model.Service serviceRequest : newShop.getServices()) {
                             com.hdmstuttgart.mi.backend.model.Service service = new com.hdmstuttgart.mi.backend.model.Service();
                             service.setId(serviceRequest.getId());
                             service.setTitle(serviceRequest.getTitle());
                             service.setPrice(serviceRequest.getPrice());
                             service.setTargetAudience(serviceRequest.getTargetAudience());
                             service.setDurationInMin(serviceRequest.getDurationInMin());
-                            service.setEnterprise(enterprise);
+                            service.setShop(shop);
                             services.add(service);
                         }
-                        enterprise.setServices(services);
+                        shop.setServices(services);
                     }
 
                     // Update employees
-                    if (newEnterprise.getEmployees() != null) {
+                    if (newShop.getEmployees() != null) {
                         List<Employee> employees = new ArrayList<>();
-                        for (Employee employeeRequest : newEnterprise.getEmployees()) {
+                        for (Employee employeeRequest : newShop.getEmployees()) {
                             Employee employee = new Employee();
                             employee.setName(employeeRequest.getName());
-                            employee.setEnterprise(enterprise);
+                            employee.setShop(shop);
                             byte[] picture = null;
                             if (employeeRequest.getPicture() != null) {
                                 picture = employeeRequest.getPicture();
@@ -265,37 +265,37 @@ public class EnterpriseService {
                             employee.setPicture(picture);
                             employee.setTitle(employeeRequest.getTitle());
                         }
-                        enterprise.setEmployees(employees);
+                        shop.setEmployees(employees);
                     }
 
-                    return enterpriseRepository.save(enterprise);
+                    return shopRepository.save(shop);
                 })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + id));
     }
 
     /**
-     * Patch enterprise enterprise.
+     * Patch shop shop.
      *
-     * @param updatedEnterprise the updated enterprise
+     * @param updatedShop the updated shop
      * @param token             the token
-     * @return the enterprise
+     * @return the shop
      */
-    public Enterprise patchEnterprise(Enterprise updatedEnterprise, String token) {
+    public Shop patchShop(Shop updatedShop, String token) {
         String username = jwtService.extractUsername(token.substring(7));
 
         User user = userRepository.findByEmail(username)
                 .orElseThrow();
 
-        Enterprise existingEnterprise = user.getEnterprise();
+        Shop existingShop = user.getShop();
 
-        Field[] fields = Enterprise.class.getDeclaredFields();
+        Field[] fields = Shop.class.getDeclaredFields();
 
         for (Field field : fields) {
             try {
                 field.setAccessible(true);
-                Object newValue = field.get(updatedEnterprise);
+                Object newValue = field.get(updatedShop);
                 if (newValue != null) {
-                    field.set(existingEnterprise, newValue);
+                    field.set(existingShop, newValue);
                 }
             } catch (IllegalAccessException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to update field: " + field.getName());
@@ -303,41 +303,41 @@ public class EnterpriseService {
             }
         }
 
-        return enterpriseRepository.save(existingEnterprise);
+        return shopRepository.save(existingShop);
     }
 
     /**
-     * Delete enterprise.
+     * Delete shop.
      *
      * @param id the id
      */
-    public Enterprise uploadLogo(Long id, MultipartFile file, String token) {
-        Enterprise enterprise = enterpriseRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
-        authorizeEnterpriseAccess(enterprise, token);
+    public Shop uploadLogo(Long id, MultipartFile file, String token) {
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        authorizeShopAccess(shop, token);
         try {
-            enterprise.setLogo(file.getBytes());
+            shop.setLogo(file.getBytes());
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to process image");
         }
-        return enterpriseRepository.save(enterprise);
+        return shopRepository.save(shop);
     }
 
-    public Enterprise deleteLogo(Long id, String token) {
-        Enterprise enterprise = enterpriseRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
-        authorizeEnterpriseAccess(enterprise, token);
-        enterprise.setLogo(null);
-        return enterpriseRepository.save(enterprise);
+    public Shop deleteLogo(Long id, String token) {
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        authorizeShopAccess(shop, token);
+        shop.setLogo(null);
+        return shopRepository.save(shop);
     }
 
-    public Enterprise uploadPictures(Long id, List<MultipartFile> files, String token) {
-        Enterprise enterprise = enterpriseRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
-        authorizeEnterpriseAccess(enterprise, token);
+    public Shop uploadPictures(Long id, List<MultipartFile> files, String token) {
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        authorizeShopAccess(shop, token);
         List<byte[]> pictures = new ArrayList<>();
-        if (enterprise.getPictures() != null) {
-            pictures.addAll(enterprise.getPictures());
+        if (shop.getPictures() != null) {
+            pictures.addAll(shop.getPictures());
         }
         for (MultipartFile file : files) {
             try {
@@ -346,36 +346,36 @@ public class EnterpriseService {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to process image");
             }
         }
-        enterprise.setPictures(pictures);
-        return enterpriseRepository.save(enterprise);
+        shop.setPictures(pictures);
+        return shopRepository.save(shop);
     }
 
-    public Enterprise deletePicture(Long id, int index, String token) {
-        Enterprise enterprise = enterpriseRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
-        authorizeEnterpriseAccess(enterprise, token);
-        List<byte[]> pictures = enterprise.getPictures() == null ? new ArrayList<>() : new ArrayList<>(enterprise.getPictures());
+    public Shop deletePicture(Long id, int index, String token) {
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        authorizeShopAccess(shop, token);
+        List<byte[]> pictures = shop.getPictures() == null ? new ArrayList<>() : new ArrayList<>(shop.getPictures());
         if (index < 0 || index >= pictures.size()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid picture index");
         }
         pictures.remove(index);
-        enterprise.setPictures(pictures);
-        return enterpriseRepository.save(enterprise);
+        shop.setPictures(pictures);
+        return shopRepository.save(shop);
     }
 
-    private void authorizeEnterpriseAccess(Enterprise enterprise, String token) {
+    private void authorizeShopAccess(Shop shop, String token) {
         String username = jwtService.extractUsername(token.substring(7));
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
-        if (user.getEnterprise() == null || !user.getEnterprise().getId().equals(enterprise.getId())) {
+        if (user.getShop() == null || !user.getShop().getId().equals(shop.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized");
         }
     }
 
-    public void deleteEnterprise(long id) {
-        if (!enterpriseRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + id);
+    public void deleteShop(long id) {
+        if (!shopRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + id);
         }
-        enterpriseRepository.deleteById(id);
+        shopRepository.deleteById(id);
     }
 }

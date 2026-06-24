@@ -1,9 +1,9 @@
 package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.model.Employee;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
-import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
+import com.hdmstuttgart.mi.backend.repository.ShopRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,47 +16,47 @@ import java.util.List;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final EnterpriseRepository enterpriseRepository;
+    private final ShopRepository shopRepository;
 
     /**
      * Instantiates a new Employee service.
      *
      * @param employeeRepository   the employee repository
-     * @param enterpriseRepository the enterprise repository
+     * @param shopRepository the shop repository
      */
-    public EmployeeService(EmployeeRepository employeeRepository, EnterpriseRepository enterpriseRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, ShopRepository shopRepository) {
         this.employeeRepository = employeeRepository;
-        this.enterpriseRepository = enterpriseRepository;
+        this.shopRepository = shopRepository;
     }
 
     /**
      * Create employee employee.
      *
      * @param employee     the employee
-     * @param enterpriseId the enterprise id
+     * @param shopId the shop id
      * @return the employee
      */
-    public Employee createEmployee(Employee employee, Long enterpriseId) {
-        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
-        employee.setEnterprise(enterprise);
+    public Employee createEmployee(Employee employee, Long shopId) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + shopId));
+        employee.setShop(shop);
         return employeeRepository.save(employee);
     }
 
     /**
-     * Gets employees by enterprise id.
+     * Gets employees by shop id.
      *
-     * @param enterpriseId the enterprise id
-     * @return the employees by enterprise id
+     * @param shopId the shop id
+     * @return the employees by shop id
      */
-    public List<Employee> getEmployeesByEnterpriseId(Long enterpriseId) {
-        if (!enterpriseRepository.existsById(enterpriseId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
+    public List<Employee> getEmployeesByShopId(Long shopId) {
+        if (!shopRepository.existsById(shopId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + shopId);
         }
 
-        List<Employee> employees = employeeRepository.findAllByEnterpriseId(enterpriseId);
+        List<Employee> employees = employeeRepository.findAllByShopId(shopId);
         if (employees.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No employees found for enterprise with id = " + enterpriseId);
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No employees found for shop with id = " + shopId);
         }
         return employees;
     }

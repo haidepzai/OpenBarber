@@ -26,8 +26,8 @@ public class EmployeeMapper {
         if (employee.getPicture() != null) {
             dto.setPicture(Base64.getEncoder().encodeToString(employee.getPicture()));
         }
-        if (employee.getEnterprise() != null) {
-            dto.setEnterpriseId(employee.getEnterprise().getId());
+        if (employee.getShop() != null) {
+            dto.setShopId(employee.getShop().getId());
         }
         return dto;
     }

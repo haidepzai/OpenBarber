@@ -19,7 +19,7 @@ import java.util.UUID;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final EnterpriseRepository enterpriseRepository;
+    private final ShopRepository shopRepository;
     private final AppointmentRepository appointmentRepository;
     private final JwtService jwtService;
     private final UserRepository userRepository;
@@ -28,14 +28,14 @@ public class ReviewService {
      * Instantiates a new Review service.
      *
      * @param reviewRepository      the review repository
-     * @param enterpriseRepository  the enterprise repository
+     * @param shopRepository  the shop repository
      * @param appointmentRepository the appointment repository
      * @param jwtService            the jwt service
      * @param userRepository        the user repository
      */
-    public ReviewService(ReviewRepository reviewRepository, EnterpriseRepository enterpriseRepository, AppointmentRepository appointmentRepository, JwtService jwtService, UserRepository userRepository) {
+    public ReviewService(ReviewRepository reviewRepository, ShopRepository shopRepository, AppointmentRepository appointmentRepository, JwtService jwtService, UserRepository userRepository) {
         this.reviewRepository = reviewRepository;
-        this.enterpriseRepository = enterpriseRepository;
+        this.shopRepository = shopRepository;
         this.appointmentRepository = appointmentRepository;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
@@ -45,18 +45,18 @@ public class ReviewService {
      * Create review review.
      *
      * @param review       the review
-     * @param enterpriseId the enterprise id
+     * @param shopId the shop id
      * @param reviewUuid   the review uuid
      * @return the review
      */
-    public Review createReview(Review review, Long enterpriseId, UUID reviewUuid) {
+    public Review createReview(Review review, Long shopId, UUID reviewUuid) {
         Appointment appointment = appointmentRepository.findById(reviewUuid).orElseThrow();
         if (appointment.isReviewed()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment has already been reviewed");
         }
-        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
-        review.setEnterprise(enterprise);
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + shopId));
+        review.setShop(shop);
         appointment.setReviewed(true);
         appointmentRepository.save(appointment);
         return reviewRepository.save(review);
@@ -66,13 +66,13 @@ public class ReviewService {
      * Create review review.
      *
      * @param review       the review
-     * @param enterpriseId the enterprise id
+     * @param shopId the shop id
      * @return the review
      */
-    public Review createReview(Review review, Long enterpriseId) {
-        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
-        review.setEnterprise(enterprise);
+    public Review createReview(Review review, Long shopId) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + shopId));
+        review.setShop(shop);
         return reviewRepository.save(review);
     }
 
@@ -80,38 +80,38 @@ public class ReviewService {
      * Create review review.
      *
      * @param review       the review
-     * @param enterpriseId the enterprise id
+     * @param shopId the shop id
      * @param token        the token
      * @return the review
      */
-    public Review createReview(Review review, Long enterpriseId, String token) {
+    public Review createReview(Review review, Long shopId, String token) {
         String username = jwtService.extractUsername(token.substring(7));
 
         User reviewer = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UnauthorizedException("Not allowed to review"));
 
-        if (reviewRepository.existsByEnterpriseIdAndReviewerId(enterpriseId, reviewer.getId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "You have already reviewed this enterprise");
+        if (reviewRepository.existsByShopIdAndReviewerId(shopId, reviewer.getId())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "You have already reviewed this shop");
         }
 
-        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
-        review.setEnterprise(enterprise);
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + shopId));
+        review.setShop(shop);
         review.setReviewer(reviewer);
         return reviewRepository.save(review);
     }
 
     /**
-     * Gets reviews by enterprise id.
+     * Gets reviews by shop id.
      *
-     * @param enterpriseId the enterprise id
-     * @return the reviews by enterprise id
+     * @param shopId the shop id
+     * @return the reviews by shop id
      */
-    public Page<Review> getReviewsByEnterpriseId(Long enterpriseId, Pageable pageable) {
-        if (!enterpriseRepository.existsById(enterpriseId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
+    public Page<Review> getReviewsByShopId(Long shopId, Pageable pageable) {
+        if (!shopRepository.existsById(shopId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + shopId);
         }
-        return reviewRepository.findAllByEnterpriseId(enterpriseId, pageable);
+        return reviewRepository.findAllByShopId(shopId, pageable);
     }
 
     /**

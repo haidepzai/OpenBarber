@@ -5,7 +5,7 @@ import CollectionsIcon from '@mui/icons-material/Collections';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useTranslation } from 'react-i18next';
 
-const PictureUpload = ({ enterprise, handleLogoUpload, handlePicturesUpload, handleDeletePicture }) => {
+const PictureUpload = ({ shop, handleLogoUpload, handlePicturesUpload, handleDeletePicture }) => {
   const { t } = useTranslation();
 
   return (
@@ -22,11 +22,11 @@ const PictureUpload = ({ enterprise, handleLogoUpload, handlePicturesUpload, han
             </Button>
           </Box>
         </Stack>
-        {enterprise.logo && (
+        {shop.logo && (
           <Box sx={{ mt: '24px' }}>
             <img
-              alt="enterprise logo"
-              src={`data:image/jpeg;base64,${enterprise.logo}`}
+              alt="shop logo"
+              src={`data:image/jpeg;base64,${shop.logo}`}
               width="100%"
               height="auto"
               style={{ maxHeight: '250px', objectFit: 'cover' }}
@@ -49,10 +49,10 @@ const PictureUpload = ({ enterprise, handleLogoUpload, handlePicturesUpload, han
             </Button>
           </Box>
         </Stack>
-        {enterprise.pictures && enterprise.pictures.length > 0 && (
+        {shop.pictures && shop.pictures.length > 0 && (
           <Box sx={{ mt: '24px' }}>
             <ImageList sx={{ width: '100%', height: '444px', borderRadius: '5px', boxShadow: 4 }} cols={4} rowHeight={220} variant="quilted">
-              {enterprise.pictures.map((picture, index) => (
+              {shop.pictures.map((picture, index) => (
                 <ImageListItem key={index}>
                   <img
                     src={`data:image/jpeg;base64,${picture}`}

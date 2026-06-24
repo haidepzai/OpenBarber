@@ -9,12 +9,14 @@ import PersonIcon from '@mui/icons-material/Person';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import { Edit, Delete } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/auth-context';
 import { appointmentsAPI, reviewsAPI } from '../api/apiClient';
 
 const CustomerProfilePage = () => {
   const { t } = useTranslation();
   const authCtx = useContext(AuthContext);
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(null);
@@ -74,7 +76,18 @@ const CustomerProfilePage = () => {
   const past = appointments.filter((a) => new Date(a.appointmentDateTime) < now);
 
   const renderCard = (a, allowCancel) => (
-    <Paper key={a.id} elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+    <Paper
+      key={a.id}
+      elevation={2}
+      onClick={() => a.shopId && navigate(`/shops/${a.shopId}`)}
+      sx={{
+        p: 3,
+        borderRadius: 3,
+        cursor: a.shopId ? 'pointer' : 'default',
+        transition: 'box-shadow 0.2s, transform 0.15s',
+        '&:hover': a.shopId ? { boxShadow: 6, transform: 'translateY(-2px)' } : {},
+      }}
+    >
       <Stack direction="row" alignItems="flex-start" justifyContent="space-between" flexWrap="wrap" gap={1}>
         <Stack gap={1} flex={1}>
           {/* Date & time */}
@@ -89,10 +102,10 @@ const CustomerProfilePage = () => {
           </Stack>
 
           {/* Salon */}
-          {a.enterpriseName && (
+          {a.shopName && (
             <Stack direction="row" alignItems="center" gap={1}>
               <StoreIcon fontSize="small" color="action" />
-              <Typography variant="body2">{a.enterpriseName}</Typography>
+              <Typography variant="body2">{a.shopName}</Typography>
             </Stack>
           )}
 
@@ -126,7 +139,7 @@ const CustomerProfilePage = () => {
               color="error"
               size="small"
               disabled={cancelling === a.id}
-              onClick={() => handleCancel(a)}
+              onClick={(e) => { e.stopPropagation(); handleCancel(a); }}
             >
               {cancelling === a.id ? <CircularProgress size={16} /> : t('CANCEL_APPOINTMENT', 'Absagen')}
             </Button>
@@ -162,13 +175,24 @@ const CustomerProfilePage = () => {
   };
 
   const renderReviewCard = (r) => (
-    <Paper key={r.id} elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+    <Paper
+      key={r.id}
+      elevation={2}
+      onClick={() => r.shopId && navigate(`/shops/${r.shopId}`)}
+      sx={{
+        p: 3,
+        borderRadius: 3,
+        cursor: r.shopId ? 'pointer' : 'default',
+        transition: 'box-shadow 0.2s, transform 0.15s',
+        '&:hover': r.shopId ? { boxShadow: 6, transform: 'translateY(-2px)' } : {},
+      }}
+    >
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start" gap={2}>
         <Stack gap={1} flex={1}>
-          {r.enterpriseName && (
+          {r.shopName && (
             <Stack direction="row" alignItems="center" gap={1}>
               <StoreIcon fontSize="small" color="action" />
-              <Typography variant="body2" fontWeight={600}>{r.enterpriseName}</Typography>
+              <Typography variant="body2" fontWeight={600}>{r.shopName}</Typography>
             </Stack>
           )}
           <Rating value={r.rating} readOnly precision={0.5} size="small" sx={{ color: 'primary.main' }} />
@@ -178,10 +202,10 @@ const CustomerProfilePage = () => {
           </Typography>
         </Stack>
         <Stack direction="row" gap={0.5}>
-          <IconButton size="small" onClick={() => setEditingReview({ id: r.id, comment: r.comment, rating: r.rating })}>
+          <IconButton size="small" onClick={(e) => { e.stopPropagation(); setEditingReview({ id: r.id, comment: r.comment, rating: r.rating }); }}>
             <Edit fontSize="small" />
           </IconButton>
-          <IconButton size="small" color="error" onClick={() => setDeletingReview(r)}>
+          <IconButton size="small" color="error" onClick={(e) => { e.stopPropagation(); setDeletingReview(r); }}>
             <Delete fontSize="small" />
           </IconButton>
         </Stack>

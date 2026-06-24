@@ -13,7 +13,7 @@ import { getCurrentLocation, getGeocoordinates } from '../actions/GoogleMapsActi
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
+const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API;
 
 function Search({ dateAndTime, setDateAndTime }) {
   const navigate = useNavigate();

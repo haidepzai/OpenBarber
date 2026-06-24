@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The type Enterprise dto.
+ * The type Shop dto.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnterpriseDto {
+public class ShopDto {
     private Long id;
     private String name;
     private String owner;

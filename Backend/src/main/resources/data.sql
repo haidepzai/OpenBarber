@@ -1,6 +1,6 @@
 -- Ensure IDs are generated for SQL seed inserts.
 CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START 1 INCREMENT 1;
-ALTER TABLE enterprise ALTER COLUMN id SET DEFAULT nextval('hibernate_sequence');
+ALTER TABLE shop ALTER COLUMN id SET DEFAULT nextval('hibernate_sequence');
 ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('hibernate_sequence');
 ALTER TABLE employee ALTER COLUMN id SET DEFAULT nextval('hibernate_sequence');
 ALTER TABLE service ALTER COLUMN id SET DEFAULT nextval('hibernate_sequence');
@@ -10,7 +10,7 @@ ALTER TABLE review ALTER COLUMN id SET DEFAULT nextval('hibernate_sequence');
 -- Dummy seed data for local development.
 -- Statements are idempotent and only insert if records do not exist yet.
 
-INSERT INTO enterprise (
+INSERT INTO shop (
     name, owner, address, address_longitude, address_latitude, email, phone_number, website,
     opening_time, closing_time, recommended, approved, price_category
 )
@@ -18,10 +18,10 @@ SELECT
     'OpenBarber Downtown', 'Ali Demir', 'Königstraße 1, Stuttgart', 9.1783, 48.7758, 'downtown@openbarber.dev', '+49 711 123456',
     'https://openbarber.example/downtown', '09:00', '19:00', true, true, 2
 WHERE NOT EXISTS (
-    SELECT 1 FROM enterprise e WHERE e.email = 'downtown@openbarber.dev'
+    SELECT 1 FROM shop e WHERE e.email = 'downtown@openbarber.dev'
 );
 
-INSERT INTO enterprise (
+INSERT INTO shop (
     name, owner, address, address_longitude, address_latitude, email, phone_number, website,
     opening_time, closing_time, recommended, approved, price_category
 )
@@ -29,84 +29,84 @@ SELECT
     'OpenBarber West', 'Mehmet Kaya', 'Rotebühlstraße 22, Stuttgart', 9.1643, 48.7787, 'west@openbarber.dev', '+49 711 987654',
     'https://openbarber.example/west', '10:00', '20:00', false, true, 1
 WHERE NOT EXISTS (
-    SELECT 1 FROM enterprise e WHERE e.email = 'west@openbarber.dev'
+    SELECT 1 FROM shop e WHERE e.email = 'west@openbarber.dev'
 );
 
 -- Opening days
-INSERT INTO enterprise_opening_days (enterprise_id, opening_days)
+INSERT INTO shop_opening_days (shop_id, opening_days)
 SELECT e.id, day
-FROM enterprise e
+FROM shop e
 CROSS JOIN (VALUES ('MONDAY'), ('TUESDAY'), ('WEDNESDAY'), ('THURSDAY'), ('FRIDAY'), ('SATURDAY')) AS days(day)
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM enterprise_opening_days od WHERE od.enterprise_id = e.id
+    SELECT 1 FROM shop_opening_days od WHERE od.shop_id = e.id
 );
 
-INSERT INTO enterprise_opening_days (enterprise_id, opening_days)
+INSERT INTO shop_opening_days (shop_id, opening_days)
 SELECT e.id, day
-FROM enterprise e
+FROM shop e
 CROSS JOIN (VALUES ('TUESDAY'), ('WEDNESDAY'), ('THURSDAY'), ('FRIDAY'), ('SATURDAY'), ('SUNDAY')) AS days(day)
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM enterprise_opening_days od WHERE od.enterprise_id = e.id
+    SELECT 1 FROM shop_opening_days od WHERE od.shop_id = e.id
 );
 
-INSERT INTO enterprise_payment_methods (enterprise_id, payment_methods)
+INSERT INTO shop_payment_methods (shop_id, payment_methods)
 SELECT e.id, 'ON_SITE_CASH'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1
-    FROM enterprise_payment_methods epm
-    WHERE epm.enterprise_id = e.id AND epm.payment_methods = 'ON_SITE_CASH'
+    FROM shop_payment_methods epm
+    WHERE epm.shop_id = e.id AND epm.payment_methods = 'ON_SITE_CASH'
 );
 
-INSERT INTO enterprise_payment_methods (enterprise_id, payment_methods)
+INSERT INTO shop_payment_methods (shop_id, payment_methods)
 SELECT e.id, 'ON_SITE_CARD'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1
-    FROM enterprise_payment_methods epm
-    WHERE epm.enterprise_id = e.id AND epm.payment_methods = 'ON_SITE_CARD'
+    FROM shop_payment_methods epm
+    WHERE epm.shop_id = e.id AND epm.payment_methods = 'ON_SITE_CARD'
 );
 
-INSERT INTO enterprise_payment_methods (enterprise_id, payment_methods)
+INSERT INTO shop_payment_methods (shop_id, payment_methods)
 SELECT e.id, 'PAYPAL'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1
-    FROM enterprise_payment_methods epm
-    WHERE epm.enterprise_id = e.id AND epm.payment_methods = 'PAYPAL'
+    FROM shop_payment_methods epm
+    WHERE epm.shop_id = e.id AND epm.payment_methods = 'PAYPAL'
 );
 
-INSERT INTO enterprise_drinks (enterprise_id, drinks)
+INSERT INTO shop_drinks (shop_id, drinks)
 SELECT e.id, 'WATER'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM enterprise_drinks ed WHERE ed.enterprise_id = e.id AND ed.drinks = 'WATER'
+    SELECT 1 FROM shop_drinks ed WHERE ed.shop_id = e.id AND ed.drinks = 'WATER'
 );
 
-INSERT INTO enterprise_drinks (enterprise_id, drinks)
+INSERT INTO shop_drinks (shop_id, drinks)
 SELECT e.id, 'COFFEE'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM enterprise_drinks ed WHERE ed.enterprise_id = e.id AND ed.drinks = 'COFFEE'
+    SELECT 1 FROM shop_drinks ed WHERE ed.shop_id = e.id AND ed.drinks = 'COFFEE'
 );
 
-INSERT INTO enterprise_drinks (enterprise_id, drinks)
+INSERT INTO shop_drinks (shop_id, drinks)
 SELECT e.id, 'TEA'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM enterprise_drinks ed WHERE ed.enterprise_id = e.id AND ed.drinks = 'TEA'
+    SELECT 1 FROM shop_drinks ed WHERE ed.shop_id = e.id AND ed.drinks = 'TEA'
 );
 
 -- Password for all seed users: OpenBarber123!
-INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, first_name, last_name, created_at, enterprise_id, role)
+INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, first_name, last_name, created_at, shop_id, role)
 SELECT
     'owner.downtown@openbarber.dev',
     '$2b$10$FrxP.kQ6pd7TVusm.CPQ6.f47lhdfViPRgDOCZlmHIUUNCoTYA4Ly',
@@ -115,13 +115,13 @@ SELECT
     NOW(),
     e.id,
     'OPERATOR'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1 FROM users u WHERE u.email = 'owner.downtown@openbarber.dev'
 );
 
-INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, first_name, last_name, created_at, enterprise_id, role)
+INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, first_name, last_name, created_at, shop_id, role)
 SELECT
     'owner.west@openbarber.dev',
     '$2b$10$FrxP.kQ6pd7TVusm.CPQ6.f47lhdfViPRgDOCZlmHIUUNCoTYA4Ly',
@@ -130,7 +130,7 @@ SELECT
     NOW(),
     e.id,
     'OPERATOR'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1 FROM users u WHERE u.email = 'owner.west@openbarber.dev'
@@ -160,64 +160,64 @@ WHERE NOT EXISTS (
     SELECT 1 FROM users u WHERE u.email = 'customer2@openbarber.dev'
 );
 
-INSERT INTO employee (name, title, enterprise_id)
+INSERT INTO employee (name, title, shop_id)
 SELECT 'Samir', 'Senior Barber', e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM employee emp WHERE emp.name = 'Samir' AND emp.enterprise_id = e.id
+    SELECT 1 FROM employee emp WHERE emp.name = 'Samir' AND emp.shop_id = e.id
 );
 
-INSERT INTO employee (name, title, enterprise_id)
+INSERT INTO employee (name, title, shop_id)
 SELECT 'Luca', 'Barber', e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM employee emp WHERE emp.name = 'Luca' AND emp.enterprise_id = e.id
+    SELECT 1 FROM employee emp WHERE emp.name = 'Luca' AND emp.shop_id = e.id
 );
 
-INSERT INTO employee (name, title, enterprise_id)
+INSERT INTO employee (name, title, shop_id)
 SELECT 'Deniz', 'Stylist', e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM employee emp WHERE emp.name = 'Deniz' AND emp.enterprise_id = e.id
+    SELECT 1 FROM employee emp WHERE emp.name = 'Deniz' AND emp.shop_id = e.id
 );
 
 -- target_audience uses enum ordinal: ALL=0, MEN=1, WOMEN=2, CHILDREN=3
-INSERT INTO service (price, title, duration_in_min, target_audience, enterprise_id)
+INSERT INTO service (price, title, duration_in_min, target_audience, shop_id)
 SELECT 28.0, 'Classic Cut', 30, 1, e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM service s WHERE s.title = 'Classic Cut' AND s.enterprise_id = e.id
+    SELECT 1 FROM service s WHERE s.title = 'Classic Cut' AND s.shop_id = e.id
 );
 
-INSERT INTO service (price, title, duration_in_min, target_audience, enterprise_id)
+INSERT INTO service (price, title, duration_in_min, target_audience, shop_id)
 SELECT 18.0, 'Beard Trim', 20, 1, e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM service s WHERE s.title = 'Beard Trim' AND s.enterprise_id = e.id
+    SELECT 1 FROM service s WHERE s.title = 'Beard Trim' AND s.shop_id = e.id
 );
 
-INSERT INTO service (price, title, duration_in_min, target_audience, enterprise_id)
+INSERT INTO service (price, title, duration_in_min, target_audience, shop_id)
 SELECT 45.0, 'Color & Style', 60, 0, e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM service s WHERE s.title = 'Color & Style' AND s.enterprise_id = e.id
+    SELECT 1 FROM service s WHERE s.title = 'Color & Style' AND s.shop_id = e.id
 );
 
 INSERT INTO appointment (
     reviewed, customer_name, customer_phone_number, customer_email, appointment_date_time,
-    confirmed, confirmation_code, enterprise_id, employee_id, customer_id
+    confirmed, confirmation_code, shop_id, employee_id, customer_id
 )
 SELECT
     false, 'Max Mustermann', '+49 176 000111', 'customer1@openbarber.dev',
     NOW() + INTERVAL '2 day', true, '11111111-1111-1111-1111-111111111111', e.id, emp.id, u.id
-FROM enterprise e
-JOIN employee emp ON emp.enterprise_id = e.id AND emp.name = 'Samir'
+FROM shop e
+JOIN employee emp ON emp.shop_id = e.id AND emp.name = 'Samir'
 JOIN users u ON u.email = 'customer1@openbarber.dev'
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
@@ -228,13 +228,13 @@ WHERE e.email = 'downtown@openbarber.dev'
 
 INSERT INTO appointment (
     reviewed, customer_name, customer_phone_number, customer_email, appointment_date_time,
-    confirmed, confirmation_code, enterprise_id, employee_id, customer_id
+    confirmed, confirmation_code, shop_id, employee_id, customer_id
 )
 SELECT
     false, 'Erika Musterfrau', '+49 176 000222', 'customer2@openbarber.dev',
     NOW() + INTERVAL '4 day', false, '22222222-2222-2222-2222-222222222222', e.id, emp.id, u.id
-FROM enterprise e
-JOIN employee emp ON emp.enterprise_id = e.id AND emp.name = 'Deniz'
+FROM shop e
+JOIN employee emp ON emp.shop_id = e.id AND emp.name = 'Deniz'
 JOIN users u ON u.email = 'customer2@openbarber.dev'
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
@@ -286,29 +286,29 @@ WHERE a.confirmation_code = '22222222-2222-2222-2222-222222222222'::uuid
 );
 
 -- Reviews linked to customer users (reviewer_id)
-INSERT INTO review (author, comment, rating, created_at, enterprise_id, reviewer_id)
+INSERT INTO review (author, comment, rating, created_at, shop_id, reviewer_id)
 SELECT u.name, 'Sehr sauberer Laden und top Service.', 5.0, NOW(), e.id, u.id
-FROM enterprise e
+FROM shop e
 JOIN users u ON u.email = 'customer1@openbarber.dev'
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM review r WHERE r.enterprise_id = e.id AND r.reviewer_id = u.id
+    SELECT 1 FROM review r WHERE r.shop_id = e.id AND r.reviewer_id = u.id
   );
 
-INSERT INTO review (author, comment, rating, created_at, enterprise_id, reviewer_id)
+INSERT INTO review (author, comment, rating, created_at, shop_id, reviewer_id)
 SELECT u.name, 'Freundliches Team, komme gerne wieder.', 4.5, NOW(), e.id, u.id
-FROM enterprise e
+FROM shop e
 JOIN users u ON u.email = 'customer2@openbarber.dev'
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM review r WHERE r.enterprise_id = e.id AND r.reviewer_id = u.id
+    SELECT 1 FROM review r WHERE r.shop_id = e.id AND r.reviewer_id = u.id
   );
 
 
 -- Dummy seed data for local development.
 -- Statements are idempotent and only insert if records do not exist yet.
 
-INSERT INTO enterprise (
+INSERT INTO shop (
     name, owner, address, address_longitude, address_latitude, email, phone_number, website,
     opening_time, closing_time, recommended, approved, price_category
 )
@@ -316,10 +316,10 @@ SELECT
     'OpenBarber Downtown', 'Ali Demir', 'Königstraße 1, Stuttgart', 9.1783, 48.7758, 'downtown@openbarber.dev', '+49 711 123456',
     'https://openbarber.example/downtown', '09:00', '19:00', true, true, 2
 WHERE NOT EXISTS (
-    SELECT 1 FROM enterprise e WHERE e.email = 'downtown@openbarber.dev'
+    SELECT 1 FROM shop e WHERE e.email = 'downtown@openbarber.dev'
 );
 
-INSERT INTO enterprise (
+INSERT INTO shop (
     name, owner, address, address_longitude, address_latitude, email, phone_number, website,
     opening_time, closing_time, recommended, approved, price_category
 )
@@ -327,65 +327,65 @@ SELECT
     'OpenBarber West', 'Mehmet Kaya', 'Rotebühlstraße 22, Stuttgart', 9.1643, 48.7787, 'west@openbarber.dev', '+49 711 987654',
     'https://openbarber.example/west', '10:00', '20:00', false, true, 1
 WHERE NOT EXISTS (
-    SELECT 1 FROM enterprise e WHERE e.email = 'west@openbarber.dev'
+    SELECT 1 FROM shop e WHERE e.email = 'west@openbarber.dev'
 );
 
-INSERT INTO enterprise_payment_methods (enterprise_id, payment_methods)
+INSERT INTO shop_payment_methods (shop_id, payment_methods)
 SELECT e.id, 'ON_SITE_CASH'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1
-    FROM enterprise_payment_methods epm
-    WHERE epm.enterprise_id = e.id AND epm.payment_methods = 'ON_SITE_CASH'
+    FROM shop_payment_methods epm
+    WHERE epm.shop_id = e.id AND epm.payment_methods = 'ON_SITE_CASH'
 );
 
-INSERT INTO enterprise_payment_methods (enterprise_id, payment_methods)
+INSERT INTO shop_payment_methods (shop_id, payment_methods)
 SELECT e.id, 'ON_SITE_CARD'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1
-    FROM enterprise_payment_methods epm
-    WHERE epm.enterprise_id = e.id AND epm.payment_methods = 'ON_SITE_CARD'
+    FROM shop_payment_methods epm
+    WHERE epm.shop_id = e.id AND epm.payment_methods = 'ON_SITE_CARD'
 );
 
-INSERT INTO enterprise_payment_methods (enterprise_id, payment_methods)
+INSERT INTO shop_payment_methods (shop_id, payment_methods)
 SELECT e.id, 'PAYPAL'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1
-    FROM enterprise_payment_methods epm
-    WHERE epm.enterprise_id = e.id AND epm.payment_methods = 'PAYPAL'
+    FROM shop_payment_methods epm
+    WHERE epm.shop_id = e.id AND epm.payment_methods = 'PAYPAL'
 );
 
-INSERT INTO enterprise_drinks (enterprise_id, drinks)
+INSERT INTO shop_drinks (shop_id, drinks)
 SELECT e.id, 'WATER'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM enterprise_drinks ed WHERE ed.enterprise_id = e.id AND ed.drinks = 'WATER'
+    SELECT 1 FROM shop_drinks ed WHERE ed.shop_id = e.id AND ed.drinks = 'WATER'
 );
 
-INSERT INTO enterprise_drinks (enterprise_id, drinks)
+INSERT INTO shop_drinks (shop_id, drinks)
 SELECT e.id, 'COFFEE'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM enterprise_drinks ed WHERE ed.enterprise_id = e.id AND ed.drinks = 'COFFEE'
+    SELECT 1 FROM shop_drinks ed WHERE ed.shop_id = e.id AND ed.drinks = 'COFFEE'
 );
 
-INSERT INTO enterprise_drinks (enterprise_id, drinks)
+INSERT INTO shop_drinks (shop_id, drinks)
 SELECT e.id, 'TEA'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM enterprise_drinks ed WHERE ed.enterprise_id = e.id AND ed.drinks = 'TEA'
+    SELECT 1 FROM shop_drinks ed WHERE ed.shop_id = e.id AND ed.drinks = 'TEA'
 );
 
 -- Password for all seed users: OpenBarber123!
-INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, created_at, enterprise_id, role)
+INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, created_at, shop_id, role)
 SELECT
     'owner.downtown@openbarber.dev',
     '$2b$10$FrxP.kQ6pd7TVusm.CPQ6.f47lhdfViPRgDOCZlmHIUUNCoTYA4Ly',
@@ -394,13 +394,13 @@ SELECT
     NOW(),
     e.id,
     'OPERATOR'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1 FROM users u WHERE u.email = 'owner.downtown@openbarber.dev'
 );
 
-INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, created_at, enterprise_id, role)
+INSERT INTO users (email, password, confirmation_code, confirmation_code_expiry, verification_attempts, name, created_at, shop_id, role)
 SELECT
     'owner.west@openbarber.dev',
     '$2b$10$FrxP.kQ6pd7TVusm.CPQ6.f47lhdfViPRgDOCZlmHIUUNCoTYA4Ly',
@@ -409,7 +409,7 @@ SELECT
     NOW(),
     e.id,
     'OPERATOR'
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1 FROM users u WHERE u.email = 'owner.west@openbarber.dev'
@@ -439,64 +439,64 @@ WHERE NOT EXISTS (
     SELECT 1 FROM users u WHERE u.email = 'customer2@openbarber.dev'
 );
 
-INSERT INTO employee (name, title, enterprise_id)
+INSERT INTO employee (name, title, shop_id)
 SELECT 'Samir', 'Senior Barber', e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM employee emp WHERE emp.name = 'Samir' AND emp.enterprise_id = e.id
+    SELECT 1 FROM employee emp WHERE emp.name = 'Samir' AND emp.shop_id = e.id
 );
 
-INSERT INTO employee (name, title, enterprise_id)
+INSERT INTO employee (name, title, shop_id)
 SELECT 'Luca', 'Barber', e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM employee emp WHERE emp.name = 'Luca' AND emp.enterprise_id = e.id
+    SELECT 1 FROM employee emp WHERE emp.name = 'Luca' AND emp.shop_id = e.id
 );
 
-INSERT INTO employee (name, title, enterprise_id)
+INSERT INTO employee (name, title, shop_id)
 SELECT 'Deniz', 'Stylist', e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM employee emp WHERE emp.name = 'Deniz' AND emp.enterprise_id = e.id
+    SELECT 1 FROM employee emp WHERE emp.name = 'Deniz' AND emp.shop_id = e.id
 );
 
 -- target_audience uses enum ordinal: ALL=0, MEN=1, WOMEN=2, CHILDREN=3
-INSERT INTO service (price, title, duration_in_min, target_audience, enterprise_id)
+INSERT INTO service (price, title, duration_in_min, target_audience, shop_id)
 SELECT 28.0, 'Classic Cut', 30, 1, e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM service s WHERE s.title = 'Classic Cut' AND s.enterprise_id = e.id
+    SELECT 1 FROM service s WHERE s.title = 'Classic Cut' AND s.shop_id = e.id
 );
 
-INSERT INTO service (price, title, duration_in_min, target_audience, enterprise_id)
+INSERT INTO service (price, title, duration_in_min, target_audience, shop_id)
 SELECT 18.0, 'Beard Trim', 20, 1, e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM service s WHERE s.title = 'Beard Trim' AND s.enterprise_id = e.id
+    SELECT 1 FROM service s WHERE s.title = 'Beard Trim' AND s.shop_id = e.id
 );
 
-INSERT INTO service (price, title, duration_in_min, target_audience, enterprise_id)
+INSERT INTO service (price, title, duration_in_min, target_audience, shop_id)
 SELECT 45.0, 'Color & Style', 60, 0, e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
-    SELECT 1 FROM service s WHERE s.title = 'Color & Style' AND s.enterprise_id = e.id
+    SELECT 1 FROM service s WHERE s.title = 'Color & Style' AND s.shop_id = e.id
 );
 
 INSERT INTO appointment (
     reviewed, customer_name, customer_phone_number, customer_email, appointment_date_time,
-    confirmed, confirmation_code, enterprise_id, employee_id
+    confirmed, confirmation_code, shop_id, employee_id
 )
 SELECT
     false, 'Max Mustermann', '+49 176 000111', 'customer1@openbarber.dev',
     NOW() + INTERVAL '2 day', true, '11111111-1111-1111-1111-111111111111', e.id, emp.id
-FROM enterprise e
-JOIN employee emp ON emp.enterprise_id = e.id AND emp.name = 'Samir'
+FROM shop e
+JOIN employee emp ON emp.shop_id = e.id AND emp.name = 'Samir'
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1
@@ -506,13 +506,13 @@ WHERE e.email = 'downtown@openbarber.dev'
 
 INSERT INTO appointment (
     reviewed, customer_name, customer_phone_number, customer_email, appointment_date_time,
-    confirmed, confirmation_code, enterprise_id, employee_id
+    confirmed, confirmation_code, shop_id, employee_id
 )
 SELECT
     false, 'Erika Musterfrau', '+49 176 000222', 'customer2@openbarber.dev',
     NOW() + INTERVAL '4 day', false, '22222222-2222-2222-2222-222222222222', e.id, emp.id
-FROM enterprise e
-JOIN employee emp ON emp.enterprise_id = e.id AND emp.name = 'Deniz'
+FROM shop e
+JOIN employee emp ON emp.shop_id = e.id AND emp.name = 'Deniz'
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1
@@ -562,22 +562,22 @@ WHERE a.confirmation_code = '22222222-2222-2222-2222-222222222222'::uuid
     WHERE asv.appointment_id = a.id AND asv.service_id = s.id
 );
 
-INSERT INTO review (author, comment, rating, created_at, enterprise_id)
+INSERT INTO review (author, comment, rating, created_at, shop_id)
 SELECT 'Max Mustermann', 'Sehr sauberer Laden und top Service.', 5.0, NOW(), e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'downtown@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1
     FROM review r
-    WHERE r.enterprise_id = e.id AND r.author = 'Max Mustermann'
+    WHERE r.shop_id = e.id AND r.author = 'Max Mustermann'
   );
 
-INSERT INTO review (author, comment, rating, created_at, enterprise_id)
+INSERT INTO review (author, comment, rating, created_at, shop_id)
 SELECT 'Erika Musterfrau', 'Freundliches Team, komme gerne wieder.', 4.5, NOW(), e.id
-FROM enterprise e
+FROM shop e
 WHERE e.email = 'west@openbarber.dev'
   AND NOT EXISTS (
     SELECT 1
     FROM review r
-    WHERE r.enterprise_id = e.id AND r.author = 'Erika Musterfrau'
+    WHERE r.shop_id = e.id AND r.author = 'Erika Musterfrau'
   );

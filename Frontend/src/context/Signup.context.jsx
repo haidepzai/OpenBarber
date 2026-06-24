@@ -15,13 +15,13 @@ export const SignupProvider = ({ children }) => {
     password: '',
     confirmPassword: '',
     verificationCode: '',
-    accountType: null, // 'customer' | 'enterprise'
+    accountType: null, // 'customer' | 'shop'
 
-    enterpriseName: '',
-    enterpriseOwner: '',
-    enterprisePhoneNumber: '',
-    enterpriseStreet: null,
-    enterpriseStreetText: '',
+    shopName: '',
+    shopOwner: '',
+    shopPhoneNumber: '',
+    shopStreet: null,
+    shopStreetText: '',
   });
   const [signupVisible, setSignupVisible] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
@@ -36,8 +36,8 @@ export const SignupProvider = ({ children }) => {
     setData({
       email: '', password: '', confirmPassword: '', verificationCode: '',
       accountType: null,
-      enterpriseName: '', enterpriseOwner: '', enterprisePhoneNumber: '',
-      enterpriseStreet: null, enterpriseStreetText: '',
+      shopName: '', shopOwner: '', shopPhoneNumber: '',
+      shopStreet: null, shopStreetText: '',
     });
     document.body.style.overflow = '';
   };

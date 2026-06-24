@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 const RoleSelectStep = () => {
   const signUpCtx = useContext(SignupContext);
   const { t } = useTranslation();
-  const [hovered, setHovered] = useState(null); // 'customer' | 'enterprise' | null
+  const [hovered, setHovered] = useState(null); // 'customer' | 'shop' | null
 
   const select = (type) => {
     signUpCtx.setData((d) => ({ ...d, accountType: type }));
@@ -21,7 +21,7 @@ const RoleSelectStep = () => {
   };
 
   const customerHovered = hovered === 'customer';
-  const enterpriseHovered = hovered === 'enterprise';
+  const shopHovered = hovered === 'shop';
 
   return (
     <Stack height="100%" alignItems="center" justifyContent="center" gap={4}>
@@ -66,13 +66,13 @@ const RoleSelectStep = () => {
         </Box>
 
         <Box
-          onClick={() => select('enterprise')}
-          onMouseEnter={() => setHovered('enterprise')}
+          onClick={() => select('shop')}
+          onMouseEnter={() => setHovered('shop')}
           onMouseLeave={() => setHovered(null)}
           sx={{
             cursor: 'pointer',
             border: '2px solid',
-            borderColor: enterpriseHovered ? 'grey.800' : 'grey.400',
+            borderColor: shopHovered ? 'grey.800' : 'grey.400',
             borderRadius: 4,
             padding: 5,
             width: '220px',
@@ -81,19 +81,19 @@ const RoleSelectStep = () => {
             alignItems: 'center',
             gap: 2,
             transition: 'all 0.2s',
-            backgroundColor: enterpriseHovered ? 'grey.800' : 'transparent',
+            backgroundColor: shopHovered ? 'grey.800' : 'transparent',
           }}
         >
-          <StoreIcon sx={{ fontSize: 60, color: enterpriseHovered ? '#fff' : 'text.secondary', transition: 'color 0.2s' }} />
-          <Typography variant="h6" fontWeight="600" sx={{ color: enterpriseHovered ? '#fff' : 'text.primary', transition: 'color 0.2s' }}>
-            {t('AS_ENTERPRISE')}
+          <StoreIcon sx={{ fontSize: 60, color: shopHovered ? '#fff' : 'text.secondary', transition: 'color 0.2s' }} />
+          <Typography variant="h6" fontWeight="600" sx={{ color: shopHovered ? '#fff' : 'text.primary', transition: 'color 0.2s' }}>
+            {t('AS_SHOP')}
           </Typography>
-          <Typography variant="body2" textAlign="center" sx={{ color: enterpriseHovered ? 'rgba(255,255,255,0.85)' : 'text.secondary', transition: 'color 0.2s' }}>
-            {t('AS_ENTERPRISE_DESC')}
+          <Typography variant="body2" textAlign="center" sx={{ color: shopHovered ? 'rgba(255,255,255,0.85)' : 'text.secondary', transition: 'color 0.2s' }}>
+            {t('AS_SHOP_DESC')}
           </Typography>
           <Button variant="outlined" fullWidth
-            sx={enterpriseHovered ? { borderColor: '#fff', color: '#fff', '&:hover': { borderColor: '#fff', backgroundColor: 'rgba(255,255,255,0.1)' } } : {}}
-            onClick={(e) => { e.stopPropagation(); select('enterprise'); }}>
+            sx={shopHovered ? { borderColor: '#fff', color: '#fff', '&:hover': { borderColor: '#fff', backgroundColor: 'rgba(255,255,255,0.1)' } } : {}}
+            onClick={(e) => { e.stopPropagation(); select('shop'); }}>
             {t('CONTINUE')}
           </Button>
         </Box>

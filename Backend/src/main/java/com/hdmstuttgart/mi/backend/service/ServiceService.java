@@ -1,9 +1,9 @@
 package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.BackendApplication;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.Service;
-import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
+import com.hdmstuttgart.mi.backend.repository.ShopRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,46 +20,46 @@ public class ServiceService {
 
     private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);
     private final ServiceRepository serviceRepository;
-    private final EnterpriseRepository enterpriseRepository;
+    private final ShopRepository shopRepository;
 
     /**
      * Instantiates a new Service service.
      *
      * @param serviceRepository    the service repository
-     * @param enterpriseRepository the enterprise repository
+     * @param shopRepository the shop repository
      */
-    public ServiceService(ServiceRepository serviceRepository, EnterpriseRepository enterpriseRepository) {
+    public ServiceService(ServiceRepository serviceRepository, ShopRepository shopRepository) {
         this.serviceRepository = serviceRepository;
-        this.enterpriseRepository = enterpriseRepository;
+        this.shopRepository = shopRepository;
     }
 
     /**
      * Create service service.
      *
      * @param service      the service
-     * @param enterpriseId the enterprise id
+     * @param shopId the shop id
      * @return the service
      */
-    public Service createService(Service service, Long enterpriseId) {
-        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId));
-        service.setEnterprise(enterprise);
+    public Service createService(Service service, Long shopId) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + shopId));
+        service.setShop(shop);
         return serviceRepository.save(service);
     }
 
     /**
-     * Gets services by enterprise id.
+     * Gets services by shop id.
      *
-     * @param enterpriseId the enterprise id
-     * @return the services by enterprise id
+     * @param shopId the shop id
+     * @return the services by shop id
      */
-    public List<Service> getServicesByEnterpriseId(Long enterpriseId) {
-        if (!enterpriseRepository.existsById(enterpriseId)) {
-            log.warn("Enterprise not foundM");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
+    public List<Service> getServicesByShopId(Long shopId) {
+        if (!shopRepository.existsById(shopId)) {
+            log.warn("Shop not foundM");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + shopId);
         }
 
-        return serviceRepository.findAllByEnterpriseId(enterpriseId);
+        return serviceRepository.findAllByShopId(shopId);
     }
 
     /**
@@ -106,16 +106,16 @@ public class ServiceService {
     }
 
     /**
-     * Delete service from enterprise.
+     * Delete service from shop.
      *
      * @param id           the id
-     * @param enterpriseId the enterprise id
+     * @param shopId the shop id
      */
-    public void deleteServiceFromEnterprise(long id, long enterpriseId) {
+    public void deleteServiceFromShop(long id, long shopId) {
         if (!serviceRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found with id = " + id);
         }
-        List<Service> services = getServicesByEnterpriseId(enterpriseId);
+        List<Service> services = getServicesByShopId(shopId);
         services.stream().filter(service -> id == service.getId()).findAny().ifPresent(serviceToDelete -> serviceRepository.deleteById(serviceToDelete.getId()));
     }
 }

@@ -1,7 +1,7 @@
 package com.hdmstuttgart.mi.backend.model.dto;
 
 import com.hdmstuttgart.mi.backend.model.Employee;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.Service;
 import com.hdmstuttgart.mi.backend.model.enums.AppointmentType;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
@@ -39,8 +39,8 @@ public class AppointmentDto {
     private boolean confirmed;
     private Long customerId;
 
-    private Long enterpriseId;
-    private String enterpriseName;
+    private Long shopId;
+    private String shopName;
     private Long employeeId;
     private String employeeName;
     private List<Service> services;
@@ -55,7 +55,7 @@ public class AppointmentDto {
                 ", customerEmail='" + customerEmail + '\'' +
                 ", appointmentDateTime=" + appointmentDateTime +
                 ", confirmed=" + confirmed +
-                ", enterpriseId=" + enterpriseId +
+                ", shopId=" + shopId +
                 ", employeeId=" + employeeId +
                 ", services=" + services +
                 '}';

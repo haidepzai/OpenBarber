@@ -1,7 +1,7 @@
 package com.hdmstuttgart.mi.backend.mapper;
 
 import com.hdmstuttgart.mi.backend.model.Employee;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.Review;
 import com.hdmstuttgart.mi.backend.model.dto.EmployeeDto;
 import com.hdmstuttgart.mi.backend.model.dto.ReviewDto;
@@ -29,8 +29,8 @@ public class ReviewMapper {
                 .comment(review.getComment())
                 .createdAt(review.getCreatedAt())
                 .rating(review.getRating())
-                .enterpriseId(review.getEnterprise().getId())
-                .enterpriseName(review.getEnterprise().getName())
+                .shopId(review.getShop().getId())
+                .shopName(review.getShop().getName())
                 .authorPhoto(review.getReviewer() != null ? review.getReviewer().getProfilePhoto() : null)
                 .reviewerId(review.getReviewer() != null ? review.getReviewer().getId() : null)
                 .build();
@@ -52,17 +52,17 @@ public class ReviewMapper {
      * To entity review.
      *
      * @param reviewDto  the review dto
-     * @param enterprise the enterprise
+     * @param shop the shop
      * @return the review
      */
-    public static Review toEntity(ReviewDto reviewDto, Enterprise enterprise) {
+    public static Review toEntity(ReviewDto reviewDto, Shop shop) {
         return Review.builder()
                 .id(reviewDto.getId())
                 .author(reviewDto.getAuthor())
                 .comment(reviewDto.getComment())
                 .createdAt(reviewDto.getCreatedAt())
                 .rating(reviewDto.getRating())
-                .enterprise(enterprise)
+                .shop(shop)
                 .build();
     }
 }

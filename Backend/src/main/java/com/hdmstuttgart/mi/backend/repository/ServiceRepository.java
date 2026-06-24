@@ -15,10 +15,10 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
     List<Service> findAll();
 
     /**
-     * Find all by enterprise id list.
+     * Find all by shop id list.
      *
-     * @param enterpriseId the enterprise id
+     * @param shopId the shop id
      * @return the list
      */
-    List<Service> findAllByEnterpriseId(Long enterpriseId);
+    List<Service> findAllByShopId(Long shopId);
 }

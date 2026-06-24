@@ -4,14 +4,14 @@ import ReactDOM from 'react-dom';
 import { Box, IconButton, Stepper, Step, StepButton, Stack } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SignUpStep from './components/SignUpStep';
-import EnterpriseCreateStep from './components/EnterpriseCreateStep';
+import ShopCreateStep from './components/ShopCreateStep';
 import AwaitingApprovalStep from './components/AwaitingApprovalStep';
 import EmailVerificationStep from './components/EmailVerificationStep';
 import RoleSelectStep from './components/RoleSelectStep';
 import { SignupContext } from '../../context/Signup.context';
 import AuthContext from '../../context/auth-context';
 
-const enterpriseSteps = ['Select role', 'Sign up', 'Sign up your enterprise', 'Verify your E-Mail', 'Wait for Approval'];
+const shopSteps = ['Select role', 'Sign up', 'Sign up your shop', 'Verify your E-Mail', 'Wait for Approval'];
 const customerSteps = ['Select role', 'Sign up', 'Verify your E-Mail'];
 
 const SignupModal = () => {
@@ -20,7 +20,7 @@ const SignupModal = () => {
   const authCtx = useContext(AuthContext);
 
   const accountType = signUpCtx.data?.accountType;
-  const steps = accountType === 'customer' ? customerSteps : enterpriseSteps;
+  const steps = accountType === 'customer' ? customerSteps : shopSteps;
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -44,7 +44,7 @@ const SignupModal = () => {
     if (accountType === 'customer') {
       if (step === 2) return <EmailVerificationStep />;
     } else {
-      if (step === 2) return <EnterpriseCreateStep />;
+      if (step === 2) return <ShopCreateStep />;
       if (step === 3) return <EmailVerificationStep />;
       if (step === 4) return <AwaitingApprovalStep />;
     }

@@ -1,7 +1,7 @@
 // Get geocoordinates
 export const getGeocoordinates = async (place) => {
   const response = await fetch(
-    `${process.env.REACT_APP_GOOGLE_GEOCODE}/json?address=${encodeURIComponent(place)}&key=${process.env.REACT_APP_GOOGLE_API}`
+    `${import.meta.env.VITE_GOOGLE_GEOCODE}/json?address=${encodeURIComponent(place)}&key=${import.meta.env.VITE_GOOGLE_API}`
   );
   if (!response.ok) {
     throw new Error('Could not fetch geocoordinates');

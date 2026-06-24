@@ -3,14 +3,14 @@ package com.hdmstuttgart.mi.backend.service;
 import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.Employee;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.Service;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.SlotDto;
 import com.hdmstuttgart.mi.backend.model.enums.AppointmentType;
 import com.hdmstuttgart.mi.backend.repository.AppointmentRepository;
 import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
-import com.hdmstuttgart.mi.backend.repository.EnterpriseRepository;
+import com.hdmstuttgart.mi.backend.repository.ShopRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
 import org.slf4j.Logger;
@@ -47,16 +47,16 @@ public class AppointmentService {
     private static final Logger log = LoggerFactory.getLogger(AppointmentService.class);
 
     private final AppointmentRepository appointmentRepository;
-    private final EnterpriseRepository enterpriseRepository;
+    private final ShopRepository shopRepository;
     private final EmployeeRepository employeeRepository;
     private final ServiceRepository serviceRepository;
     private final EmailSenderService emailSenderService;
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
-    public AppointmentService(AppointmentRepository appointmentRepository, EnterpriseRepository enterpriseRepository, EmployeeRepository employeeRepository, ServiceRepository serviceRepository, EmailSenderService emailSenderService, JwtService jwtService, UserRepository userRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, ShopRepository shopRepository, EmployeeRepository employeeRepository, ServiceRepository serviceRepository, EmailSenderService emailSenderService, JwtService jwtService, UserRepository userRepository) {
         this.appointmentRepository = appointmentRepository;
-        this.enterpriseRepository = enterpriseRepository;
+        this.shopRepository = shopRepository;
         this.employeeRepository = employeeRepository;
         this.serviceRepository = serviceRepository;
         this.emailSenderService = emailSenderService;
@@ -68,12 +68,12 @@ public class AppointmentService {
      * Create appointment appointment.
      *
      * @param appointment  the appointment
-     * @param enterpriseId the enterprise id
+     * @param shopId the shop id
      * @return the appointment
      */
-    public Appointment createAppointment(Appointment appointment, long enterpriseId, String token) {
-        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found enterprise with id = " + enterpriseId));
+    public Appointment createAppointment(Appointment appointment, long shopId, String token) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found shop with id = " + shopId));
 
         boolean isVacation = AppointmentType.VACATION.equals(appointment.getAppointmentType());
 
@@ -91,12 +91,12 @@ public class AppointmentService {
             }
             appointment.setConfirmed(true); // vacations are auto-confirmed
         } else {
-            services = resolveServices(appointment.getServices(), enterprise);
+            services = resolveServices(appointment.getServices(), shop);
             if (services.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one service is mandatory");
             }
             if (appointment.getEmployee() == null || appointment.getEmployee().getId() == null) {
-                employee = findAvailableEmployee(enterprise, appointment.getAppointmentDateTime(), services);
+                employee = findAvailableEmployee(shop, appointment.getAppointmentDateTime(), services);
             } else {
                 long employeeId = appointment.getEmployee().getId();
                 employee = employeeRepository.findById(employeeId)
@@ -105,7 +105,7 @@ public class AppointmentService {
             }
         }
 
-        appointment.setEnterprise(enterprise);
+        appointment.setShop(shop);
         appointment.setEmployee(employee);
         appointment.setServices(services);
         appointment.setConfirmationCode(UUID.randomUUID());
@@ -116,7 +116,7 @@ public class AppointmentService {
                 String username = jwtService.extractUsername(token.substring(7));
                 Appointment finalAppointment = appointment;
                 userRepository.findByEmail(username).ifPresent(user -> {
-                    if (user.getEnterprise() == null) { // only link if not an enterprise operator
+                    if (user.getShop() == null) { // only link if not an shop operator
                         finalAppointment.setCustomer(user);
                         finalAppointment.setConfirmed(true); // customer email verified at signup → auto-confirm
                     }
@@ -145,10 +145,10 @@ public class AppointmentService {
         return appointment;
     }
 
-    private Employee findAvailableEmployee(Enterprise enterprise, LocalDateTime startTime, List<Service> services) {
-        List<Employee> employees = enterprise.getEmployees();
+    private Employee findAvailableEmployee(Shop shop, LocalDateTime startTime, List<Service> services) {
+        List<Employee> employees = shop.getEmployees();
         if (employees == null || employees.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "No employees available for this enterprise");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "No employees available for this shop");
         }
         int totalDuration = services.stream().mapToInt(Service::getDurationInMin).sum();
         for (Employee emp : employees) {
@@ -163,12 +163,12 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
-    public List<SlotDto> getAvailableSlots(Long enterpriseId, Long employeeId, LocalDate date, int serviceDurationMin) {
-        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found"));
+    public List<SlotDto> getAvailableSlots(Long shopId, Long employeeId, LocalDate date, int serviceDurationMin) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
 
-        int openMinutes = parseTimeToMinutes(enterprise.getOpeningTime(), 8 * 60);
-        int closeMinutes = parseTimeToMinutes(enterprise.getClosingTime(), 20 * 60);
+        int openMinutes = parseTimeToMinutes(shop.getOpeningTime(), 8 * 60);
+        int closeMinutes = parseTimeToMinutes(shop.getClosingTime(), 20 * 60);
 
         List<String> allSlots = new ArrayList<>();
         int cur = openMinutes;
@@ -182,7 +182,7 @@ public class AppointmentService {
             employees = List.of(employeeRepository.findById(employeeId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found")));
         } else {
-            employees = employeeRepository.findAllByEnterpriseId(enterpriseId);
+            employees = employeeRepository.findAllByShopId(shopId);
         }
 
         if (employees.isEmpty()) return allSlots.stream()
@@ -318,16 +318,16 @@ public class AppointmentService {
 
 
     /**
-     * Gets appointments by enterprise id.
+     * Gets appointments by shop id.
      *
-     * @param enterpriseId the enterprise id
-     * @return the appointments by enterprise id
+     * @param shopId the shop id
+     * @return the appointments by shop id
      */
-    public Page<Appointment> getAppointmentsByEnterpriseId(Long enterpriseId, Pageable pageable) {
-        if (!enterpriseRepository.existsById(enterpriseId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enterprise not found with id = " + enterpriseId);
+    public Page<Appointment> getAppointmentsByShopId(Long shopId, Pageable pageable) {
+        if (!shopRepository.existsById(shopId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + shopId);
         }
-        return appointmentRepository.findAllByEnterpriseId(enterpriseId, pageable);
+        return appointmentRepository.findAllByShopId(shopId, pageable);
     }
 
     public Page<Appointment> getMyAppointments(String token, Pageable pageable) {
@@ -358,9 +358,9 @@ public class AppointmentService {
     public Appointment updateAppointment(long id, Appointment newAppointment) {
         return appointmentRepository.findById(id)
                 .map(appointment -> {
-                    appointment.setEnterprise(newAppointment.getEnterprise());
+                    appointment.setShop(newAppointment.getShop());
                     appointment.setEmployee(newAppointment.getEmployee());
-                    appointment.setServices(resolveServices(newAppointment.getServices(), newAppointment.getEnterprise()));
+                    appointment.setServices(resolveServices(newAppointment.getServices(), newAppointment.getShop()));
                     appointment.setCustomerName(newAppointment.getCustomerName());
                     appointment.setCustomerPhoneNumber(newAppointment.getCustomerPhoneNumber());
                     appointment.setCustomerEmail(newAppointment.getCustomerEmail());
@@ -407,18 +407,18 @@ public class AppointmentService {
         if (updatedAppointment.getPaymentMethods() != null && !updatedAppointment.getPaymentMethods().isEmpty())
             existing.setPaymentMethods(updatedAppointment.getPaymentMethods());
         if (updatedAppointment.getServices() != null && !updatedAppointment.getServices().isEmpty())
-            existing.setServices(resolveServices(updatedAppointment.getServices(), existing.getEnterprise()));
+            existing.setServices(resolveServices(updatedAppointment.getServices(), existing.getShop()));
 
         return appointmentRepository.save(existing);
     }
 
-    private List<Service> resolveServices(List<Service> requestedServices, Enterprise enterprise) {
+    private List<Service> resolveServices(List<Service> requestedServices, Shop shop) {
         if (requestedServices == null || requestedServices.isEmpty()) {
             return List.of();
         }
 
-        List<Service> enterpriseServices = enterprise != null && enterprise.getServices() != null
-                ? enterprise.getServices()
+        List<Service> shopServices = shop != null && shop.getServices() != null
+                ? shop.getServices()
                 : List.of();
 
         return requestedServices.stream()
@@ -429,7 +429,7 @@ public class AppointmentService {
                     }
 
                     if (requestedService.getTitle() != null) {
-                        return enterpriseServices.stream()
+                        return shopServices.stream()
                                 .filter(service -> requestedService.getTitle().equals(service.getTitle()))
                                 .findFirst()
                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found service with title = " + requestedService.getTitle()));

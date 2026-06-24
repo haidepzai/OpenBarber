@@ -1,7 +1,7 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
 
-const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
+const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API;
 
 const MapContainer = ({ lat = 48.783333, lng = 9.183333, height = '100%', width = '100%' }) => {
   const defaultProps = {

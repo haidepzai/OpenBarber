@@ -99,7 +99,7 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .refreshToken(refreshToken)
                 .verified(user.getRole() != UserRole.UNVERIFIED)
-                .hasEnterprise(user.getEnterprise() != null)
+                .hasShop(user.getShop() != null)
                 .userId(user.getId())
                 .build();
     }
@@ -133,7 +133,7 @@ public class AuthenticationService {
             log.error("wrong confirmation code! attempt {}", user.getVerificationAttempts());
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Wrong confirmation code");
         }
-        UserRole newRole = (user.getEnterprise() != null) ? UserRole.OPERATOR : UserRole.VERIFIED;
+        UserRole newRole = (user.getShop() != null) ? UserRole.OPERATOR : UserRole.VERIFIED;
         user.setRole(newRole);
         user.setConfirmationCode(null);
         user.setConfirmationCodeExpiry(null);

@@ -2,11 +2,11 @@ import { Stack, Typography, Button, Box, TextField } from '@mui/material';
 import React, { useContext } from 'react';
 import { SignupContext } from '../../../context/Signup.context';
 import { usePlacesWidget } from 'react-google-autocomplete';
-import { createEnterprise } from '../../../actions/EnterpriseActions';
+import { createShop } from '../../../actions/ShopActions';
 import { getAccessToken } from '../../../context/tokenStorage';
 import { useTranslation } from 'react-i18next';
 
-const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API;
+const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API;
 
 const PropInput = (props) => {
   const { data, setData } = useContext(SignupContext);
@@ -22,22 +22,22 @@ const PropInput = (props) => {
   );
 };
 
-const EnterpriseCreateStep = () => {
+const ShopCreateStep = () => {
   const { setActiveStep, setCompletedSteps, close, data, setData } = useContext(SignupContext);
 
   const { t } = useTranslation();
 
   const [errors, setErrors] = React.useState({
-    enterpriseName: false,
-    enterpriseOwner: false,
-    enterpriseStreet: false,
-    enterprisePhoneNumber: false,
+    shopName: false,
+    shopOwner: false,
+    shopStreet: false,
+    shopPhoneNumber: false,
   });
 
   const { ref: acRef } = usePlacesWidget({
     apiKey: GOOGLE_API_KEY,
     onPlaceSelected: (place) => {
-      setData((d) => ({ ...d, enterpriseStreet: place, enterpriseStreetText: place.formatted_address }));
+      setData((d) => ({ ...d, shopStreet: place, shopStreetText: place.formatted_address }));
     },
     options: {
       types: ['address'],
@@ -60,15 +60,15 @@ const EnterpriseCreateStep = () => {
     //   }
     //   return formData;
     // }
-    const hasPlace = data.enterpriseStreet && data.enterpriseStreet.geometry;
-    const createEnterpriseReq = {
+    const hasPlace = data.shopStreet && data.shopStreet.geometry;
+    const createShopReq = {
       email: data.email,
-      name: data.enterpriseName,
-      owner: data.enterpriseOwner,
-      address: hasPlace ? data.enterpriseStreet.formatted_address : data.enterpriseStreetText,
-      addressLongitude: hasPlace ? Number(data.enterpriseStreet.geometry.location.lng()) : 0,
-      addressLatitude: hasPlace ? Number(data.enterpriseStreet.geometry.location.lat()) : 0,
-      phoneNumber: data.enterprisePhoneNumber,
+      name: data.shopName,
+      owner: data.shopOwner,
+      address: hasPlace ? data.shopStreet.formatted_address : data.shopStreetText,
+      addressLongitude: hasPlace ? Number(data.shopStreet.geometry.location.lng()) : 0,
+      addressLatitude: hasPlace ? Number(data.shopStreet.geometry.location.lat()) : 0,
+      phoneNumber: data.shopPhoneNumber,
     };
 
     // form data config
@@ -80,8 +80,8 @@ const EnterpriseCreateStep = () => {
     };
 
     try {
-      console.log(createEnterpriseReq);
-      await createEnterprise(createEnterpriseReq, customConfig);
+      console.log(createShopReq);
+      await createShop(createShopReq, customConfig);
       setActiveStep(3);
       setCompletedSteps((cs) => {
         const res = [...cs];
@@ -94,7 +94,7 @@ const EnterpriseCreateStep = () => {
   }
 
   function onBlur(e) {
-    if (e.target.name === 'enterprisePhoneNumber') {
+    if (e.target.name === 'shopPhoneNumber') {
       if (!/[0-9]/.test(e.target.value)) {
         setErrors((err) => ({ ...err, [e.target.name]: true }));
       } else {
@@ -109,40 +109,40 @@ const EnterpriseCreateStep = () => {
 
   return (
     <Stack component="form" height="100%" gap={2} pt={8} onSubmit={onSubmit}>
-      {/* <Typography variant="h4">Please enter some information about your enterprise.</Typography> */}
+      {/* <Typography variant="h4">Please enter some information about your shop.</Typography> */}
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, maxWidth: '800px' }}>
         <Stack gap={4}>
-          <Typography variant="h6">{t('ENTERPRISE_SETUP')}</Typography>
+          <Typography variant="h6">{t('SHOP_SETUP')}</Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr 1fr', gap: 2 }}>
             <PropInput
               input={{
-                label: t('ENTERPRISE_NAME'),
-                vr: 'enterpriseName',
+                label: t('SHOP_NAME'),
+                vr: 'shopName',
                 onBlur: onBlur,
-                error: errors.enterpriseName,
-                name: 'enterpriseName',
+                error: errors.shopName,
+                name: 'shopName',
               }}
             />
 
             <PropInput
               input={{
-                label: t('ENTERPRISE_OWNER'),
-                vr: 'enterpriseOwner',
+                label: t('SHOP_OWNER'),
+                vr: 'shopOwner',
                 onBlur: onBlur,
-                error: errors.enterpriseOwner,
-                name: 'enterpriseOwner',
+                error: errors.shopOwner,
+                name: 'shopOwner',
               }}
             />
 
             <TextField
               required
               variant="outlined"
-              onChange={(e) => setData((d) => ({ ...d, enterpriseStreet: null, enterpriseStreetText: e.target.value }))}
+              onChange={(e) => setData((d) => ({ ...d, shopStreet: null, shopStreetText: e.target.value }))}
               label={t('ADDRESS')}
-              value={data.enterpriseStreetText || ''}
-              name="enterpriseStreet"
-              error={errors.enterpriseStreet}
+              value={data.shopStreetText || ''}
+              name="shopStreet"
+              error={errors.shopStreet}
               onBlur={onBlur}
               inputRef={acRef}
               sx={{
@@ -153,10 +153,10 @@ const EnterpriseCreateStep = () => {
             <PropInput
               input={{
                 label: t('PHONE_NUMBER'),
-                vr: 'enterprisePhoneNumber',
+                vr: 'shopPhoneNumber',
                 onBlur: onBlur,
-                error: errors.enterprisePhoneNumber,
-                name: 'enterprisePhoneNumber',
+                error: errors.shopPhoneNumber,
+                name: 'shopPhoneNumber',
                 type: 'number',
               }}
             />
@@ -251,7 +251,7 @@ const EnterpriseCreateStep = () => {
           Back
         </Button> */}
         <Box flexGrow={1} />
-        <Button type="submit" disabled={!(data.enterpriseName && data.enterpriseOwner && (data.enterpriseStreet || data.enterpriseStreetText) && data.enterprisePhoneNumber)} variant="contained">
+        <Button type="submit" disabled={!(data.shopName && data.shopOwner && (data.shopStreet || data.shopStreetText) && data.shopPhoneNumber)} variant="contained">
         {t('CONTINUE')}
         </Button>
       </Stack>
@@ -259,4 +259,4 @@ const EnterpriseCreateStep = () => {
   );
 };
 
-export default EnterpriseCreateStep;
+export default ShopCreateStep;
