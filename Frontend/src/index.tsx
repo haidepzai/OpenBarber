@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import './css/index.css';
+import './css/index.scss';
 import App from './App';
 import { AuthContextProvider } from './context/auth-context';
 import { SignupProvider } from './context/Signup.context';

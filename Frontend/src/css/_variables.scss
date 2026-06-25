@@ -1,0 +1,21 @@
+@use 'sass:color';
+
+// Colors
+$primary: #6D5344;
+$primary-light: color.adjust($primary, $lightness: 40%);
+$white: #ffffff;
+$black: #000000;
+$light-gray: lightgray;
+$bg-light: #EBE8E6;
+
+// Shadows
+$shadow-sm: -1px 1px 3px 2px rgba(0, 0, 0, 0.2);
+
+// Spacing
+$swiper-nav-size: 44px;
+$swiper-nav-offset: -39px;
+
+// Typography
+$font-stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+$font-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;

@@ -4,6 +4,18 @@ import { clearTokens, getAccessToken, getRefreshToken, setAccessToken, setRefres
 
 type RequestHeaders = Record<string, string>;
 
+type ShopFilter = {
+  priceCategory?: number[];
+  targetAudience?: string[];
+  employeeCount?: [number, number];
+  openingDays?: string[];
+  openingTime?: string | null;
+  closingTime?: string | null;
+  paymentMethods?: string[];
+  drinks?: string[];
+  minRating?: number | null;
+};
+
 interface AuthRequestConfig {
   headers?: RequestHeaders;
 }
@@ -77,6 +89,71 @@ const refreshAccessToken = async (): Promise<string> => {
   return refreshInFlight;
 };
 
+const normalizeTimeParam = (value?: string | null): string | null => {
+  if (!value) {
+    return null;
+  }
+
+  const separatorIndex = value.indexOf('T');
+  if (separatorIndex >= 0 && value.length >= separatorIndex + 6) {
+    return value.substring(separatorIndex + 1, separatorIndex + 6);
+  }
+
+  return value.length >= 5 ? value.substring(0, 5) : value;
+};
+
+const appendArrayParam = (params: URLSearchParams, key: string, values?: unknown[], mapValue: (value: unknown) => string = (value) => String(value)) => {
+  values?.forEach((value) => {
+    if (value !== null && value !== undefined && value !== '') {
+      params.append(key, mapValue(value));
+    }
+  });
+};
+
+const buildShopParams = (page: number, size: number, filter?: ShopFilter, extraParams: Record<string, unknown> = {}) => {
+  const params = new URLSearchParams();
+
+  Object.entries({ ...extraParams, page, size }).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      params.append(key, String(value));
+    }
+  });
+
+  if (!filter) {
+    return params;
+  }
+
+  appendArrayParam(params, 'priceCategory', filter.priceCategory);
+  appendArrayParam(params, 'targetAudience', filter.targetAudience, (value) => (value === 'KIDS' ? 'CHILDREN' : String(value)));
+  appendArrayParam(params, 'openingDays', filter.openingDays);
+  appendArrayParam(params, 'paymentMethods', filter.paymentMethods);
+  appendArrayParam(params, 'drinks', filter.drinks);
+
+  const [employeeCountMin, employeeCountMax] = filter.employeeCount ?? [];
+  if (typeof employeeCountMin === 'number' && employeeCountMin > 0) {
+    params.append('employeeCountMin', String(employeeCountMin));
+  }
+  if (typeof employeeCountMax === 'number' && employeeCountMax < 20) {
+    params.append('employeeCountMax', String(employeeCountMax));
+  }
+
+  const openingTime = normalizeTimeParam(filter.openingTime);
+  if (openingTime) {
+    params.append('openingTime', openingTime);
+  }
+
+  const closingTime = normalizeTimeParam(filter.closingTime);
+  if (closingTime) {
+    params.append('closingTime', closingTime);
+  }
+
+  if (filter.minRating != null && filter.minRating > 0) {
+    params.append('minRating', String(filter.minRating));
+  }
+
+  return params;
+};
+
 export const reviewsAPI = {
   getByShop: (shopId: unknown) => apiClient.get(API_ENDPOINTS.REVIEWS(shopId)),
   getMy: () => apiClient.get(API_ENDPOINTS.REVIEWS_MY, { headers: getAuthHeader() }),
@@ -94,9 +171,9 @@ export const reviewsAPI = {
 };
 
 export const shopsAPI = {
-  getAll: (page = 0, size = 12) => apiClient.get(API_ENDPOINTS.SHOPS, { params: { page, size } }),
-  getWithinRadius: (lat: unknown, lng: unknown, page = 0, size = 12) =>
-    apiClient.get(API_ENDPOINTS.SHOPS_RADIUS, { params: { lat, lng, radius: 5, page, size } }),
+  getAll: (page = 0, size = 12, filter?: ShopFilter) => apiClient.get(API_ENDPOINTS.SHOPS, { params: buildShopParams(page, size, filter) }),
+  getWithinRadius: (lat: unknown, lng: unknown, page = 0, size = 12, filter?: ShopFilter) =>
+    apiClient.get(API_ENDPOINTS.SHOPS_RADIUS, { params: buildShopParams(page, size, filter, { lat, lng, radius: 5 }) }),
   getByEmail: (email: unknown) => apiClient.get(API_ENDPOINTS.SHOPS_BY_EMAIL, { params: { email } }),
   getByUser: () => apiClient.get(API_ENDPOINTS.SHOPS_BY_USER, { headers: getAuthHeader() }),
   getById: (id: unknown) => apiClient.get(API_ENDPOINTS.SHOP_DETAIL(id), { headers: getAuthHeader() }),

@@ -10,7 +10,7 @@ import 'swiper/css/lazy';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
-import '../../css/components/SwiperPhoto.css';
+import '../../css/components/SwiperPhoto.scss';
 
 // import required modules
 import { Lazy, Pagination, Navigation } from 'swiper';

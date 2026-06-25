@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import { Checkbox, Divider, FormGroup, Slider, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Checkbox, Divider, FormGroup, Rating, Slider, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
@@ -10,6 +10,7 @@ import Face2Icon from '@mui/icons-material/Face2';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import GroupsIcon from '@mui/icons-material/Groups';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
+import StarIcon from '@mui/icons-material/Star';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -88,76 +89,31 @@ const Filter = ({ filter, setFilter }) => {
       sx={{ flex: '1 1 0', padding: '20px 20px' }}
       divider={<Divider orientation="horizontal" flexItem />}
     >
-      <FormControl component="fieldset" variant="standard">
-        <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', mb: '15px' }}>
-          <PointOfSaleIcon />
-          {t('PRICE_RANGE')}
-        </FormLabel>
-        <ToggleButtonGroup
-          value={filter.priceCategory}
-          onChange={(event, newValue) => setFilter({ ...filter, priceCategory: newValue })}
-          aria-label="price category"
-        >
-          <ToggleButton value={1} aria-label="1" sx={{ width: '70px', fontSize: '18px' }}>
-            &#8364;
-          </ToggleButton>
-          <ToggleButton value={2} aria-label="2" sx={{ width: '70px', fontSize: '18px' }}>
-            &#8364; &#8364;
-          </ToggleButton>
-          <ToggleButton value={3} aria-label="3" sx={{ width: '70px', fontSize: '18px' }}>
-            &#8364; &#8364; &#8364;
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </FormControl>
-
-      <FormControl component="fieldset" variant="standard">
-        <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
-          <Face2Icon />
-          {t('TARGET_AUDIENCE')}
-        </FormLabel>
-        <ToggleButtonGroup value={filter.targetAudience} onChange={updateTargetAudience} aria-label="target audience selection">
-          <ToggleButton value="ALL" aria-label="other">
-            {t('ALL')}
-          </ToggleButton>
-          <ToggleButton value="MEN" aria-label="men">
-            {t('MEN')}
-          </ToggleButton>
-          <ToggleButton value="WOMEN" aria-label="women">
-            {t('WOMEN')}
-          </ToggleButton>
-          <ToggleButton value="KIDS" aria-label="kids">
-            {t('KIDS')}
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </FormControl>
-
+      {/* Minimum Rating */}
       <FormControl component="fieldset" variant="standard" fullWidth>
-        <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
-          <GroupsIcon />
-          {t('HAIRDRESSERS_NUMBER')}
+        <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', mb: '15px' }}>
+          <StarIcon />
+          {t('MIN_RATING')}
         </FormLabel>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={4} sx={{ p: '0 12px' }}>
-          <Slider
-            getAriaLabel={() => 'Number of Hairdressers'}
-            value={filter.employeeCount}
-            onChange={updateEmployeeCount}
-            step={1}
-            min={0}
-            max={20}
-            valueLabelDisplay="auto"
-            getAriaValueText={() => filter.employeeCount}
-            sx={{ flex: 1, minWidth: 0 }}
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <Rating
+            value={filter.minRating ?? 0}
+            precision={0.5}
+            onChange={(_, newValue) => setFilter({ ...filter, minRating: newValue })}
           />
-          <Typography variant="subtitle1" sx={{ whiteSpace: 'nowrap', minWidth: '50px' }}>
-            {filter.employeeCount[0] === filter.employeeCount[1]
-              ? filter.employeeCount[0] >= 20
-                ? '20+'
-                : filter.employeeCount[0]
-              : filter.employeeCount[0] + ' - ' + (filter.employeeCount[1] >= 20 ? '20+' : filter.employeeCount[1])}
-          </Typography>
+          {filter.minRating > 0 && (
+            <Typography
+              variant="body2"
+              sx={{ cursor: 'pointer', color: 'text.secondary', textDecoration: 'underline' }}
+              onClick={() => setFilter({ ...filter, minRating: null })}
+            >
+              {t('RESET')}
+            </Typography>
+          )}
         </Stack>
       </FormControl>
 
+      {/* Opening Days */}
       <FormControl component="fieldset" variant="standard" fullWidth>
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
           <CalendarMonth />
@@ -177,6 +133,7 @@ const Filter = ({ filter, setFilter }) => {
         </ToggleButtonGroup>
       </FormControl>
 
+      {/* Opening Hours */}
       <FormControl component="fieldset" variant="standard" fullWidth>
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
           <QueryBuilderIcon />
@@ -210,6 +167,80 @@ const Filter = ({ filter, setFilter }) => {
         </Stack>
       </FormControl>
 
+      {/* Target Audience */}
+      <FormControl component="fieldset" variant="standard">
+        <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
+          <Face2Icon />
+          {t('TARGET_AUDIENCE')}
+        </FormLabel>
+        <ToggleButtonGroup value={filter.targetAudience} onChange={updateTargetAudience} aria-label="target audience selection">
+          <ToggleButton value="ALL" aria-label="other">
+            {t('ALL')}
+          </ToggleButton>
+          <ToggleButton value="MEN" aria-label="men">
+            {t('MEN')}
+          </ToggleButton>
+          <ToggleButton value="WOMEN" aria-label="women">
+            {t('WOMEN')}
+          </ToggleButton>
+          <ToggleButton value="KIDS" aria-label="kids">
+            {t('KIDS')}
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </FormControl>
+
+      {/* Number of Hairdressers */}
+      <FormControl component="fieldset" variant="standard" fullWidth>
+        <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', m: '15px 0' }}>
+          <GroupsIcon />
+          {t('HAIRDRESSERS_NUMBER')}
+        </FormLabel>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={4} sx={{ p: '0 12px' }}>
+          <Slider
+            getAriaLabel={() => 'Number of Hairdressers'}
+            value={filter.employeeCount}
+            onChange={updateEmployeeCount}
+            step={1}
+            min={0}
+            max={20}
+            valueLabelDisplay="auto"
+            getAriaValueText={() => filter.employeeCount}
+            sx={{ flex: 1, minWidth: 0 }}
+          />
+          <Typography variant="subtitle1" sx={{ whiteSpace: 'nowrap', minWidth: '50px' }}>
+            {filter.employeeCount[0] === filter.employeeCount[1]
+              ? filter.employeeCount[0] >= 20
+                ? '20+'
+                : filter.employeeCount[0]
+              : filter.employeeCount[0] + ' - ' + (filter.employeeCount[1] >= 20 ? '20+' : filter.employeeCount[1])}
+          </Typography>
+        </Stack>
+      </FormControl>
+
+      {/* Price Range */}
+      <FormControl component="fieldset" variant="standard">
+        <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black', mb: '15px' }}>
+          <PointOfSaleIcon />
+          {t('PRICE_RANGE')}
+        </FormLabel>
+        <ToggleButtonGroup
+          value={filter.priceCategory}
+          onChange={(event, newValue) => setFilter({ ...filter, priceCategory: newValue })}
+          aria-label="price category"
+        >
+          <ToggleButton value={1} aria-label="1" sx={{ width: '70px', fontSize: '18px' }}>
+            &#8364;
+          </ToggleButton>
+          <ToggleButton value={2} aria-label="2" sx={{ width: '70px', fontSize: '18px' }}>
+            &#8364; &#8364;
+          </ToggleButton>
+          <ToggleButton value={3} aria-label="3" sx={{ width: '70px', fontSize: '18px' }}>
+            &#8364; &#8364; &#8364;
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </FormControl>
+
+      {/* Payment Method */}
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black' }}>
           <PaymentIcon />
@@ -228,6 +259,7 @@ const Filter = ({ filter, setFilter }) => {
         </FormGroup>
       </FormControl>
 
+      {/* Drinks */}
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend" sx={{ display: 'flex', gap: '10px', fontWeight: '500', color: 'black' }}>
           <CoffeeIcon />

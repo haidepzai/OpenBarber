@@ -27,6 +27,7 @@ const FilterPage = () => {
     drinks: [],
     recommended: true,
     region: [],
+    minRating: null,
   });
 
   const setDateAndTime = (newValue) => {

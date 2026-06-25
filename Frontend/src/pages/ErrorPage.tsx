@@ -1,6 +1,6 @@
 import React from 'react';
-import '../css/ErrorPage/ErrorPage.css';
-import '../css/App.css';
+import '../css/ErrorPage/ErrorPage.scss';
+import '../css/App.scss';
 import image from '../assets/error_404.png';
 import { useTranslation } from 'react-i18next';
 const ErrorPage = () => {

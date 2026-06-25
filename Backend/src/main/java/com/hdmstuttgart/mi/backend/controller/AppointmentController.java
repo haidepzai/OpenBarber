@@ -1,6 +1,5 @@
 package com.hdmstuttgart.mi.backend.controller;
 
-import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.mapper.AppointmentMapper;
 import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.dto.AppointmentDto;
@@ -18,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Controller for appointments

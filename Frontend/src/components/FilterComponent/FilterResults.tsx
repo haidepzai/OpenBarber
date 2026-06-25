@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Button, CircularProgress, Divider, Pagination, Rating, Stack, Typography } from '@mui/material';
 /*import shops from '../../mocks/shops';*/
 import InputLabel from '@mui/material/InputLabel';
@@ -8,7 +8,6 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
-import dayjs from 'dayjs';
 import TodayIcon from '@mui/icons-material/Today';
 import ReservationDialog from '../Reservation/ReservationDialog';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -30,6 +29,7 @@ const FilterResults = ({ filter }) => {
   const [openModal, setOpenModal] = useState();
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -49,36 +49,37 @@ const FilterResults = ({ filter }) => {
     return sum / reviews.length;
   };
 
-  // true --> element stays in array
-  // false --> element is taken out
-  const filterFunction = (shop) => {
-    const availableServiceTargetAudience = [...new Set((shop.services ?? []).map((service) => service.targetAudience))];
-    const employeeCount = shop.employees?.length ?? 0;
+  const apiFilter = useMemo(
+    () => ({
+      priceCategory: filter.priceCategory,
+      targetAudience: filter.targetAudience,
+      employeeCount: filter.employeeCount,
+      openingDays: filter.openingDays,
+      openingTime: filter.openingTime,
+      closingTime: filter.closingTime,
+      paymentMethods: filter.paymentMethods,
+      drinks: filter.drinks,
+    }),
+    [
+      filter.priceCategory,
+      filter.targetAudience,
+      filter.employeeCount,
+      filter.openingDays,
+      filter.openingTime,
+      filter.closingTime,
+      filter.paymentMethods,
+      filter.drinks,
+    ]
+  );
 
-    return (
-      // priceCategory
-      (filter.priceCategory.length === 0 || filter.priceCategory.includes(shop.priceCategory)) &&
-      // targetAudience
-      (filter.targetAudience.length === 0 || filter.targetAudience.every((ta) => availableServiceTargetAudience.includes(ta))) &&
-      // employeeCount
-      (filter.employeeCount[1] < 20
-        ? employeeCount >= filter.employeeCount[0] && employeeCount <= filter.employeeCount[1]
-        : employeeCount >= filter.employeeCount[0]) &&
-      // opening days
-      (filter.openingDays.length === 0 || filter.openingDays.every((day) => (shop.openingDays ?? []).includes(day))) &&
-      // hours – prefix HH:mm strings with a fixed date so dayjs can parse them
-      (!filter.openingTime ||
-        dayjs(`1970-01-01T${shop.openingTime}`).isBefore(filter.openingTime, 'minute') ||
-        dayjs(`1970-01-01T${shop.openingTime}`).isSame(filter.openingTime, 'minute')) &&
-      (!filter.closingTime ||
-        dayjs(`1970-01-01T${shop.closingTime}`).isAfter(filter.closingTime, 'minute') ||
-        dayjs(`1970-01-01T${shop.closingTime}`).isSame(filter.closingTime, 'minute')) &&
-      // paymentMethods
-      (filter.paymentMethods.length === 0 || filter.paymentMethods.every((pm) => (shop.paymentMethods ?? []).includes(pm))) &&
-      // drinks
-      (filter.drinks.length === 0 || filter.drinks.every((drink) => (shop.drinks ?? []).includes(drink)))
-    );
-  };
+  // Debounced version — waits 500ms after last change before triggering API call
+  const [debouncedFilter, setDebouncedFilter] = useState(apiFilter);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => {
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => setDebouncedFilter(apiFilter), 500);
+    return () => clearTimeout(debounceRef.current);
+  }, [apiFilter]);
 
   // > 0 (positiv): b vor a
   // < 0 (negativ): a vor b
@@ -101,33 +102,43 @@ const FilterResults = ({ filter }) => {
     setIsLoading(true);
     try {
       const hasCoordinates = location.state?.lat != null && location.state?.lng != null;
-      const response = hasCoordinates ? await shopsAPI.getWithinRadius(location.state.lat, location.state.lng, page - 1) : await shopsAPI.getAll(page - 1);
+      const response = hasCoordinates
+        ? await shopsAPI.getWithinRadius(location.state.lat, location.state.lng, page - 1, 12, debouncedFilter)
+        : await shopsAPI.getAll(page - 1, 12, debouncedFilter);
       const data = response.data;
-      setShops(Array.isArray(data?.content) ? data.content : Array.isArray(data) ? data : []);
+      const loadedShops = Array.isArray(data?.content) ? data.content : Array.isArray(data) ? data : [];
+      setShops(loadedShops);
       setTotalPages(data?.totalPages ?? 1);
+      setTotalResults(data?.totalElements ?? loadedShops.length);
     } catch (error) {
       setShops([]);
+      setTotalPages(1);
+      setTotalResults(0);
     } finally {
       setIsLoading(false);
     }
-  }, [location.state, page]);
+  }, [debouncedFilter, location.state?.lat, location.state?.lng, page]);
 
   const goToShop = (id) => {
     navigate(`/shops/${id}`);
   };
 
   useEffect(() => {
+    setPage(1);
+  }, [debouncedFilter, location.state?.lat, location.state?.lng]);
+
+  useEffect(() => {
     loadData();
   }, [loadData]);
 
-  const filteredShops = shops.filter(filterFunction).sort(sortFunction);
+  const sortedShops = [...shops].sort(sortFunction);
 
   return (
     <Fragment>
       <Box sx={{ flex: '4 1 0' }}>
         <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'center' }} sx={{ width: '100%', m: '20px 0' }} gap={1}>
           <Typography variant="body1">
-            {filteredShops.length} {t('SHOPS_AVAILABLE_IN')} {locationName}
+            {totalResults} {t('SHOPS_AVAILABLE_IN')} {locationName}
           </Typography>
           <FormControl>
             <InputLabel id="sort">{t('SORT')}</InputLabel>
@@ -144,14 +155,14 @@ const FilterResults = ({ filter }) => {
             <CircularProgress />
           </Stack>
         )}
-        {!isLoading && filteredShops.length === 0 && (
+        {!isLoading && sortedShops.length === 0 && (
           <Stack alignItems="center" justifyContent="center" sx={{ py: 6 }}>
             <Typography variant="body1">{t('NO_BARBERS_FOUND')}</Typography>
           </Stack>
         )}
-        {!isLoading && filteredShops.length !== 0 && (
+        {!isLoading && sortedShops.length !== 0 && (
           <>
-            {filteredShops.map((shop) => (
+            {sortedShops.map((shop) => (
               <Box key={shop.id} sx={{ margin: '20px 0' }}>
                 <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'flex-start', sm: 'center' }} spacing={3} sx={{ mb: '20px' }}>
                   <img

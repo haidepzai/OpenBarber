@@ -5,6 +5,7 @@ import com.hdmstuttgart.mi.backend.mapper.ShopMapper;
 import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.ShopDto;
+import com.hdmstuttgart.mi.backend.model.dto.ShopFilterParams;
 import com.hdmstuttgart.mi.backend.model.dto.SlotDto;
 import com.hdmstuttgart.mi.backend.service.AppointmentService;
 import com.hdmstuttgart.mi.backend.service.ShopService;
@@ -77,17 +78,42 @@ public class ShopController {
      */
     @ApiOperation(value = "Get All Shops", notes = "Retrieves a paginated list of all shops")
     @GetMapping
-    public ResponseEntity<Page<ShopDto>> getAllShops(@PageableDefault(size = 12) Pageable pageable) {
-        Page<Shop> page = shopService.getAllShops(pageable);
+    public ResponseEntity<Page<ShopDto>> getAllShops(
+            @RequestParam(required = false) List<Integer> priceCategory,
+            @RequestParam(required = false) List<String> targetAudience,
+            @RequestParam(required = false) Integer employeeCountMin,
+            @RequestParam(required = false) Integer employeeCountMax,
+            @RequestParam(required = false) List<String> openingDays,
+            @RequestParam(required = false) String openingTime,
+            @RequestParam(required = false) String closingTime,
+            @RequestParam(required = false) List<String> paymentMethods,
+            @RequestParam(required = false) List<String> drinks,
+            @RequestParam(required = false) Double minRating,
+            @PageableDefault(size = 12) Pageable pageable) {
+        ShopFilterParams params = buildShopFilterParams(priceCategory, targetAudience, employeeCountMin, employeeCountMax, openingDays, openingTime, closingTime, paymentMethods, drinks, minRating);
+        Page<Shop> page = shopService.getFilteredShops(params, pageable);
         return ResponseEntity.ok(page.map(shopMapper::toSummaryDto));
     }
 
     @ApiOperation(value = "Get Shops within Radius", notes = "Retrieves shops within the given radius from a geographical point")
     @GetMapping("/within-radius")
     public ResponseEntity<Page<ShopDto>> getObjectsWithinRadius(
-            @RequestParam double lat, @RequestParam double lng, @RequestParam double radius,
+            @RequestParam double lat,
+            @RequestParam double lng,
+            @RequestParam double radius,
+            @RequestParam(required = false) List<Integer> priceCategory,
+            @RequestParam(required = false) List<String> targetAudience,
+            @RequestParam(required = false) Integer employeeCountMin,
+            @RequestParam(required = false) Integer employeeCountMax,
+            @RequestParam(required = false) List<String> openingDays,
+            @RequestParam(required = false) String openingTime,
+            @RequestParam(required = false) String closingTime,
+            @RequestParam(required = false) List<String> paymentMethods,
+            @RequestParam(required = false) List<String> drinks,
+            @RequestParam(required = false) Double minRating,
             @PageableDefault(size = 12) Pageable pageable) {
-        Page<Shop> page = shopService.getShopsWithinRadius(lat, lng, radius, pageable);
+        ShopFilterParams params = buildShopFilterParams(priceCategory, targetAudience, employeeCountMin, employeeCountMax, openingDays, openingTime, closingTime, paymentMethods, drinks, minRating);
+        Page<Shop> page = shopService.getFilteredShopsWithinRadius(lat, lng, radius, params, pageable);
         return ResponseEntity.ok(page.map(shopMapper::toSummaryDto));
     }
 
@@ -250,5 +276,30 @@ public class ShopController {
         }
         shopService.deleteShop(id);
         return new ResponseEntity<>("Shop deleted with id = " + id, HttpStatus.NO_CONTENT);
+    }
+
+    private ShopFilterParams buildShopFilterParams(
+            List<Integer> priceCategory,
+            List<String> targetAudience,
+            Integer employeeCountMin,
+            Integer employeeCountMax,
+            List<String> openingDays,
+            String openingTime,
+            String closingTime,
+            List<String> paymentMethods,
+            List<String> drinks,
+            Double minRating) {
+        return ShopFilterParams.builder()
+                .priceCategory(priceCategory)
+                .targetAudience(targetAudience)
+                .employeeCountMin(employeeCountMin)
+                .employeeCountMax(employeeCountMax)
+                .openingDays(openingDays)
+                .openingTime(openingTime)
+                .closingTime(closingTime)
+                .paymentMethods(paymentMethods)
+                .drinks(drinks)
+                .minRating(minRating)
+                .build();
     }
 }

@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress, Divider, Stack, Typography } from '@mui/
 import React, { useEffect, useState, useCallback } from 'react';
 import MediaCard from '../components/CardComponent/MediaCard';
 import Search from '../components/Search';
-import MySwiper from '../components/LandingPage/MySwiper';
+import ShopHighlightsSlider from '../components/LandingPage/ShopHighlightsSlider';
 import LocationBanner from '../components/LandingPage/LocationBanner';
 import dayjs from 'dayjs';
 import ReservationDialog from '../components/Reservation/ReservationDialog';
@@ -86,7 +86,7 @@ const LandingPage = () => {
           </Button>
         </Stack>
         <Divider orientation="horizontal" sx={{ m: '12px 0', borderColor: 'rgba(0, 0, 0, 0.24)' }} />
-        <MySwiper />
+        <ShopHighlightsSlider />
         <Stack
           direction="row"
           justifyContent="space-between"
