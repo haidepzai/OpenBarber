@@ -5,39 +5,24 @@ import { usersAPI } from '../../api/apiClient';
 import AuthContext from '../../context/auth-context';
 import { useTranslation } from 'react-i18next';
 
-const emailReducer = (state, action) => {
-  if (action.type === 'USER_INPUT') {
-    let isValid = false;
+import { emailReducer, passwordReducer } from '../../reducers/formReducers';
 
-    const regEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (regEmail.test(action.val)) {
-      isValid = true;
-    } else {
-      isValid = false;
-    }
-    return { value: action.val, isValid: isValid };
-  }
-  //state.value ist latest value
-  if (action.type === 'INPUT_BLUR') {
-    return { value: state.value, isValid: state.value.includes('@') };
-  }
-  return { value: '', isValid: false };
-};
-
-const passwordReducer = (state, action) => {
-  if (action.type === 'USER_INPUT') {
-    return { value: action.val, isValid: action.val.trim().length > 6 };
-  }
-  if (action.type === 'INPUT_BLUR') {
-    return { value: state.value, isValid: state.value.trim().length > 6 };
-  }
-  return { value: '', isValid: false };
+const fieldRowSx = {
+  alignItems: { xs: 'stretch', md: 'center' },
+  gap: { xs: 1, md: 3 },
+  '& > *:first-of-type': {
+    width: { xs: '100%', md: 180 },
+    flexShrink: 0,
+    fontWeight: 500,
+  },
+  '& > *:last-child': {
+    flex: 1,
+  },
 };
 
 const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
   const { t } = useTranslation();
   const authCtx = useContext(AuthContext);
-
   const [formIsValid, setFormIsValid] = useState(false);
 
   const [emailState, dispatchEmail] = useReducer(emailReducer, {
@@ -49,9 +34,8 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
     isValid: true,
   });
 
-  // Object Destructuring : pull out certain properties from object
-  const { isValid: emailIsValid } = emailState; //Alias Assignment emailIsValid
-  const { isValid: passwordIsValid } = passwordState; //Alias Assignment not Value Assignment!!
+  const { isValid: emailIsValid } = emailState;
+  const { isValid: passwordIsValid } = passwordState;
 
   const saveUser = async () => {
     try {
@@ -82,7 +66,7 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
   };
 
   const emailChangeHandler = (event) => {
-    dispatchEmail({ type: 'USER_INPUT', val: event.target.value }); //trigger emailReducer function
+    dispatchEmail({ type: 'USER_INPUT', val: event.target.value });
     setFormIsValid(emailState.isValid && passwordState.isValid && (emailState.length !== 0 || passwordState.length !== 0));
   };
 
@@ -101,46 +85,20 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
 
   return (
     <Fragment>
-      <Typography variant="h1" sx={{ fontSize: '22px', fontWeight: '500', color: 'rgba(0, 0, 0, 1)', m: '40px 0 10px 24px' }}>
+      <Typography variant="h1" sx={{ fontSize: '22px', fontWeight: '500', color: 'rgba(0, 0, 0, 1)', m: '40px 0 10px 0' }}>
         {t('PERSONAL_INFO')}
       </Typography>
-      <Typography variant="h2" sx={{ fontSize: '16px', fontWeight: '500', color: 'rgba(0, 0, 0, 0.45)', m: '0 0 20px 24px' }}>
+      <Typography variant="h2" sx={{ fontSize: '16px', fontWeight: '500', color: 'rgba(0, 0, 0, 0.45)', m: '0 0 20px 0' }}>
         {t('PERSONAL_INFO_TITLE')}
       </Typography>
       <Paper elevation={2}>
-        <Stack
-          direction="column"
-          spacing={3}
-          divider={<Divider orientation="horizontal" flexItem />}
-          sx={{
-            padding: '24px 0',
-            '& > *': {
-              padding: '0 48px',
-            },
-            '& > * > *': {
-              flex: '1',
-            },
-            '& > * > p': {
-              fontWeight: '500',
-            },
-            '& > * > * > p': {
-              fontWeight: '500',
-            },
-          }}
-        >
-          <Stack direction="row">
+        <Stack direction="column" spacing={3} divider={<Divider orientation="horizontal" flexItem />} sx={{ py: 3, px: { xs: 2, sm: 3, md: 4 } }}>
+          <Stack direction={{ xs: 'column', md: 'row' }} sx={fieldRowSx}>
             <Typography variant="body1">{t('NAME')}</Typography>
-            <TextField
-              InputLabelProps={{ shrink: false }}
-              name="name"
-              placeholder={t('NAME')}
-              value={authCtx.user.name === null ? '' : authCtx.user.name}
-              onChange={handleUserChange}
-              fullWidth
-            />
+            <TextField InputLabelProps={{ shrink: false }} name="name" placeholder={t('NAME')} value={authCtx.user.name === null ? '' : authCtx.user.name} onChange={handleUserChange} fullWidth />
           </Stack>
 
-          <Stack direction="row">
+          <Stack direction={{ xs: 'column', md: 'row' }} sx={fieldRowSx}>
             <Typography variant="body1">{t('EMAIL_ADDRESS')}</Typography>
             <TextField
               type="email"
@@ -156,7 +114,7 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
             />
           </Stack>
 
-          <Stack direction="row">
+          <Stack direction={{ xs: 'column', md: 'row' }} sx={fieldRowSx}>
             <Typography variant="body1">{t('PASSWORD')}</Typography>
             <TextField
               type="password"
@@ -174,11 +132,11 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
 
         <Divider orientation="horizontal" sx={{ mb: '24px' }} />
 
-        <Stack direction="row" aligncontent="center" justifyContent="space-between" sx={{ p: '0 24px 24px 24px' }} spacing={4}>
-          <Button variant="outlined" onClick={resetUser}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} aligncontent="center" justifyContent="space-between" sx={{ p: '0 24px 24px 24px' }} spacing={2}>
+          <Button variant="outlined" onClick={resetUser} sx={{ width: { xs: '100%', sm: 'auto' } }}>
             {t('RESET')}
           </Button>
-          <Button variant="contained" onClick={saveUser} disabled={!formIsValid}>
+          <Button variant="contained" onClick={saveUser} disabled={!formIsValid} sx={{ width: { xs: '100%', sm: 'auto' } }}>
             {t('SAVE_CHANGES')}
           </Button>
         </Stack>

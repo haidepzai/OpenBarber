@@ -1,4 +1,4 @@
-import './css/App.css';
+import './css/App.scss';
 import DetailPage from './pages/DetailPage';
 import LandingPage from './pages/LandingPage';
 import ErrorPage from './pages/ErrorPage';

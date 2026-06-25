@@ -1,0 +1,12 @@
+@use '../variables' as *;
+
+.center {
+  text-align: center;
+  justify-content: center;
+}
+
+#error-container {
+  height: 100vh;
+  background-color: $bg-light;
+  padding: 2% 8% 0;
+}

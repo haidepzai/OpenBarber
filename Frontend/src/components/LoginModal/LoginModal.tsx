@@ -11,36 +11,7 @@ import { SignupContext } from '../../context/Signup.context';
 import { useTranslation } from 'react-i18next';
 import ForgotPasswordModal from './ForgotPasswordModal';
 
-// Reducer um mehrere States zu handeln
-// Komplexere Update State Logik
-const emailReducer = (state, action) => {
-  if (action.type === 'USER_INPUT') {
-    let isValid = false;
-
-    const regEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (regEmail.test(action.val)) {
-      isValid = true;
-    } else {
-      isValid = false;
-    }
-    return { value: action.val, isValid: isValid };
-  }
-  //state.value ist latest value
-  if (action.type === 'INPUT_BLUR') {
-    return { value: state.value, isValid: state.value.includes('@') };
-  }
-  return { value: '', isValid: false };
-};
-
-const passwordReducer = (state, action) => {
-  if (action.type === 'USER_INPUT') {
-    return { value: action.val, isValid: action.val.trim().length > 6 };
-  }
-  if (action.type === 'INPUT_BLUR') {
-    return { value: state.value, isValid: state.value.trim().length > 6 };
-  }
-  return { value: '', isValid: false };
-};
+import { emailReducer, passwordReducer } from '../../reducers/formReducers';
 
 const LoginModal = ({ gotoSignup }) => {
   const [formIsValid, setFormIsValid] = useState(false);

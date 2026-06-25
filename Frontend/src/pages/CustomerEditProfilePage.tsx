@@ -95,7 +95,7 @@ const CustomerEditProfilePage = () => {
   const initials = [form.firstName?.[0], form.lastName?.[0]].filter(Boolean).join('').toUpperCase() || '?';
 
   return (
-    <Box sx={{ width: '500px', margin: '40px auto', minHeight: '60vh' }}>
+    <Box sx={{ width: { xs: 'auto', sm: '100%' }, maxWidth: 500, margin: { xs: '40px 16px', sm: '40px auto' }, minHeight: '60vh' }}>
       <Typography variant="h4" fontWeight={600} mb={4}>
         {t('EDIT_PROFILE', 'Profil bearbeiten')}
       </Typography>
@@ -127,7 +127,7 @@ const CustomerEditProfilePage = () => {
       </FormControl>
 
       {/* Name fields */}
-      <Stack direction="row" spacing={2} mb={3}>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={3}>
         <TextField
           label={`${t('FIRST_NAME', 'Vorname')} *`}
           name="firstName"

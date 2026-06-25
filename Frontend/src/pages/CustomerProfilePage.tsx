@@ -14,11 +14,11 @@ const CustomerProfilePage = () => {
   const { data: reviews = [], isLoading: reviewsLoading, refetch: refetchReviews } = useMyReviews();
 
   return (
-    <Box sx={{ width: '60%', margin: '40px auto', minHeight: '60vh' }}>
-      <Typography variant="h4" fontWeight={600} mb={1}>
+    <Box sx={{ width: { xs: 'auto', md: '60%' }, margin: { xs: '40px 16px', md: '40px auto' }, minHeight: '60vh' }}>
+      <Typography variant="h4" fontWeight={600} mb={1} sx={{ fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
         {t('MY_APPOINTMENTS', 'Meine Termine')}
       </Typography>
-      <Typography variant="body1" color="text.secondary" mb={4}>
+      <Typography variant="body1" color="text.secondary" mb={4} sx={{ overflowWrap: 'anywhere' }}>
         {authCtx.email}
       </Typography>
 

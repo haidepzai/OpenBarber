@@ -168,7 +168,7 @@ const EditShopPage = () => {
   }, [saveCooldown]);
 
   return (
-    <>
+    <Box sx={{ overflowX: 'hidden', width: '100%' }}>
       {!loading && (
         <>
           {shop.logo && (
@@ -178,33 +178,28 @@ const EditShopPage = () => {
                 backgroundImage: `url(${shop.logo ? `data:image/jpeg;base64,${shop.logo}` : import.meta.env.VITE_BACKUP_IMAGE})`,
                 backgroundPosition: 'center center',
                 width: '100%',
-                height: '40vh',
+                height: { xs: '24vh', sm: '32vh', md: '40vh' },
               }}
             />
           )}
-          <Box sx={{ width: '60%', margin: '10px auto' }}>
-            <Typography variant="h1" sx={{ fontSize: '22px', fontWeight: '500', color: 'rgba(0, 0, 0, 1)', m: '40px 0 10px 24px' }}>
+          <Box sx={{ width: { xs: 'auto', md: '60%' }, margin: { xs: '10px 16px', md: '10px auto' }, overflowX: 'hidden' }}>
+            <Typography variant="h1" sx={{ fontSize: '22px', fontWeight: '500', color: 'rgba(0, 0, 0, 1)', m: '40px 0 10px 0' }}>
               {t('PROFILE')}
             </Typography>
-            <Typography variant="h2" sx={{ fontSize: '16px', fontWeight: '500', color: 'rgba(0, 0, 0, 0.45)', m: '0 0 20px 24px' }}>
+            <Typography variant="h2" sx={{ fontSize: '16px', fontWeight: '500', color: 'rgba(0, 0, 0, 0.45)', m: '0 0 20px 0' }}>
               {t('EDIT_SHOP_TITLE')}
             </Typography>
-            <Paper elevation={2}>
+            <Paper elevation={2} sx={{ overflow: 'hidden' }}>
               <PersonalInfoForm shop={shop} handleShopChange={handleShopChange} handleShopArrayChange={handleShopArrayChange} />
 
               <Divider orientation="horizontal" sx={{ m: '24px 0' }} />
 
-              <PictureUpload
-                shop={shop}
-                handleLogoUpload={handleLogoUpload}
-                handlePicturesUpload={handlePicturesUpload}
-                handleDeletePicture={handleDeletePicture}
-              />
+              <PictureUpload shop={shop} handleLogoUpload={handleLogoUpload} handlePicturesUpload={handlePicturesUpload} handleDeletePicture={handleDeletePicture} />
 
               <Divider orientation="horizontal" sx={{ m: '24px 0' }} />
 
               <ServiceTable
-                services={shop.services}
+                services={shop.services ?? []}
                 setServices={(newServices) => {
                   setShop({
                     ...shop,
@@ -216,7 +211,7 @@ const EditShopPage = () => {
               <Divider orientation="horizontal" sx={{ m: '24px 0' }} />
 
               <EmployeeTable
-                employees={shop.employees}
+                employees={shop.employees ?? []}
                 setEmployees={(newEmployees) => {
                   setShop({
                     ...shop,
@@ -236,7 +231,7 @@ const EditShopPage = () => {
           <SnackbarManager open={snackbar.open} message={snackbar.message} severity={snackbar.severity} onClose={handleSnackbarClose} />
         </>
       )}
-    </>
+    </Box>
   );
 };
 

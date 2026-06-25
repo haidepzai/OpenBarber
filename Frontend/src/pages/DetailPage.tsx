@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 import ShopDetailView from '../components/DetailPage/ShopDetailView';
 import DetailPageBG from '../components/DetailPage/DetailPageBG';
 
-import '../css/DetailPage/DetailPage.css';
+import '../css/DetailPage/DetailPage.scss';
 import { useParams } from 'react-router-dom';
 import { shopsAPI } from '../api/apiClient';
 

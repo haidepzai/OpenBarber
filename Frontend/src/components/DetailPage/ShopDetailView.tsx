@@ -8,10 +8,11 @@ import ShopInfoCard from './ShopInfoCard';
 import ShopReview from './ShopReview';
 import Review from '../../components/Review';
 import AuthContext from '../../context/auth-context';
+import { useTheme } from '@mui/material/styles';
 
 const ShopDetailView = ({ shop }) => {
-  const mobile = useMediaQuery('(max-width: 800px)');
-  const sidePadding = mobile ? '2vw' : '10vw';
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const [reviews, setReviews] = useState([]);
   const [isReviewed, setIsReviewed] = useState(false);
@@ -41,32 +42,41 @@ const ShopDetailView = ({ shop }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        margin: `calc(40vh - 4rem) ${sidePadding} 0 ${sidePadding}`,
-        gap: 4,
+        mt: { xs: 'calc(26vh - 1.5rem)', sm: 'calc(34vh - 2rem)', md: 'calc(40vh - 4rem)' },
+        mx: { xs: 2, sm: 3, md: '8vw', lg: '10vw' },
+        mb: { xs: 4, md: 6 },
+        gap: { xs: 3, md: 4 },
       }}
     >
       <ShopInfoCard shop={shop} mobile={mobile} reviews={reviews} />
 
       {!isReviewed && (
-        <Review
-          shop={shop}
-          onReview={() => {
-            setIsReviewed(true);
-            loadReviews();
-          }}
-        />
+        <Box sx={{ width: '100%' }}>
+          <Review
+            shop={shop}
+            onReview={() => {
+              setIsReviewed(true);
+              loadReviews();
+            }}
+          />
+        </Box>
       )}
 
       {isReviewed && (
-        <Stack alignItems="center" justifyContent="center" flexGrow="1" sx={{ borderBottom: 1, borderColor: 'divider', pb: 3 }}>
-          <CheckCircleRounded sx={{ width: '5rem', height: '5rem', color: 'primary.main' }} />
-          <Typography variant="p" fontSize="2rem" textAlign="center">
+        <Stack
+          alignItems="center"
+          justifyContent="center"
+          flexGrow="1"
+          sx={{ borderBottom: 1, borderColor: 'divider', pb: 3, width: '100%' }}
+        >
+          <CheckCircleRounded sx={{ width: { xs: '4rem', md: '5rem' }, height: { xs: '4rem', md: '5rem' }, color: 'primary.main' }} />
+          <Typography component="p" sx={{ fontSize: { xs: '1.5rem', md: '2rem' }, textAlign: 'center' }}>
             {t('THANK_YOU_REVIEW')}
           </Typography>
         </Stack>
       )}
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, width: '100%' }}>
         {reviews &&
           reviews.length > 0 &&
           reviews

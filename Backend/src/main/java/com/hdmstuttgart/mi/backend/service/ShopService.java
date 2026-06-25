@@ -5,12 +5,14 @@ import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
 import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.Employee;
+import com.hdmstuttgart.mi.backend.model.dto.ShopFilterParams;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import com.hdmstuttgart.mi.backend.model.enums.UserRole;
 import com.hdmstuttgart.mi.backend.repository.ShopRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
+import com.hdmstuttgart.mi.backend.specification.ShopSpecification;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,11 +138,19 @@ public class ShopService {
      * @return the all shops
      */
     public Page<Shop> getAllShops(Pageable pageable) {
-        return shopRepository.findAll(pageable);
+        return getFilteredShops(null, pageable);
+    }
+
+    public Page<Shop> getFilteredShops(ShopFilterParams params, Pageable pageable) {
+        return shopRepository.findAll(ShopSpecification.withFilters(params), pageable);
     }
 
     public Page<Shop> getShopsWithinRadius(double lat, double lng, double radius, Pageable pageable) {
-        return shopRepository.findWithinRadius(lat, lng, radius, pageable);
+        return getFilteredShopsWithinRadius(lat, lng, radius, null, pageable);
+    }
+
+    public Page<Shop> getFilteredShopsWithinRadius(double lat, double lng, double radius, ShopFilterParams params, Pageable pageable) {
+        return shopRepository.findAll(ShopSpecification.withinRadius(lat, lng, radius).and(ShopSpecification.withFilters(params)), pageable);
     }
 
     /**

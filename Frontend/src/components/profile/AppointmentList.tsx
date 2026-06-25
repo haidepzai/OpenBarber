@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Chip, CircularProgress, Paper, Stack, Typography } from '@mui/material';
 import EventIcon from '@mui/icons-material/Event';
 import StoreIcon from '@mui/icons-material/Store';
@@ -16,7 +16,7 @@ const formatDateTime = (dateTime) => {
 const AppointmentList = ({ appointments = [], loading, onRefetch }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [cancelling, setCancelling] = useState(null);
+  const [cancelling, setCancelling] = React.useState(null);
 
   const handleCancel = async (appointment) => {
     if (!window.confirm(t('CONFIRM_CANCEL_APPOINTMENT', 'Termin wirklich absagen?'))) return;
@@ -37,16 +37,16 @@ const AppointmentList = ({ appointments = [], loading, onRefetch }) => {
       elevation={2}
       onClick={() => appointment.shopId && navigate(`/shops/${appointment.shopId}`)}
       sx={{
-        p: 3,
+        p: { xs: 2, sm: 3 },
         borderRadius: 3,
         cursor: appointment.shopId ? 'pointer' : 'default',
         transition: 'box-shadow 0.2s, transform 0.15s',
         '&:hover': appointment.shopId ? { boxShadow: 6, transform: 'translateY(-2px)' } : {},
       }}
     >
-      <Stack direction="row" alignItems="flex-start" justifyContent="space-between" flexWrap="wrap" gap={1}>
-        <Stack gap={1} flex={1}>
-          <Stack direction="row" alignItems="center" gap={1}>
+      <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'stretch', sm: 'flex-start' }} justifyContent="space-between" flexWrap="wrap" gap={2}>
+        <Stack gap={1} flex={1} minWidth={0}>
+          <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
             <EventIcon fontSize="small" color="primary" />
             <Typography variant="body1" fontWeight={600}>
               {formatDateTime(appointment.appointmentDateTime)}
@@ -81,12 +81,8 @@ const AppointmentList = ({ appointments = [], loading, onRefetch }) => {
           )}
         </Stack>
 
-        <Stack alignItems="flex-end" gap={1}>
-          <Chip
-            label={appointment.confirmed ? t('APPOINTMENT_CONFIRMED', 'Bestätigt') : t('PENDING', 'Ausstehend')}
-            color={appointment.confirmed ? 'success' : 'warning'}
-            size="small"
-          />
+        <Stack direction={{ xs: 'row', sm: 'column' }} alignItems={{ xs: 'center', sm: 'flex-end' }} justifyContent="space-between" gap={1} sx={{ width: { xs: '100%', sm: 'auto' } }}>
+          <Chip label={appointment.confirmed ? t('APPOINTMENT_CONFIRMED', 'Bestätigt') : t('PENDING', 'Ausstehend')} color={appointment.confirmed ? 'success' : 'warning'} size="small" />
           {allowCancel && (
             <Button
               variant="outlined"

@@ -179,7 +179,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             variant="outlined"
             startIcon={<DeleteIcon />}
             onClick={() => setOpenDeleteDialog(true)}
-            sx={{ whiteSpace: 'nowrap', p: '5px 30px' }}
+            sx={{ whiteSpace: 'nowrap', p: '5px 30px', width: { xs: '100%', sm: 'auto' } }}
           >
             Delete Employee
             {numSelected >= 2 && 's'}
@@ -307,12 +307,8 @@ export default function EmployeeTable(props: EmployeeTableProps) {
     <>
       <Box sx={{ width: '100%' }}>
         <EnhancedTableToolbar numSelected={selected.length} setOpenDeleteDialog={setOpenDeleteDialog} setOpenCreateDialog={setOpenCreateDialog} />
-        <TableContainer>
-          <Table
-            /*sx={{ minWidth: 750 }}*/
-            aria-labelledby="tableTitle"
-            size={'medium'}
-          >
+        <TableContainer sx={{ overflowX: 'auto' }}>
+          <Table sx={{ minWidth: 650 }} aria-labelledby="tableTitle" size={'medium'}>
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}

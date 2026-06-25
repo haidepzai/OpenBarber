@@ -7,10 +7,9 @@ import { useTranslation } from 'react-i18next';
 type LocationState = 'idle' | 'loading' | 'success' | 'denied' | 'error';
 
 const reverseGeocode = async (lat: number, lon: number): Promise<string> => {
-  const res = await fetch(
-    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`,
-    { headers: { 'Accept-Language': 'de' } }
-  );
+  const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`, {
+    headers: { 'Accept-Language': 'de' },
+  });
   const data = await res.json();
   const addr = data.address ?? {};
   const neighborhood = addr.suburb ?? addr.quarter ?? addr.city_district ?? addr.borough ?? '';
@@ -48,7 +47,6 @@ const LocationBanner = () => {
     );
   };
 
-  // Auto-detect silently if permission was already granted
   useEffect(() => {
     if (!navigator.permissions) return;
     navigator.permissions.query({ name: 'geolocation' }).then((result) => {
@@ -64,12 +62,16 @@ const LocationBanner = () => {
         justifyContent: 'center',
         gap: 1.5,
         py: 1.5,
-        px: 3,
+        px: { xs: 2, sm: 3 },
         bgcolor: 'grey.50',
         borderBottom: '1px solid',
         borderColor: 'grey.200',
         flexWrap: 'wrap',
         minHeight: 52,
+        textAlign: 'center',
+        '& .MuiTypography-root': {
+          overflowWrap: 'anywhere',
+        },
       }}
     >
       {state === 'loading' && (
@@ -84,7 +86,7 @@ const LocationBanner = () => {
       {state === 'success' && (
         <>
           <LocationOn fontSize="small" sx={{ color: 'primary.main' }} />
-          <Typography variant="body2" color="text.primary">
+          <Typography variant="body2" color="text.primary" sx={{ maxWidth: { xs: '100%', md: 700 } }}>
             {t('LOCATION_DETECTED', 'Sie scheinen in {{location}} zu sein. Trifft das nicht zu?', { location: locationName })}
           </Typography>
           <Button
@@ -102,7 +104,7 @@ const LocationBanner = () => {
       {state === 'denied' && (
         <>
           <WarningAmberRounded fontSize="small" sx={{ color: 'warning.main' }} />
-          <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 500 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ maxWidth: { xs: '100%', md: 500 } }}>
             {t('LOCATION_DENIED', 'Wir konnten Ihren genauen Standort nicht ermitteln. Bitte aktivieren Sie den Standort in Ihren Browsereinstellungen.')}
           </Typography>
           <Button
