@@ -89,8 +89,10 @@ public class ShopController {
             @RequestParam(required = false) List<String> paymentMethods,
             @RequestParam(required = false) List<String> drinks,
             @RequestParam(required = false) Double minRating,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate availableDate,
+            @RequestParam(required = false) String availableFromTime,
             @PageableDefault(size = 12) Pageable pageable) {
-        ShopFilterParams params = buildShopFilterParams(priceCategory, targetAudience, employeeCountMin, employeeCountMax, openingDays, openingTime, closingTime, paymentMethods, drinks, minRating);
+        ShopFilterParams params = buildShopFilterParams(priceCategory, targetAudience, employeeCountMin, employeeCountMax, openingDays, openingTime, closingTime, paymentMethods, drinks, minRating, availableDate, availableFromTime);
         Page<Shop> page = shopService.getFilteredShops(params, pageable);
         return ResponseEntity.ok(page.map(shopMapper::toSummaryDto));
     }
@@ -111,8 +113,10 @@ public class ShopController {
             @RequestParam(required = false) List<String> paymentMethods,
             @RequestParam(required = false) List<String> drinks,
             @RequestParam(required = false) Double minRating,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate availableDate,
+            @RequestParam(required = false) String availableFromTime,
             @PageableDefault(size = 12) Pageable pageable) {
-        ShopFilterParams params = buildShopFilterParams(priceCategory, targetAudience, employeeCountMin, employeeCountMax, openingDays, openingTime, closingTime, paymentMethods, drinks, minRating);
+        ShopFilterParams params = buildShopFilterParams(priceCategory, targetAudience, employeeCountMin, employeeCountMax, openingDays, openingTime, closingTime, paymentMethods, drinks, minRating, availableDate, availableFromTime);
         Page<Shop> page = shopService.getFilteredShopsWithinRadius(lat, lng, radius, params, pageable);
         return ResponseEntity.ok(page.map(shopMapper::toSummaryDto));
     }
@@ -288,7 +292,9 @@ public class ShopController {
             String closingTime,
             List<String> paymentMethods,
             List<String> drinks,
-            Double minRating) {
+            Double minRating,
+            java.time.LocalDate availableDate,
+            String availableFromTime) {
         return ShopFilterParams.builder()
                 .priceCategory(priceCategory)
                 .targetAudience(targetAudience)
@@ -300,6 +306,8 @@ public class ShopController {
                 .paymentMethods(paymentMethods)
                 .drinks(drinks)
                 .minRating(minRating)
+                .availableDate(availableDate)
+                .availableFromTime(availableFromTime)
                 .build();
     }
 }

@@ -59,6 +59,9 @@ const FilterResults = ({ filter }) => {
       closingTime: filter.closingTime,
       paymentMethods: filter.paymentMethods,
       drinks: filter.drinks,
+      minRating: filter.minRating,
+      availableDate: filter.dateAndTime ? filter.dateAndTime.format('YYYY-MM-DD') : null,
+      availableFromTime: filter.dateAndTime ? filter.dateAndTime.format('HH:mm') : null,
     }),
     [
       filter.priceCategory,
@@ -69,6 +72,8 @@ const FilterResults = ({ filter }) => {
       filter.closingTime,
       filter.paymentMethods,
       filter.drinks,
+      filter.minRating,
+      filter.dateAndTime,
     ]
   );
 

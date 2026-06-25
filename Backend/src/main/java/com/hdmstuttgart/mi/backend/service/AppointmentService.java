@@ -226,6 +226,71 @@ public class AppointmentService {
         return result;
     }
 
+    /**
+     * Checks whether a shop has at least one free slot of minDurationMin minutes
+     * on the given date, starting no earlier than fromTime.
+     * Also validates that the shop is open on that weekday and the time range fits within opening hours.
+     */
+    @Transactional(readOnly = true)
+    public boolean hasAnyFreeSlot(Shop shop, LocalDate date, String fromTime, int minDurationMin) {
+        // Check opening days
+        List<String> openingDays = shop.getOpeningDays();
+        if (openingDays != null && !openingDays.isEmpty()) {
+            String weekday = date.getDayOfWeek().name(); // e.g. "MONDAY"
+            boolean isOpen = openingDays.stream()
+                    .anyMatch(d -> d != null && d.equalsIgnoreCase(weekday));
+            if (!isOpen) return false;
+        }
+
+        int openMinutes = parseTimeToMinutes(shop.getOpeningTime(), 8 * 60);
+        int closeMinutes = parseTimeToMinutes(shop.getClosingTime(), 20 * 60);
+        int fromMinutes = parseTimeToMinutes(fromTime, openMinutes);
+        int startMinutes = Math.max(openMinutes, fromMinutes);
+
+        // Not enough time left within opening hours
+        if (startMinutes + minDurationMin > closeMinutes) {
+            return false;
+        }
+
+        List<Employee> employees = employeeRepository.findAllByShopId(shop.getId());
+        if (employees.isEmpty()) {
+            return true;
+        }
+
+        LocalDateTime dayStart = date.atStartOfDay();
+        LocalDateTime dayEnd = date.atTime(23, 59, 59);
+
+        Map<Long, List<Appointment>> apptByEmployee = employees.stream()
+                .collect(Collectors.toMap(
+                        Employee::getId,
+                        emp -> appointmentRepository.findByEmployeeIdAndAppointmentDateTimeBetween(emp.getId(), dayStart, dayEnd)
+                ));
+
+        int cur = startMinutes;
+        while (cur + minDurationMin <= closeMinutes) {
+            LocalDateTime slotStart = LocalDateTime.of(date, LocalTime.of(cur / 60, cur % 60));
+            LocalDateTime slotEnd = slotStart.plusMinutes(minDurationMin);
+
+            for (Employee emp : employees) {
+                List<Appointment> dayAppts = apptByEmployee.getOrDefault(emp.getId(), List.of());
+                boolean hasConflict = dayAppts.stream().anyMatch(existing -> {
+                    LocalDateTime existingEnd;
+                    if (existing.getEndDateTime() != null) {
+                        existingEnd = existing.getEndDateTime();
+                    } else {
+                        int dur = existing.getServices().stream().mapToInt(Service::getDurationInMin).sum();
+                        if (dur == 0) dur = 60;
+                        existingEnd = existing.getAppointmentDateTime().plusMinutes(dur);
+                    }
+                    return slotStart.isBefore(existingEnd) && slotEnd.isAfter(existing.getAppointmentDateTime());
+                });
+                if (!hasConflict) return true;
+            }
+            cur += 15;
+        }
+        return false;
+    }
+
     private int parseTimeToMinutes(String timeStr, int defaultMinutes) {
         if (timeStr == null || timeStr.isBlank()) return defaultMinutes;
         try {

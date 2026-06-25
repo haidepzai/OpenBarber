@@ -154,6 +154,7 @@
   "RESEND_VERIFICATION_CODE": "コードを再送信",
   "RESERVATION_TITLE": "スタイリストと予約を選択",
   "RESET": "リセット",
+  "RESET_ALL_FILTERS": "すべてのフィルターをリセット",
   "RESET_PASSWORD_CONFIRM": "パスワードを確認",
   "RESET_PASSWORD_INVALID": "無効または期限切れのリンク",
   "RESET_PASSWORD_MISMATCH": "パスワードが一致しません",

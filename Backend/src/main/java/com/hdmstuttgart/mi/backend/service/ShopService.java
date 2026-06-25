@@ -16,7 +16,9 @@ import com.hdmstuttgart.mi.backend.specification.ShopSpecification;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,8 @@ public class ShopService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
+    @Lazy
+    private final AppointmentService appointmentService;
 
     /**
      * Create shop shop.
@@ -142,6 +146,9 @@ public class ShopService {
     }
 
     public Page<Shop> getFilteredShops(ShopFilterParams params, Pageable pageable) {
+        if (params != null && params.getAvailableDate() != null) {
+            return filterByAvailability(shopRepository.findAll(ShopSpecification.withFilters(params)), params, pageable);
+        }
         return shopRepository.findAll(ShopSpecification.withFilters(params), pageable);
     }
 
@@ -150,7 +157,25 @@ public class ShopService {
     }
 
     public Page<Shop> getFilteredShopsWithinRadius(double lat, double lng, double radius, ShopFilterParams params, Pageable pageable) {
-        return shopRepository.findAll(ShopSpecification.withinRadius(lat, lng, radius).and(ShopSpecification.withFilters(params)), pageable);
+        var spec = ShopSpecification.withinRadius(lat, lng, radius).and(ShopSpecification.withFilters(params));
+        if (params != null && params.getAvailableDate() != null) {
+            return filterByAvailability(shopRepository.findAll(spec), params, pageable);
+        }
+        return shopRepository.findAll(spec, pageable);
+    }
+
+    private Page<Shop> filterByAvailability(List<Shop> shops, ShopFilterParams params, Pageable pageable) {
+        List<Shop> available = shops.stream()
+                .filter(shop -> appointmentService.hasAnyFreeSlot(
+                        shop,
+                        params.getAvailableDate(),
+                        params.getAvailableFromTime(),
+                        30))
+                .collect(Collectors.toList());
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), available.size());
+        List<Shop> page = start >= available.size() ? List.of() : available.subList(start, end);
+        return new PageImpl<>(page, pageable, available.size());
     }
 
     /**

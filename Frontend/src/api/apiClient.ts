@@ -14,6 +14,8 @@ type ShopFilter = {
   paymentMethods?: string[];
   drinks?: string[];
   minRating?: number | null;
+  availableDate?: string | null;
+  availableFromTime?: string | null;
 };
 
 interface AuthRequestConfig {
@@ -149,6 +151,14 @@ const buildShopParams = (page: number, size: number, filter?: ShopFilter, extraP
 
   if (filter.minRating != null && filter.minRating > 0) {
     params.append('minRating', String(filter.minRating));
+  }
+
+  if (filter.availableDate) {
+    params.append('availableDate', filter.availableDate);
+  }
+
+  if (filter.availableFromTime) {
+    params.append('availableFromTime', filter.availableFromTime);
   }
 
   return params;

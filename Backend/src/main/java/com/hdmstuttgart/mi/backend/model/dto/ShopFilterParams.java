@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -22,4 +23,8 @@ public class ShopFilterParams {
     private List<String> paymentMethods;
     private List<String> drinks;
     private Double minRating;
+    /** Filter shops that have at least one free slot on this date */
+    private LocalDate availableDate;
+    /** Only consider slots starting from this time (HH:mm), defaults to shop opening time */
+    private String availableFromTime;
 }
