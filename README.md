@@ -1,55 +1,127 @@
 # OpenBarber
 
+**OpenBarber** is a full-stack barber shop booking platform. Customers can discover barber shops near them, book appointments, and leave reviews. Shop owners can manage their profile, services, employees, and appointments through a dedicated scheduler.
 
-OpenBarber ist ein Reservierungsmanagementsystem speziell für Friseure.
-Kunden können nach Friseuren in bestimmten Städten suchen und bei Bedarf einen Termin reservieren.
-Die Friseure werden über Reservierungen informiert.
-Zudem können Friseure kontaktiert, bewertet und favorisiert werden.
+---
 
-OpenBarber offers a solution for hairdressers to manage reservations. Moreover, guests can make online reservations, contact and rate hairdressers.
+## Tech Stack
 
-Used technologies
-- React
-- Java Spring
-- PostgreSQL
-- Docker
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, TypeScript, Vite, MUI v5 |
+| Backend | Java 17, Spring Boot, Spring Security (JWT) |
+| Database | PostgreSQL 16 |
+| Containerization | Docker, Docker Compose |
 
-OpenBarber is a reservation management system for hairdressers.
-Customers can search for hairdressers in specific cities and reserve an appointment if needed.
-The hairdressers are informed about reservations.
-Furthermore, you can contact barbers, rate them and save them as favorites!
+---
 
-# Setup
+## Features
 
-Run `docker-compose -f docker-compose.yml up`
+### For Customers
+- 🔍 Search barber shops by location with radius filter
+- 📅 Book appointments (guest or logged-in)
+- ⭐ Rate and review shops
+- 👤 Manage profile and view past/upcoming appointments
+- 🌍 i18n support: English, German, Japanese
 
-Backend now includes automatic seed data (`Backend/src/main/resources/data.sql`) for local development.
-It creates sample barbershops, users, services, appointments and reviews on startup if they do not exist yet.
-Seed login password: `OpenBarber123!`
+### For Shop Owners
+- 🏪 Manage shop profile (opening hours, days, services, photos)
+- 💈 Manage employees and their schedules
+- 📆 Full appointment scheduler (day/week view, group by hairdresser)
+- 📊 View and manage all bookings
 
-If you get error ` /bin/sh: ./mvnw: /bin/sh^M: bad interpreter: No such file or directory `,
-open `mvnw` with an editor such as vim or vi.
-- `vim mvnw`
-- Press `ESC`
-- type `:set fileformat=unix`
-- save it with `:x!` or `:wq!`
+### Filter & Search
+- Filter by: minimum rating, opening days, opening hours, target audience, number of hairdressers, price range, payment methods, drinks
+- All filtering is done server-side with proper pagination
 
-You may need to build an artifact.
+---
 
-- Open the Backend project with IntelliJ and create an artifact with Maven
+## Getting Started
 
-# Create Artifact with Maven
-1. Open Maven Panel: On the right side of the IntelliJ IDEA interface, there's a vertical tab labeled "Maven". Click on it to open the Maven Projects panel.
+### Prerequisites
+- Docker & Docker Compose
 
-2. Lifecycle: In the Maven Projects panel, you'll see your project's hierarchy. Expand your project's root and locate the "Lifecycle" section.
+### Run with Docker
 
-3. Clean and Install: First, double-click on clean to clean your project (this step is optional but recommended). Then, double-click on install. This will build your project and create the JAR file.
+```bash
+docker-compose up --build
+```
 
-4. Find the JAR: After the build completes, the JAR file will be located in the target directory within your project's root directory.
+| Service | URL |
+|---|---|
+| Frontend | http://localhost:80 |
+| Backend API | http://localhost:8080 |
 
-## Impressions
+### Run locally (development)
 
-![alt text](./Photos/1.png)
-![alt text](./Photos/2.png)
-![alt text](./Photos/3.png)
-![alt text](./Photos/4.png)
+**Backend** (requires Java 17):
+```bash
+cd Backend
+./mvnw spring-boot:run
+```
+
+**Frontend** (requires Node 18+):
+```bash
+cd Frontend
+npm install
+npm start        # http://localhost:3000
+```
+
+---
+
+## Seed Data
+
+The backend automatically seeds sample data on first startup (`data.sql`):
+- Sample barbershops, employees, services, appointments and reviews
+
+**Seed login password:** `OpenBarber123!`
+
+---
+
+## Environment
+
+The backend requires a `.env` file at `Backend/src/main/resources/.env`:
+
+```env
+SPRING_DATASOURCE_PASSWORD=admin
+JWT_SECRET=your-secret
+GOOGLE_CLIENT_ID=your-google-client-id
+# ... other keys
+```
+
+---
+
+## Project Structure
+
+```
+openbarber/
+├── Frontend/         # React + Vite app
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── api/
+│   │   ├── context/
+│   │   ├── reducers/
+│   │   └── css/      # SCSS stylesheets
+│   └── Dockerfile
+├── Backend/          # Spring Boot app
+│   ├── src/main/java/
+│   │   └── .../
+│   │       ├── controller/
+│   │       ├── service/
+│   │       ├── model/
+│   │       ├── repository/
+│   │       └── specification/
+│   └── Dockerfile
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## Screenshots
+
+![Landing Page](./Photos/1.png)
+![Shop Detail](./Photos/2.png)
+![Booking Flow](./Photos/3.png)
+![Scheduler](./Photos/4.png)

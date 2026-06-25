@@ -1,6 +1,8 @@
 // @ts-nocheck
-import React, { Fragment, useContext, useReducer } from 'react';
-import { Stack, TextField, Typography, Button, CircularProgress } from '@mui/material';
+import React, { Fragment, useContext, useReducer, useState } from 'react';
+import { Stack, TextField, Typography, Button, CircularProgress, IconButton, InputAdornment } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { SignupContext } from '../../../context/Signup.context';
 import AuthContext from '../../../context/auth-context';
 import PasswordRequirements from '../../PasswordRequirements';
@@ -77,6 +79,8 @@ const SignUpStep = () => {
   const authCtx = useContext(AuthContext);
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { t } = useTranslation();
   const accountType = signUpContext.data?.accountType;
@@ -187,23 +191,41 @@ const SignUpStep = () => {
             <TextField
               label={t('PASSWORD')}
               required
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               value={state.enteredPassword}
               error={!state.passwordIsValid}
               helperText={!state.passwordIsValid && 'Password must contain upper, lower, number, special char and be 8+ chars'}
               onChange={(e) => dispatch({ type: 'SET_ENTERED_PASSWORD', payload: e.target.value })}
               onBlur={() => onBlur('password')}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowPassword((v) => !v)} edge="end">
+                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <PasswordRequirements password={state.enteredPassword} />
             <TextField
               label={t('CONFIRM_PASSWORD')}
               required
-              type="password"
+              type={showConfirmPassword ? 'text' : 'password'}
               value={state.enteredConfirmPassWord}
               error={!state.passwordsMatch}
               helperText={!state.passwordsMatch && 'Passwords do not match'}
               onChange={(e) => dispatch({ type: 'SET_ENTERED_CONFIRM_PASSWORD', payload: e.target.value })}
               onBlur={() => onBlur('confirmPassword')}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowConfirmPassword((v) => !v)} edge="end">
+                      {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </Stack>
           <Stack direction="row" justifyContent="space-between" sx={{ pt: 2, mt: 'auto', flexShrink: 0, borderTop: 1, borderColor: 'divider' }}>

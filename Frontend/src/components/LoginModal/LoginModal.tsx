@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { Fragment, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Box, Typography, Stack, TextField, Button, Checkbox } from '@mui/material';
+import { Box, Typography, Stack, TextField, Button, Checkbox, IconButton, InputAdornment } from '@mui/material';
 import { ArrowBackRounded } from '@mui/icons-material';
 import { GoogleLogin } from '@react-oauth/google';
 import OpenBarberLogo from '../../assets/logo_openbarber.svg';
@@ -12,6 +12,8 @@ import { useTranslation } from 'react-i18next';
 import ForgotPasswordModal from './ForgotPasswordModal';
 
 import { emailReducer, passwordReducer } from '../../reducers/formReducers';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const LoginModal = ({ gotoSignup }) => {
   const [formIsValid, setFormIsValid] = useState(false);
@@ -33,6 +35,7 @@ const LoginModal = ({ gotoSignup }) => {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
   const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Object Destructuring : pull out certain properties from object
   const { isValid: emailIsValid } = emailState; //Alias Assignment emailIsValid
@@ -213,11 +216,20 @@ const LoginModal = ({ gotoSignup }) => {
                   ref={passwordInputRef}
                   label={t('PASSWORD')}
                   required
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   error={!passwordIsValid}
                   helperText={!passwordIsValid && t('PLEASE_ENTER_PASSWORD')}
                   onChange={passwordChangeHandler}
                   onBlur={validatePasswordHandler}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={() => setShowPassword((v) => !v)} edge="end">
+                          {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <Stack direction="row" alignItems="center">
                   <Checkbox checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
