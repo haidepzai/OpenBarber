@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import Search from '../components/Search';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, Tab, Tabs, Typography, useMediaQuery, useTheme } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ListIcon from '@mui/icons-material/List';
+import MapIcon from '@mui/icons-material/Map';
 import FilterResults from '../components/FilterComponent/FilterResults';
+import FilterMapView from '../components/FilterComponent/FilterMapView';
 import Filter from '../components/FilterComponent/Filter';
 import dayjs from 'dayjs';
 import { useLocation } from 'react-router-dom';
@@ -11,6 +14,7 @@ const FilterPage = () => {
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [view, setView] = useState<'list' | 'map'>('list');
 
   const [filter, setFilter] = useState({
     dateAndTime: location.state && location.state.dateAndTime ? dayjs(location.state.dateAndTime) : dayjs(),
@@ -31,11 +35,18 @@ const FilterPage = () => {
   });
 
   const setDateAndTime = (newValue) => {
-    setFilter({
-      ...filter,
-      dateAndTime: newValue,
-    });
+    setFilter({ ...filter, dateAndTime: newValue });
   };
+
+  const ResultsArea = () => (
+    <Box sx={{ flex: 1, minWidth: 0, width: '100%' }}>
+      <Tabs value={view} onChange={(_, v) => setView(v)} sx={{ mb: 1 }}>
+        <Tab value="list" label="List" icon={<ListIcon />} iconPosition="start" />
+        <Tab value="map" label="Map" icon={<MapIcon />} iconPosition="start" />
+      </Tabs>
+      {view === 'list' ? <FilterResults filter={filter} /> : <FilterMapView filter={filter} />}
+    </Box>
+  );
 
   return (
     <>
@@ -52,12 +63,12 @@ const FilterPage = () => {
               <Filter filter={filter} setFilter={setFilter} />
             </AccordionDetails>
           </Accordion>
-          <FilterResults filter={filter} />
+          <ResultsArea />
         </Box>
       ) : (
         <Stack direction="row" spacing={4} sx={{ maxWidth: '1500px', margin: '0 auto', padding: '0px 50px' }}>
           <Filter filter={filter} setFilter={setFilter} />
-          <FilterResults filter={filter} />
+          <ResultsArea />
         </Stack>
       )}
     </>

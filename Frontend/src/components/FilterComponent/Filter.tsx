@@ -86,7 +86,7 @@ const Filter = ({ filter, setFilter }) => {
       alignItems="flex-start"
       justifyContent="flex-start"
       spacing={3}
-      sx={{ flex: '1 1 0', padding: '20px 20px' }}
+      sx={{ width: 280, flexShrink: 0, padding: '20px 20px' }}
       divider={<Divider orientation="horizontal" flexItem />}
     >
       {/* Minimum Rating */}
