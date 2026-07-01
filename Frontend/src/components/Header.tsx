@@ -1,19 +1,7 @@
 // @ts-nocheck
 import React, { useContext, useMemo, useState } from 'react';
 import image from '../assets/logo_openbarber.svg';
-import {
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  IconButton,
-  List,
-  ListItemButton,
-  ListItemText,
-  Stack,
-  Typography,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, Button, Divider, Drawer, IconButton, List, ListItemButton, ListItemText, Stack, Typography, useMediaQuery } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link, useNavigate } from 'react-router-dom';
 import { SignupContext } from '../context/Signup.context';

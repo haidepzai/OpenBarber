@@ -48,7 +48,9 @@ const Review = ({ shop, onReview }) => {
   if (!isLoggedIn) {
     return (
       <Fragment>
-        <Typography variant="h4" textAlign="center">Reviews</Typography>
+        <Typography variant="h4" textAlign="center">
+          Reviews
+        </Typography>
         <Box textAlign="center" sx={{ borderBottom: 1, borderColor: 'divider', pb: 3 }}>
           <Typography variant="body1" color="text.secondary" sx={{ mt: 2, mb: 2 }}>
             {t('LOGIN_TO_REVIEW', 'Bitte einloggen um eine Bewertung zu hinterlassen.')}
@@ -60,7 +62,9 @@ const Review = ({ shop, onReview }) => {
 
   return (
     <Fragment>
-      <Typography variant="h4" textAlign="center">Reviews</Typography>
+      <Typography variant="h4" textAlign="center">
+        Reviews
+      </Typography>
       <Box textAlign="center" sx={{ borderBottom: 1, borderColor: 'divider', pb: 3 }}>
         <Typography variant="h6" textAlign="center">
           {t('RATE', { shop: `${shop.name}` })}
@@ -79,7 +83,10 @@ const Review = ({ shop, onReview }) => {
         <Box sx={{ width: '50%', margin: '0 auto 24px' }}>
           <PhotoUpload
             previewSrc={photoPreview}
-            onFileChange={(file, url) => { setPhotoFile(file); setPhotoPreview(url); }}
+            onFileChange={(file, url) => {
+              setPhotoFile(file);
+              setPhotoPreview(url);
+            }}
             onRemove={clearPhoto}
           />
         </Box>

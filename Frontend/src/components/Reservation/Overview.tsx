@@ -92,7 +92,8 @@ const Overview = ({ booked, data, handleStep }) => {
           />
           <Box>
             <Typography sx={{ lineHeight: 'unset' }}>
-              {displayEmployee?.name}{displayEmployee?.title ? ` – ${displayEmployee.title}` : ''}
+              {displayEmployee?.name}
+              {displayEmployee?.title ? ` – ${displayEmployee.title}` : ''}
             </Typography>
           </Box>
         </Stack>

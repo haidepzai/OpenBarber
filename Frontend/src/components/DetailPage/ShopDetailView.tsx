@@ -63,12 +63,7 @@ const ShopDetailView = ({ shop }) => {
       )}
 
       {isReviewed && (
-        <Stack
-          alignItems="center"
-          justifyContent="center"
-          flexGrow="1"
-          sx={{ borderBottom: 1, borderColor: 'divider', pb: 3, width: '100%' }}
-        >
+        <Stack alignItems="center" justifyContent="center" flexGrow="1" sx={{ borderBottom: 1, borderColor: 'divider', pb: 3, width: '100%' }}>
           <CheckCircleRounded sx={{ width: { xs: '4rem', md: '5rem' }, height: { xs: '4rem', md: '5rem' }, color: 'primary.main' }} />
           <Typography component="p" sx={{ fontSize: { xs: '1.5rem', md: '2rem' }, textAlign: 'center' }}>
             {t('THANK_YOU_REVIEW')}

@@ -4,11 +4,8 @@ import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.dto.SlotDto;
-import com.hdmstuttgart.mi.backend.repository.AppointmentRepository;
-import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
-import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
-import com.hdmstuttgart.mi.backend.repository.ShopRepository;
-import com.hdmstuttgart.mi.backend.repository.UserRepository;
+import com.hdmstuttgart.mi.backend.repository.*;
+import com.hdmstuttgart.mi.backend.service.impl.AppointmentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +21,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,22 +37,22 @@ public class AppointmentServiceTest {
     @Mock
     private ServiceRepository serviceRepository;
     @Mock
-    private EmailSenderService emailSenderService;
+    private IEmailSenderService emailSenderService;
     @Mock
-    private JwtService jwtService;
+    private IJwtService jwtService;
     @Mock
     private UserRepository userRepository;
     @InjectMocks
-    private AppointmentService appointmentService;
+    private AppointmentServiceImpl appointmentService;
 
     @Test
     void getAvailableSlots_shouldReturnAllSlotsWhenNoEmployeesExist() {
-        LocalDate date = LocalDate.of(2026, 1, 5);
-        Shop shop = shopWithHours(1L, "08:00", "09:00");
+        final LocalDate date = LocalDate.of(2026, 1, 5);
+        final Shop shop = shopWithHours(1L, "08:00", "09:00");
         when(shopRepository.findById(1L)).thenReturn(Optional.of(shop));
         when(employeeRepository.findAllByShopId(1L)).thenReturn(List.of());
 
-        List<SlotDto> result = appointmentService.getAvailableSlots(1L, null, date, 30);
+        final List<SlotDto> result = appointmentService.getAvailableSlots(1L, null, date, 30);
 
         assertThat(result).extracting(SlotDto::getTime).containsExactly("08:00", "08:15", "08:30");
         assertThat(result).allSatisfy(slot -> assertThat(slot.getEmployeeId()).isNull());
@@ -62,15 +60,15 @@ public class AppointmentServiceTest {
 
     @Test
     void getAvailableSlots_shouldAssignEmployeeWhenNoConflictsExist() {
-        LocalDate date = LocalDate.of(2026, 1, 5);
-        Shop shop = shopWithHours(1L, "08:00", "09:00");
-        Employee employee = Employee.builder().id(10L).name("Alex").picture(new byte[]{1}).build();
+        final LocalDate date = LocalDate.of(2026, 1, 5);
+        final Shop shop = shopWithHours(1L, "08:00", "09:00");
+        final Employee employee = Employee.builder().id(10L).name("Alex").picture(new byte[]{1}).build();
         when(shopRepository.findById(1L)).thenReturn(Optional.of(shop));
         when(employeeRepository.findAllByShopId(1L)).thenReturn(List.of(employee));
         when(appointmentRepository.findByEmployeeIdAndAppointmentDateTimeBetween(eq(10L), any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(List.of());
 
-        List<SlotDto> result = appointmentService.getAvailableSlots(1L, null, date, 30);
+        final List<SlotDto> result = appointmentService.getAvailableSlots(1L, null, date, 30);
 
         assertThat(result).hasSize(3);
         assertThat(result).allSatisfy(slot -> {
@@ -81,10 +79,10 @@ public class AppointmentServiceTest {
 
     @Test
     void getAvailableSlots_shouldSkipConflictingSlot() {
-        LocalDate date = LocalDate.of(2026, 1, 5);
-        Shop shop = shopWithHours(1L, "08:00", "09:00");
-        Employee employee = Employee.builder().id(10L).name("Alex").build();
-        Appointment conflict = new Appointment();
+        final LocalDate date = LocalDate.of(2026, 1, 5);
+        final Shop shop = shopWithHours(1L, "08:00", "09:00");
+        final Employee employee = Employee.builder().id(10L).name("Alex").build();
+        final Appointment conflict = new Appointment();
         conflict.setAppointmentDateTime(LocalDateTime.of(2026, 1, 5, 8, 15));
         conflict.setEndDateTime(LocalDateTime.of(2026, 1, 5, 8, 30));
 
@@ -93,7 +91,7 @@ public class AppointmentServiceTest {
         when(appointmentRepository.findByEmployeeIdAndAppointmentDateTimeBetween(eq(10L), any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(List.of(conflict));
 
-        List<SlotDto> result = appointmentService.getAvailableSlots(1L, null, date, 15);
+        final List<SlotDto> result = appointmentService.getAvailableSlots(1L, null, date, 15);
 
         assertThat(result).extracting(SlotDto::getTime).containsExactly("08:00", "08:30", "08:45");
     }
@@ -109,40 +107,40 @@ public class AppointmentServiceTest {
 
     @Test
     void hasAnyFreeSlot_shouldReturnFalseWhenClosedOnWeekday() {
-        Shop shop = shopWithHours(1L, "08:00", "20:00");
+        final Shop shop = shopWithHours(1L, "08:00", "20:00");
         shop.setOpeningDays(List.of("MONDAY"));
 
-        boolean result = appointmentService.hasAnyFreeSlot(shop, LocalDate.of(2026, 1, 6), "10:00", 30);
+        final boolean result = appointmentService.hasAnyFreeSlot(shop, LocalDate.of(2026, 1, 6), "10:00", 30);
 
         assertThat(result).isFalse();
     }
 
     @Test
     void hasAnyFreeSlot_shouldReturnFalseWhenTimeDoesNotFitBeforeClosing() {
-        Shop shop = shopWithHours(1L, "08:00", "09:00");
+        final Shop shop = shopWithHours(1L, "08:00", "09:00");
 
-        boolean result = appointmentService.hasAnyFreeSlot(shop, LocalDate.of(2026, 1, 5), "08:45", 30);
+        final boolean result = appointmentService.hasAnyFreeSlot(shop, LocalDate.of(2026, 1, 5), "08:45", 30);
 
         assertThat(result).isFalse();
     }
 
     @Test
     void hasAnyFreeSlot_shouldReturnTrueWhenNoEmployeesExist() {
-        Shop shop = shopWithHours(1L, "08:00", "09:00");
+        final Shop shop = shopWithHours(1L, "08:00", "09:00");
         shop.setOpeningDays(List.of("MONDAY"));
         when(employeeRepository.findAllByShopId(1L)).thenReturn(List.of());
 
-        boolean result = appointmentService.hasAnyFreeSlot(shop, LocalDate.of(2026, 1, 5), "08:00", 30);
+        final boolean result = appointmentService.hasAnyFreeSlot(shop, LocalDate.of(2026, 1, 5), "08:00", 30);
 
         assertThat(result).isTrue();
     }
 
     @Test
     void hasAnyFreeSlot_shouldReturnFalseWhenAllEmployeesAreBusy() {
-        LocalDate date = LocalDate.of(2026, 1, 5);
-        Shop shop = shopWithHours(1L, "08:00", "09:00");
-        Employee employee = Employee.builder().id(10L).name("Alex").build();
-        Appointment busy = new Appointment();
+        final LocalDate date = LocalDate.of(2026, 1, 5);
+        final Shop shop = shopWithHours(1L, "08:00", "09:00");
+        final Employee employee = Employee.builder().id(10L).name("Alex").build();
+        final Appointment busy = new Appointment();
         busy.setAppointmentDateTime(LocalDateTime.of(2026, 1, 5, 8, 0));
         busy.setEndDateTime(LocalDateTime.of(2026, 1, 5, 9, 0));
 
@@ -150,17 +148,17 @@ public class AppointmentServiceTest {
         when(appointmentRepository.findByEmployeeIdAndAppointmentDateTimeBetween(eq(10L), any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(List.of(busy));
 
-        boolean result = appointmentService.hasAnyFreeSlot(shop, date, "08:00", 30);
+        final boolean result = appointmentService.hasAnyFreeSlot(shop, date, "08:00", 30);
 
         assertThat(result).isFalse();
     }
 
     @Test
     void hasAnyFreeSlot_shouldReturnTrueWhenAtLeastOneSlotIsFree() {
-        LocalDate date = LocalDate.of(2026, 1, 5);
-        Shop shop = shopWithHours(1L, "08:00", "09:00");
-        Employee employee = Employee.builder().id(10L).name("Alex").build();
-        Appointment busy = new Appointment();
+        final LocalDate date = LocalDate.of(2026, 1, 5);
+        final Shop shop = shopWithHours(1L, "08:00", "09:00");
+        final Employee employee = Employee.builder().id(10L).name("Alex").build();
+        final Appointment busy = new Appointment();
         busy.setAppointmentDateTime(LocalDateTime.of(2026, 1, 5, 8, 0));
         busy.setEndDateTime(LocalDateTime.of(2026, 1, 5, 8, 30));
 
@@ -168,12 +166,12 @@ public class AppointmentServiceTest {
         when(appointmentRepository.findByEmployeeIdAndAppointmentDateTimeBetween(eq(10L), any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(List.of(busy));
 
-        boolean result = appointmentService.hasAnyFreeSlot(shop, date, "08:00", 30);
+        final boolean result = appointmentService.hasAnyFreeSlot(shop, date, "08:00", 30);
 
         assertThat(result).isTrue();
     }
 
-    private Shop shopWithHours(Long id, String openingTime, String closingTime) {
+    private Shop shopWithHours(final Long id, final String openingTime, final String closingTime) {
         return Shop.builder().id(id).openingTime(openingTime).closingTime(closingTime).build();
     }
 }

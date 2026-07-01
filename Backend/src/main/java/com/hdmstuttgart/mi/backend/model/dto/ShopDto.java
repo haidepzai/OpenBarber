@@ -5,7 +5,6 @@ import com.hdmstuttgart.mi.backend.model.Review;
 import com.hdmstuttgart.mi.backend.model.Service;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
-import com.hdmstuttgart.mi.backend.service.ServiceService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

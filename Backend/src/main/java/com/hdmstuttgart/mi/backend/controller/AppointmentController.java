@@ -3,8 +3,8 @@ package com.hdmstuttgart.mi.backend.controller;
 import com.hdmstuttgart.mi.backend.mapper.AppointmentMapper;
 import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.dto.AppointmentDto;
-import com.hdmstuttgart.mi.backend.service.AppointmentService;
-import com.hdmstuttgart.mi.backend.service.RecaptchaService;
+import com.hdmstuttgart.mi.backend.service.IAppointmentService;
+import com.hdmstuttgart.mi.backend.service.IRecaptchaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -26,12 +26,12 @@ import javax.validation.Valid;
 @RequestMapping("/api/appointments")
 public class AppointmentController {
 
-    private final AppointmentService appointmentService;
+    private final IAppointmentService appointmentService;
     private final AppointmentMapper appointmentMapper;
-    private final RecaptchaService recaptchaService;
+    private final IRecaptchaService recaptchaService;
     private static final Logger log = LoggerFactory.getLogger(AppointmentController.class);
 
-    public AppointmentController(AppointmentService appointmentService, AppointmentMapper appointmentMapper, RecaptchaService recaptchaService) {
+    public AppointmentController(IAppointmentService appointmentService, AppointmentMapper appointmentMapper, IRecaptchaService recaptchaService) {
         this.appointmentService = appointmentService;
         this.appointmentMapper = appointmentMapper;
         this.recaptchaService = recaptchaService;

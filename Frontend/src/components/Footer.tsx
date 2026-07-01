@@ -16,7 +16,12 @@ function Footer() {
 
   return (
     <ThemeProvider theme={footerTheme}>
-      <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={{ xs: 3, md: 4 }} sx={{ backgroundColor: '#6D5344', p: { xs: '28px 20px', sm: '36px 32px', md: '36px 48px' }, mt: '96px' }}>
+      <Stack
+        direction={{ xs: 'column', md: 'row' }}
+        justifyContent="space-between"
+        spacing={{ xs: 3, md: 4 }}
+        sx={{ backgroundColor: '#6D5344', p: { xs: '28px 20px', sm: '36px 32px', md: '36px 48px' }, mt: '96px' }}
+      >
         <Stack direction="column" gap={2} sx={{ minWidth: 0 }}>
           <Stack direction="row" gap={2} alignItems="center">
             <img src={image} alt="OpenBarber-Logo" width={'25px'} style={{ filter: 'brightness(0) invert(1)' }} />

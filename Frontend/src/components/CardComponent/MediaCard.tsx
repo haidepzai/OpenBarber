@@ -41,7 +41,11 @@ export default function MediaCard({ shop, setOpenModal }) {
         },
       }}
     >
-      <CardActionArea component={RouterLink} to={`shops/${shop.id}`} sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, alignItems: 'stretch' }}>
+      <CardActionArea
+        component={RouterLink}
+        to={`shops/${shop.id}`}
+        sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, alignItems: 'stretch' }}
+      >
         <CardMedia
           component="img"
           height="180"

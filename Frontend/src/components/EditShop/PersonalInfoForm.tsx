@@ -32,27 +32,63 @@ const PersonalInfoForm = ({ shop, handleShopChange, handleShopArrayChange }) => 
     <Stack direction="column" spacing={3} divider={<Divider orientation="horizontal" flexItem />} sx={{ py: 3, px: { xs: 2, sm: 3, md: 4 } }}>
       <Stack direction={{ xs: 'column', md: 'row' }} sx={rowSx}>
         <Typography variant="body1">{t('NAME')}</Typography>
-        <TextField InputLabelProps={{ shrink: false }} name="name" placeholder={t('NAME_SHOP')} value={shop.name === null ? '' : shop.name} onChange={handleShopChange} fullWidth />
+        <TextField
+          InputLabelProps={{ shrink: false }}
+          name="name"
+          placeholder={t('NAME_SHOP')}
+          value={shop.name === null ? '' : shop.name}
+          onChange={handleShopChange}
+          fullWidth
+        />
       </Stack>
 
       <Stack direction={{ xs: 'column', md: 'row' }} sx={rowSx}>
         <Typography variant="body1">{t('ADDRESS')}</Typography>
-        <TextField InputLabelProps={{ shrink: false }} name="address" placeholder={t('ADDRESS_EXAMPLE')} value={shop.address === null ? '' : shop.address} onChange={handleShopChange} fullWidth />
+        <TextField
+          InputLabelProps={{ shrink: false }}
+          name="address"
+          placeholder={t('ADDRESS_EXAMPLE')}
+          value={shop.address === null ? '' : shop.address}
+          onChange={handleShopChange}
+          fullWidth
+        />
       </Stack>
 
       <Stack direction={{ xs: 'column', md: 'row' }} sx={rowSx}>
         <Typography variant="body1">{t('PHONE_NUMBER')}</Typography>
-        <TextField InputLabelProps={{ shrink: false }} name="phoneNumber" placeholder={t('PHONE_NUMBER_EXAMPLE')} value={shop.phoneNumber === null ? '' : shop.phoneNumber} onChange={handleShopChange} fullWidth type="number" />
+        <TextField
+          InputLabelProps={{ shrink: false }}
+          name="phoneNumber"
+          placeholder={t('PHONE_NUMBER_EXAMPLE')}
+          value={shop.phoneNumber === null ? '' : shop.phoneNumber}
+          onChange={handleShopChange}
+          fullWidth
+          type="number"
+        />
       </Stack>
 
       <Stack direction={{ xs: 'column', md: 'row' }} sx={rowSx}>
         <Typography variant="body1">{t('WEBSITE')}</Typography>
-        <TextField InputLabelProps={{ shrink: false }} name="website" placeholder={t('WEBSITE_EXAMPLE')} value={shop.website === null ? '' : shop.website} onChange={handleShopChange} fullWidth />
+        <TextField
+          InputLabelProps={{ shrink: false }}
+          name="website"
+          placeholder={t('WEBSITE_EXAMPLE')}
+          value={shop.website === null ? '' : shop.website}
+          onChange={handleShopChange}
+          fullWidth
+        />
       </Stack>
 
       <Stack direction={{ xs: 'column', md: 'row' }} sx={rowSx}>
         <Typography variant="body1">{t('EMAIL_ADDRESS')}</Typography>
-        <TextField InputLabelProps={{ shrink: false }} name="email" placeholder={t('EMAIL_ADDRESS_EXAMPLE')} value={shop.email === null ? '' : shop.email} onChange={handleShopChange} fullWidth />
+        <TextField
+          InputLabelProps={{ shrink: false }}
+          name="email"
+          placeholder={t('EMAIL_ADDRESS_EXAMPLE')}
+          value={shop.email === null ? '' : shop.email}
+          onChange={handleShopChange}
+          fullWidth
+        />
       </Stack>
 
       <Stack direction={{ xs: 'column', md: 'row' }} sx={rowSx}>

@@ -63,7 +63,10 @@ const ShopReview = ({ review, onUpdated, onDeleted }) => {
     <Box sx={{ display: 'flex', gap: 4, borderBottom: 1, borderColor: 'divider', pb: 3 }}>
       {/* Left: avatar + rating + date */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
-        <Box boxShadow={2} sx={{ width: '5rem', height: '5rem', borderRadius: '50%', backgroundImage: `url(${avatarSrc})`, backgroundSize: 'cover' }} />
+        <Box
+          boxShadow={2}
+          sx={{ width: '5rem', height: '5rem', borderRadius: '50%', backgroundImage: `url(${avatarSrc})`, backgroundSize: 'cover' }}
+        />
         <Rating
           readOnly={!isEditing}
           precision={0.5}
@@ -81,7 +84,9 @@ const ShopReview = ({ review, onUpdated, onDeleted }) => {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h5">
-            <Typography variant="span" sx={{ fontWeight: 600 }}>{review.author}</Typography>
+            <Typography variant="span" sx={{ fontWeight: 600 }}>
+              {review.author}
+            </Typography>
             &nbsp;{t('WROTE')}:
           </Typography>
           {isOwner && !isEditing && (
@@ -101,7 +106,11 @@ const ShopReview = ({ review, onUpdated, onDeleted }) => {
             <TextField multiline rows={3} value={editComment} onChange={(e) => setEditComment(e.target.value)} fullWidth />
             <PhotoUpload
               previewSrc={editDisplayPhoto}
-              onFileChange={(file, url) => { setEditPhotoFile(file); setEditPhotoPreview(url); setRemovePhoto(false); }}
+              onFileChange={(file, url) => {
+                setEditPhotoFile(file);
+                setEditPhotoPreview(url);
+                setRemovePhoto(false);
+              }}
               onRemove={handleRemovePhoto}
               size={140}
               buttonSize="small"
@@ -119,8 +128,12 @@ const ShopReview = ({ review, onUpdated, onDeleted }) => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography variant="body1">{review.comment}</Typography>
             {reviewPhotoSrc && (
-              <Box component="img" src={reviewPhotoSrc} alt={t('REVIEW_PHOTO')}
-                sx={{ width: '100%', maxWidth: 320, maxHeight: 320, objectFit: 'cover', borderRadius: 2 }} />
+              <Box
+                component="img"
+                src={reviewPhotoSrc}
+                alt={t('REVIEW_PHOTO')}
+                sx={{ width: '100%', maxWidth: 320, maxHeight: 320, objectFit: 'cover', borderRadius: 2 }}
+              />
             )}
           </Box>
         )}
@@ -130,7 +143,9 @@ const ShopReview = ({ review, onUpdated, onDeleted }) => {
         <DialogTitle>{t('CONFIRM_DELETE_REVIEW', 'Bewertung wirklich löschen?')}</DialogTitle>
         <DialogActions>
           <Button onClick={() => setConfirmDelete(false)}>{t('CANCEL', 'Abbrechen')}</Button>
-          <Button color="error" variant="contained" onClick={handleDelete}>{t('DELETE', 'Löschen')}</Button>
+          <Button color="error" variant="contained" onClick={handleDelete}>
+            {t('DELETE', 'Löschen')}
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

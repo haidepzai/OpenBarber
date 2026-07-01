@@ -74,12 +74,7 @@ const LandingPage = () => {
       </Box>
       <LocationBanner />
       <Box sx={{ margin: '0 auto', maxWidth: { xs: '100%', md: '80%' }, px: { xs: 2, sm: 2, md: 0 } }}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ mt: '36px', p: '0 15px' }}
-        >
+        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: '36px', p: '0 15px' }}>
           <Typography variant="h5">{t('LANDING_PAGE_SUBTITLE')}</Typography>
           <Button variant="text" onClick={() => navigate('/filter')} sx={{ fontSize: '15px' }}>
             {t('SHOW_ALL')}
@@ -87,12 +82,7 @@ const LandingPage = () => {
         </Stack>
         <Divider orientation="horizontal" sx={{ m: '12px 0', borderColor: 'rgba(0, 0, 0, 0.24)' }} />
         <ShopHighlightsSlider />
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ mt: '36px', p: '0 15px' }}
-        >
+        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: '36px', p: '0 15px' }}>
           <Typography variant="h5">{t('LANDING_PAGE_DESCRIPTION')}</Typography>
           <Button variant="text" onClick={() => navigate('/filter')} sx={{ fontSize: '15px' }}>
             {t('SHOW_ALL')}
@@ -105,13 +95,7 @@ const LandingPage = () => {
           </Stack>
         )}
         {!isLoading && (
-          <Stack
-            direction="row"
-            flexWrap="wrap"
-            justifyContent="center"
-            gap={4}
-            sx={{ pt: '20px', pb: { xs: 3, md: 1 } }}
-          >
+          <Stack direction="row" flexWrap="wrap" justifyContent="center" gap={4} sx={{ pt: '20px', pb: { xs: 3, md: 1 } }}>
             {shops
               .slice(0, 5)
               .sort((a, b) => rating(b) - rating(a))

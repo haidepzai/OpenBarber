@@ -194,7 +194,12 @@ const EditShopPage = () => {
 
               <Divider orientation="horizontal" sx={{ m: '24px 0' }} />
 
-              <PictureUpload shop={shop} handleLogoUpload={handleLogoUpload} handlePicturesUpload={handlePicturesUpload} handleDeletePicture={handleDeletePicture} />
+              <PictureUpload
+                shop={shop}
+                handleLogoUpload={handleLogoUpload}
+                handlePicturesUpload={handlePicturesUpload}
+                handleDeletePicture={handleDeletePicture}
+              />
 
               <Divider orientation="horizontal" sx={{ m: '24px 0' }} />
 

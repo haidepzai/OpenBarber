@@ -124,7 +124,14 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm" aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="sm"
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
         <DialogTitle id="alert-dialog-title">{editingMode() ? 'Edit your employee' : 'Add an employee'}</DialogTitle>
         <DialogContent sx={{ width: { xs: '100%', sm: '400px' }, maxWidth: '100%' }}>
           <Stack direction="column" spacing={4}>
@@ -155,7 +162,12 @@ const CreateEmployeeDialog = ({ open, setOpen, editedEmployee, setEditedEmployee
             />
 
             <Stack direction="column" spacing={4} alignItems="center">
-              <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent={employee.picture ? 'space-between' : 'center'} sx={{ width: '100%' }} spacing={1.5}>
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                justifyContent={employee.picture ? 'space-between' : 'center'}
+                sx={{ width: '100%' }}
+                spacing={1.5}
+              >
                 <Button variant="contained" component="label" endIcon={<PhotoCamera />}>
                   {t('UPLOAD_PICTURE')}
                   <input type="file" hidden accept="image/png, image/jpeg" onChange={handlePictureUpload} />

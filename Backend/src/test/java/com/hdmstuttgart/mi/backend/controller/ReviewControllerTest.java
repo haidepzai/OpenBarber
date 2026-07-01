@@ -4,9 +4,9 @@ import com.hdmstuttgart.mi.backend.config.JwtAuthenticationFilter;
 import com.hdmstuttgart.mi.backend.config.RateLimitFilter;
 import com.hdmstuttgart.mi.backend.model.Review;
 import com.hdmstuttgart.mi.backend.model.Shop;
-import com.hdmstuttgart.mi.backend.service.JwtService;
-import com.hdmstuttgart.mi.backend.service.ReviewService;
-import com.hdmstuttgart.mi.backend.service.ShopService;
+import com.hdmstuttgart.mi.backend.service.IJwtService;
+import com.hdmstuttgart.mi.backend.service.IReviewService;
+import com.hdmstuttgart.mi.backend.service.IShopService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,11 +37,11 @@ public class ReviewControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ReviewService reviewService;
+    private IReviewService reviewService;
     @MockBean
-    private ShopService shopService;
+    private IShopService shopService;
     @MockBean
-    private JwtService jwtService;
+    private IJwtService jwtService;
     @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     @MockBean

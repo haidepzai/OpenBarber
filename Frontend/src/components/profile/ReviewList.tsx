@@ -1,5 +1,19 @@
 // @ts-nocheck
-import { Button, Dialog, DialogActions, DialogTitle, Divider, Paper, Stack, TextField, Typography, Box, CircularProgress, Rating, IconButton } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Divider,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+  Box,
+  CircularProgress,
+  Rating,
+  IconButton,
+} from '@mui/material';
 import React from 'react';
 import StoreIcon from '@mui/icons-material/Store';
 import RateReviewIcon from '@mui/icons-material/RateReview';
@@ -114,7 +128,12 @@ const ReviewList = ({ reviews = [], loading, onRefetch }) => {
             {review.comment}
           </Typography>
           {review.reviewPhotoData && (
-            <Box component="img" src={getReviewPhotoSrc(review.reviewPhotoData)} alt={t('REVIEW_PHOTO')} sx={{ width: { xs: '100%', sm: 96 }, maxWidth: 220, height: 96, objectFit: 'cover', borderRadius: 2 }} />
+            <Box
+              component="img"
+              src={getReviewPhotoSrc(review.reviewPhotoData)}
+              alt={t('REVIEW_PHOTO')}
+              sx={{ width: { xs: '100%', sm: 96 }, maxWidth: 220, height: 96, objectFit: 'cover', borderRadius: 2 }}
+            />
           )}
           <Typography variant="caption" color="text.disabled">
             {new Date(review.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
@@ -166,8 +185,18 @@ const ReviewList = ({ reviews = [], loading, onRefetch }) => {
       <Dialog open={!!editingReview} onClose={closeEditDialog} fullWidth maxWidth="sm">
         <DialogTitle>{t('EDIT_REVIEW', 'Bewertung bearbeiten')}</DialogTitle>
         <Box sx={{ px: { xs: 2, sm: 3 }, pb: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Rating value={editingReview?.rating ?? 0} onChange={(_, value) => setEditingReview((review) => ({ ...review, rating: value }))} sx={{ color: 'primary.main' }} />
-          <TextField multiline rows={4} fullWidth value={editingReview?.comment ?? ''} onChange={(event) => setEditingReview((review) => ({ ...review, comment: event.target.value }))} />
+          <Rating
+            value={editingReview?.rating ?? 0}
+            onChange={(_, value) => setEditingReview((review) => ({ ...review, rating: value }))}
+            sx={{ color: 'primary.main' }}
+          />
+          <TextField
+            multiline
+            rows={4}
+            fullWidth
+            value={editingReview?.comment ?? ''}
+            onChange={(event) => setEditingReview((review) => ({ ...review, comment: event.target.value }))}
+          />
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
             <Button component="label" variant="outlined">
               {t(editingPhotoPreview || (!removeEditingPhoto && editingReview?.reviewPhotoData) ? 'CHANGE_PHOTO' : 'ADD_PHOTO')}
@@ -175,7 +204,12 @@ const ReviewList = ({ reviews = [], loading, onRefetch }) => {
             </Button>
             {(editingPhotoPreview || (!removeEditingPhoto && editingReview?.reviewPhotoData)) && (
               <>
-                <Box component="img" src={editingPhotoPreview || getReviewPhotoSrc(editingReview?.reviewPhotoData)} alt={t('REVIEW_PHOTO')} sx={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 2 }} />
+                <Box
+                  component="img"
+                  src={editingPhotoPreview || getReviewPhotoSrc(editingReview?.reviewPhotoData)}
+                  alt={t('REVIEW_PHOTO')}
+                  sx={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 2 }}
+                />
                 <Button color="error" onClick={handleRemoveEditPhoto}>
                   {t('REMOVE_PHOTO')}
                 </Button>
@@ -187,7 +221,12 @@ const ReviewList = ({ reviews = [], loading, onRefetch }) => {
           <Button onClick={closeEditDialog} fullWidth={!!editingReview} sx={{ width: { xs: '100%', sm: 'auto' } }}>
             {t('CANCEL', 'Abbrechen')}
           </Button>
-          <Button variant="contained" onClick={handleSaveReview} disabled={savingReview || !editingReview?.comment?.trim()} sx={{ width: { xs: '100%', sm: 'auto' } }}>
+          <Button
+            variant="contained"
+            onClick={handleSaveReview}
+            disabled={savingReview || !editingReview?.comment?.trim()}
+            sx={{ width: { xs: '100%', sm: 'auto' } }}
+          >
             {savingReview ? <CircularProgress size={18} /> : t('SAVE', 'Speichern')}
           </Button>
         </DialogActions>

@@ -104,7 +104,12 @@ const normalizeTimeParam = (value?: string | null): string | null => {
   return value.length >= 5 ? value.substring(0, 5) : value;
 };
 
-const appendArrayParam = (params: URLSearchParams, key: string, values?: unknown[], mapValue: (value: unknown) => string = (value) => String(value)) => {
+const appendArrayParam = (
+  params: URLSearchParams,
+  key: string,
+  values?: unknown[],
+  mapValue: (value: unknown) => string = (value) => String(value)
+) => {
   values?.forEach((value) => {
     if (value !== null && value !== undefined && value !== '') {
       params.append(key, mapValue(value));

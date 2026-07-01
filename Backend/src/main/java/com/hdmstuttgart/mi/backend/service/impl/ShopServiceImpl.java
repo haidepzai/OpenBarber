@@ -1,17 +1,20 @@
-package com.hdmstuttgart.mi.backend.service;
+package com.hdmstuttgart.mi.backend.service.impl;
 
 import com.hdmstuttgart.mi.backend.exception.UnauthorizedException;
 import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
+import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.User;
-import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.dto.ShopFilterParams;
 import com.hdmstuttgart.mi.backend.model.enums.Drink;
 import com.hdmstuttgart.mi.backend.model.enums.PaymentMethod;
 import com.hdmstuttgart.mi.backend.model.enums.UserRole;
-import com.hdmstuttgart.mi.backend.repository.ShopRepository;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
+import com.hdmstuttgart.mi.backend.repository.ShopRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
+import com.hdmstuttgart.mi.backend.service.IAppointmentService;
+import com.hdmstuttgart.mi.backend.service.IJwtService;
+import com.hdmstuttgart.mi.backend.service.IShopService;
 import com.hdmstuttgart.mi.backend.specification.ShopSpecification;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -27,7 +30,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -35,15 +40,15 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class ShopService {
+public class ShopServiceImpl implements IShopService {
 
-    private static final Logger log = LoggerFactory.getLogger(ShopService.class);
+    private static final Logger log = LoggerFactory.getLogger(ShopServiceImpl.class);
     private final ShopRepository shopRepository;
-    private final JwtService jwtService;
+    private final IJwtService jwtService;
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
     @Lazy
-    private final AppointmentService appointmentService;
+    private final IAppointmentService appointmentService;
 
     /**
      * Create shop shop.
@@ -52,17 +57,17 @@ public class ShopService {
      * @param token   the token
      * @return the shop
      */
-    public Shop createShop(Shop request, String token) {
-        String username = jwtService.extractUsername(token.substring(7));
-        User user = userRepository.findByEmail(username)
+    public Shop createShop(final Shop request, final String token) {
+        final String username = jwtService.extractUsername(token.substring(7));
+        final User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
         byte[] logo = null;
-        List<byte[]> pictures = new ArrayList<>();
+        final List<byte[]> pictures = new ArrayList<>();
         Set<PaymentMethod> paymentMethods = null;
         Set<Drink> drinks = null;
-        List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
-        List<Employee> employees = new ArrayList<>();
+        final List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
+        final List<Employee> employees = new ArrayList<>();
 
         if (request.getLogo() != null) {
             logo = request.getLogo();
@@ -83,8 +88,8 @@ public class ShopService {
                     .collect(Collectors.toSet());
         }
         if (request.getServices() != null) {
-            for (com.hdmstuttgart.mi.backend.model.Service serviceRequest : request.getServices()) {
-                var service = com.hdmstuttgart.mi.backend.model.Service.builder()
+            for (final com.hdmstuttgart.mi.backend.model.Service serviceRequest : request.getServices()) {
+                final var service = com.hdmstuttgart.mi.backend.model.Service.builder()
                         .price(serviceRequest.getPrice())
                         .title(serviceRequest.getTitle())
                         .durationInMin(serviceRequest.getDurationInMin())
@@ -94,12 +99,12 @@ public class ShopService {
             }
         }
         if (request.getEmployees() != null) {
-            for (Employee employeeRequest : request.getEmployees()) {
+            for (final Employee employeeRequest : request.getEmployees()) {
                 byte[] picture = null;
                 if (employeeRequest.getPicture() != null) {
                     picture = employeeRequest.getPicture();
                 }
-                var employee = Employee.builder()
+                final var employee = Employee.builder()
                         .name(employeeRequest.getName())
                         .title(employeeRequest.getTitle())
                         .picture(picture)
@@ -107,28 +112,28 @@ public class ShopService {
                 employees.add(employee);
             }
         }
-        Shop shop = Shop.builder()
-            .name(request.getName())
-            .owner(request.getOwner())
-            .email(request.getEmail())
-            .addressLatitude(request.getAddressLatitude())
-            .addressLongitude(request.getAddressLongitude())
-            .address(request.getAddress())
-            .logo(logo)
-            .pictures(pictures)
-            .phoneNumber(request.getPhoneNumber())
-            .openingTime(request.getOpeningTime())
-            .closingTime(request.getClosingTime())
-            .website(request.getWebsite())
-            .reviews(request.getReviews())
-            .recommended(request.isRecommended())
-            .approved(request.isApproved())
-            .priceCategory(request.getPriceCategory())
-            .paymentMethods(paymentMethods)
-            .drinks(drinks)
-            .services(services)
-            .employees(employees)
-            .build();
+        final Shop shop = Shop.builder()
+                .name(request.getName())
+                .owner(request.getOwner())
+                .email(request.getEmail())
+                .addressLatitude(request.getAddressLatitude())
+                .addressLongitude(request.getAddressLongitude())
+                .address(request.getAddress())
+                .logo(logo)
+                .pictures(pictures)
+                .phoneNumber(request.getPhoneNumber())
+                .openingTime(request.getOpeningTime())
+                .closingTime(request.getClosingTime())
+                .website(request.getWebsite())
+                .reviews(request.getReviews())
+                .recommended(request.isRecommended())
+                .approved(request.isApproved())
+                .priceCategory(request.getPriceCategory())
+                .paymentMethods(paymentMethods)
+                .drinks(drinks)
+                .services(services)
+                .employees(employees)
+                .build();
         user.setShop(shop);
         if (user.getRole() == UserRole.VERIFIED) {
             user.setRole(UserRole.OPERATOR);
@@ -141,40 +146,40 @@ public class ShopService {
      *
      * @return the all shops
      */
-    public Page<Shop> getAllShops(Pageable pageable) {
+    public Page<Shop> getAllShops(final Pageable pageable) {
         return getFilteredShops(null, pageable);
     }
 
-    public Page<Shop> getFilteredShops(ShopFilterParams params, Pageable pageable) {
+    public Page<Shop> getFilteredShops(final ShopFilterParams params, final Pageable pageable) {
         if (params != null && params.getAvailableDate() != null) {
             return filterByAvailability(shopRepository.findAll(ShopSpecification.withFilters(params)), params, pageable);
         }
         return shopRepository.findAll(ShopSpecification.withFilters(params), pageable);
     }
 
-    public Page<Shop> getShopsWithinRadius(double lat, double lng, double radius, Pageable pageable) {
+    public Page<Shop> getShopsWithinRadius(final double lat, final double lng, final double radius, final Pageable pageable) {
         return getFilteredShopsWithinRadius(lat, lng, radius, null, pageable);
     }
 
-    public Page<Shop> getFilteredShopsWithinRadius(double lat, double lng, double radius, ShopFilterParams params, Pageable pageable) {
-        var spec = ShopSpecification.withinRadius(lat, lng, radius).and(ShopSpecification.withFilters(params));
+    public Page<Shop> getFilteredShopsWithinRadius(final double lat, final double lng, final double radius, final ShopFilterParams params, final Pageable pageable) {
+        final var spec = ShopSpecification.withinRadius(lat, lng, radius).and(ShopSpecification.withFilters(params));
         if (params != null && params.getAvailableDate() != null) {
             return filterByAvailability(shopRepository.findAll(spec), params, pageable);
         }
         return shopRepository.findAll(spec, pageable);
     }
 
-    private Page<Shop> filterByAvailability(List<Shop> shops, ShopFilterParams params, Pageable pageable) {
-        List<Shop> available = shops.stream()
+    private Page<Shop> filterByAvailability(final List<Shop> shops, final ShopFilterParams params, final Pageable pageable) {
+        final List<Shop> available = shops.stream()
                 .filter(shop -> appointmentService.hasAnyFreeSlot(
                         shop,
                         params.getAvailableDate(),
                         params.getAvailableFromTime(),
                         30))
                 .collect(Collectors.toList());
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), available.size());
-        List<Shop> page = start >= available.size() ? List.of() : available.subList(start, end);
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min(start + pageable.getPageSize(), available.size());
+        final List<Shop> page = start >= available.size() ? List.of() : available.subList(start, end);
         return new PageImpl<>(page, pageable, available.size());
     }
 
@@ -184,7 +189,7 @@ public class ShopService {
      * @param id the id
      * @return the shop by id
      */
-    public Shop getShopById(long id) {
+    public Shop getShopById(final long id) {
         return shopRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + id));
     }
@@ -195,7 +200,7 @@ public class ShopService {
      * @param email the email
      * @return the shop by email
      */
-    public Shop getShopByEmail(String email) {
+    public Shop getShopByEmail(final String email) {
         return shopRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with email = " + email));
     }
@@ -206,10 +211,10 @@ public class ShopService {
      * @param token the token
      * @return the shop by user
      */
-    public Shop getShopByUser(String token) {
-        String username = jwtService.extractUsername(token.substring(7));
+    public Shop getShopByUser(final String token) {
+        final String username = jwtService.extractUsername(token.substring(7));
 
-        User user = userRepository.findByEmail(username)
+        final User user = userRepository.findByEmail(username)
                 .orElseThrow();
 
         return user.getShop();
@@ -218,14 +223,14 @@ public class ShopService {
     /**
      * Update shop shop.
      *
-     * @param id            the id
+     * @param id      the id
      * @param newShop the new shop
-     * @param token         the token
+     * @param token   the token
      * @return the shop
      */
-    public Shop updateShop(long id, Shop newShop, String token) {
-        String username = jwtService.extractUsername(token.substring(7));
-        User user = userRepository.findByEmail(username)
+    public Shop updateShop(final long id, final Shop newShop, final String token) {
+        final String username = jwtService.extractUsername(token.substring(7));
+        final User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
         if (user.getShop().getId() != id) {
@@ -250,7 +255,7 @@ public class ShopService {
 
                     // Update Payment Methods
                     if (newShop.getPaymentMethods() != null) {
-                        Set<PaymentMethod> paymentMethodsSet = newShop.getPaymentMethods()
+                        final Set<PaymentMethod> paymentMethodsSet = newShop.getPaymentMethods()
                                 .stream()
                                 .map(paymentMethod -> PaymentMethod.valueOf(paymentMethod.toString()))
                                 .collect(Collectors.toSet());
@@ -262,7 +267,7 @@ public class ShopService {
 
                     // Update Drinks
                     if (newShop.getDrinks() != null) {
-                        Set<Drink> drinksSet = newShop.getDrinks()
+                        final Set<Drink> drinksSet = newShop.getDrinks()
                                 .stream()
                                 .map(drinks -> Drink.valueOf(drinks.name()))
                                 .collect(Collectors.toSet());
@@ -272,9 +277,9 @@ public class ShopService {
 
                     // Update services
                     if (newShop.getServices() != null) {
-                        List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
-                        for (com.hdmstuttgart.mi.backend.model.Service serviceRequest : newShop.getServices()) {
-                            com.hdmstuttgart.mi.backend.model.Service service = new com.hdmstuttgart.mi.backend.model.Service();
+                        final List<com.hdmstuttgart.mi.backend.model.Service> services = new ArrayList<>();
+                        for (final com.hdmstuttgart.mi.backend.model.Service serviceRequest : newShop.getServices()) {
+                            final com.hdmstuttgart.mi.backend.model.Service service = new com.hdmstuttgart.mi.backend.model.Service();
                             service.setId(serviceRequest.getId());
                             service.setTitle(serviceRequest.getTitle());
                             service.setPrice(serviceRequest.getPrice());
@@ -288,9 +293,9 @@ public class ShopService {
 
                     // Update employees
                     if (newShop.getEmployees() != null) {
-                        List<Employee> employees = new ArrayList<>();
-                        for (Employee employeeRequest : newShop.getEmployees()) {
-                            Employee employee = new Employee();
+                        final List<Employee> employees = new ArrayList<>();
+                        for (final Employee employeeRequest : newShop.getEmployees()) {
+                            final Employee employee = new Employee();
                             employee.setName(employeeRequest.getName());
                             employee.setShop(shop);
                             byte[] picture = null;
@@ -312,27 +317,27 @@ public class ShopService {
      * Patch shop shop.
      *
      * @param updatedShop the updated shop
-     * @param token             the token
+     * @param token       the token
      * @return the shop
      */
-    public Shop patchShop(Shop updatedShop, String token) {
-        String username = jwtService.extractUsername(token.substring(7));
+    public Shop patchShop(final Shop updatedShop, final String token) {
+        final String username = jwtService.extractUsername(token.substring(7));
 
-        User user = userRepository.findByEmail(username)
+        final User user = userRepository.findByEmail(username)
                 .orElseThrow();
 
-        Shop existingShop = user.getShop();
+        final Shop existingShop = user.getShop();
 
-        Field[] fields = Shop.class.getDeclaredFields();
+        final Field[] fields = Shop.class.getDeclaredFields();
 
-        for (Field field : fields) {
+        for (final Field field : fields) {
             try {
                 field.setAccessible(true);
-                Object newValue = field.get(updatedShop);
+                final Object newValue = field.get(updatedShop);
                 if (newValue != null) {
                     field.set(existingShop, newValue);
                 }
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to update field: " + field.getName());
 
             }
@@ -346,38 +351,38 @@ public class ShopService {
      *
      * @param id the id
      */
-    public Shop uploadLogo(Long id, MultipartFile file, String token) {
-        Shop shop = shopRepository.findById(id)
+    public Shop uploadLogo(final Long id, final MultipartFile file, final String token) {
+        final Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
         authorizeShopAccess(shop, token);
         try {
             shop.setLogo(file.getBytes());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to process image");
         }
         return shopRepository.save(shop);
     }
 
-    public Shop deleteLogo(Long id, String token) {
-        Shop shop = shopRepository.findById(id)
+    public Shop deleteLogo(final Long id, final String token) {
+        final Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
         authorizeShopAccess(shop, token);
         shop.setLogo(null);
         return shopRepository.save(shop);
     }
 
-    public Shop uploadPictures(Long id, List<MultipartFile> files, String token) {
-        Shop shop = shopRepository.findById(id)
+    public Shop uploadPictures(final Long id, final List<MultipartFile> files, final String token) {
+        final Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
         authorizeShopAccess(shop, token);
-        List<byte[]> pictures = new ArrayList<>();
+        final List<byte[]> pictures = new ArrayList<>();
         if (shop.getPictures() != null) {
             pictures.addAll(shop.getPictures());
         }
-        for (MultipartFile file : files) {
+        for (final MultipartFile file : files) {
             try {
                 pictures.add(file.getBytes());
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to process image");
             }
         }
@@ -385,11 +390,11 @@ public class ShopService {
         return shopRepository.save(shop);
     }
 
-    public Shop deletePicture(Long id, int index, String token) {
-        Shop shop = shopRepository.findById(id)
+    public Shop deletePicture(final Long id, final int index, final String token) {
+        final Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
         authorizeShopAccess(shop, token);
-        List<byte[]> pictures = shop.getPictures() == null ? new ArrayList<>() : new ArrayList<>(shop.getPictures());
+        final List<byte[]> pictures = shop.getPictures() == null ? new ArrayList<>() : new ArrayList<>(shop.getPictures());
         if (index < 0 || index >= pictures.size()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid picture index");
         }
@@ -398,16 +403,16 @@ public class ShopService {
         return shopRepository.save(shop);
     }
 
-    private void authorizeShopAccess(Shop shop, String token) {
-        String username = jwtService.extractUsername(token.substring(7));
-        User user = userRepository.findByEmail(username)
+    private void authorizeShopAccess(final Shop shop, final String token) {
+        final String username = jwtService.extractUsername(token.substring(7));
+        final User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
         if (user.getShop() == null || !user.getShop().getId().equals(shop.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized");
         }
     }
 
-    public void deleteShop(long id) {
+    public void deleteShop(final long id) {
         if (!shopRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + id);
         }

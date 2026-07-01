@@ -4,13 +4,13 @@ import { appointmentsAPI } from '../api/apiClient';
 export const useMyAppointments = () =>
   useQuery({
     queryKey: ['appointments', 'my'],
-    queryFn: () => appointmentsAPI.getMy().then(r => r.data?.content ?? r.data ?? []),
+    queryFn: () => appointmentsAPI.getMy().then((r) => r.data?.content ?? r.data ?? []),
   });
 
 export const useShopAppointments = (shopId: number | null) =>
   useQuery({
     queryKey: ['appointments', 'shop', shopId],
-    queryFn: () => appointmentsAPI.getByShop(shopId!).then(r => r.data?.content ?? r.data ?? []),
+    queryFn: () => appointmentsAPI.getByShop(shopId!).then((r) => r.data?.content ?? r.data ?? []),
     enabled: !!shopId,
   });
 

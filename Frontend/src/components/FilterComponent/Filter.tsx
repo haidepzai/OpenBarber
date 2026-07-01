@@ -124,27 +124,13 @@ const Filter = ({ filter, setFilter }) => {
 
       {/* Minimum Rating */}
       <FormControl component="fieldset" variant="standard" fullWidth>
-        <SectionHeader
-          icon={<StarIcon />}
-          label={t('MIN_RATING')}
-          show={isActive.minRating}
-          onReset={() => reset({ minRating: null })}
-        />
-        <Rating
-          value={filter.minRating ?? 0}
-          precision={0.5}
-          onChange={(_, newValue) => setFilter({ ...filter, minRating: newValue })}
-        />
+        <SectionHeader icon={<StarIcon />} label={t('MIN_RATING')} show={isActive.minRating} onReset={() => reset({ minRating: null })} />
+        <Rating value={filter.minRating ?? 0} precision={0.5} onChange={(_, newValue) => setFilter({ ...filter, minRating: newValue })} />
       </FormControl>
 
       {/* Opening Days */}
       <FormControl component="fieldset" variant="standard" fullWidth>
-        <SectionHeader
-          icon={<CalendarMonth />}
-          label={t('OPENING_DAYS')}
-          show={isActive.openingDays}
-          onReset={() => reset({ openingDays: [] })}
-        />
+        <SectionHeader icon={<CalendarMonth />} label={t('OPENING_DAYS')} show={isActive.openingDays} onReset={() => reset({ openingDays: [] })} />
         <ToggleButtonGroup
           value={filter.openingDays}
           onChange={(event, newDays) => setFilter({ ...filter, openingDays: newDays })}
@@ -233,7 +219,9 @@ const Filter = ({ filter, setFilter }) => {
           />
           <Typography variant="subtitle1" sx={{ whiteSpace: 'nowrap', minWidth: '50px' }}>
             {filter.employeeCount[0] === filter.employeeCount[1]
-              ? filter.employeeCount[0] >= 20 ? '20+' : filter.employeeCount[0]
+              ? filter.employeeCount[0] >= 20
+                ? '20+'
+                : filter.employeeCount[0]
               : filter.employeeCount[0] + ' - ' + (filter.employeeCount[1] >= 20 ? '20+' : filter.employeeCount[1])}
           </Typography>
         </Stack>
@@ -252,9 +240,15 @@ const Filter = ({ filter, setFilter }) => {
           onChange={(event, newValue) => setFilter({ ...filter, priceCategory: newValue })}
           aria-label="price category"
         >
-          <ToggleButton value={1} sx={{ width: '70px', fontSize: '18px' }}>&#8364;</ToggleButton>
-          <ToggleButton value={2} sx={{ width: '70px', fontSize: '18px' }}>&#8364; &#8364;</ToggleButton>
-          <ToggleButton value={3} sx={{ width: '70px', fontSize: '18px' }}>&#8364; &#8364; &#8364;</ToggleButton>
+          <ToggleButton value={1} sx={{ width: '70px', fontSize: '18px' }}>
+            &#8364;
+          </ToggleButton>
+          <ToggleButton value={2} sx={{ width: '70px', fontSize: '18px' }}>
+            &#8364; &#8364;
+          </ToggleButton>
+          <ToggleButton value={3} sx={{ width: '70px', fontSize: '18px' }}>
+            &#8364; &#8364; &#8364;
+          </ToggleButton>
         </ToggleButtonGroup>
       </FormControl>
 
@@ -281,12 +275,7 @@ const Filter = ({ filter, setFilter }) => {
 
       {/* Drinks */}
       <FormControl component="fieldset" variant="standard" fullWidth>
-        <SectionHeader
-          icon={<CoffeeIcon />}
-          label={t('DRINKS')}
-          show={isActive.drinks}
-          onReset={() => reset({ drinks: [] })}
-        />
+        <SectionHeader icon={<CoffeeIcon />} label={t('DRINKS')} show={isActive.drinks} onReset={() => reset({ drinks: [] })} />
         <FormGroup sx={{ padding: '0 0 0 3px' }}>
           {drinkOptions.map((drink) => (
             <FormControlLabel

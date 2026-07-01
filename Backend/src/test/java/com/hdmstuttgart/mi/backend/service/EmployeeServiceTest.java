@@ -2,6 +2,9 @@ package com.hdmstuttgart.mi.backend.service;
 
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.Shop;
+import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
+import com.hdmstuttgart.mi.backend.repository.ShopRepository;
+import com.hdmstuttgart.mi.backend.service.impl.EmployeeServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,9 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-
-import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
-import com.hdmstuttgart.mi.backend.repository.ShopRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,17 +28,17 @@ public class EmployeeServiceTest {
     @Mock
     private ShopRepository shopRepository;
     @InjectMocks
-    private EmployeeService employeeService;
+    private EmployeeServiceImpl employeeService;
 
     @Test
     void createEmployee_shouldSaveEmployeeWithShop() {
-        Shop shop = Shop.builder().id(1L).name("Shop").build();
-        Employee employee = Employee.builder().name("Alex").title("Barber").build();
+        final Shop shop = Shop.builder().id(1L).name("Shop").build();
+        final Employee employee = Employee.builder().name("Alex").title("Barber").build();
 
         when(shopRepository.findById(1L)).thenReturn(Optional.of(shop));
         when(employeeRepository.save(employee)).thenReturn(employee);
 
-        Employee result = employeeService.createEmployee(employee, 1L);
+        final Employee result = employeeService.createEmployee(employee, 1L);
 
         assertThat(result).isSameAs(employee);
         assertThat(employee.getShop()).isEqualTo(shop);
@@ -48,7 +48,7 @@ public class EmployeeServiceTest {
 
     @Test
     void createEmployee_shouldThrowWhenShopMissing() {
-        Employee employee = Employee.builder().name("Alex").build();
+        final Employee employee = Employee.builder().name("Alex").build();
         when(shopRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> employeeService.createEmployee(employee, 1L))
@@ -60,11 +60,11 @@ public class EmployeeServiceTest {
 
     @Test
     void getEmployeesByShopId_shouldReturnEmployees() {
-        List<Employee> employees = List.of(Employee.builder().id(1L).name("Alex").build());
+        final List<Employee> employees = List.of(Employee.builder().id(1L).name("Alex").build());
         when(shopRepository.existsById(1L)).thenReturn(true);
         when(employeeRepository.findAllByShopId(1L)).thenReturn(employees);
 
-        List<Employee> result = employeeService.getEmployeesByShopId(1L);
+        final List<Employee> result = employeeService.getEmployeesByShopId(1L);
 
         assertThat(result).containsExactlyElementsOf(employees);
         verify(shopRepository).existsById(1L);
@@ -94,10 +94,10 @@ public class EmployeeServiceTest {
 
     @Test
     void getEmployeeById_shouldReturnEmployee() {
-        Employee employee = Employee.builder().id(2L).name("Alex").build();
+        final Employee employee = Employee.builder().id(2L).name("Alex").build();
         when(employeeRepository.findById(2L)).thenReturn(Optional.of(employee));
 
-        Employee result = employeeService.getEmployeeById(2L);
+        final Employee result = employeeService.getEmployeeById(2L);
 
         assertThat(result).isEqualTo(employee);
         verify(employeeRepository).findById(2L);
@@ -114,13 +114,13 @@ public class EmployeeServiceTest {
 
     @Test
     void updateEmployee_shouldUpdateMutableFields() {
-        Employee existing = Employee.builder().id(3L).name("Old").title("Junior").picture(new byte[]{1}).build();
-        Employee updates = Employee.builder().name("New").title("Senior").picture(new byte[]{2, 3}).build();
+        final Employee existing = Employee.builder().id(3L).name("Old").title("Junior").picture(new byte[]{1}).build();
+        final Employee updates = Employee.builder().name("New").title("Senior").picture(new byte[]{2, 3}).build();
 
         when(employeeRepository.findById(3L)).thenReturn(Optional.of(existing));
         when(employeeRepository.save(existing)).thenReturn(existing);
 
-        Employee result = employeeService.updateEmployee(3L, updates);
+        final Employee result = employeeService.updateEmployee(3L, updates);
 
         assertThat(result.getName()).isEqualTo("New");
         assertThat(result.getTitle()).isEqualTo("Senior");

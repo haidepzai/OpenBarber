@@ -3,7 +3,7 @@ package com.hdmstuttgart.mi.backend.controller;
 import com.hdmstuttgart.mi.backend.mapper.EmployeeMapper;
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.dto.EmployeeDto;
-import com.hdmstuttgart.mi.backend.service.EmployeeService;
+import com.hdmstuttgart.mi.backend.service.IEmployeeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
-    private final EmployeeService employeeService;
+    private final IEmployeeService employeeService;
     private final EmployeeMapper employeeMapper;
 
     /**
@@ -31,7 +31,7 @@ public class EmployeeController {
      * @param employeeService the employee service
      * @param employeeMapper  the employee mapper
      */
-    public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper) {
+    public EmployeeController(IEmployeeService employeeService, EmployeeMapper employeeMapper) {
         this.employeeService = employeeService;
         this.employeeMapper = employeeMapper;
     }

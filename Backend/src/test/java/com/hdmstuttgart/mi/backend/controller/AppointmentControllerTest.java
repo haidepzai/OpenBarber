@@ -5,9 +5,9 @@ import com.hdmstuttgart.mi.backend.config.RateLimitFilter;
 import com.hdmstuttgart.mi.backend.mapper.AppointmentMapper;
 import com.hdmstuttgart.mi.backend.model.Appointment;
 import com.hdmstuttgart.mi.backend.model.dto.AppointmentDto;
-import com.hdmstuttgart.mi.backend.service.AppointmentService;
-import com.hdmstuttgart.mi.backend.service.JwtService;
-import com.hdmstuttgart.mi.backend.service.RecaptchaService;
+import com.hdmstuttgart.mi.backend.service.IAppointmentService;
+import com.hdmstuttgart.mi.backend.service.IJwtService;
+import com.hdmstuttgart.mi.backend.service.IRecaptchaService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,13 +37,13 @@ public class AppointmentControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private AppointmentService appointmentService;
+    private IAppointmentService appointmentService;
     @MockBean
     private AppointmentMapper appointmentMapper;
     @MockBean
-    private RecaptchaService recaptchaService;
+    private IRecaptchaService recaptchaService;
     @MockBean
-    private JwtService jwtService;
+    private IJwtService jwtService;
     @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     @MockBean

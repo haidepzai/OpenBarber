@@ -5,9 +5,7 @@ export type FieldState = {
   isValid: boolean;
 };
 
-export type FieldAction =
-  | { type: 'USER_INPUT'; val: string }
-  | { type: 'INPUT_BLUR' };
+export type FieldAction = { type: 'USER_INPUT'; val: string } | { type: 'INPUT_BLUR' };
 
 export const emailReducer = (state: FieldState, action: FieldAction): FieldState => {
   if (action.type === 'USER_INPUT') {

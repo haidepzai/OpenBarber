@@ -5,10 +5,10 @@ import com.hdmstuttgart.mi.backend.mapper.ServiceMapper;
 import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.Service;
 import com.hdmstuttgart.mi.backend.model.dto.ServiceDto;
-import com.hdmstuttgart.mi.backend.service.ShopService;
-import com.hdmstuttgart.mi.backend.service.JwtService;
-import com.hdmstuttgart.mi.backend.service.ServiceService;
-import com.hdmstuttgart.mi.backend.service.UserService;
+import com.hdmstuttgart.mi.backend.service.IShopService;
+import com.hdmstuttgart.mi.backend.service.IJwtService;
+import com.hdmstuttgart.mi.backend.service.IServiceService;
+import com.hdmstuttgart.mi.backend.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
@@ -26,11 +26,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/services")
 public class ServiceController {
 
-    private final ServiceService serviceService;
-    private final UserService userService;
-    private final ShopService shopService;
+    private final IServiceService serviceService;
+    private final IUserService userService;
+    private final IShopService shopService;
     private final ServiceMapper serviceMapper;
-    private final JwtService jwtService;
+    private final IJwtService jwtService;
 
     /**
      * Instantiates a new Service controller.
@@ -41,7 +41,7 @@ public class ServiceController {
      * @param serviceMapper     the service mapper
      * @param jwtService        the jwt service
      */
-    public ServiceController(ServiceService serviceService, UserService userService, ShopService shopService, ServiceMapper serviceMapper, JwtService jwtService) {
+    public ServiceController(IServiceService serviceService, IUserService userService, IShopService shopService, ServiceMapper serviceMapper, IJwtService jwtService) {
         this.serviceService = serviceService;
         this.userService = userService;
         this.shopService = shopService;

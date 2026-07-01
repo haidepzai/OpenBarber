@@ -1,4 +1,4 @@
-package com.hdmstuttgart.mi.backend.service;
+package com.hdmstuttgart.mi.backend.service.impl;
 
 import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.model.Appointment;
@@ -8,6 +8,7 @@ import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
 import com.hdmstuttgart.mi.backend.repository.ShopRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
+import com.hdmstuttgart.mi.backend.service.IEmailSenderService;
 import io.camassia.mjml.MJMLClient;
 import io.camassia.mjml.model.request.RenderRequest;
 import io.camassia.mjml.model.response.RenderResponse;
@@ -38,7 +39,7 @@ import java.util.HashMap;
  * library make this class easy to use and extend.
  */
 @Service
-public class EmailSenderService {
+public class EmailSenderServiceImpl implements IEmailSenderService {
     private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);
 
     @Autowired
@@ -49,37 +50,31 @@ public class EmailSenderService {
     private final EmployeeRepository employeeRepository;
 
     private final ShopRepository shopRepository;
-
-    private MJMLClient mjmlClient;
-
     private final String appId;
-
     private final String mailUsername;
-
     private final String appKey;
-
     private final String frontendUrl;
-
     private final HashMap<String, String> mjmlTemplateTexts = new HashMap<>();
+    private MJMLClient mjmlClient;
 
     /**
      * Instantiates a new Email sender service.
      *
-     * @param mailSender           the mail sender
-     * @param userRepository       the user repository
-     * @param employeeRepository   the employee repository
-     * @param shopRepository the shop repository
-     * @param mjmlClient           the mjml client
-     * @param appId                the app id
-     * @param mailUsername         the mail username
-     * @param appKey               the app key
+     * @param mailSender         the mail sender
+     * @param userRepository     the user repository
+     * @param employeeRepository the employee repository
+     * @param shopRepository     the shop repository
+     * @param mjmlClient         the mjml client
+     * @param appId              the app id
+     * @param mailUsername       the mail username
+     * @param appKey             the app key
      */
-    public EmailSenderService(JavaMailSender mailSender, UserRepository userRepository, EmployeeRepository employeeRepository,
-                              ShopRepository shopRepository, MJMLClient mjmlClient,
-                              @Value("${mjmlSecrets.appId}") String appId,
-                              @Value("${mailCredentials.username}") String mailUsername,
-                              @Value("${mjmlSecrets.appKey}") String appKey,
-                              @Value("${app.frontend-url}") String frontendUrl) {
+    public EmailSenderServiceImpl(final JavaMailSender mailSender, final UserRepository userRepository, final EmployeeRepository employeeRepository,
+                                  final ShopRepository shopRepository, final MJMLClient mjmlClient,
+                                  @Value("${mjmlSecrets.appId}") final String appId,
+                                  @Value("${mailCredentials.username}") final String mailUsername,
+                                  @Value("${mjmlSecrets.appKey}") final String appKey,
+                                  @Value("${app.frontend-url}") final String frontendUrl) {
         this.mailSender = mailSender;
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
@@ -99,26 +94,26 @@ public class EmailSenderService {
     public void readMJMLTemplatesIntoMap() throws IOException {
         mjmlTemplateTexts.clear();
 
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        Resource[] resources = resolver.getResources("classpath:/templates/*.mjml");
+        final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        final Resource[] resources = resolver.getResources("classpath:/templates/*.mjml");
 
-        for (Resource resource : resources) {
+        for (final Resource resource : resources) {
             if (resource.isReadable()) {
-                String fileName = resource.getFilename();
+                final String fileName = resource.getFilename();
                 if (fileName != null) {
-                    String templateName = fileName.replace(".mjml", "");
+                    final String templateName = fileName.replace(".mjml", "");
                     mjmlTemplateTexts.put(templateName, new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
                 }
             }
         }
 
         if (mjmlTemplateTexts.isEmpty()) {
-            File folder = new File("src/main/java/com/hdmstuttgart/mi/backend/templates");
-            File[] listOfFiles = folder.listFiles();
+            final File folder = new File("src/main/java/com/hdmstuttgart/mi/backend/templates");
+            final File[] listOfFiles = folder.listFiles();
             if (listOfFiles == null) {
                 throw new IOException("No MJML templates found on the classpath or in src/main/java/com/hdmstuttgart/mi/backend/templates");
             }
-            for (File listOfFile : listOfFiles) {
+            for (final File listOfFile : listOfFiles) {
                 if (listOfFile.isFile()) {
                     mjmlTemplateTexts.put(listOfFile.getName().replaceAll(".mjml", ""), Files.readString(Path.of(listOfFile.getAbsolutePath()), StandardCharsets.UTF_8));
                 }
@@ -133,14 +128,14 @@ public class EmailSenderService {
      * @param emailAddress the email address
      * @throws IOException the io exception
      */
-    public void insertDataIntoTemplate(String templateName, String emailAddress) throws IOException {
+    public void insertDataIntoTemplate(final String templateName, final String emailAddress) throws IOException {
         readMJMLTemplatesIntoMap();
-        User user = userRepository.findByEmail(emailAddress).orElseThrow();
-        String template = mjmlTemplateTexts.get(templateName);
+        final User user = userRepository.findByEmail(emailAddress).orElseThrow();
+        final String template = mjmlTemplateTexts.get(templateName);
         if (template == null) {
             throw new IOException("MJML template not found: " + templateName);
         }
-        String preparedText = template.replace("blank_verificationCode", user.getConfirmationCode())
+        final String preparedText = template.replace("blank_verificationCode", user.getConfirmationCode())
                 .replace("blank_ratingURL", frontendUrl + "/rating/" + user.getConfirmationCode());
         mjmlTemplateTexts.put(templateName, preparedText);
     }
@@ -153,7 +148,7 @@ public class EmailSenderService {
      * @throws MessagingException the messaging exception
      * @throws IOException        the io exception
      */
-    public void sendEmailWithTemplate(String email, String templateName) throws MessagingException, IOException {
+    public void sendEmailWithTemplate(final String email, final String templateName) throws MessagingException, IOException {
 
         //MJML API setup
         this.mjmlClient = MJMLClient.newDefaultClient()
@@ -162,16 +157,16 @@ public class EmailSenderService {
         log.info("Found MJML client");
         //MJML string preparation for the request and send out
         insertDataIntoTemplate(templateName, email);
-        RenderRequest request = new RenderRequest(mjmlTemplateTexts.get(templateName));
-        RenderResponse response = mjmlClient.render(request);
-        String plainHTML = response.getHTML();
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        final RenderRequest request = new RenderRequest(mjmlTemplateTexts.get(templateName));
+        final RenderResponse response = mjmlClient.render(request);
+        final String plainHTML = response.getHTML();
+        final MimeMessage mimeMessage = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
         helper.setText(plainHTML, true);
         helper.setTo(email);
 
         //template specific email subjects
-        if(templateName.equals("verification")) {
+        if (templateName.equals("verification")) {
             helper.setSubject("OpenBarber - Your verification code is here!");
         } else {
             helper.setSubject("OpenBarber - Did you miss us?");
@@ -189,21 +184,21 @@ public class EmailSenderService {
      * @param appointment  the appointment
      * @throws IOException the io exception
      */
-    public void insertDataIntoTemplate(String templateName, Appointment appointment) throws IOException {
+    public void insertDataIntoTemplate(final String templateName, final Appointment appointment) throws IOException {
         readMJMLTemplatesIntoMap();
-        String appointmentDate = appointment.getAppointmentDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm"));
-        String customerName = appointment.getCustomerName();
-        Employee employee = employeeRepository.findById(appointment.getEmployee().getId()).orElseThrow();
-        String employeeName = employee.getName();
-        Shop shop = shopRepository.findById(appointment.getShop().getId()).orElseThrow();
-        String shopName = shop.getName();
-        String confirmationCode = appointment.getConfirmationCode().toString();
+        final String appointmentDate = appointment.getAppointmentDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm"));
+        final String customerName = appointment.getCustomerName();
+        final Employee employee = employeeRepository.findById(appointment.getEmployee().getId()).orElseThrow();
+        final String employeeName = employee.getName();
+        final Shop shop = shopRepository.findById(appointment.getShop().getId()).orElseThrow();
+        final String shopName = shop.getName();
+        final String confirmationCode = appointment.getConfirmationCode().toString();
 
-        String template = mjmlTemplateTexts.get(templateName);
+        final String template = mjmlTemplateTexts.get(templateName);
         if (template == null) {
             throw new IOException("MJML template not found: " + templateName);
         }
-        String preparedText = template
+        final String preparedText = template
                 .replace("blank_shopName", shopName)
                 .replace("blank_username", customerName)
                 .replace("blank_stylist", employeeName)
@@ -223,25 +218,25 @@ public class EmailSenderService {
      * @throws MessagingException the messaging exception
      * @throws IOException        the io exception
      */
-    public void sendEmailWithTemplate(Appointment appointment, String templateName, String email) throws MessagingException, IOException {
+    public void sendEmailWithTemplate(final Appointment appointment, final String templateName, final String email) throws MessagingException, IOException {
 
-                //MJML API setup
+        //MJML API setup
         this.mjmlClient = MJMLClient.newDefaultClient()
                 .withApplicationID(appId)
                 .withApplicationKey(appKey);
         log.info("Found MJML client");
         //MJML string preparation for the request and send out
         insertDataIntoTemplate(templateName, appointment);
-        RenderRequest request = new RenderRequest(mjmlTemplateTexts.get(templateName));
-        RenderResponse response = mjmlClient.render(request);
-        String plainHTML = response.getHTML();
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        final RenderRequest request = new RenderRequest(mjmlTemplateTexts.get(templateName));
+        final RenderResponse response = mjmlClient.render(request);
+        final String plainHTML = response.getHTML();
+        final MimeMessage mimeMessage = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
         helper.setText(plainHTML, true);
         helper.setTo(email);
 
         //template specific email subjects
-        if(templateName.equals("appointment")) {
+        if (templateName.equals("appointment")) {
             helper.setSubject("OpenBarber - Your appointment!");
         } else {
             helper.setSubject("OpenBarber - Did you miss us?");
@@ -252,24 +247,24 @@ public class EmailSenderService {
         log.debug("Mail sent successfully ... ");
     }
 
-    public void sendPasswordResetEmail(String email, String token) throws MessagingException, IOException {
+    public void sendPasswordResetEmail(final String email, final String token) throws MessagingException, IOException {
         readMJMLTemplatesIntoMap();
-        String resetUrl = frontendUrl + "/reset-password?token=" + token;
-        String template = mjmlTemplateTexts.get("password-reset");
+        final String resetUrl = frontendUrl + "/reset-password?token=" + token;
+        final String template = mjmlTemplateTexts.get("password-reset");
         if (template == null) {
             throw new IOException("MJML template not found: password-reset");
         }
-        String preparedText = template.replace("blank_resetUrl", resetUrl);
+        final String preparedText = template.replace("blank_resetUrl", resetUrl);
 
         this.mjmlClient = MJMLClient.newDefaultClient()
                 .withApplicationID(appId)
                 .withApplicationKey(appKey);
 
-        RenderRequest request = new RenderRequest(preparedText);
-        RenderResponse response = mjmlClient.render(request);
+        final RenderRequest request = new RenderRequest(preparedText);
+        final RenderResponse response = mjmlClient.render(request);
 
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        final MimeMessage mimeMessage = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
         helper.setText(response.getHTML(), true);
         helper.setTo(email);
         helper.setSubject("OpenBarber - Passwort zurücksetzen");

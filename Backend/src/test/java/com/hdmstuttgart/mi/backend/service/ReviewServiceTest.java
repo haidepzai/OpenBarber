@@ -8,6 +8,7 @@ import com.hdmstuttgart.mi.backend.repository.AppointmentRepository;
 import com.hdmstuttgart.mi.backend.repository.ReviewRepository;
 import com.hdmstuttgart.mi.backend.repository.ShopRepository;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
+import com.hdmstuttgart.mi.backend.service.impl.ReviewServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,17 +40,17 @@ public class ReviewServiceTest {
     @Mock
     private AppointmentRepository appointmentRepository;
     @Mock
-    private JwtService jwtService;
+    private IJwtService jwtService;
     @Mock
     private UserRepository userRepository;
     @InjectMocks
-    private ReviewService reviewService;
+    private ReviewServiceImpl reviewService;
 
     @Test
     void createReviewWithToken_shouldSaveReviewForAuthenticatedUser() {
-        User reviewer = User.builder().id(7L).email("user@example.com").build();
-        Shop shop = Shop.builder().id(1L).name("Shop").build();
-        Review review = Review.builder().author("Alex").comment("Great").rating(5).build();
+        final User reviewer = User.builder().id(7L).email("user@example.com").build();
+        final Shop shop = Shop.builder().id(1L).name("Shop").build();
+        final Review review = Review.builder().author("Alex").comment("Great").rating(5).build();
 
         when(jwtService.extractUsername("token")).thenReturn("user@example.com");
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(reviewer));
@@ -57,7 +58,7 @@ public class ReviewServiceTest {
         when(shopRepository.findById(1L)).thenReturn(Optional.of(shop));
         when(reviewRepository.save(review)).thenReturn(review);
 
-        Review result = reviewService.createReview(review, 1L, TOKEN);
+        final Review result = reviewService.createReview(review, 1L, TOKEN);
 
         assertThat(result).isSameAs(review);
         assertThat(review.getShop()).isEqualTo(shop);
@@ -67,7 +68,7 @@ public class ReviewServiceTest {
 
     @Test
     void createReviewWithToken_shouldThrowWhenDuplicateExists() {
-        User reviewer = User.builder().id(7L).email("user@example.com").build();
+        final User reviewer = User.builder().id(7L).email("user@example.com").build();
         when(jwtService.extractUsername("token")).thenReturn("user@example.com");
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(reviewer));
         when(reviewRepository.existsByShopIdAndReviewerId(1L, 7L)).thenReturn(true);
@@ -82,7 +83,7 @@ public class ReviewServiceTest {
 
     @Test
     void createReviewWithToken_shouldThrowWhenShopMissing() {
-        User reviewer = User.builder().id(7L).email("user@example.com").build();
+        final User reviewer = User.builder().id(7L).email("user@example.com").build();
         when(jwtService.extractUsername("token")).thenReturn("user@example.com");
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(reviewer));
         when(reviewRepository.existsByShopIdAndReviewerId(1L, 7L)).thenReturn(false);
@@ -95,12 +96,12 @@ public class ReviewServiceTest {
 
     @Test
     void createReviewGuest_shouldSaveReview() {
-        Shop shop = Shop.builder().id(1L).build();
-        Review review = Review.builder().author("Guest").comment("Nice").rating(4).build();
+        final Shop shop = Shop.builder().id(1L).build();
+        final Review review = Review.builder().author("Guest").comment("Nice").rating(4).build();
         when(shopRepository.findById(1L)).thenReturn(Optional.of(shop));
         when(reviewRepository.save(review)).thenReturn(review);
 
-        Review result = reviewService.createReview(review, 1L);
+        final Review result = reviewService.createReview(review, 1L);
 
         assertThat(result).isSameAs(review);
         assertThat(review.getShop()).isEqualTo(shop);
@@ -120,12 +121,12 @@ public class ReviewServiceTest {
 
     @Test
     void getReviewsByShopId_shouldReturnPage() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Review> page = new PageImpl<>(List.of(Review.builder().id(1L).author("Alex").comment("Great").rating(5).build()));
+        final Pageable pageable = PageRequest.of(0, 10);
+        final Page<Review> page = new PageImpl<>(List.of(Review.builder().id(1L).author("Alex").comment("Great").rating(5).build()));
         when(shopRepository.existsById(1L)).thenReturn(true);
         when(reviewRepository.findAllByShopId(1L, pageable)).thenReturn(page);
 
-        Page<Review> result = reviewService.getReviewsByShopId(1L, pageable);
+        final Page<Review> result = reviewService.getReviewsByShopId(1L, pageable);
 
         assertThat(result).isEqualTo(page);
         verify(reviewRepository).findAllByShopId(1L, pageable);
@@ -133,7 +134,7 @@ public class ReviewServiceTest {
 
     @Test
     void getReviewsByShopId_shouldThrowWhenShopMissing() {
-        Pageable pageable = PageRequest.of(0, 10);
+        final Pageable pageable = PageRequest.of(0, 10);
         when(shopRepository.existsById(1L)).thenReturn(false);
 
         assertThatThrownBy(() -> reviewService.getReviewsByShopId(1L, pageable))
@@ -145,16 +146,16 @@ public class ReviewServiceTest {
 
     @Test
     void updateReview_shouldUpdateOwnedReview() {
-        User reviewer = User.builder().id(5L).email("user@example.com").build();
-        Review existing = Review.builder().id(9L).comment("Old").rating(2).reviewer(reviewer).build();
-        Review update = Review.builder().comment("New").rating(5).build();
+        final User reviewer = User.builder().id(5L).email("user@example.com").build();
+        final Review existing = Review.builder().id(9L).comment("Old").rating(2).reviewer(reviewer).build();
+        final Review update = Review.builder().comment("New").rating(5).build();
 
         when(jwtService.extractUsername("token")).thenReturn("user@example.com");
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(reviewer));
         when(reviewRepository.findById(9L)).thenReturn(Optional.of(existing));
         when(reviewRepository.save(existing)).thenReturn(existing);
 
-        Review result = reviewService.updateReview(9L, update, TOKEN);
+        final Review result = reviewService.updateReview(9L, update, TOKEN);
 
         assertThat(result.getComment()).isEqualTo("New");
         assertThat(result.getRating()).isEqualTo(5);
@@ -163,9 +164,9 @@ public class ReviewServiceTest {
 
     @Test
     void updateReview_shouldThrowWhenUserDoesNotOwnReview() {
-        User user = User.builder().id(5L).email("user@example.com").build();
-        User other = User.builder().id(6L).email("other@example.com").build();
-        Review existing = Review.builder().id(9L).reviewer(other).build();
+        final User user = User.builder().id(5L).email("user@example.com").build();
+        final User other = User.builder().id(6L).email("other@example.com").build();
+        final Review existing = Review.builder().id(9L).reviewer(other).build();
 
         when(jwtService.extractUsername("token")).thenReturn("user@example.com");
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
@@ -180,8 +181,8 @@ public class ReviewServiceTest {
 
     @Test
     void deleteReview_shouldDeleteOwnedReview() {
-        User reviewer = User.builder().id(5L).email("user@example.com").build();
-        Review existing = Review.builder().id(9L).reviewer(reviewer).build();
+        final User reviewer = User.builder().id(5L).email("user@example.com").build();
+        final Review existing = Review.builder().id(9L).reviewer(reviewer).build();
 
         when(jwtService.extractUsername("token")).thenReturn("user@example.com");
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(reviewer));
@@ -194,8 +195,8 @@ public class ReviewServiceTest {
 
     @Test
     void deleteReview_shouldThrowWhenUserDoesNotOwnReview() {
-        User user = User.builder().id(5L).email("user@example.com").build();
-        Review existing = Review.builder().id(9L).reviewer(User.builder().id(6L).build()).build();
+        final User user = User.builder().id(5L).email("user@example.com").build();
+        final Review existing = Review.builder().id(9L).reviewer(User.builder().id(6L).build()).build();
 
         when(jwtService.extractUsername("token")).thenReturn("user@example.com");
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
@@ -210,15 +211,15 @@ public class ReviewServiceTest {
 
     @Test
     void getMyReviews_shouldReturnAuthenticatedUsersReviews() {
-        User reviewer = User.builder().id(5L).email("user@example.com").build();
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Review> page = new PageImpl<>(List.of(Review.builder().id(1L).reviewer(reviewer).build()));
+        final User reviewer = User.builder().id(5L).email("user@example.com").build();
+        final Pageable pageable = PageRequest.of(0, 10);
+        final Page<Review> page = new PageImpl<>(List.of(Review.builder().id(1L).reviewer(reviewer).build()));
 
         when(jwtService.extractUsername("token")).thenReturn("user@example.com");
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(reviewer));
         when(reviewRepository.findAllByReviewerId(5L, pageable)).thenReturn(page);
 
-        Page<Review> result = reviewService.getMyReviews(TOKEN, pageable);
+        final Page<Review> result = reviewService.getMyReviews(TOKEN, pageable);
 
         assertThat(result).isEqualTo(page);
         verify(reviewRepository).findAllByReviewerId(5L, pageable);

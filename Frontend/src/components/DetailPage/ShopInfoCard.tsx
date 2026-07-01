@@ -190,7 +190,10 @@ const ShopInfoCard = ({ shop, mobile, reviews = [] }) => {
             <GoogleMaps lat={shop.addressLatitude} lng={shop.addressLongitude} />
           </Box>
 
-          <PhotoGallery pictures={shop.pictures} reviewPhotos={reviews.filter((review) => review.reviewPhotoData).map((review) => review.reviewPhotoData)} />
+          <PhotoGallery
+            pictures={shop.pictures}
+            reviewPhotos={reviews.filter((review) => review.reviewPhotoData).map((review) => review.reviewPhotoData)}
+          />
         </Box>
       </Box>
 

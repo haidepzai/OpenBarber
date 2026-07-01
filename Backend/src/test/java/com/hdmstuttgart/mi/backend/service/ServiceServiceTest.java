@@ -5,6 +5,7 @@ import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.enums.ServiceTargetAudience;
 import com.hdmstuttgart.mi.backend.repository.ServiceRepository;
 import com.hdmstuttgart.mi.backend.repository.ShopRepository;
+import com.hdmstuttgart.mi.backend.service.impl.ServiceServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,17 +29,17 @@ public class ServiceServiceTest {
     @Mock
     private ShopRepository shopRepository;
     @InjectMocks
-    private ServiceService serviceService;
+    private ServiceServiceImpl serviceService;
 
     @Test
     void createService_shouldSaveServiceWithShop() {
-        Shop shop = Shop.builder().id(1L).name("Shop").build();
-        Service service = Service.builder().title("Cut").price(25).durationInMin(30).build();
+        final Shop shop = Shop.builder().id(1L).name("Shop").build();
+        final Service service = Service.builder().title("Cut").price(25).durationInMin(30).build();
 
         when(shopRepository.findById(1L)).thenReturn(Optional.of(shop));
         when(serviceRepository.save(service)).thenReturn(service);
 
-        Service result = serviceService.createService(service, 1L);
+        final Service result = serviceService.createService(service, 1L);
 
         assertThat(result).isSameAs(service);
         assertThat(service.getShop()).isEqualTo(shop);
@@ -58,11 +59,11 @@ public class ServiceServiceTest {
 
     @Test
     void getServicesByShopId_shouldReturnServices() {
-        List<Service> services = List.of(Service.builder().id(1L).title("Cut").build());
+        final List<Service> services = List.of(Service.builder().id(1L).title("Cut").build());
         when(shopRepository.existsById(1L)).thenReturn(true);
         when(serviceRepository.findAllByShopId(1L)).thenReturn(services);
 
-        List<Service> result = serviceService.getServicesByShopId(1L);
+        final List<Service> result = serviceService.getServicesByShopId(1L);
 
         assertThat(result).containsExactlyElementsOf(services);
         verify(serviceRepository).findAllByShopId(1L);
@@ -79,10 +80,10 @@ public class ServiceServiceTest {
 
     @Test
     void getServiceById_shouldReturnService() {
-        Service service = Service.builder().id(2L).title("Cut").build();
+        final Service service = Service.builder().id(2L).title("Cut").build();
         when(serviceRepository.findById(2L)).thenReturn(Optional.of(service));
 
-        Service result = serviceService.getServiceById(2L);
+        final Service result = serviceService.getServiceById(2L);
 
         assertThat(result).isEqualTo(service);
     }
@@ -98,13 +99,13 @@ public class ServiceServiceTest {
 
     @Test
     void updateService_shouldUpdateMutableFields() {
-        Service existing = Service.builder().id(3L).title("Cut").price(20).durationInMin(30).targetAudience(ServiceTargetAudience.MEN).build();
-        Service update = Service.builder().title("Deluxe Cut").price(35).durationInMin(45).targetAudience(ServiceTargetAudience.ALL).build();
+        final Service existing = Service.builder().id(3L).title("Cut").price(20).durationInMin(30).targetAudience(ServiceTargetAudience.MEN).build();
+        final Service update = Service.builder().title("Deluxe Cut").price(35).durationInMin(45).targetAudience(ServiceTargetAudience.ALL).build();
 
         when(serviceRepository.findById(3L)).thenReturn(Optional.of(existing));
         when(serviceRepository.save(existing)).thenReturn(existing);
 
-        Service result = serviceService.updateService(3L, update);
+        final Service result = serviceService.updateService(3L, update);
 
         assertThat(result.getTitle()).isEqualTo("Deluxe Cut");
         assertThat(result.getPrice()).isEqualTo(35);

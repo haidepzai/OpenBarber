@@ -141,7 +141,13 @@ const FilterResults = ({ filter }) => {
   return (
     <Fragment>
       <Box sx={{ flex: '4 1 0' }}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'center' }} sx={{ width: '100%', m: '20px 0' }} gap={1}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          justifyContent="space-between"
+          alignItems={{ xs: 'flex-start', sm: 'center' }}
+          sx={{ width: '100%', m: '20px 0' }}
+          gap={1}
+        >
           <Typography variant="body1">
             {totalResults} {t('SHOPS_AVAILABLE_IN')} {locationName}
           </Typography>

@@ -1,4 +1,4 @@
-package com.hdmstuttgart.mi.backend.service;
+package com.hdmstuttgart.mi.backend.service.impl;
 
 import com.hdmstuttgart.mi.backend.BackendApplication;
 import com.hdmstuttgart.mi.backend.exception.UserAlreadyExistsException;
@@ -7,6 +7,9 @@ import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.*;
 import com.hdmstuttgart.mi.backend.model.enums.UserRole;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
+import com.hdmstuttgart.mi.backend.service.IAuthenticationService;
+import com.hdmstuttgart.mi.backend.service.IEmailSenderService;
+import com.hdmstuttgart.mi.backend.service.IJwtService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +37,13 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationServiceImpl implements IAuthenticationService {
     private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final IJwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final EmailSenderService emailSenderService;
+    private final IEmailSenderService emailSenderService;
 
     @Value("${google.client-id}")
     private String googleClientId;
@@ -51,12 +54,12 @@ public class AuthenticationService {
      * @param request the request
      * @return the authentication response
      */
-    public AuthenticationResponse register(RegisterRequest request) {
-        if(userRepository.findByEmail(request.getEmail()).isPresent()) {
+    public AuthenticationResponse register(final RegisterRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException(request.getEmail());
         }
 
-        var user = User.builder()
+        final var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
@@ -67,12 +70,12 @@ public class AuthenticationService {
                 .role(UserRole.UNVERIFIED)
                 .build();
         userRepository.save(user);
-        var jwtToken = jwtService.generateAccessToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        final var jwtToken = jwtService.generateAccessToken(user);
+        final String refreshToken = jwtService.generateRefreshToken(user);
 
         try {
             emailSenderService.sendEmailWithTemplate(user.getEmail(), "verification");
-        } catch (MessagingException | IOException e) {
+        } catch (final MessagingException | IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
 
@@ -88,18 +91,18 @@ public class AuthenticationService {
      * @param request the request
      * @return the authentication response
      */
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(final AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-        User user = userRepository.findByEmail(request.getEmail())
+        final User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException(request.getEmail()));
 
-        String jwtToken = jwtService.generateAccessToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        final String jwtToken = jwtService.generateAccessToken(user);
+        final String refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -110,20 +113,20 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse googleLogin(String idToken) {
-        Map<String, Object> googlePayload = verifyGoogleToken(idToken);
+    public AuthenticationResponse googleLogin(final String idToken) {
+        final Map<String, Object> googlePayload = verifyGoogleToken(idToken);
 
-        String email = (String) googlePayload.get("email");
-        String googleId = (String) googlePayload.get("sub");
-        String firstName = (String) googlePayload.getOrDefault("given_name", "");
-        String lastName = (String) googlePayload.getOrDefault("family_name", "");
+        final String email = (String) googlePayload.get("email");
+        final String googleId = (String) googlePayload.get("sub");
+        final String firstName = (String) googlePayload.getOrDefault("given_name", "");
+        final String lastName = (String) googlePayload.getOrDefault("family_name", "");
 
         if (email == null || email.isBlank() || googleId == null || googleId.isBlank()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Google token");
         }
 
-        Optional<User> existingByGoogleId = userRepository.findByGoogleId(googleId);
-        Optional<User> existingByEmail = userRepository.findByEmail(email);
+        final Optional<User> existingByGoogleId = userRepository.findByGoogleId(googleId);
+        final Optional<User> existingByEmail = userRepository.findByEmail(email);
 
         User user;
         if (existingByGoogleId.isPresent()) {
@@ -158,8 +161,8 @@ public class AuthenticationService {
 
         user = userRepository.save(user);
 
-        String accessToken = jwtService.generateAccessToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        final String accessToken = jwtService.generateAccessToken(user);
+        final String refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthenticationResponse.builder()
                 .token(accessToken)
@@ -170,29 +173,29 @@ public class AuthenticationService {
                 .build();
     }
 
-    private Map<String, Object> verifyGoogleToken(String idToken) {
+    private Map<String, Object> verifyGoogleToken(final String idToken) {
         try {
-            RestTemplate restTemplate = new RestTemplate();
-            String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
-            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
-            Map<String, Object> payload = response.getBody();
+            final RestTemplate restTemplate = new RestTemplate();
+            final String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
+            final ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            final Map<String, Object> payload = response.getBody();
 
             if (payload == null) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Google token");
             }
 
-            String aud = (String) payload.get("aud");
+            final String aud = (String) payload.get("aud");
             if (googleClientId == null || googleClientId.isBlank() || !googleClientId.equals(aud)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token not issued for this app");
             }
 
-            Object emailVerified = payload.get("email_verified");
+            final Object emailVerified = payload.get("email_verified");
             if (emailVerified != null && !Boolean.parseBoolean(String.valueOf(emailVerified))) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Google email is not verified");
             }
 
             return payload;
-        } catch (HttpClientErrorException e) {
+        } catch (final HttpClientErrorException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Google token");
         }
     }
@@ -204,10 +207,10 @@ public class AuthenticationService {
      * @param token   the token
      * @return the authentication response
      */
-    public AuthenticationResponse verify(VerificationRequest request, String token) {
-        String username = jwtService.extractUsername(token.substring(7));
+    public AuthenticationResponse verify(final VerificationRequest request, final String token) {
+        final String username = jwtService.extractUsername(token.substring(7));
 
-        User user = userRepository.findByEmail(username)
+        final User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
         if (user.getRole() != UserRole.UNVERIFIED) {
@@ -226,7 +229,7 @@ public class AuthenticationService {
             log.error("wrong confirmation code! attempt {}", user.getVerificationAttempts());
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Wrong confirmation code");
         }
-        UserRole newRole = (user.getShop() != null) ? UserRole.OPERATOR : UserRole.VERIFIED;
+        final UserRole newRole = (user.getShop() != null) ? UserRole.OPERATOR : UserRole.VERIFIED;
         user.setRole(newRole);
         user.setConfirmationCode(null);
         user.setConfirmationCodeExpiry(null);
@@ -244,10 +247,10 @@ public class AuthenticationService {
      * @param request the request
      * @return the authentication response
      */
-    public AuthenticationResponse refresh(RefreshTokenRequest request) {
+    public AuthenticationResponse refresh(final RefreshTokenRequest request) {
         try {
-            String username = jwtService.extractUsername(request.getRefreshToken());
-            User user = userRepository.findByEmail(username)
+            final String username = jwtService.extractUsername(request.getRefreshToken());
+            final User user = userRepository.findByEmail(username)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
 
             if (!jwtService.isRefreshTokenValid(request.getRefreshToken(), user)) {
@@ -255,35 +258,35 @@ public class AuthenticationService {
             }
 
             // Token is valid — no need to re-authenticate with username/password
-            String accessToken = jwtService.generateAccessToken(user);
-            String refreshToken = jwtService.generateRefreshToken(user);
+            final String accessToken = jwtService.generateAccessToken(user);
+            final String refreshToken = jwtService.generateRefreshToken(user);
 
             return AuthenticationResponse.builder()
                     .token(accessToken)
                     .refreshToken(refreshToken)
                     .build();
-        } catch (io.jsonwebtoken.JwtException e) {
+        } catch (final io.jsonwebtoken.JwtException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token invalid or expired");
         }
     }
 
-    public void forgotPassword(ForgotPasswordRequest request) {
+    public void forgotPassword(final ForgotPasswordRequest request) {
         // Silently succeed even if email not found — prevents user enumeration
         userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
-            String token = UUID.randomUUID().toString();
+            final String token = UUID.randomUUID().toString();
             user.setPasswordResetToken(token);
             user.setPasswordResetTokenExpiry(Date.from(Instant.now().plusSeconds(3600))); // 1 hour
             userRepository.save(user);
             try {
                 emailSenderService.sendPasswordResetEmail(user.getEmail(), token);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 log.error("Failed to send password reset email to {}: {}", user.getEmail(), e.getMessage());
             }
         });
     }
 
-    public void resetPassword(ResetPasswordRequest request) {
-        User user = userRepository.findByPasswordResetToken(request.getToken())
+    public void resetPassword(final ResetPasswordRequest request) {
+        final User user = userRepository.findByPasswordResetToken(request.getToken())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid or expired reset token"));
 
         if (user.getPasswordResetTokenExpiry() == null || user.getPasswordResetTokenExpiry().before(new Date())) {
@@ -296,9 +299,9 @@ public class AuthenticationService {
         userRepository.save(user);
     }
 
-    public void resendVerification(String token) {
-        String username = jwtService.extractUsername(token.substring(7));
-        User user = userRepository.findByEmail(username)
+    public void resendVerification(final String token) {
+        final String username = jwtService.extractUsername(token.substring(7));
+        final User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
         if (user.getRole() != UserRole.UNVERIFIED) {
@@ -312,7 +315,7 @@ public class AuthenticationService {
 
         try {
             emailSenderService.sendEmailWithTemplate(user.getEmail(), "verification");
-        } catch (MessagingException | IOException e) {
+        } catch (final MessagingException | IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to send verification email");
         }
     }

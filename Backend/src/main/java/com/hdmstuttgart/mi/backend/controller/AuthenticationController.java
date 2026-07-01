@@ -2,7 +2,7 @@ package com.hdmstuttgart.mi.backend.controller;
 
 import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
 import com.hdmstuttgart.mi.backend.model.dto.*;
-import com.hdmstuttgart.mi.backend.service.AuthenticationService;
+import com.hdmstuttgart.mi.backend.service.IAuthenticationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationService authenticationService;
+    private final IAuthenticationService authenticationService;
 
     @ApiOperation(value = "Register User", notes = "Registers a new user with the provided details")
     @PostMapping("/register")

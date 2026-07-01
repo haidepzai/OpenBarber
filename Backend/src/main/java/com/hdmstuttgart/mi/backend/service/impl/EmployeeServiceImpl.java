@@ -1,19 +1,21 @@
-package com.hdmstuttgart.mi.backend.service;
+package com.hdmstuttgart.mi.backend.service.impl;
 
 import com.hdmstuttgart.mi.backend.model.Employee;
 import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
 import com.hdmstuttgart.mi.backend.repository.ShopRepository;
+import com.hdmstuttgart.mi.backend.service.IEmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 /**
  * The type Employee service.
  */
 @Service
-public class EmployeeService {
+public class EmployeeServiceImpl implements IEmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final ShopRepository shopRepository;
@@ -21,10 +23,10 @@ public class EmployeeService {
     /**
      * Instantiates a new Employee service.
      *
-     * @param employeeRepository   the employee repository
-     * @param shopRepository the shop repository
+     * @param employeeRepository the employee repository
+     * @param shopRepository     the shop repository
      */
-    public EmployeeService(EmployeeRepository employeeRepository, ShopRepository shopRepository) {
+    public EmployeeServiceImpl(final EmployeeRepository employeeRepository, final ShopRepository shopRepository) {
         this.employeeRepository = employeeRepository;
         this.shopRepository = shopRepository;
     }
@@ -32,12 +34,12 @@ public class EmployeeService {
     /**
      * Create employee employee.
      *
-     * @param employee     the employee
-     * @param shopId the shop id
+     * @param employee the employee
+     * @param shopId   the shop id
      * @return the employee
      */
-    public Employee createEmployee(Employee employee, Long shopId) {
-        Shop shop = shopRepository.findById(shopId)
+    public Employee createEmployee(final Employee employee, final Long shopId) {
+        final Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + shopId));
         employee.setShop(shop);
         return employeeRepository.save(employee);
@@ -49,12 +51,12 @@ public class EmployeeService {
      * @param shopId the shop id
      * @return the employees by shop id
      */
-    public List<Employee> getEmployeesByShopId(Long shopId) {
+    public List<Employee> getEmployeesByShopId(final Long shopId) {
         if (!shopRepository.existsById(shopId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found with id = " + shopId);
         }
 
-        List<Employee> employees = employeeRepository.findAllByShopId(shopId);
+        final List<Employee> employees = employeeRepository.findAllByShopId(shopId);
         if (employees.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No employees found for shop with id = " + shopId);
         }
@@ -67,7 +69,7 @@ public class EmployeeService {
      * @param id the id
      * @return the employee by id
      */
-    public Employee getEmployeeById(long id) {
+    public Employee getEmployeeById(final long id) {
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id = " + id));
     }
@@ -79,7 +81,7 @@ public class EmployeeService {
      * @param newEmployee the new employee
      * @return the employee
      */
-    public Employee updateEmployee(long id, Employee newEmployee) {
+    public Employee updateEmployee(final long id, final Employee newEmployee) {
         return employeeRepository.findById(id)
                 .map(employee -> {
                     employee.setName(newEmployee.getName());
@@ -96,7 +98,7 @@ public class EmployeeService {
      *
      * @param id the id
      */
-    public void deleteEmployee(long id) {
+    public void deleteEmployee(final long id) {
         if (!employeeRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id = " + id);
         }

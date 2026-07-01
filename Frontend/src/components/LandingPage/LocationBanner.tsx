@@ -94,7 +94,10 @@ const LocationBanner = () => {
         <>
           <WarningAmberRounded fontSize="small" sx={{ color: 'warning.main' }} />
           <Typography variant="body2" color="text.secondary" sx={{ maxWidth: { xs: '100%', md: 500 } }}>
-            {t('LOCATION_DENIED', 'Wir konnten Ihren genauen Standort nicht ermitteln. Bitte aktivieren Sie den Standort in Ihren Browsereinstellungen.')}
+            {t(
+              'LOCATION_DENIED',
+              'Wir konnten Ihren genauen Standort nicht ermitteln. Bitte aktivieren Sie den Standort in Ihren Browsereinstellungen.'
+            )}
           </Typography>
           <Button
             size="small"

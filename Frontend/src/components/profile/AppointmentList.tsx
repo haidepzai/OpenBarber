@@ -44,7 +44,13 @@ const AppointmentList = ({ appointments = [], loading, onRefetch }) => {
         '&:hover': appointment.shopId ? { boxShadow: 6, transform: 'translateY(-2px)' } : {},
       }}
     >
-      <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'stretch', sm: 'flex-start' }} justifyContent="space-between" flexWrap="wrap" gap={2}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        alignItems={{ xs: 'stretch', sm: 'flex-start' }}
+        justifyContent="space-between"
+        flexWrap="wrap"
+        gap={2}
+      >
         <Stack gap={1} flex={1} minWidth={0}>
           <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
             <EventIcon fontSize="small" color="primary" />
@@ -81,8 +87,18 @@ const AppointmentList = ({ appointments = [], loading, onRefetch }) => {
           )}
         </Stack>
 
-        <Stack direction={{ xs: 'row', sm: 'column' }} alignItems={{ xs: 'center', sm: 'flex-end' }} justifyContent="space-between" gap={1} sx={{ width: { xs: '100%', sm: 'auto' } }}>
-          <Chip label={appointment.confirmed ? t('APPOINTMENT_CONFIRMED', 'Bestätigt') : t('PENDING', 'Ausstehend')} color={appointment.confirmed ? 'success' : 'warning'} size="small" />
+        <Stack
+          direction={{ xs: 'row', sm: 'column' }}
+          alignItems={{ xs: 'center', sm: 'flex-end' }}
+          justifyContent="space-between"
+          gap={1}
+          sx={{ width: { xs: '100%', sm: 'auto' } }}
+        >
+          <Chip
+            label={appointment.confirmed ? t('APPOINTMENT_CONFIRMED', 'Bestätigt') : t('PENDING', 'Ausstehend')}
+            color={appointment.confirmed ? 'success' : 'warning'}
+            size="small"
+          />
           {allowCancel && (
             <Button
               variant="outlined"

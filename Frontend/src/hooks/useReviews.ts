@@ -4,14 +4,14 @@ import { reviewsAPI } from '../api/apiClient';
 export const useShopReviews = (shopId: number | null) =>
   useQuery({
     queryKey: ['reviews', 'shop', shopId],
-    queryFn: () => reviewsAPI.getByShop(shopId!).then(r => r.data?.content ?? r.data ?? []),
+    queryFn: () => reviewsAPI.getByShop(shopId!).then((r) => r.data?.content ?? r.data ?? []),
     enabled: !!shopId,
   });
 
 export const useMyReviews = () =>
   useQuery({
     queryKey: ['reviews', 'my'],
-    queryFn: () => reviewsAPI.getMy().then(r => r.data?.content ?? r.data ?? []),
+    queryFn: () => reviewsAPI.getMy().then((r) => r.data?.content ?? r.data ?? []),
   });
 
 export const useDeleteReview = () => {

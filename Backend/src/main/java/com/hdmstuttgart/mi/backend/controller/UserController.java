@@ -4,8 +4,8 @@ import com.hdmstuttgart.mi.backend.exception.UnauthorizedException;
 import com.hdmstuttgart.mi.backend.mapper.UserMapper;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.UserDto;
-import com.hdmstuttgart.mi.backend.service.JwtService;
-import com.hdmstuttgart.mi.backend.service.UserService;
+import com.hdmstuttgart.mi.backend.service.IJwtService;
+import com.hdmstuttgart.mi.backend.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
-    private final JwtService jwtService;
+    private final IUserService userService;
+    private final IJwtService jwtService;
 
     /**
      * Instantiates a new User controller.
@@ -41,7 +41,7 @@ public class UserController {
      * @param userService the user service
      * @param jwtService  the jwt service
      */
-    public UserController(UserService userService, JwtService jwtService) {
+    public UserController(IUserService userService, IJwtService jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
     }

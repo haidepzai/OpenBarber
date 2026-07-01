@@ -1,24 +1,22 @@
-package com.hdmstuttgart.mi.backend.service;
+package com.hdmstuttgart.mi.backend.service.impl;
 
 import com.hdmstuttgart.mi.backend.exception.UserNotFoundException;
 import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.repository.UserRepository;
+import com.hdmstuttgart.mi.backend.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
  * The type User service.
  */
 @Service
-public class UserService {
+public class UserServiceImpl implements IUserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -30,7 +28,7 @@ public class UserService {
      * @param passwordEncoder the password encoder
      */
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -40,7 +38,7 @@ public class UserService {
      *
      * @return the all users
      */
-    public Page<User> getAllUsers(Pageable pageable) {
+    public Page<User> getAllUsers(final Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
@@ -50,7 +48,7 @@ public class UserService {
      * @param id the id
      * @return the user by id
      */
-    public User getUserById(Long id) {
+    public User getUserById(final Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
     }
@@ -61,7 +59,7 @@ public class UserService {
      * @param email the email
      * @return the user by email
      */
-    public User getUserByEmail(String email) {
+    public User getUserByEmail(final String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found with email " + email));
     }
@@ -72,9 +70,9 @@ public class UserService {
      * @param user the user
      * @return the user
      */
-    public User createUser(User user) {
+    public User createUser(final User user) {
         // Check if user with same email already exists
-        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
+        final Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
         if (existingUser.isPresent()) {
             throw new IllegalArgumentException("User with email " + user.getEmail() + " already exists.");
         }
@@ -89,8 +87,8 @@ public class UserService {
      * @param user the user
      * @return the user
      */
-    public User updateUser(Long id, User user) {
-        User existingUser = getUserById(id);
+    public User updateUser(final Long id, final User user) {
+        final User existingUser = getUserById(id);
         if (user.getName() != null) existingUser.setName(user.getName());
         if (user.getFirstName() != null) existingUser.setFirstName(user.getFirstName());
         if (user.getLastName() != null) existingUser.setLastName(user.getLastName());
@@ -108,8 +106,8 @@ public class UserService {
      *
      * @param id the id
      */
-    public void deleteUserById(Long id) {
-        User user = getUserById(id);
+    public void deleteUserById(final Long id) {
+        final User user = getUserById(id);
         userRepository.delete(user);
     }
 

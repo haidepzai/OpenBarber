@@ -6,10 +6,10 @@ import com.hdmstuttgart.mi.backend.mapper.ShopMapper;
 import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.dto.ShopDto;
 import com.hdmstuttgart.mi.backend.model.dto.SlotDto;
-import com.hdmstuttgart.mi.backend.service.AppointmentService;
-import com.hdmstuttgart.mi.backend.service.JwtService;
-import com.hdmstuttgart.mi.backend.service.ShopService;
-import com.hdmstuttgart.mi.backend.service.UserService;
+import com.hdmstuttgart.mi.backend.service.IAppointmentService;
+import com.hdmstuttgart.mi.backend.service.IJwtService;
+import com.hdmstuttgart.mi.backend.service.IShopService;
+import com.hdmstuttgart.mi.backend.service.IUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,13 +37,13 @@ public class ShopControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ShopService shopService;
+    private IShopService shopService;
     @MockBean
-    private AppointmentService appointmentService;
+    private IAppointmentService appointmentService;
     @MockBean
-    private UserService userService;
+    private IUserService userService;
     @MockBean
-    private JwtService jwtService;
+    private IJwtService jwtService;
     @MockBean
     private ShopMapper shopMapper;
     @MockBean

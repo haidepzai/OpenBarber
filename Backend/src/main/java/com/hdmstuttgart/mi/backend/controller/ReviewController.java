@@ -5,8 +5,8 @@ import com.hdmstuttgart.mi.backend.mapper.ReviewMapper;
 import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.Review;
 import com.hdmstuttgart.mi.backend.model.dto.ReviewDto;
-import com.hdmstuttgart.mi.backend.service.ShopService;
-import com.hdmstuttgart.mi.backend.service.ReviewService;
+import com.hdmstuttgart.mi.backend.service.IShopService;
+import com.hdmstuttgart.mi.backend.service.IReviewService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
@@ -30,8 +30,8 @@ import java.util.UUID;
 @RequestMapping("/api/reviews")
 public class ReviewController {
 
-    private final ReviewService reviewService;
-    private final ShopService shopService;
+    private final IReviewService reviewService;
+    private final IShopService shopService;
 
     /**
      * Instantiates a new Review controller.
@@ -39,7 +39,7 @@ public class ReviewController {
      * @param reviewService     the review service
      * @param shopService the shop service
      */
-    public ReviewController(ReviewService reviewService, ShopService shopService) {
+    public ReviewController(IReviewService reviewService, IShopService shopService) {
         this.reviewService = reviewService;
         this.shopService = shopService;
     }

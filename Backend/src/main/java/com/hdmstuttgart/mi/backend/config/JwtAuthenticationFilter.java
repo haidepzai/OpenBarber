@@ -1,6 +1,6 @@
 package com.hdmstuttgart.mi.backend.config;
 
-import com.hdmstuttgart.mi.backend.service.JwtService;
+import com.hdmstuttgart.mi.backend.service.IJwtService;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
@@ -25,7 +25,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final IJwtService jwtService;
     private final UserDetailsService userDetailsService;
 
     @Override

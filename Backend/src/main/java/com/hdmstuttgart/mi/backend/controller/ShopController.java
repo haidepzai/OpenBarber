@@ -7,10 +7,10 @@ import com.hdmstuttgart.mi.backend.model.User;
 import com.hdmstuttgart.mi.backend.model.dto.ShopDto;
 import com.hdmstuttgart.mi.backend.model.dto.ShopFilterParams;
 import com.hdmstuttgart.mi.backend.model.dto.SlotDto;
-import com.hdmstuttgart.mi.backend.service.AppointmentService;
-import com.hdmstuttgart.mi.backend.service.ShopService;
-import com.hdmstuttgart.mi.backend.service.JwtService;
-import com.hdmstuttgart.mi.backend.service.UserService;
+import com.hdmstuttgart.mi.backend.service.IAppointmentService;
+import com.hdmstuttgart.mi.backend.service.IShopService;
+import com.hdmstuttgart.mi.backend.service.IJwtService;
+import com.hdmstuttgart.mi.backend.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
@@ -34,10 +34,10 @@ import java.util.List;
 @RequestMapping("/api/shops")
 public class ShopController {
 
-    private final ShopService shopService;
-    private final AppointmentService appointmentService;
-    private final UserService userService;
-    private final JwtService jwtService;
+    private final IShopService shopService;
+    private final IAppointmentService appointmentService;
+    private final IUserService userService;
+    private final IJwtService jwtService;
     private final ShopMapper shopMapper;
 
     /**
@@ -48,7 +48,7 @@ public class ShopController {
      * @param jwtService        the jwt service
      * @param shopMapper  the shop mapper
      */
-    public ShopController(ShopService shopService, AppointmentService appointmentService, UserService userService, JwtService jwtService, ShopMapper shopMapper) {
+    public ShopController(IShopService shopService, IAppointmentService appointmentService, IUserService userService, IJwtService jwtService, ShopMapper shopMapper) {
         this.shopService = shopService;
         this.appointmentService = appointmentService;
         this.userService = userService;

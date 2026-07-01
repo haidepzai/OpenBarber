@@ -19,7 +19,8 @@ const Stylist = ({ employee, onClick }) => {
       <Avatar alt={employee.name} src={employee.picture ? `data:image/jpeg;base64,${employee.picture}` : undefined} sx={{ width: 50, height: 50 }} />
       <Box>
         <Typography sx={{ lineHeight: 'unset' }}>
-          {employee.name}{employee.title ? ` – ${employee.title}` : ''}
+          {employee.name}
+          {employee.title ? ` – ${employee.title}` : ''}
         </Typography>
       </Box>
     </Stack>

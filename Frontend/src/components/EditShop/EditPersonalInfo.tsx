@@ -95,7 +95,14 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
         <Stack direction="column" spacing={3} divider={<Divider orientation="horizontal" flexItem />} sx={{ py: 3, px: { xs: 2, sm: 3, md: 4 } }}>
           <Stack direction={{ xs: 'column', md: 'row' }} sx={fieldRowSx}>
             <Typography variant="body1">{t('NAME')}</Typography>
-            <TextField InputLabelProps={{ shrink: false }} name="name" placeholder={t('NAME')} value={authCtx.user.name === null ? '' : authCtx.user.name} onChange={handleUserChange} fullWidth />
+            <TextField
+              InputLabelProps={{ shrink: false }}
+              name="name"
+              placeholder={t('NAME')}
+              value={authCtx.user.name === null ? '' : authCtx.user.name}
+              onChange={handleUserChange}
+              fullWidth
+            />
           </Stack>
 
           <Stack direction={{ xs: 'column', md: 'row' }} sx={fieldRowSx}>
@@ -132,7 +139,13 @@ const EditPersonalInfo = ({ onLoadingUser, onOpenSnackBar }) => {
 
         <Divider orientation="horizontal" sx={{ mb: '24px' }} />
 
-        <Stack direction={{ xs: 'column', sm: 'row' }} aligncontent="center" justifyContent="space-between" sx={{ p: '0 24px 24px 24px' }} spacing={2}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          aligncontent="center"
+          justifyContent="space-between"
+          sx={{ p: '0 24px 24px 24px' }}
+          spacing={2}
+        >
           <Button variant="outlined" onClick={resetUser} sx={{ width: { xs: '100%', sm: 'auto' } }}>
             {t('RESET')}
           </Button>

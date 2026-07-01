@@ -28,7 +28,13 @@ const PictureUpload = ({ shop, handleLogoUpload, handlePicturesUpload, handleDel
         </Stack>
         {shop.logo && (
           <Box sx={{ mt: '24px' }}>
-            <img alt="shop logo" src={`data:image/jpeg;base64,${shop.logo}`} width="100%" height="auto" style={{ maxHeight: '250px', objectFit: 'cover' }} />
+            <img
+              alt="shop logo"
+              src={`data:image/jpeg;base64,${shop.logo}`}
+              width="100%"
+              height="auto"
+              style={{ maxHeight: '250px', objectFit: 'cover' }}
+            />
           </Box>
         )}
       </Box>
@@ -49,10 +55,20 @@ const PictureUpload = ({ shop, handleLogoUpload, handlePicturesUpload, handleDel
         </Stack>
         {shop.pictures && shop.pictures.length > 0 && (
           <Box sx={{ mt: '24px' }}>
-            <ImageList sx={{ width: '100%', height: { xs: 260, sm: 360, md: 444 }, borderRadius: '5px', boxShadow: 4 }} cols={isMobile ? 2 : 4} rowHeight={isMobile ? 120 : 220} variant="quilted">
+            <ImageList
+              sx={{ width: '100%', height: { xs: 260, sm: 360, md: 444 }, borderRadius: '5px', boxShadow: 4 }}
+              cols={isMobile ? 2 : 4}
+              rowHeight={isMobile ? 120 : 220}
+              variant="quilted"
+            >
               {shop.pictures.map((picture, index) => (
                 <ImageListItem key={index}>
-                  <img src={`data:image/jpeg;base64,${picture}`} alt={`picture-${index}`} loading="lazy" style={{ objectFit: 'cover', objectPosition: 'center', display: 'block' }} />
+                  <img
+                    src={`data:image/jpeg;base64,${picture}`}
+                    alt={`picture-${index}`}
+                    loading="lazy"
+                    style={{ objectFit: 'cover', objectPosition: 'center', display: 'block' }}
+                  />
                   <ImageListItemBar
                     sx={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)' }}
                     position="top"

@@ -13,13 +13,7 @@ interface PhotoUploadProps {
   buttonSize?: 'small' | 'medium' | 'large';
 }
 
-const PhotoUpload: React.FC<PhotoUploadProps> = ({
-  previewSrc,
-  onFileChange,
-  onRemove,
-  size = 96,
-  buttonSize = 'medium',
-}) => {
+const PhotoUpload: React.FC<PhotoUploadProps> = ({ previewSrc, onFileChange, onRemove, size = 96, buttonSize = 'medium' }) => {
   const { t } = useTranslation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,12 +33,7 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
       </Button>
       {previewSrc && (
         <>
-          <Box
-            component="img"
-            src={previewSrc}
-            alt={t('REVIEW_PHOTO')}
-            sx={{ width: size, height: size, objectFit: 'cover', borderRadius: 2 }}
-          />
+          <Box component="img" src={previewSrc} alt={t('REVIEW_PHOTO')} sx={{ width: size, height: size, objectFit: 'cover', borderRadius: 2 }} />
           <Button color="error" size={buttonSize} onClick={onRemove}>
             {t('REMOVE_PHOTO')}
           </Button>
