@@ -1,7 +1,49 @@
 stages:
+  - test
   - build
 
-# ─── Backend ────────────────────────────────────────────────────────────────
+# ─── Backend: Test ──────────────────────────────────────────────────────────
+backend-test:
+  stage: test
+  image: eclipse-temurin:17-jdk
+  services:
+    - name: postgres:16
+      alias: postgres
+  variables:
+    POSTGRES_DB: openbarber_test
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/openbarber_test
+    SPRING_DATASOURCE_USERNAME: postgres
+    SPRING_DATASOURCE_PASSWORD: postgres
+    DDL_AUTO: create-drop
+    JWT_SECRET: ci-test-secret-key-that-is-long-enough-for-hmac
+    MAIL_USERNAME: test@test.com
+    MAIL_PASSWORD: test
+    MJML_APP_ID: test
+    MJML_APP_KEY: test
+    APP_FRONTEND_URL: http://localhost:3000
+  cache:
+    key: backend-maven
+    paths:
+      - .m2/repository
+  before_script:
+    - cd Backend
+    - chmod +x mvnw
+  script:
+    - ./mvnw test --no-transfer-progress -Dmaven.repo.local=../.m2/repository
+  artifacts:
+    when: always
+    reports:
+      junit: Backend/target/surefire-reports/TEST-*.xml
+    paths:
+      - Backend/target/surefire-reports/
+    expire_in: 1 week
+  only:
+    changes:
+      - Backend/**/*
+
+# ─── Backend: Build ─────────────────────────────────────────────────────────
 backend-build:
   stage: build
   image: eclipse-temurin:17-jdk
@@ -30,11 +72,13 @@ backend-build:
     - cd Backend
     - chmod +x mvnw
   script:
-    - ./mvnw clean package --no-transfer-progress -Dmaven.repo.local=../.m2/repository
+    - ./mvnw clean package -DskipTests --no-transfer-progress -Dmaven.repo.local=../.m2/repository
   artifacts:
     paths:
       - Backend/target/*.jar
     expire_in: 1 hour
+  needs:
+    - backend-test
   only:
     changes:
       - Backend/**/*
@@ -63,3 +107,4 @@ frontend-build:
   only:
     changes:
       - Frontend/**/*
+
