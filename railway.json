@@ -1,11 +1,10 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS",
-    "buildCommand": "cd Backend && chmod +x mvnw && ./mvnw clean package -DskipTests --no-transfer-progress"
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Backend/Dockerfile"
   },
   "deploy": {
-    "startCommand": "java -jar Backend/target/Backend-0.0.1-SNAPSHOT.jar",
     "healthcheckPath": "/api/shops",
     "healthcheckTimeout": 60,
     "restartPolicyType": "ON_FAILURE",
