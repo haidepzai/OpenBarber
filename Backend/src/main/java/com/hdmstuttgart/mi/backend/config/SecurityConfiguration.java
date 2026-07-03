@@ -40,6 +40,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests()
             // Public auth endpoints
             .antMatchers("/api/auth/**").permitAll()
+            .antMatchers("/actuator/health").permitAll()
             // Swagger
             .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
             // Public read: shops, services, reviews
