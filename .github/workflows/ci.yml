@@ -1,0 +1,198 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Backend: Test
+  # ─────────────────────────────────────────────
+  backend-test:
+    name: Backend – Test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: openbarber_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: Backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+          cache: maven
+
+      - name: Run tests
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/openbarber_test
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: postgres
+          DDL_AUTO: create-drop
+          SECRET_KEY: ${{ secrets.SECRET_KEY || 'ci-test-secret-key-at-least-32-chars-long' }}
+          RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET || 'dummy' }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID || 'dummy' }}
+          MAIL_USERNAME: test@test.com
+          MAIL_PASSWORD: dummy
+          MJML_APP_ID: dummy
+          MJML_APP_KEY: dummy
+          APP_FRONTEND_URL: http://localhost:3000
+        run: ./mvnw test --no-transfer-progress
+
+      - name: Publish test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-report
+          path: Backend/target/surefire-reports/
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  # Backend: Build
+  # ─────────────────────────────────────────────
+  backend-build:
+    name: Backend – Build JAR
+    runs-on: ubuntu-latest
+    needs: backend-test
+
+    defaults:
+      run:
+        working-directory: Backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+          cache: maven
+
+      - name: Build JAR
+        run: ./mvnw clean package -DskipTests --no-transfer-progress
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-jar
+          path: Backend/target/*.jar
+          retention-days: 1
+
+  # ─────────────────────────────────────────────
+  # Frontend: Build
+  # ─────────────────────────────────────────────
+  frontend-build:
+    name: Frontend – Build
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        env:
+          VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL || 'http://localhost:8080' }}
+          VITE_GOOGLE_API: ${{ secrets.VITE_GOOGLE_API || '' }}
+          VITE_RECAPTCHA_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_SITE_KEY || '' }}
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: Frontend/build/
+          retention-days: 1
+
+  # ─────────────────────────────────────────────
+  # Deploy Backend → Railway  (only on main)
+  # ─────────────────────────────────────────────
+  deploy-backend:
+    name: Deploy Backend → Railway
+    runs-on: ubuntu-latest
+    needs: backend-build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: ${{ secrets.RAILWAY_PUBLIC_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --service ${{ secrets.RAILWAY_SERVICE_ID }} --detach
+
+  # ─────────────────────────────────────────────
+  # Deploy Frontend → Vercel  (only on main)
+  # ─────────────────────────────────────────────
+  deploy-frontend:
+    name: Deploy Frontend → Vercel
+    runs-on: ubuntu-latest
+    needs: frontend-build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: ${{ secrets.VERCEL_URL }}
+
+    defaults:
+      run:
+        working-directory: Frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+          vercel build --prod --token=$VERCEL_TOKEN
+          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
