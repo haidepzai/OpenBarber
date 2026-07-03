@@ -1,6 +1,9 @@
 .env:
   prefix: ""
 
+server:
+  port: ${PORT:8080}
+
 recaptcha:
   secret: ${RECAPTCHA_SECRET}
 

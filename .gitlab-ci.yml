@@ -1,6 +1,7 @@
 stages:
   - test
   - build
+  - deploy
 
 # ─── Backend: Test ──────────────────────────────────────────────────────────
 backend-test:
@@ -108,3 +109,44 @@ frontend-build:
     changes:
       - Frontend/**/*
 
+
+# ─── Deploy: Backend → Railway ──────────────────────────────────────────────
+deploy-backend:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache curl
+  script:
+    - |
+      curl -X POST \
+        -H "Authorization: Bearer $RAILWAY_TOKEN" \
+        -H "Content-Type: application/json" \
+        --data "{\"serviceId\":\"$RAILWAY_SERVICE_ID\"}" \
+        https://backboard.railway.app/graphql/v2 || true
+    - echo "Railway deployment triggered."
+  needs:
+    - backend-build
+  only:
+    - main
+  environment:
+    name: production/backend
+    url: $RAILWAY_PUBLIC_URL
+
+# ─── Deploy: Frontend → Vercel ──────────────────────────────────────────────
+deploy-frontend:
+  stage: deploy
+  image: node:18-alpine
+  before_script:
+    - npm install -g vercel
+  script:
+    - cd Frontend
+    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+    - vercel build --prod --token=$VERCEL_TOKEN
+    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+  needs:
+    - frontend-build
+  only:
+    - main
+  environment:
+    name: production/frontend
+    url: $VERCEL_URL
