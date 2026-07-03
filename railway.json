@@ -5,7 +5,7 @@
     "buildCommand": "cd Backend && chmod +x mvnw && ./mvnw clean package -DskipTests --no-transfer-progress"
   },
   "deploy": {
-    "startCommand": "java -jar Backend/target/*.jar",
+    "startCommand": "java -jar Backend/target/Backend-0.0.1-SNAPSHOT.jar",
     "healthcheckPath": "/api/shops",
     "healthcheckTimeout": 60,
     "restartPolicyType": "ON_FAILURE",
