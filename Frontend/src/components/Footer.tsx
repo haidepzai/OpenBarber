@@ -36,7 +36,7 @@ function Footer() {
             <Link to="/privacy-policy" className="link">
               {t('DATA_PRIVACY')}
             </Link>
-            <Link to="#" className="link">
+            <Link to="/terms" className="link">
               {t('TERMS_OF_USE')}
             </Link>
             <Link to="/contact" className="link">

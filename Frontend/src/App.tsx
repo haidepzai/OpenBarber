@@ -16,6 +16,7 @@ import Datenschutz from './pages/Datenschutz';
 import Impressum from './pages/Impressum';
 import FaqPage from './pages/FaqPage';
 import ContactPage from './pages/ContactPage';
+import TermsPage from './pages/TermsPage';
 import SchedulerPage from './pages/SchedulerPage';
 import EditShopPage from './pages/EditShopPage';
 import { SignupContext } from './context/Signup.context';
@@ -59,6 +60,7 @@ function App() {
             <Route path="impressum" element={<Impressum />} />
             <Route path="faq" element={<FaqPage />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="terms" element={<TermsPage />} />
             <Route
               path="scheduler"
               element={
