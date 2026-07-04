@@ -1,7 +1,6 @@
 stages:
   - test
   - build
-  - deploy
 
 # ─── Backend: Test ──────────────────────────────────────────────────────────
 backend-test:
@@ -44,6 +43,26 @@ backend-test:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
         - Backend/**/*
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop"
+
+# ─── Frontend: Lint & Typecheck ─────────────────────────────────────────────
+frontend-lint:
+  stage: test
+  image: node:18-alpine
+  cache:
+    key: frontend-npm
+    paths:
+      - Frontend/node_modules
+  before_script:
+    - cd Frontend
+  script:
+    - npm ci
+    - npm run prettier -- --check
+    - npm run typecheck
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - Frontend/**/*
     - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop"
 
 # ─── Backend: Build ─────────────────────────────────────────────────────────
@@ -94,45 +113,11 @@ frontend-build:
     paths:
       - Frontend/build
     expire_in: 1 hour
+  needs:
+    - job: frontend-lint
+      optional: true
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
         - Frontend/**/*
     - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop"
-
-# ─── Deploy: Backend → Railway ──────────────────────────────────────────────
-deploy-backend:
-  stage: deploy
-  image: node:18-alpine
-  before_script:
-    - npm install -g @railway/cli
-  script:
-    - railway up --service $RAILWAY_SERVICE_ID --detach
-  needs:
-    - job: backend-build
-      optional: true
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-  environment:
-    name: production/backend
-    url: $RAILWAY_PUBLIC_URL
-
-# ─── Deploy: Frontend → Vercel ──────────────────────────────────────────────
-deploy-frontend:
-  stage: deploy
-  image: node:18-alpine
-  before_script:
-    - npm install -g vercel
-  script:
-    - cd Frontend
-    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-    - vercel build --prod --token=$VERCEL_TOKEN
-    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
-  needs:
-    - job: frontend-build
-      optional: true
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-  environment:
-    name: production/frontend
-    url: $VERCEL_URL

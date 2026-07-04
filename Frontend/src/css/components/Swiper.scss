@@ -39,6 +39,10 @@
     &:hover {
       background-color: $light-gray;
     }
+
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 
   .swiper-button-prev {

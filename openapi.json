@@ -1,0 +1,4870 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "OpenBarber API",
+    "description": "REST API for the OpenBarber barber shop booking platform.\n\n## Authentication\nMost endpoints require a JWT Bearer token. Obtain it via `POST /api/auth/authenticate`.\n\n## Roles\n- **CUSTOMER** \u2013 browse shops, book appointments, write reviews\n- **ENTERPRISE** \u2013 manage shop, employees, services, appointments\n- **ADMIN** \u2013 full access",
+    "version": "1.0.0",
+    "contact": {
+      "name": "OpenBarber Team",
+      "email": "openbarber.hdm@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://openbarber-backend-production.up.railway.app",
+      "description": "Production"
+    },
+    {
+      "url": "http://localhost:8080",
+      "description": "Local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Register, login, token refresh, password reset, email verification"
+    },
+    {
+      "name": "Shop",
+      "description": "Shop discovery, filtering, photos"
+    },
+    {
+      "name": "Appointment",
+      "description": "Booking and appointment management"
+    },
+    {
+      "name": "Employee",
+      "description": "Employee management"
+    },
+    {
+      "name": "Service",
+      "description": "Barber services"
+    },
+    {
+      "name": "Review",
+      "description": "Customer reviews"
+    },
+    {
+      "name": "User",
+      "description": "User profile management"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT token from /api/auth/authenticate"
+      }
+    },
+    "schemas": {
+      "Appointment": {
+        "type": "object",
+        "properties": {
+          "appointmentDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "appointmentType": {
+            "type": "string",
+            "enum": [
+              "APPOINTMENT",
+              "VACATION"
+            ]
+          },
+          "confirmationCode": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "confirmed": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "customerEmail": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerPhoneNumber": {
+            "type": "string"
+          },
+          "endDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "paymentMethods": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "BANK_TRANSFER",
+                "ON_SITE_CARD",
+                "ON_SITE_CASH",
+                "PAYPAL"
+              ]
+            }
+          },
+          "reviewed": {
+            "type": "boolean"
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Service"
+            }
+          }
+        },
+        "required": [
+          "appointmentDateTime"
+        ]
+      },
+      "AppointmentDto": {
+        "type": "object",
+        "properties": {
+          "appointmentDateTime": {
+            "type": "string"
+          },
+          "appointmentType": {
+            "type": "string",
+            "enum": [
+              "APPOINTMENT",
+              "VACATION"
+            ]
+          },
+          "confirmationCode": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "confirmed": {
+            "type": "boolean"
+          },
+          "customerEmail": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerPhoneNumber": {
+            "type": "string"
+          },
+          "employeeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "employeeName": {
+            "type": "string"
+          },
+          "endDateTime": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "paymentMethods": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "BANK_TRANSFER",
+                "ON_SITE_CARD",
+                "ON_SITE_CASH",
+                "PAYPAL"
+              ]
+            }
+          },
+          "reviewed": {
+            "type": "boolean"
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Service"
+            }
+          },
+          "shopId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "shopName": {
+            "type": "string"
+          }
+        }
+      },
+      "AuthenticationRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "AuthenticationResponse": {
+        "type": "object",
+        "properties": {
+          "hasShop": {
+            "type": "boolean"
+          },
+          "refreshToken": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "verified": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Employee": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "picture": {
+            "type": "string",
+            "format": "byte"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "EmployeeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "shopId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "EntityModelOfEmployee": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          },
+          "name": {
+            "type": "string"
+          },
+          "picture": {
+            "type": "string",
+            "format": "byte"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "EntityModelOfReview": {
+        "type": "object",
+        "properties": {
+          "author": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          },
+          "photoData": {
+            "type": "string",
+            "format": "byte"
+          },
+          "rating": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": [
+          "author",
+          "comment",
+          "rating"
+        ]
+      },
+      "EntityModelOfService": {
+        "type": "object",
+        "properties": {
+          "durationInMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "targetAudience": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "CHILDREN",
+              "MEN",
+              "WOMEN"
+            ]
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "durationInMin",
+          "price",
+          "title"
+        ]
+      },
+      "EntityModelOfShop": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "addressLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "addressLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "appointments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Appointment"
+            }
+          },
+          "approved": {
+            "type": "boolean"
+          },
+          "closingTime": {
+            "type": "string"
+          },
+          "drinks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "BEER",
+                "CHAMPAGNE",
+                "COFFEE",
+                "SOFT_DRINKS",
+                "SPARKLING_WINE",
+                "TEA",
+                "WATER"
+              ]
+            }
+          },
+          "email": {
+            "type": "string"
+          },
+          "employees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Employee"
+            }
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          },
+          "logo": {
+            "type": "string",
+            "format": "byte"
+          },
+          "name": {
+            "type": "string"
+          },
+          "openingDays": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "openingTime": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "paymentMethods": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "BANK_TRANSFER",
+                "ON_SITE_CARD",
+                "ON_SITE_CASH",
+                "PAYPAL"
+              ]
+            }
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "pictures": {
+            "type": "string",
+            "format": "byte"
+          },
+          "priceCategory": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recommended": {
+            "type": "boolean"
+          },
+          "reviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Review"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Service"
+            }
+          },
+          "website": {
+            "type": "string",
+            "format": "url"
+          }
+        },
+        "required": [
+          "address",
+          "email",
+          "name",
+          "owner"
+        ]
+      },
+      "EntityModelOfUser": {
+        "type": "object",
+        "properties": {
+          "accountNonExpired": {
+            "type": "boolean"
+          },
+          "accountNonLocked": {
+            "type": "boolean"
+          },
+          "authorities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GrantedAuthority"
+            }
+          },
+          "confirmationCode": {
+            "type": "string"
+          },
+          "confirmationCodeExpiry": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "credentialsNonExpired": {
+            "type": "boolean"
+          },
+          "email": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "googleId": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          },
+          "name": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "passwordResetToken": {
+            "type": "string"
+          },
+          "passwordResetTokenExpiry": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "profilePhoto": {
+            "type": "string",
+            "format": "byte"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "OPERATOR",
+              "UNVERIFIED",
+              "VERIFIED"
+            ]
+          },
+          "salutation": {
+            "type": "string"
+          },
+          "shop": {
+            "$ref": "#/components/schemas/Shop"
+          },
+          "username": {
+            "type": "string"
+          },
+          "verificationAttempts": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ForgotPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "GoogleAuthRequest": {
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "idToken"
+        ]
+      },
+      "GrantedAuthority": {
+        "type": "object",
+        "properties": {
+          "authority": {
+            "type": "string"
+          }
+        }
+      },
+      "Links": {
+        "type": "object",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Pageable": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "type": "string"
+          }
+        }
+      },
+      "PageOfAppointmentDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppointmentDto"
+            }
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/Pageable"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/Sort"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PageOfReviewDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewDto"
+            }
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/Pageable"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/Sort"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PageOfShopDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShopDto"
+            }
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/Pageable"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/Sort"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "refreshToken"
+        ]
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "RepresentationModelOfobject": {
+        "type": "object",
+        "properties": {
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "newPassword": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "newPassword",
+          "token"
+        ]
+      },
+      "Review": {
+        "type": "object",
+        "properties": {
+          "author": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "photoData": {
+            "type": "string",
+            "format": "byte"
+          },
+          "rating": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": [
+          "author",
+          "comment",
+          "rating"
+        ]
+      },
+      "ReviewDto": {
+        "type": "object",
+        "properties": {
+          "author": {
+            "type": "string"
+          },
+          "authorPhoto": {
+            "type": "string",
+            "format": "byte"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rating": {
+            "type": "number",
+            "format": "double"
+          },
+          "reviewPhotoData": {
+            "type": "string",
+            "format": "byte"
+          },
+          "reviewerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "shopId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "shopName": {
+            "type": "string"
+          }
+        }
+      },
+      "Service": {
+        "type": "object",
+        "properties": {
+          "durationInMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "targetAudience": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "CHILDREN",
+              "MEN",
+              "WOMEN"
+            ]
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "durationInMin",
+          "price",
+          "title"
+        ]
+      },
+      "ServiceDto": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "durationInMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "shopId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "targetAudience": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "CHILDREN",
+              "MEN",
+              "WOMEN"
+            ]
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "Shop": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "addressLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "addressLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "appointments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Appointment"
+            }
+          },
+          "approved": {
+            "type": "boolean"
+          },
+          "closingTime": {
+            "type": "string"
+          },
+          "drinks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "BEER",
+                "CHAMPAGNE",
+                "COFFEE",
+                "SOFT_DRINKS",
+                "SPARKLING_WINE",
+                "TEA",
+                "WATER"
+              ]
+            }
+          },
+          "email": {
+            "type": "string"
+          },
+          "employees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Employee"
+            }
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "logo": {
+            "type": "string",
+            "format": "byte"
+          },
+          "name": {
+            "type": "string"
+          },
+          "openingDays": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "openingTime": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "paymentMethods": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "BANK_TRANSFER",
+                "ON_SITE_CARD",
+                "ON_SITE_CASH",
+                "PAYPAL"
+              ]
+            }
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "pictures": {
+            "type": "string",
+            "format": "byte"
+          },
+          "priceCategory": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recommended": {
+            "type": "boolean"
+          },
+          "reviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Review"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Service"
+            }
+          },
+          "website": {
+            "type": "string",
+            "format": "url"
+          }
+        },
+        "required": [
+          "address",
+          "email",
+          "name",
+          "owner"
+        ]
+      },
+      "ShopDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "addressLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "addressLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "approved": {
+            "type": "boolean"
+          },
+          "closingTime": {
+            "type": "string"
+          },
+          "drinks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "BEER",
+                "CHAMPAGNE",
+                "COFFEE",
+                "SOFT_DRINKS",
+                "SPARKLING_WINE",
+                "TEA",
+                "WATER"
+              ]
+            }
+          },
+          "email": {
+            "type": "string"
+          },
+          "employees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Employee"
+            }
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "openingDays": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "openingTime": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "paymentMethods": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "BANK_TRANSFER",
+                "ON_SITE_CARD",
+                "ON_SITE_CASH",
+                "PAYPAL"
+              ]
+            }
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "priceCategory": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recommended": {
+            "type": "boolean"
+          },
+          "reviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Review"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Service"
+            }
+          },
+          "website": {
+            "type": "string",
+            "format": "url"
+          }
+        }
+      },
+      "SlotDto": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "employeeName": {
+            "type": "string"
+          },
+          "employeePicture": {
+            "type": "string",
+            "format": "byte"
+          },
+          "time": {
+            "type": "string"
+          }
+        }
+      },
+      "Sort": {
+        "type": "object",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "sorted": {
+            "type": "boolean"
+          },
+          "unsorted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "profilePhoto": {
+            "type": "string",
+            "format": "byte"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "OPERATOR",
+              "UNVERIFIED",
+              "VERIFIED"
+            ]
+          },
+          "salutation": {
+            "type": "string"
+          },
+          "shop": {
+            "$ref": "#/components/schemas/Shop"
+          }
+        }
+      },
+      "UserReq": {
+        "type": "object",
+        "properties": {
+          "confirmationCode": {
+            "type": "string"
+          },
+          "confirmationCodeExpiry": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "googleId": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "passwordResetToken": {
+            "type": "string"
+          },
+          "passwordResetTokenExpiry": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "profilePhoto": {
+            "type": "string",
+            "format": "byte"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "OPERATOR",
+              "UNVERIFIED",
+              "VERIFIED"
+            ]
+          },
+          "salutation": {
+            "type": "string"
+          },
+          "shop": {
+            "$ref": "#/components/schemas/Shop"
+          },
+          "verificationAttempts": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "VerificationRequest": {
+        "type": "object",
+        "properties": {
+          "confirmationCode": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "confirmationCode"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/appointments": {
+      "get": {
+        "tags": [
+          "Appointment"
+        ],
+        "summary": "Get Appointments by Shop ID",
+        "operationId": "getAppointmentsByShopIdUsingGET",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": true,
+            "description": "shopId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfAppointmentDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Appointment"
+        ],
+        "summary": "Create Appointment",
+        "operationId": "createAppointmentUsingPOST",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": true,
+            "description": "shopId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Recaptcha-Token",
+            "in": "header",
+            "required": false,
+            "description": "X-Recaptcha-Token",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/appointments/my": {
+      "get": {
+        "tags": [
+          "Appointment"
+        ],
+        "summary": "Get My Appointments",
+        "operationId": "getMyAppointmentsUsingGET",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfAppointmentDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/appointments/confirmation/{id}": {
+      "put": {
+        "tags": [
+          "Appointment"
+        ],
+        "summary": "Confirm Appointment",
+        "operationId": "confirmAppointmentUsingPUT",
+        "parameters": [
+          {
+            "name": "confirmationCode",
+            "in": "query",
+            "required": true,
+            "description": "confirmationCode",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/appointments/{id}": {
+      "get": {
+        "tags": [
+          "Appointment"
+        ],
+        "summary": "Get Appointment by ID",
+        "operationId": "getAppointmentByIdUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Appointment"
+        ],
+        "summary": "Get Appointment by ID",
+        "operationId": "updateAppointmentUsingPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Appointment"
+        ],
+        "summary": "Delete Appointment",
+        "operationId": "deleteAppointmentUsingDELETE_1",
+        "parameters": [
+          {
+            "name": "confirmationCode",
+            "in": "query",
+            "required": false,
+            "description": "confirmationCode",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Appointment"
+        ],
+        "summary": "Patch Appointment",
+        "operationId": "patchAppointmentUsingPATCH",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentDto"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/auth/authenticate": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Authenticate User",
+        "operationId": "authenticateUsingPOST",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register User",
+        "operationId": "registerUsingPOST",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Refresh Token",
+        "operationId": "refreshUsingPOST",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/auth/forgot-password": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Forgot Password",
+        "operationId": "forgotPasswordUsingPOST",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Reset Password",
+        "operationId": "resetPasswordUsingPOST",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/auth/verify": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Verify User",
+        "operationId": "verifyUsingPOST",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/auth/resend-verification": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Resend Verification Code",
+        "operationId": "resendVerificationUsingPOST",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/auth/google": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Authenticate User With Google",
+        "operationId": "googleLoginUsingPOST",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleAuthRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/employees": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Get Employees by Shop ID",
+        "operationId": "getEmployeesByShopIdUsingGET",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": true,
+            "description": "shopId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmployeeDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Create Employee",
+        "operationId": "createEmployeeUsingPOST",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": true,
+            "description": "shopId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/employees/{id}": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Get Employee by ID",
+        "operationId": "getEmployeeByIdUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Update Employee",
+        "operationId": "updateEmployeeUsingPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Delete Employee",
+        "operationId": "deleteEmployeeUsingDELETE_1",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Employee Entity"
+        ],
+        "summary": "saveEmployee",
+        "operationId": "saveEmployeeUsingPATCH",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Employee"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelOfEmployee"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/reviews": {
+      "get": {
+        "tags": [
+          "Review"
+        ],
+        "summary": "Get Reviews by Shop ID",
+        "operationId": "getReviewsByShopIdUsingGET",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": true,
+            "description": "shopId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfReviewDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "tags": [
+          "Review"
+        ],
+        "summary": "Create Review",
+        "operationId": "createReviewUsingPOST",
+        "parameters": [
+          {
+            "name": "reviewUuid",
+            "in": "query",
+            "required": true,
+            "description": "reviewUuid",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": true,
+            "description": "shopId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/reviews/auth": {
+      "post": {
+        "tags": [
+          "Review"
+        ],
+        "summary": "Create Authenticated Review",
+        "operationId": "createReviewAuthenticatedUsingPOST",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": true,
+            "description": "shopId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/reviews/my": {
+      "get": {
+        "tags": [
+          "Review"
+        ],
+        "summary": "Get My Reviews",
+        "operationId": "getMyReviewsUsingGET",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfReviewDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/reviews/new": {
+      "post": {
+        "tags": [
+          "Review"
+        ],
+        "summary": "Create Review for Shop",
+        "operationId": "createReviewForShopUsingPOST",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": true,
+            "description": "shopId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/reviews/{id}": {
+      "get": {
+        "tags": [
+          "Review"
+        ],
+        "summary": "Get Review by ID",
+        "operationId": "getReviewByIdUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      },
+      "put": {
+        "tags": [
+          "Review"
+        ],
+        "summary": "Update Review",
+        "operationId": "updateReviewUsingPUT",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Review"
+        ],
+        "summary": "Delete Review",
+        "operationId": "deleteReviewUsingDELETE_1",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Review Entity"
+        ],
+        "summary": "saveReview",
+        "operationId": "saveReviewUsingPATCH",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Review"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelOfReview"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/reviews/{id}/photo": {
+      "post": {
+        "tags": [
+          "Review"
+        ],
+        "summary": "uploadReviewPhoto",
+        "operationId": "uploadReviewPhotoUsingPOST",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Review"
+        ],
+        "summary": "deleteReviewPhoto",
+        "operationId": "deleteReviewPhotoUsingDELETE",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDto"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/services": {
+      "get": {
+        "tags": [
+          "Service"
+        ],
+        "summary": "Get Services by Shop ID",
+        "operationId": "getServicesByShopIdUsingGET",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": true,
+            "description": "shopId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ServiceDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "tags": [
+          "Service"
+        ],
+        "summary": "Create Service",
+        "operationId": "createServiceUsingPOST",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": true,
+            "description": "shopId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/services/{id}": {
+      "get": {
+        "tags": [
+          "Service"
+        ],
+        "summary": "Get Service by ID",
+        "operationId": "getServiceByIdUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      },
+      "put": {
+        "tags": [
+          "Service"
+        ],
+        "summary": "Update Service",
+        "operationId": "updateServiceUsingPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Service"
+        ],
+        "summary": "Delete Service",
+        "operationId": "deleteServiceUsingDELETE_1",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Service Entity"
+        ],
+        "summary": "saveService",
+        "operationId": "saveServiceUsingPATCH",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Service"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelOfService"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/shops": {
+      "get": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "Get All Shops",
+        "operationId": "getAllShopsUsingGET",
+        "parameters": [
+          {
+            "name": "availableDate",
+            "in": "query",
+            "required": false,
+            "description": "availableDate",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "availableFromTime",
+            "in": "query",
+            "required": false,
+            "description": "availableFromTime",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "closingTime",
+            "in": "query",
+            "required": false,
+            "description": "closingTime",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "drinks",
+            "in": "query",
+            "required": false,
+            "description": "drinks",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "employeeCountMax",
+            "in": "query",
+            "required": false,
+            "description": "employeeCountMax",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "employeeCountMin",
+            "in": "query",
+            "required": false,
+            "description": "employeeCountMin",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "minRating",
+            "in": "query",
+            "required": false,
+            "description": "minRating",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "openingDays",
+            "in": "query",
+            "required": false,
+            "description": "openingDays",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "openingTime",
+            "in": "query",
+            "required": false,
+            "description": "openingTime",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "paymentMethods",
+            "in": "query",
+            "required": false,
+            "description": "paymentMethods",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "priceCategory",
+            "in": "query",
+            "required": false,
+            "description": "priceCategory",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "targetAudience",
+            "in": "query",
+            "required": false,
+            "description": "targetAudience",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfShopDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "Create Shop",
+        "operationId": "createShopUsingPOST",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShopDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/shops/email": {
+      "get": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "Get Shop by Email",
+        "operationId": "getShopByEmailUsingGET",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "description": "email",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/shops/user": {
+      "get": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "Get Shop by User",
+        "operationId": "getShopByUserUsingGET",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      },
+      "patch": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "Patch Shop",
+        "operationId": "patchShopUsingPATCH",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShopDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopDto"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/shops/within-radius": {
+      "get": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "Get Shops within Radius",
+        "operationId": "getObjectsWithinRadiusUsingGET",
+        "parameters": [
+          {
+            "name": "availableDate",
+            "in": "query",
+            "required": false,
+            "description": "availableDate",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "availableFromTime",
+            "in": "query",
+            "required": false,
+            "description": "availableFromTime",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "closingTime",
+            "in": "query",
+            "required": false,
+            "description": "closingTime",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "drinks",
+            "in": "query",
+            "required": false,
+            "description": "drinks",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "employeeCountMax",
+            "in": "query",
+            "required": false,
+            "description": "employeeCountMax",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "employeeCountMin",
+            "in": "query",
+            "required": false,
+            "description": "employeeCountMin",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "lat",
+            "in": "query",
+            "required": true,
+            "description": "lat",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": true,
+            "description": "lng",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "minRating",
+            "in": "query",
+            "required": false,
+            "description": "minRating",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "openingDays",
+            "in": "query",
+            "required": false,
+            "description": "openingDays",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "openingTime",
+            "in": "query",
+            "required": false,
+            "description": "openingTime",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "paymentMethods",
+            "in": "query",
+            "required": false,
+            "description": "paymentMethods",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "priceCategory",
+            "in": "query",
+            "required": false,
+            "description": "priceCategory",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "name": "radius",
+            "in": "query",
+            "required": true,
+            "description": "radius",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "targetAudience",
+            "in": "query",
+            "required": false,
+            "description": "targetAudience",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfShopDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/shops/{id}": {
+      "get": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "Get Shop by ID",
+        "operationId": "getShopByIdUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      },
+      "put": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "Update Shop",
+        "operationId": "updateShopUsingPUT",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShopDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "Delete Shop",
+        "operationId": "deleteShopUsingDELETE_1",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Shop Entity"
+        ],
+        "summary": "saveShop",
+        "operationId": "saveShopUsingPATCH",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shop"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelOfShop"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/shops/{id}/available-slots": {
+      "get": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "Get Available Slots",
+        "operationId": "getAvailableSlotsUsingGET",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "description": "date",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "employeeId",
+            "in": "query",
+            "required": false,
+            "description": "employeeId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "serviceDuration",
+            "in": "query",
+            "required": false,
+            "description": "serviceDuration",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SlotDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/shops/{id}/logo": {
+      "post": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "uploadLogo",
+        "operationId": "uploadLogoUsingPOST",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "deleteLogo",
+        "operationId": "deleteLogoUsingDELETE",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopDto"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/shops/{id}/pictures": {
+      "post": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "uploadPictures",
+        "operationId": "uploadPicturesUsingPOST",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/shops/{id}/pictures/{index}": {
+      "delete": {
+        "tags": [
+          "Shop"
+        ],
+        "summary": "deletePicture",
+        "operationId": "deletePictureUsingDELETE",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "description": "index",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopDto"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/users/info": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get User by Token",
+        "operationId": "getUserByTokenUsingGET",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get User by ID",
+        "operationId": "findByIdUserUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelOfUser"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update User",
+        "operationId": "updateUserUsingPUT",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete User by ID",
+        "operationId": "deleteUserByIdUsingDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "User Entity"
+        ],
+        "summary": "saveUser",
+        "operationId": "saveUserUsingPATCH",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelOfUser"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/users/{id}/photo": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Upload Profile Photo",
+        "operationId": "uploadProfilePhotoUsingPOST",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Authorization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/profile": {
+      "get": {
+        "tags": [
+          "profile-controller"
+        ],
+        "summary": "listAllFormsOfMetadata",
+        "operationId": "listAllFormsOfMetadataUsingGET",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepresentationModelOfobject"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  }
+}
