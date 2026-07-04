@@ -40,7 +40,7 @@ function ShopHighlightsSlider() {
     };*/
 
   return (
-    <div style={{ position: 'relative' }} className="swiper-landing-page ">
+    <div style={{ position: 'relative', zIndex: 0 }} className="swiper-landing-page ">
       <Swiper
         slidesPerView={5}
         spaceBetween={20}
