@@ -12,6 +12,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Blob;
 
+/**
+ * The type Employee.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -28,16 +31,13 @@ public class Employee {
 
     private String title;
 
-    @Lob
+    @Column(columnDefinition = "bytea")
     private byte[] picture;
-
-    /*@Lob
-    private Blob picture;*/
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "enterprise_id")
-    private Enterprise enterprise;
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
 /*    @OneToMany
     private List<Appointment> appointments;*/

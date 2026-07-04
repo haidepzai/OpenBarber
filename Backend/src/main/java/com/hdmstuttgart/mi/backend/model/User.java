@@ -36,19 +36,41 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(unique = true)
+    private String googleId;
+
     @Size(min = 8)
     @Column(nullable = false)
     private String password;
 
     private String confirmationCode;
 
+    private Date confirmationCodeExpiry;
+
+    private int verificationAttempts;
+
+    private String passwordResetToken;
+
+    private Date passwordResetTokenExpiry;
+
     private String name;
+
+    private String firstName;
+
+    private String lastName;
+
+    private String phoneNumber;
+
+    private String salutation;
+
+    @Column(columnDefinition = "bytea")
+    private byte[] profilePhoto;
 
     @CreationTimestamp
     private Date createdAt;
 
-    @OneToOne(cascade=CascadeType.ALL) /*(mappedBy = "enterprise")*/
-    private Enterprise enterprise;
+    @OneToOne(cascade=CascadeType.ALL) /*(mappedBy = "shop")*/
+    private Shop shop;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;

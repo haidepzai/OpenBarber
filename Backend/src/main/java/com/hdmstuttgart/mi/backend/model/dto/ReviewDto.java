@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * The type Review dto.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,5 +20,9 @@ public class ReviewDto {
     private String comment;
     private double rating;
     private Date createdAt;
-    private Long enterpriseId;
+    private Long shopId;
+    private String shopName;
+    private byte[] authorPhoto;
+    private byte[] reviewPhotoData;
+    private Long reviewerId;
 }

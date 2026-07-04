@@ -1,7 +1,7 @@
 package com.hdmstuttgart.mi.backend.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hdmstuttgart.mi.backend.model.Enterprise;
+import com.hdmstuttgart.mi.backend.model.Shop;
 import com.hdmstuttgart.mi.backend.model.enums.ServiceTargetAudience;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,21 +15,25 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+/**
+ * The type Service dto.
+ */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServiceDto {
 
+    private Long id;
     private double price;
     private String title;
     private String description;
     private int durationInMin;
     private ServiceTargetAudience targetAudience;
-    private Long enterpriseId;
+    private Long shopId;
 
     /*@ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "enterprise_id")
-    private Enterprise enterprise;*/
+    @JoinColumn(name = "shop_id")
+    private Shop shop;*/
 }

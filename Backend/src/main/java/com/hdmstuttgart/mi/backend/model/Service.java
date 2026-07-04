@@ -11,6 +11,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * The type Service.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -36,8 +39,8 @@ public class Service {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "enterprise_id")
-    private Enterprise enterprise;
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
     @ManyToMany(mappedBy = "services")
     @JsonIgnore

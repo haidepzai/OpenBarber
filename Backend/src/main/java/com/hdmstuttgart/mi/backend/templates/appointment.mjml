@@ -30,16 +30,10 @@
             <mj-column width="100%">
                 <mj-image src="http://i.epvpimg.com/91j3gab.png" alt="" align="center" width="80px" />
                 <mj-text color="#ffffff" font-weight="bold" align="center" font-size="16px" letter-spacing="1px" padding-top="30px">
-                    Activate your business account now!
+                    Confirm your Appointment!
                 </mj-text>
                 <mj-text color="#3CBAAD" align="center" font-size="13px" padding-top="0" font-weight="bold" text-transform="uppercase" letter-spacing="1px" line-height="20px">
                 </mj-text>
-            </mj-column>
-        </mj-section>
-
-        <mj-section full-width="full-width" background-color="#3B2D24" padding-bottom="0">
-            <mj-column width="100%" background-color="#FFF">
-                <mj-text>&nbsp</mj-text>
             </mj-column>
         </mj-section>
 
@@ -50,7 +44,7 @@
                         Hello blank_username
                     </mj-text>
                     <mj-text color="#212b35" font-weight="bold" font-size="18px">
-                        Your appointment for blank_enterpriseName has been confirmed!
+                        Please confirm your appointment for blank_enterpriseName
                     </mj-text>
                     <mj-text color="#637381" font-size="16px">
                         Your stylist will be blank_stylist
@@ -62,8 +56,16 @@
                         blank_appointmentDate
                     </mj-text>
 
-                    <mj-button background-color="#3CBAAD" align="center" color="#ffffff" font-size="17px" font-weight="bold" href="https://google.com" width="300px">
-                        Visit OpenBarber
+                    <mj-button background-color="#3CBAAD" align="center" color="#ffffff" font-size="17px" font-weight="bold" href="blank_confirmUrl" width="300px">
+                        Confirm your appointment now!
+                    </mj-button>
+
+                    <mj-text color="#212b35" font-weight="bold" font-size="18px">
+                        Want to cancel your appointment?
+                    </mj-text>
+
+                    <mj-button background-color="#3CBAAD" align="center" color="#ffffff" font-size="17px" font-weight="bold" href="blank_cancelUrl" width="300px">
+                        Cancel your appointment!
                     </mj-button>
 
                 </mj-column>

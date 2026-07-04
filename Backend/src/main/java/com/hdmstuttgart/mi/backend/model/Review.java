@@ -1,6 +1,7 @@
 package com.hdmstuttgart.mi.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hdmstuttgart.mi.backend.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,9 @@ import javax.validation.constraints.NotNull;
 import java.sql.Blob;
 import java.util.Date;
 
+/**
+ * The type Review.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -44,6 +48,14 @@ public class Review {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "enterprise_id")
-    private Enterprise enterprise;
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
+
+    @Column(columnDefinition = "bytea")
+    private byte[] photoData;
+
+    @ManyToOne(optional = true)
+    @JsonIgnore
+    @JoinColumn(name = "reviewer_id")
+    private User reviewer;
 }

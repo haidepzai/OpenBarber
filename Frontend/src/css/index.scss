@@ -1,0 +1,51 @@
+@use 'variables' as *;
+
+html,
+body,
+div.app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: $font-stack;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+code {
+  font-family: $font-mono;
+}
+
+// Hide number input spinners
+input {
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
+}
+
+// Remove default padding from Google Maps InfoWindow
+.gm-style-iw,
+.gm-style-iw-c {
+  padding: 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+
+  // Hide the default close button area padding
+  & > button {
+    top: 4px !important;
+    right: 4px !important;
+  }
+}
+
+.gm-style-iw-d {
+  overflow: hidden !important;
+  padding: 0 !important;
+}

@@ -6,14 +6,16 @@
     "@devexpress/dx-react-core": "^4.0.3",
     "@devexpress/dx-react-scheduler": "^4.0.3",
     "@devexpress/dx-react-scheduler-material-ui": "^4.0.3",
-    "@emotion/react": "^11.10.4",
-    "@emotion/styled": "^11.10.4",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@fontsource/roboto": "^4.5.8",
-    "@mui/icons-material": "^5.10.9",
-    "@mui/material": "^5.10.10",
-    "@mui/styled-engine-sc": "^5.10.6",
-    "@mui/x-date-pickers": "^5.0.8",
+    "@mui/icons-material": "^5.18.0",
+    "@mui/lab": "^5.0.0-alpha.177",
+    "@mui/material": "^5.18.0",
+    "@mui/x-date-pickers": "^5.0.20",
     "@react-google-maps/api": "^2.17.1",
+    "@react-oauth/google": "^0.13.5",
+    "@tanstack/react-query": "^5.101.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -24,22 +26,26 @@
     "deep-equal": "^2.2.0",
     "dotenv": "^16.0.3",
     "google-map-react": "^2.2.0",
+    "i18next": "^23.11.2",
+    "i18next-browser-languagedetector": "^7.2.1",
+    "i18next-http-backend": "^2.5.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
     "react-dom": "^18.2.0",
     "react-google-autocomplete": "^2.7.1",
+    "react-google-recaptcha": "^3.1.0",
+    "react-i18next": "^14.1.0",
     "react-router-dom": "^6.4.3",
-    "react-scripts": "5.0.1",
-    "styled-components": "^5.3.6",
     "swiper": "^8.4.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "prettier": "prettier --write \"**/*.{js,jsx}\""
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"No test runner configured for Vite yet\"",
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
+    "typecheck": "tsc --noEmit"
   },
   "eslintConfig": {
     "extends": [
@@ -60,8 +66,16 @@
     ]
   },
   "devDependencies": {
+    "@types/node": "^26.0.0",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@types/react-google-recaptcha": "^2.1.9",
+    "@vitejs/plugin-react": "^4.7.0",
     "eslint-plugin-flowtype": "^8.0.3",
     "prettier": "2.7.1",
-    "pretty-quick": "^3.1.3"
+    "pretty-quick": "^3.1.3",
+    "sass": "^1.101.0",
+    "typescript": "^6.0.3",
+    "vite": "^5.4.21"
   }
 }

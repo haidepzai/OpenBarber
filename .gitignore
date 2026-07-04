@@ -1,1 +1,5 @@
-﻿.vscode
+.vscode
+.idea
+.env
+Frontend/.env
+Backend/src/main/resources/.env

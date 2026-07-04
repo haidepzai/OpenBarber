@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * The type Authentication response.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,9 +17,15 @@ public class AuthenticationResponse {
     private String token;
     private String refreshToken;
     private boolean verified;
-    private boolean hasEnterprise;
+    private boolean hasShop;
     private long userId;
 
+    /**
+     * Instantiates a new Authentication response.
+     *
+     * @param token        the token
+     * @param refreshToken the refresh token
+     */
     public AuthenticationResponse(String token, String refreshToken) {
     }
 }

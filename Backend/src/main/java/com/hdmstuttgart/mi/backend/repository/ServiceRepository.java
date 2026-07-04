@@ -6,10 +6,19 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * The interface Service repository.
+ */
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, Long> {
     @Override
     List<Service> findAll();
 
-    List<Service> findAllByEnterpriseId(Long enterpriseId);
+    /**
+     * Find all by shop id list.
+     *
+     * @param shopId the shop id
+     * @return the list
+     */
+    List<Service> findAllByShopId(Long shopId);
 }

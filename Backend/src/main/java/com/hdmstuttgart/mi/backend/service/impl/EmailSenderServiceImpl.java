@@ -1,0 +1,276 @@
+package com.hdmstuttgart.mi.backend.service.impl;
+
+import com.hdmstuttgart.mi.backend.BackendApplication;
+import com.hdmstuttgart.mi.backend.model.Appointment;
+import com.hdmstuttgart.mi.backend.model.Employee;
+import com.hdmstuttgart.mi.backend.model.Shop;
+import com.hdmstuttgart.mi.backend.model.User;
+import com.hdmstuttgart.mi.backend.repository.EmployeeRepository;
+import com.hdmstuttgart.mi.backend.repository.ShopRepository;
+import com.hdmstuttgart.mi.backend.repository.UserRepository;
+import com.hdmstuttgart.mi.backend.service.IEmailSenderService;
+import io.camassia.mjml.MJMLClient;
+import io.camassia.mjml.model.request.RenderRequest;
+import io.camassia.mjml.model.response.RenderResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+
+/**
+ * Description:
+ * Overall, this class provides a useful abstraction for sending emails with MJML templates, which can help to standardize
+ * the appearance of emails and make them more visually appealing. The use of Spring's dependency injection and the MJMLClient
+ * library make this class easy to use and extend.
+ */
+@Service
+public class EmailSenderServiceImpl implements IEmailSenderService {
+    private static final Logger log = LoggerFactory.getLogger(BackendApplication.class);
+
+    @Autowired
+    private final JavaMailSender mailSender;
+
+    private final UserRepository userRepository;
+
+    private final EmployeeRepository employeeRepository;
+
+    private final ShopRepository shopRepository;
+    private final String appId;
+    private final String mailUsername;
+    private final String appKey;
+    private final String frontendUrl;
+    private final HashMap<String, String> mjmlTemplateTexts = new HashMap<>();
+    private MJMLClient mjmlClient;
+
+    /**
+     * Instantiates a new Email sender service.
+     *
+     * @param mailSender         the mail sender
+     * @param userRepository     the user repository
+     * @param employeeRepository the employee repository
+     * @param shopRepository     the shop repository
+     * @param mjmlClient         the mjml client
+     * @param appId              the app id
+     * @param mailUsername       the mail username
+     * @param appKey             the app key
+     */
+    public EmailSenderServiceImpl(final JavaMailSender mailSender, final UserRepository userRepository, final EmployeeRepository employeeRepository,
+                                  final ShopRepository shopRepository, final MJMLClient mjmlClient,
+                                  @Value("${mjmlSecrets.appId}") final String appId,
+                                  @Value("${mailCredentials.username}") final String mailUsername,
+                                  @Value("${mjmlSecrets.appKey}") final String appKey,
+                                  @Value("${app.frontend-url}") final String frontendUrl) {
+        this.mailSender = mailSender;
+        this.userRepository = userRepository;
+        this.employeeRepository = employeeRepository;
+        this.shopRepository = shopRepository;
+        this.mjmlClient = mjmlClient;
+        this.appId = appId;
+        this.mailUsername = mailUsername;
+        this.appKey = appKey;
+        this.frontendUrl = frontendUrl;
+    }
+
+    /**
+     * Read mjml templates into map.
+     *
+     * @throws IOException the io exception
+     */
+    public void readMJMLTemplatesIntoMap() throws IOException {
+        mjmlTemplateTexts.clear();
+
+        final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        final Resource[] resources = resolver.getResources("classpath:/templates/*.mjml");
+
+        for (final Resource resource : resources) {
+            if (resource.isReadable()) {
+                final String fileName = resource.getFilename();
+                if (fileName != null) {
+                    final String templateName = fileName.replace(".mjml", "");
+                    mjmlTemplateTexts.put(templateName, new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
+                }
+            }
+        }
+
+        if (mjmlTemplateTexts.isEmpty()) {
+            final File folder = new File("src/main/java/com/hdmstuttgart/mi/backend/templates");
+            final File[] listOfFiles = folder.listFiles();
+            if (listOfFiles == null) {
+                throw new IOException("No MJML templates found on the classpath or in src/main/java/com/hdmstuttgart/mi/backend/templates");
+            }
+            for (final File listOfFile : listOfFiles) {
+                if (listOfFile.isFile()) {
+                    mjmlTemplateTexts.put(listOfFile.getName().replaceAll(".mjml", ""), Files.readString(Path.of(listOfFile.getAbsolutePath()), StandardCharsets.UTF_8));
+                }
+            }
+        }
+    }
+
+    /**
+     * Insert data into template.
+     *
+     * @param templateName the template name
+     * @param emailAddress the email address
+     * @throws IOException the io exception
+     */
+    public void insertDataIntoTemplate(final String templateName, final String emailAddress) throws IOException {
+        readMJMLTemplatesIntoMap();
+        final User user = userRepository.findByEmail(emailAddress).orElseThrow();
+        final String template = mjmlTemplateTexts.get(templateName);
+        if (template == null) {
+            throw new IOException("MJML template not found: " + templateName);
+        }
+        final String preparedText = template.replace("blank_verificationCode", user.getConfirmationCode())
+                .replace("blank_ratingURL", frontendUrl + "/rating/" + user.getConfirmationCode());
+        mjmlTemplateTexts.put(templateName, preparedText);
+    }
+
+    /**
+     * Send email with template.
+     *
+     * @param email        the email
+     * @param templateName the template name
+     * @throws MessagingException the messaging exception
+     * @throws IOException        the io exception
+     */
+    public void sendEmailWithTemplate(final String email, final String templateName) throws MessagingException, IOException {
+
+        //MJML API setup
+        this.mjmlClient = MJMLClient.newDefaultClient()
+                .withApplicationID(appId)
+                .withApplicationKey(appKey);
+        log.info("Found MJML client");
+        //MJML string preparation for the request and send out
+        insertDataIntoTemplate(templateName, email);
+        final RenderRequest request = new RenderRequest(mjmlTemplateTexts.get(templateName));
+        final RenderResponse response = mjmlClient.render(request);
+        final String plainHTML = response.getHTML();
+        final MimeMessage mimeMessage = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        helper.setText(plainHTML, true);
+        helper.setTo(email);
+
+        //template specific email subjects
+        if (templateName.equals("verification")) {
+            helper.setSubject("OpenBarber - Your verification code is here!");
+        } else {
+            helper.setSubject("OpenBarber - Did you miss us?");
+        }
+        helper.setFrom(mailUsername);
+
+        mailSender.send(mimeMessage);
+        log.debug("Mail sent successfully ... ");
+    }
+
+    /**
+     * Insert data into template.
+     *
+     * @param templateName the template name
+     * @param appointment  the appointment
+     * @throws IOException the io exception
+     */
+    public void insertDataIntoTemplate(final String templateName, final Appointment appointment) throws IOException {
+        readMJMLTemplatesIntoMap();
+        final String appointmentDate = appointment.getAppointmentDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm"));
+        final String customerName = appointment.getCustomerName();
+        final Employee employee = employeeRepository.findById(appointment.getEmployee().getId()).orElseThrow();
+        final String employeeName = employee.getName();
+        final Shop shop = shopRepository.findById(appointment.getShop().getId()).orElseThrow();
+        final String shopName = shop.getName();
+        final String confirmationCode = appointment.getConfirmationCode().toString();
+
+        final String template = mjmlTemplateTexts.get(templateName);
+        if (template == null) {
+            throw new IOException("MJML template not found: " + templateName);
+        }
+        final String preparedText = template
+                .replace("blank_shopName", shopName)
+                .replace("blank_username", customerName)
+                .replace("blank_stylist", employeeName)
+                .replace("blank_appointmentDate", appointmentDate)
+                .replace("blank_confirmUrl", frontendUrl + "/appointment/" + appointment.getId() + "?confirmationCode=" + confirmationCode)
+                .replace("blank_cancelUrl", frontendUrl + "/cancel-appointment/" + appointment.getId() + "?confirmationCode=" + confirmationCode);
+
+        mjmlTemplateTexts.put(templateName, preparedText);
+    }
+
+    /**
+     * Send email with template.
+     *
+     * @param appointment  the appointment
+     * @param templateName the template name
+     * @param email        the email
+     * @throws MessagingException the messaging exception
+     * @throws IOException        the io exception
+     */
+    public void sendEmailWithTemplate(final Appointment appointment, final String templateName, final String email) throws MessagingException, IOException {
+
+        //MJML API setup
+        this.mjmlClient = MJMLClient.newDefaultClient()
+                .withApplicationID(appId)
+                .withApplicationKey(appKey);
+        log.info("Found MJML client");
+        //MJML string preparation for the request and send out
+        insertDataIntoTemplate(templateName, appointment);
+        final RenderRequest request = new RenderRequest(mjmlTemplateTexts.get(templateName));
+        final RenderResponse response = mjmlClient.render(request);
+        final String plainHTML = response.getHTML();
+        final MimeMessage mimeMessage = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        helper.setText(plainHTML, true);
+        helper.setTo(email);
+
+        //template specific email subjects
+        if (templateName.equals("appointment")) {
+            helper.setSubject("OpenBarber - Your appointment!");
+        } else {
+            helper.setSubject("OpenBarber - Did you miss us?");
+        }
+        helper.setFrom(mailUsername);
+
+        mailSender.send(mimeMessage);
+        log.debug("Mail sent successfully ... ");
+    }
+
+    public void sendPasswordResetEmail(final String email, final String token) throws MessagingException, IOException {
+        readMJMLTemplatesIntoMap();
+        final String resetUrl = frontendUrl + "/reset-password?token=" + token;
+        final String template = mjmlTemplateTexts.get("password-reset");
+        if (template == null) {
+            throw new IOException("MJML template not found: password-reset");
+        }
+        final String preparedText = template.replace("blank_resetUrl", resetUrl);
+
+        this.mjmlClient = MJMLClient.newDefaultClient()
+                .withApplicationID(appId)
+                .withApplicationKey(appKey);
+
+        final RenderRequest request = new RenderRequest(preparedText);
+        final RenderResponse response = mjmlClient.render(request);
+
+        final MimeMessage mimeMessage = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        helper.setText(response.getHTML(), true);
+        helper.setTo(email);
+        helper.setSubject("OpenBarber - Passwort zurücksetzen");
+        helper.setFrom(mailUsername);
+
+        mailSender.send(mimeMessage);
+        log.debug("Password reset email sent to {}", email);
+    }
+}
