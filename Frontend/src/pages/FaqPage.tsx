@@ -70,7 +70,7 @@ const FaqPage = () => {
           textAlign: 'center',
         }}
       >
-        <Typography variant="h3" fontWeight={700} sx={{ color: 'white', mb: 1, fontSize: { xs: '2rem', md: '2.75rem' } }}>
+        <Typography variant="h3" fontWeight={700} sx={{ color: '#fff', mb: 1, fontSize: { xs: '2rem', md: '2.75rem' } }}>
           {t('FAQ_TITLE')}
         </Typography>
         <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.75)', mb: 4, fontWeight: 400 }}>
@@ -82,17 +82,33 @@ const FaqPage = () => {
             placeholder={t('FAQ_SEARCH_PLACEHOLDER')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            variant="filled"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ color: 'rgba(0,0,0,0.4)' }} />
+                  <SearchIcon sx={{ color: '#555' }} />
                 </InputAdornment>
               ),
+              disableUnderline: true,
             }}
             sx={{
-              backgroundColor: 'white',
-              borderRadius: 2,
-              '& fieldset': { border: 'none' },
+              '& .MuiFilledInput-root': {
+                backgroundColor: '#fff !important',
+                borderRadius: '4px',
+                color: '#000',
+                boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+                '&:hover': { backgroundColor: '#fff !important' },
+                '&.Mui-focused': { backgroundColor: '#fff !important' },
+              },
+              '& .MuiFilledInput-input': {
+                paddingTop: '12px',
+                paddingBottom: '12px',
+              },
+              '& .MuiInputAdornment-root': {
+                marginTop: '0 !important',
+                alignSelf: 'center',
+              },
+              '& .MuiInputBase-input::placeholder': { color: '#888', opacity: 1 },
             }}
           />
         </Box>
