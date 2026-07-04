@@ -13,6 +13,9 @@ import { basicTheme } from './themes/basicTheme';
 import FilterPage from './pages/FilterPage';
 import SignupModal from './components/SignupModal/SignupModal';
 import Datenschutz from './pages/Datenschutz';
+import Impressum from './pages/Impressum';
+import FaqPage from './pages/FaqPage';
+import ContactPage from './pages/ContactPage';
 import SchedulerPage from './pages/SchedulerPage';
 import EditShopPage from './pages/EditShopPage';
 import { SignupContext } from './context/Signup.context';
@@ -53,6 +56,9 @@ function App() {
             <Route path="shops/:routeId" element={<DetailPage />} />
             <Route path="filter" element={<FilterPage />} />
             <Route path="privacy-policy" element={<Datenschutz />} />
+            <Route path="impressum" element={<Impressum />} />
+            <Route path="faq" element={<FaqPage />} />
+            <Route path="contact" element={<ContactPage />} />
             <Route
               path="scheduler"
               element={
