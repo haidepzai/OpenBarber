@@ -127,14 +127,21 @@ const LoginModal = ({ gotoSignup }) => {
       };
       try {
         const res = await authCtx.onLogin(authRequest, customConfig, rememberMe);
-        // Redirect to signup if not verified or has no shop
-        const { verified, hasShop } = res.data;
+        const { verified, hasShop, role } = res.data;
+
         if (!verified) {
+          const isEnterpriseUnverified = hasShop || role === 'OPERATOR';
           gotoSignup({
-            activeStep: hasShop ? 3 : 2,
+            // Shop-flow: step 3 = EmailVerification, step 2 = ShopCreate
+            // Enterprise without shop yet → step 3 (email verify), completedSteps[2]=false → after verify goes to ShopCreate
+            activeStep: isEnterpriseUnverified ? 3 : 2,
             completedSteps: [true, true, hasShop, false, false],
           });
-          signUpCtx.setData((prevData) => ({ ...prevData, email: emailState.value, accountType: hasShop ? 'shop' : 'customer' }));
+          signUpCtx.setData((prevData) => ({
+            ...prevData,
+            email: emailState.value,
+            accountType: isEnterpriseUnverified ? 'shop' : 'customer',
+          }));
         }
 
         if (verified) {

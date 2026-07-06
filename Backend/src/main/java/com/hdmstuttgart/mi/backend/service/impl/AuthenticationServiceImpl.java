@@ -110,6 +110,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
                 .verified(user.getRole() != UserRole.UNVERIFIED)
                 .hasShop(user.getShop() != null)
                 .userId(user.getId())
+                .role(user.getRole().name())
                 .build();
     }
 

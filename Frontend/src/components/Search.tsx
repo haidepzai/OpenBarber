@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import { Box, Stack, Button, TextField, useMediaQuery } from '@mui/material';
+import { Box, Stack, Button, TextField, useMediaQuery, Portal } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
@@ -25,6 +25,11 @@ function Search({ dateAndTime, setDateAndTime }) {
   const [location, setLocation] = React.useState('');
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
   const [openTimePicker, setOpenTimePicker] = React.useState(false);
+  const [dateAnchor, setDateAnchor] = React.useState({ top: 0, left: 0 });
+  const [timeAnchor, setTimeAnchor] = React.useState({ top: 0, left: 0 });
+
+  const dateButtonRef = React.useRef(null);
+  const timeButtonRef = React.useRef(null);
 
   const { ref: materialRef } = usePlacesWidget({
     apiKey: GOOGLE_API_KEY,
@@ -54,21 +59,36 @@ function Search({ dateAndTime, setDateAndTime }) {
     }
   };
 
-  const pickerSx = {
-    position: 'absolute',
-    top: 'calc(100% + 8px)',
-    left: { xs: '50%', md: 0 },
-    transform: { xs: 'translateX(-50%)', md: 'none' },
-    width: { xs: 'min(100vw - 32px, 320px)', sm: 'auto' },
-    maxWidth: '100vw',
+  const openDate = () => {
+    if (dateButtonRef.current) {
+      const rect = dateButtonRef.current.getBoundingClientRect();
+      setDateAnchor({ top: rect.bottom + 8, left: rect.left });
+    }
+    setOpenDatePicker((v) => !v);
+    setOpenTimePicker(false);
+  };
+
+  const openTime = () => {
+    if (timeButtonRef.current) {
+      const rect = timeButtonRef.current.getBoundingClientRect();
+      setTimeAnchor({ top: rect.bottom + 8, left: rect.left });
+    }
+    setOpenTimePicker((v) => !v);
+    setOpenDatePicker(false);
+  };
+
+  const portalPickerSx = (anchor) => ({
+    position: 'fixed',
+    top: anchor.top,
+    left: anchor.left,
+    zIndex: 9999,
     boxShadow: '-3px 3px 8px 2px rgba(0,0,0,0.4)',
-    zIndex: 3,
     borderRadius: 1,
     overflow: 'hidden',
     '& .MuiPickerStaticWrapper-root, & .MuiCalendarPicker-root, & .MuiClockPicker-root': {
       maxWidth: '100%',
     },
-  };
+  });
 
   return (
     <Stack
@@ -80,13 +100,11 @@ function Search({ dateAndTime, setDateAndTime }) {
     >
       <Box sx={{ position: 'relative', width: { xs: '100%', md: 'auto' } }}>
         <Button
+          ref={dateButtonRef}
           color="white"
           variant="contained"
           fullWidth={isMobile}
-          onClick={() => {
-            setOpenDatePicker(!openDatePicker);
-            setOpenTimePicker(false);
-          }}
+          onClick={openDate}
           startIcon={<EventIcon />}
           endIcon={<ExpandMoreIcon />}
           size="large"
@@ -96,33 +114,32 @@ function Search({ dateAndTime, setDateAndTime }) {
         </Button>
 
         {openDatePicker && (
-          <Box sx={pickerSx}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <StaticDatePicker
-                displayStaticWrapperAs={isMobile ? 'mobile' : 'desktop'}
-                openTo="day"
-                value={dateAndTime}
-                onChange={(newValue) => {
-                  setDateAndTime(newValue);
-                  setOpenDatePicker(false);
-                }}
-                onClick={() => setOpenDatePicker(false)}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-          </Box>
+          <Portal>
+            <Box sx={portalPickerSx(dateAnchor)}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <StaticDatePicker
+                  displayStaticWrapperAs={isMobile ? 'mobile' : 'desktop'}
+                  openTo="day"
+                  value={dateAndTime}
+                  onChange={(newValue) => {
+                    setDateAndTime(newValue);
+                    setOpenDatePicker(false);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </Box>
+          </Portal>
         )}
       </Box>
 
       <Box sx={{ position: 'relative', width: { xs: '100%', md: 'auto' } }}>
         <Button
+          ref={timeButtonRef}
           color="white"
           variant="contained"
           fullWidth={isMobile}
-          onClick={() => {
-            setOpenTimePicker(!openTimePicker);
-            setOpenDatePicker(false);
-          }}
+          onClick={openTime}
           startIcon={<AccessTimeIcon />}
           endIcon={<ExpandMoreIcon />}
           size="large"
@@ -132,25 +149,27 @@ function Search({ dateAndTime, setDateAndTime }) {
         </Button>
 
         {openTimePicker && (
-          <Box
-            sx={{
-              ...pickerSx,
-              '& .MuiDialogActions-root': { backgroundColor: 'white.main' },
-            }}
-          >
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <StaticTimePicker
-                displayStaticWrapperAs="mobile"
-                value={dateAndTime}
-                onChange={(newValue) => {
-                  setDateAndTime(newValue);
-                }}
-                onAccept={() => setOpenTimePicker(false)}
-                renderInput={(params) => <TextField {...params} />}
-                sx={{ borderRadius: '4px' }}
-              />
-            </LocalizationProvider>
-          </Box>
+          <Portal>
+            <Box
+              sx={{
+                ...portalPickerSx(timeAnchor),
+                '& .MuiDialogActions-root': { backgroundColor: 'white.main' },
+              }}
+            >
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <StaticTimePicker
+                  displayStaticWrapperAs="mobile"
+                  value={dateAndTime}
+                  onChange={(newValue) => {
+                    setDateAndTime(newValue);
+                  }}
+                  onAccept={() => setOpenTimePicker(false)}
+                  renderInput={(params) => <TextField {...params} />}
+                  sx={{ borderRadius: '4px' }}
+                />
+              </LocalizationProvider>
+            </Box>
+          </Portal>
         )}
       </Box>
 
