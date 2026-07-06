@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.mail.MessagingException;
+
 import java.io.IOException;
 import java.time.*;
 import java.util.ArrayList;
@@ -124,7 +124,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
         if (!isVacation && appointment.getCustomerEmail() != null) {
             try {
                 emailSenderService.sendEmailWithTemplate(appointment, "appointment", appointment.getCustomerEmail());
-            } catch (final MessagingException | IOException e) {
+            } catch (final IOException e) {
                 log.error("Failed to send appointment confirmation email for appointment {}", appointment.getId(), e);
             }
         }
