@@ -7,6 +7,7 @@ import AuthContext from '../../../context/auth-context';
 import { useTranslation } from 'react-i18next';
 import { getAccessToken } from '../../../context/tokenStorage';
 import { API_ENDPOINTS } from '../../../config/constants';
+import { useNavigate } from 'react-router-dom';
 
 const EmailVerificationStep = () => {
   const {
@@ -18,11 +19,13 @@ const EmailVerificationStep = () => {
     close,
   } = useContext(SignupContext);
   const authCtx = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [error, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [resendSuccess, setResendSuccess] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
+  const [verifySuccess, setVerifySuccess] = useState(false);
 
   const { t } = useTranslation();
 
@@ -43,18 +46,31 @@ const EmailVerificationStep = () => {
     try {
       await authCtx.verifyHandler(verifyRequest, customConfig);
       if (accountType === 'customer') {
-        // Customer flow: verification done, close modal and redirect
-        authCtx.setIsLoggedIn(true);
-        close();
+        setVerifySuccess(true);
+        setTimeout(() => {
+          close();
+          navigate('/my-appointments');
+        }, 1500);
       } else {
-        // Shop flow: go to awaiting approval step
-        setActiveStep(4);
-        setCompletedSteps((cs) => {
-          const res = [...cs];
-          res[3] = true;
-          res[4] = true;
-          return res;
-        });
+        // Shop flow
+        if (completedSteps[2]) {
+          // Shop already created → go to awaiting approval step
+          setActiveStep(4);
+          setCompletedSteps((cs) => {
+            const res = [...cs];
+            res[3] = true;
+            res[4] = true;
+            return res;
+          });
+        } else {
+          // Shop not yet created → go to shop creation step
+          setActiveStep(2);
+          setCompletedSteps((cs) => {
+            const res = [...cs];
+            res[3] = true;
+            return res;
+          });
+        }
       }
     } catch (err) {
       setError(true);
@@ -87,6 +103,22 @@ const EmailVerificationStep = () => {
     } finally {
       setResendLoading(false);
     }
+  }
+
+  if (verifySuccess) {
+    return (
+      <Stack
+        sx={{ height: '100%', justifyContent: 'center', alignItems: 'center', gap: 3, py: 8, px: 4 }}
+      >
+        <Box sx={{ fontSize: 64, lineHeight: 1 }}>✅</Box>
+        <Typography variant="h4" fontWeight="bold" textAlign="center">
+          {t('VERIFICATION_SUCCESS_TITLE')}
+        </Typography>
+        <Typography variant="body1" color="textSecondary" textAlign="center">
+          {t('VERIFICATION_SUCCESS_BODY')}
+        </Typography>
+      </Stack>
+    );
   }
 
   return (
