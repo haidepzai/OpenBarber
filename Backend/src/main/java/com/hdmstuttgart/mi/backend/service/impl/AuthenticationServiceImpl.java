@@ -24,7 +24,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.mail.MessagingException;
+
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Date;
@@ -75,7 +75,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
         try {
             emailSenderService.sendEmailWithTemplate(user.getEmail(), "verification");
-        } catch (final MessagingException | IOException e) {
+        } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
 
@@ -315,7 +315,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
         try {
             emailSenderService.sendEmailWithTemplate(user.getEmail(), "verification");
-        } catch (final MessagingException | IOException e) {
+        } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to send verification email");
         }
     }

@@ -30,19 +30,19 @@ function Footer() {
             </Typography>
           </Stack>
           <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap>
-            <Link to="#" className="link">
+            <Link to="/impressum" className="link">
               {t('IMPRINT')}
             </Link>
             <Link to="/privacy-policy" className="link">
               {t('DATA_PRIVACY')}
             </Link>
-            <Link to="#" className="link">
+            <Link to="/terms" className="link">
               {t('TERMS_OF_USE')}
             </Link>
-            <Link to="#" className="link">
+            <Link to="/contact" className="link">
               {t('CONTACT')}
             </Link>
-            <Link to="#" className="link">
+            <Link to="/faq" className="link">
               FAQs
             </Link>
           </Stack>
