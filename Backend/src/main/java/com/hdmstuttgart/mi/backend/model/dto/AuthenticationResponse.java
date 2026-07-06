@@ -19,6 +19,7 @@ public class AuthenticationResponse {
     private boolean verified;
     private boolean hasShop;
     private long userId;
+    private String role;
 
     /**
      * Instantiates a new Authentication response.

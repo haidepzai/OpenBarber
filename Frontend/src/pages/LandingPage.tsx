@@ -56,6 +56,8 @@ const LandingPage = () => {
           background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(93,71,58,1) 0%, rgba(160,142,131,1) 100%)',
           py: { xs: 4, sm: 5, md: 7 },
           px: { xs: 2, sm: 3 },
+          position: 'relative',
+          zIndex: 1,
         }}
       >
         <Typography
