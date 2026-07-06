@@ -14,8 +14,10 @@ google:
   client-id: ${GOOGLE_CLIENT_ID:}
 
 mailCredentials:
-  username: ${MAIL_USERNAME}
-  password: ${MAIL_PASSWORD}
+  username: ${MAIL_FROM:OpenBarber <onboarding@resend.dev>}
+
+resend:
+  api-key: ${RESEND_API_KEY:}
 
 mjmlSecrets:
   appId: ${MJML_APP_ID}
@@ -51,20 +53,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-  mail:
-    host: ${MAIL_HOST:smtp.gmail.com}
-    port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-        debug: ${MAIL_DEBUG:false}
 
   data:
     rest:
