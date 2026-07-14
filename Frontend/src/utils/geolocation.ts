@@ -19,16 +19,13 @@ export const getCurrentLocation = async () => {
     throw new Error('Geolocation is not supported');
   }
 
-  if (navigator.permissions && navigator.permissions.query) {
-    const status = await navigator.permissions.query({ name: 'geolocation' });
-    if (status.state !== 'granted' && status.state !== 'prompt') {
-      throw new Error('Geolocation permission denied');
-    }
-  }
-
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, (error) => {
       reject(new Error(error.message || 'Could not get current location'));
+    }, {
+      timeout: 10000,
+      maximumAge: 60000,
+      enableHighAccuracy: false,
     });
   });
 };
