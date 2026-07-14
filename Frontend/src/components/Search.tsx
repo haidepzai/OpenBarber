@@ -38,24 +38,31 @@ function Search({ dateAndTime, setDateAndTime }) {
     },
   });
 
-  const handleSubmit = async () => {
-    if (location !== '') {
-      const loc = location.formatted_address;
-      const response = await getGeocoordinates(loc);
-      const lat = response.results[0].geometry.location.lat;
-      const lng = response.results[0].geometry.location.lng;
+  const [geoError, setGeoError] = React.useState('');
 
-      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc, lat, lng } });
-    } else {
-      const position = await getCurrentLocation();
-      navigate('/filter', {
-        state: {
-          dateAndTime: dateAndTime.toISOString(),
-          loc: `${position.coords.latitude},${position.coords.longitude}`,
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        },
-      });
+  const handleSubmit = async () => {
+    setGeoError('');
+    try {
+      if (location !== '') {
+        const loc = location.formatted_address;
+        const response = await getGeocoordinates(loc);
+        const lat = response.results[0].geometry.location.lat;
+        const lng = response.results[0].geometry.location.lng;
+        navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString(), loc, lat, lng } });
+      } else {
+        const position = await getCurrentLocation();
+        navigate('/filter', {
+          state: {
+            dateAndTime: dateAndTime.toISOString(),
+            loc: `${position.coords.latitude},${position.coords.longitude}`,
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
+        });
+      }
+    } catch {
+      // If geolocation fails, still navigate to filter (without coordinates)
+      navigate('/filter', { state: { dateAndTime: dateAndTime.toISOString() } });
     }
   };
 
