@@ -16,8 +16,12 @@ const FilterPage = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [view, setView] = useState<'list' | 'map'>('list');
 
+  // Only filter by date/time if the user explicitly came from search (location.state had a date)
+  const dateFilterActive = !!(location.state && location.state.dateAndTime);
+
   const [filter, setFilter] = useState({
-    dateAndTime: location.state && location.state.dateAndTime ? dayjs(location.state.dateAndTime) : dayjs(),
+    dateAndTime: dateFilterActive ? dayjs(location.state.dateAndTime) : dayjs(),
+    dateFilterActive,
     location: location.state?.loc || '',
     addressLatitude: location.state?.lat,
     addressLongitude: location.state?.lng,
@@ -35,7 +39,7 @@ const FilterPage = () => {
   });
 
   const setDateAndTime = (newValue) => {
-    setFilter({ ...filter, dateAndTime: newValue });
+    setFilter({ ...filter, dateAndTime: newValue, dateFilterActive: true });
   };
 
   const ResultsArea = () => (
