@@ -1,7 +1,11 @@
 export const reverseGeocode = async (lat: number, lon: number): Promise<string> => {
   const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`, {
-    headers: { 'Accept-Language': 'de' },
+    headers: {
+      'Accept-Language': 'de',
+      'User-Agent': 'OpenBarber/1.0 (openbarber.app)',
+    },
   });
+  if (!res.ok) throw new Error(`Nominatim error: ${res.status}`);
   const data = await res.json();
   const addr = data.address ?? {};
   const neighborhood = addr.suburb ?? addr.quarter ?? addr.city_district ?? addr.borough ?? '';

@@ -22,11 +22,12 @@ const LocationBanner = () => {
       async (pos) => {
         try {
           const name = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
-          setLocationName(name);
-          setState('success');
+          setLocationName(name || `${pos.coords.latitude.toFixed(3)}, ${pos.coords.longitude.toFixed(3)}`);
         } catch {
-          setState('error');
+          // reverseGeocode failed — still show success with coordinates
+          setLocationName(`${pos.coords.latitude.toFixed(3)}, ${pos.coords.longitude.toFixed(3)}`);
         }
+        setState('success');
       },
       (err) => {
         if (err.code === err.PERMISSION_DENIED) setState('denied');
